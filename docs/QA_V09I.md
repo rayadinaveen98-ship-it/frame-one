@@ -37,3 +37,13 @@ Prior GitHub CI runs generate temporary Android debug keystores on different run
 - Physical device acceptance of Android Back/gesture **still pending**
 
 Do not call a stable **update identity** verified until a persistent signer has been configured and two distinct builds have passed an **in-place install** on a real device.
+
+## Verified branch evidence (27 October 2026)
+
+- [Web source tests and TypeScript/Vite production compilation 40486487248](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486487248) — **SUCCESS**.
+- [Native Android / Capacitor App plugin build 40486487444](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486487444) — **SUCCESS**. The build's Capacitor sync log discovers `@capacitor/app@8.1.2`; Gradle compiles the `capacitor-app` module.
+- Downloaded the real APK job artifact and checked ZIP integrity; it contains `assets/public/index.html` and `assets/capacitor.plugins.json` with `com.capacitorjs.plugins.app.AppPlugin`. Both artifact files (`app-debug.apk` and `android-qa-signature.txt`) are at ZIP root, so the public release workflow can find them.
+- The APK certificate receipt reports **Persistent QA signer: NO** — temporary runner certificate, **not upgrade-safe**. A secret-managed stable QA identity is prepared but has **not yet been provisioned or proven**.
+- Full Chromium browser QA runs [40486102916](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486102916) and [40486487223](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486487223) are **not verified** as of this check because the Playwright Chromium installation step remains in progress. The native feature is guarded to Android only and the previous v0.9H full-browser tests passed, but this is **not a substitute** for completing the v0.9I run.
+
+Android hardware Back is installed in the compiled APK, but its actual behavior on a phone remains **untested**.
