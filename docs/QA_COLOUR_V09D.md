@@ -23,3 +23,11 @@
 ## Follow-up
 
 Once accepted, mark v0.9D as **2/7 labs migrated** and move to Frame Lab; continue to preserve the five legacy modules until each replacement passes. Independent film education, Telugu, real-device/screen-reader/audio, HTTPS PWA and native packaging gates remain pending.
+
+## Real-browser defect identified and corrected
+
+GitHub run [40450839303](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40450839303) recorded: `{"inline":"0","computed":"0","mode":"true","strength":"100%"}`. The React mode was correctly selected and the slider displayed 100%, **but the old document-level `input` handler overwrote the new overlay opacity with its legacy neutral-state zero**. This was a genuine bug, not an animation-only race.
+
+**Source fix:** React Colour input/onChange handlers stop propagation. The old engine's global input delegate explicitly ignores controls under `.react-colour-lab` or `.react-continuity-lab`. The sixth source regression now checks that both protections remain in place. This avoids hidden cross-framework ownership collisions as later labs migrate.
+
+**Acceptance:** Re-run the entire GitHub browser suite after commit `09a63faf99ef55580b51490c883805481b2fca1d` and inspect the resulting coloured preview screenshots. Do not mark the second lab complete solely on source-level checks.
