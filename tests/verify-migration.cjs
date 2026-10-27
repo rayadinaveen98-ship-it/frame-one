@@ -50,4 +50,24 @@ assert(ctx.window.frameOneLegacy.saveStoryboard(draft),'original engine accepts 
 assert.strictEqual(JSON.parse(memory['frameone-scene-v07']).notes[1],'Keep the clue for the middle.');
 assert.strictEqual(ctx.window.frameOneLegacy.getStoryboard().question,'reunion');
 assert.strictEqual(typeof ctx.window.frameOneLegacy.exportShotList,'function');
-console.log('PASS: React migration source contract, 33 lesson records, 7 lab routes, React route event bridge, preserved storage identifiers, portable static preview.');
+
+// An interrupted backup restore must not strand partially replaced learning
+// progress/notes while continuing to show the previous in-memory storyboard.
+const oldData={...memory};
+const oldStory=ctx.window.frameOneLegacy.getStoryboard();
+const oldSetItem=ctx.localStorage.setItem;
+let simulatedFailure=true;
+ctx.localStorage.setItem=(key,value)=>{
+  if(key==='frameone-scene-v07'&&simulatedFailure){simulatedFailure=false;throw Error('Simulated WebView storage failure');}
+  return oldSetItem(key,value);
+};
+const replacement={
+  format:'frameone-learning-backup',version:1,
+  completed:['why'],notes:{why:'Incoming restored note'},
+  scene:{question:'mystery',shots:['wide','medium','close'],notes:['First','Second','Third']}
+};
+assert.throws(()=>ctx.window.frameOneLegacy.importBackup(replacement),/could not be saved/i);
+ctx.localStorage.setItem=oldSetItem;
+assert.deepStrictEqual(memory,oldData,'interrupted restore should roll back previous stored values');
+assert.strictEqual(JSON.stringify(ctx.window.frameOneLegacy.getStoryboard()),JSON.stringify(oldStory),'interrupted restore must not change in-memory storyboard');
+console.log('PASS: React migration source contract, 33 lesson records, 7 lab routes, preserved storage identifiers, and interrupted backup rollback.');
