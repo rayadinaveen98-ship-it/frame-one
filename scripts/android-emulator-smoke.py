@@ -52,7 +52,7 @@ def hierarchy() -> list[dict[str, object]]:
         label = " ".join((node.attrib.get("text",""),
                           node.attrib.get("content-desc",""))).strip()
         bounds = node.attrib.get("bounds", "")
-        match = re.fullmatch(r"\\[(\\d+),(\\d+)\\]\\[(\\d+),(\\d+)\\]", bounds)
+        match = re.fullmatch(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]", bounds)
         if not match:
             continue
         x1,y1,x2,y2 = map(int, match.groups())
