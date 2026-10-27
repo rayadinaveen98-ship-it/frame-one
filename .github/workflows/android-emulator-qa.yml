@@ -75,6 +75,7 @@ jobs:
           npm run build
           npx cap add android
           npx cap sync android
+          python3 scripts/render-brand-icons.py --android
           chmod +x android/gradlew
           (cd android && ./gradlew :app:assembleDebug --no-daemon)
           test -s android/app/build/outputs/apk/debug/app-debug.apk
