@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { LessonView } from './components/LessonView';
 import { LearnView } from './components/LearnView';
 import type { LegacyRoute } from './legacy/bridge';
@@ -53,6 +53,21 @@ function ProgressTopbar() {
 export default function App() {
   const [bootError, setBootError] = useState<string | null>(null);
   const [route, setRoute] = useState<LegacyRoute>({page:'home',lesson:null});
+  const previousRoute = useRef('home:');
+  // On SPA navigation, return keyboard/screen-reader focus to the page heading.
+  // Skip the initial home mount to avoid stealing focus when booting.
+  useEffect(() => {
+    const key = route.page + ':' + (route.lesson ?? '');
+    if (previousRoute.current === key) return;
+    previousRoute.current = key;
+    const frame = requestAnimationFrame(() => {
+      const heading = document.querySelector<HTMLElement>('#main-content .page h1');
+      if (!heading) return;
+      heading.tabIndex = -1;
+      heading.focus({ preventScroll: true });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [route.page, route.lesson]);
   useEffect(() => {
     const onRoute = (event: Event) => {
       const custom = event as CustomEvent<LegacyRoute>;
