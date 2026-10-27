@@ -17,3 +17,12 @@
 - **Committed:** generated `package-lock.json`, with web and browser workflows switched to `npm ci` for reproducible installs.
 - **Verification boundary:** These QA tools are committed, but a passing browser QA run and human inspection of screenshots are **not yet verified**. Prior web build passed; a green current build, real-device checks and an Android APK/IPA are still separate gates.
 - Detailed matrix: [QA_V09C.md](QA_V09C.md).
+
+## v0.9C confirmed browser QA results — 27 October 2026
+
+- Fixed Chromium installer failure by pinning GitHub browser QA to Ubuntu 24.04. Initial CI failure was an unsupported Ubuntu 26.04 host, not an application regression.
+- Confirmed GitHub Action success [40446779201](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40446779201) for desktop/mobile navigation, seven labs, saved data, backup export, cancelled import and offline reload.
+- Confirmed [40447097918](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40447097918) after implementing one-chapter-at-a-time mobile learning navigation; screenshot review shows a clearer small-screen course explorer.
+- Confirmed [40447171261](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40447171261) exercising and completing all 33 rendered lessons with saved progress.
+- **Next:** v0.9D convert seven legacy Creative Labs into typed React components, maintaining animation and audio behavior. Before public release: manual accessibility/device checks, expert factual and Telugu review, actual HTTPS/PWA install and native Android/iOS builds.
+- Full QA receipts and screenshot evidence: [QA_V09C.md](QA_V09C.md), [QA_LATEST_RUN.md](QA_LATEST_RUN.md).
