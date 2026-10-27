@@ -50,9 +50,14 @@ function Navigation({ mobile = false }: { mobile?: boolean }) {
   );
 }
 
-function ProgressTopbar() {
+function ProgressTopbar({page}: {page: Destination | 'lesson'}) {
   return <header className="topbar">
-    <div className="welcome">A little film school, in your pocket.</div>
+    <div className="topbar-leading">
+      {page!=='home' ? <button className="mobile-back" type="button" aria-label="Back within Frame One" onClick={()=>window.frameOneLegacy?.goBack()}>
+        <span aria-hidden="true">←</span> Back
+      </button> : null}
+      <div className="welcome">A little film school, in your pocket.</div>
+    </div>
     <div className="top-right">
       <div className="progress-pill">
         <span className="progress-circle" id="progressCircle" style={{'--angle':'0%'} as CSSProperties} />
@@ -131,7 +136,7 @@ export default function App() {
       </div>
     </aside>
     <main className="main" id="main-content">
-      <ProgressTopbar />
+      <ProgressTopbar page={route.page} />
       {updateReady ? <div className="pwa-update-notice" role="status">
         <span><strong>New version available.</strong> Finish what you're doing, then refresh to see the latest changes.</span>
         <button type="button" onClick={() => window.location.reload()}>Refresh now</button>

@@ -16,3 +16,21 @@
     min-height: calc(66px + env(safe-area-inset-bottom, 0px));
   }
 }
+
+/* On phones, provide a clearly labelled Back control for browser/PWA/Android
+   WebView navigation. Keep the original desktop sidebar and header unchanged. */
+.topbar-leading {display:flex;align-items:center;min-width:0;gap:12px;}
+.mobile-back {display:none;}
+@media (max-width:760px) {
+  .topbar-leading {gap:9px;}
+  .topbar .mobile-back {
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    flex-shrink:0;min-height:44px;min-width:67px;padding:7px 10px;
+    border:1px solid #454a55;border-radius:11px;background:#20242c;
+    color:#f3dfcb;font-size:12px;font-weight:700;cursor:pointer;
+    touch-action:manipulation;
+  }
+  .topbar .mobile-back span {font-size:18px;line-height:1;}
+  .topbar .mobile-back:focus-visible {outline:3px solid #edb88e;outline-offset:3px;}
+  .topbar:has(.mobile-back) .welcome {display:none;}
+}

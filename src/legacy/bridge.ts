@@ -5,6 +5,8 @@ export type LabName = 'frame' | 'sound' | 'light' | 'cut' | 'story' | 'colour' |
 export interface LegacyRoute { page: LegacyPage; lesson: string | null; lab?: LabName }
 export interface LegacyBridge {
   navigate: (page: LegacyPage, lesson?: string) => void;
+  /** Navigate only within Frame One; never fall through to an external URL. */
+  goBack: () => void;
   openLab: (lab: LabName) => void;
   completeLesson: (id: string) => void;
   savePractice: (id: string, note: string) => boolean;
