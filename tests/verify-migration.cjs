@@ -39,6 +39,7 @@ ctx.window.frameOneLegacy.completeLesson('history');
 assert.strictEqual(els.progressLabel.textContent,'3/33 lessons');
 assert.strictEqual(routes.at(-1).lesson,'units');
 click({page:'lab'});assert.strictEqual(click({lab:'story'}),'', 'React owns Make Lab; legacy leaves content empty');assert.strictEqual(routes.at(-1).lab,'story');assert.strictEqual(click({lab:'cut'}),'', 'React owns Cut Lab; legacy leaves content empty');assert.strictEqual(routes.at(-1).lab,'cut');assert.strictEqual(click({lab:'light'}),'', 'React owns Lighting Lab; legacy leaves content empty');assert.strictEqual(routes.at(-1).lab,'light');assert.strictEqual(click({lab:'frame'}),'', 'React owns Frame Lab; legacy leaves content empty');assert.strictEqual(routes.at(-1).lab,'frame');assert.strictEqual(click({lab:'colour'}),'', 'React owns Colour Lab; legacy leaves content empty');assert.strictEqual(routes.at(-1).lab,'colour');
+assert.strictEqual(click({lab:'sound'}),'', 'React owns Sound Lab; legacy leaves content empty');assert.strictEqual(routes.at(-1).lab,'sound');
 assert.strictEqual(click({lab:'continuity'}),'', 'React owns Continuity Lab; legacy leaves content empty');
 assert.strictEqual(routes.at(-1).lab,'continuity', 'legacy route supplies selected lab to React');
 assert.strictEqual(click({lab:'story'}),'', 'Make is React-owned on every visit');
