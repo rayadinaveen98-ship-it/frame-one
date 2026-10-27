@@ -6,7 +6,7 @@ Beginner-first, interactive education about what films are, how filmmakers tell 
 
 ## Current source and archived checkpoints
 
-**Current source is on the [`main` branch](https://github.com/rayadinaveen98-ship-it/frame-one/tree/main).** For a reproducible historical baseline, use the [archived v0.9B React + TypeScript + Vite + Capacitor source ZIP](releases/frame-one-v09b-source.zip)**. SHA-256: `ee9ab5e2a9f5448ddad559241b5b0fa1dbdadc6b2f7e6efa737d137ba86a561f`.
+**Current source is on the [`main` branch](https://github.com/rayadinaveen98-ship-it/frame-one/tree/main).** For a reproducible historical baseline, use the [archived v0.9B React + TypeScript + Vite + Capacitor source ZIP](releases/frame-one-v09b-source.zip). SHA-256: `ee9ab5e2a9f5448ddad559241b5b0fa1dbdadc6b2f7e6efa737d137ba86a561f`.
 
 The [source import workflow](.github/workflows/import-v09b-source.yml) has **committed the expanded project files to main**. GitHub Actions now verifies the **33 lessons and all seven React Creative Labs** in compiled Chromium, including offline and portable backup behavior. Real device/audio/accessibility and expert content review are still pending. Cloudflare Workers static-asset configuration and Git linkage have been prepared, but the live production URL and latest deployment still need an independent check. All twelve historical source checkpoints are also backed up in the [complete development archive](history/frame-one-complete-development-history.tar.xz). Historic runnable standalone HTML prototypes are [archived here](history/README.md), with the latest static preview at [preview/standalone.html](preview/standalone.html).
 
