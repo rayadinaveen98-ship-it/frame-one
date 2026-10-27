@@ -50,13 +50,34 @@ function Navigation({ mobile = false }: { mobile?: boolean }) {
   );
 }
 
+/** Device-local greeting: no account, network request or location permission. */
+export function greetingForHour(hour: number): string {
+  if (hour >= 5 && hour < 12) return 'Good morning.';
+  if (hour >= 12 && hour < 17) return 'Good afternoon.';
+  if (hour >= 17 && hour < 21) return 'Good evening.';
+  return 'Good night.';
+}
 function ProgressTopbar({page}: {page: Destination | 'lesson'}) {
-  return <header className="topbar">
+  const [greeting,setGreeting] = useState(() => greetingForHour(new Date().getHours()));
+  useEffect(() => {
+    const refresh = () => setGreeting(greetingForHour(new Date().getHours()));
+    window.addEventListener('focus',refresh);
+    document.addEventListener('visibilitychange',refresh);
+    const minute = window.setInterval(refresh, 60_000);
+    return () => {
+      window.clearInterval(minute);
+      window.removeEventListener('focus',refresh);
+      document.removeEventListener('visibilitychange',refresh);
+    };
+  },[]);
+  return <header className={page==='home'?'topbar home-topbar':'topbar'}>
     <div className="topbar-leading">
       {page!=='home' ? <button className="mobile-back" type="button" aria-label="Back within Frame One" onClick={()=>window.frameOneLegacy?.goBack()}>
         <span aria-hidden="true">←</span> Back
       </button> : null}
-      <div className="welcome">A little film school, in your pocket.</div>
+      {page==='home'
+        ? <h2 className="home-greeting" aria-live="off">{greeting}</h2>
+        : <div className="welcome">A little film school, in your pocket.</div>}
     </div>
     <div className="top-right">
       <div className="progress-pill">
