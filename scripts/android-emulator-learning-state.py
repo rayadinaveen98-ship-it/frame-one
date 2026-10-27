@@ -124,9 +124,9 @@ def make_storyboard():
     control("✎ Make")
     find_text("Plan a tiny scene.")
     control("Decision")
-    find_text("Will the person stay or leave?")
-    control("Close-up")
     assert checked("Decision"),"Android Make Lab did not select Decision"
+    find_text("Will the person stay or leave?",scroll=True)
+    control("Close-up")
     assert checked("Close-up"),"Android Make Lab did not select Close-up framing"
     b=editor()
     ui.adb("shell","input","tap",str((b[0]+b[2])//2),str((b[1]+b[3])//2))
@@ -154,9 +154,12 @@ def verify_after_restart():
     ui.tap_label("Lab")
     find_text("One moment. Many frames.")
     control("✎ Make")
-    find_text("Will the person stay or leave?")
+    find_text("Will the person stay or leave?",scroll=True)
     assert checked("Decision"),"Saved story question lost after force-stop"
-    assert checked("Close-up"),"Saved first-shot framing lost after force-stop"
+    for _ in range(9):
+        if checked("Close-up"):break
+        scroll_up()
+    else:raise AssertionError("Saved first-shot Close-up framing lost after force-stop")
     find_text(SHOT_NOTE,scroll=True)
     ui.capture("state-04-progress-story-after-restart")
     print("PASS: story question, framing and written first shot persisted offline",flush=True)
