@@ -1,7 +1,7 @@
 # Frame One v0.9D — React Make Lab migration QA
 
 **Date:** 27 October 2026  
-**Status:** React storyboard editor implemented and committed. Full production Chromium QA is still pending acceptance.
+**Status:** **ACCEPTED for automated browser QA** on the complete React Make integration. Real-device, assistive technology and educator reviews are separate gates.
 
 ## What is implemented
 
@@ -18,8 +18,16 @@
 - Compiled browser QA now checks the same SVG, changing story question, framing, notes, storage and bridge state, text download, importing a valid backup while Make is mounted, state after navigation, and 390px/320px screenshots + width overflow diagnostics.
 - Full existing 33/33 lesson completion journey, seven lab routes and offline reload remain in CI.
 - Earlier runs failed at **stale source-test expectations** for legacy Make markup and for the new browser `Event` constructor in the VM; those were corrected without weakening the validation.
-- **Do not mark 6/7 accepted until the latest GitHub browser run is green and desktop/mobile screenshots are inspected.**
+- **Accepted:** [GitHub Actions 40462953360](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40462953360) **SUCCESS** on commit `93bd8e858f828493f66c2bfbfc993f7893d0bfb3`. Ten Node source regression suites, TypeScript/Vite build, 33/33 rendered lesson completions, seven labs, original storage/backup restore, shot-list export, cancellation and offline reload were exercised.
 
 ## Remaining phases
 
 Next: Sound Lab, with audio permission/user gesture, AudioContext cleanup, handling navigation, offline use and real-device listening tests. HTTPS web hosting, Android APK, iOS build, screen reader, external film/Telugu pedagogy review and release QA remain open.
+
+## Final automated acceptance — 27 October 2026
+
+- **Green full browser QA:** [run 40462953360](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40462953360), screenshot artifact `12714969306`.
+- Downloaded and visually inspected `17-react-make-desktop.png`, `18-react-make-320px.png` and `18-react-make-390px.png`: original bus-stop storyboard, framing selection, three beats, note editor, Save/Export controls and connected learning are readable. At 320px beats stack vertically, at 390px they share a row. No material horizontal overflow reported.
+- A black horizontal strip in the 390px **full-page** screenshot is likely fixed bottom-nav stitching during capture, not confirmation of an on-device UI failure. Real phone viewing remains a separate gate.
+- Restoring a valid backup updates the React question and first-shot note without a reload. Reopening Make after visiting Cut reloads the restored data from the original v0.7 storyboard engine; text shot-list download and original backup schema remain functional.
+- **React labs accepted: 6/7** — Continuity, Colour, Frame, Lighting, Cut, Make. **Only Sound remains in the legacy runtime.**
