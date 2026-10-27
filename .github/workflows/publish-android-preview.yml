@@ -49,6 +49,7 @@ jobs:
           mkdir -p release
           gh run download "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name frame-one-android-debug-apk --dir release
           test -s release/app-debug.apk
+          test -s release/android-qa-signature.txt
           unzip -tqq release/app-debug.apk
           unzip -Z1 release/app-debug.apk | grep -qx 'assets/public/index.html'
           mv release/app-debug.apk release/FrameOne-android-debug.apk
@@ -68,15 +69,18 @@ jobs:
           Download **FrameOne-android-debug.apk** from the assets below. Install it on an Android test phone and check all lessons, seven creative labs, sound playback, notes, backups, safe-area layout and offline reload.
 
           Export a learning backup before uninstalling an older version. No private signing keys or learner data are included in this artifact.
+
+          See **android-qa-signature.txt** for this build's signing certificate fingerprint and whether it uses a persistent QA signer. A stable download URL alone does NOT guarantee in-place APK upgrades; Android requires the same certificate as the installed build.
           EOF
           if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release upload "$RELEASE_TAG" release/FrameOne-android-debug.apk release/SHA256SUMS.txt --clobber --repo "$GITHUB_REPOSITORY"
+            gh release upload "$RELEASE_TAG" release/FrameOne-android-debug.apk release/SHA256SUMS.txt release/android-qa-signature.txt --clobber --repo "$GITHUB_REPOSITORY"
             gh release edit "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --notes-file release/NOTES.md
           else
-            gh release create "$RELEASE_TAG" release/FrameOne-android-debug.apk release/SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --target "$SOURCE_SHA" --title 'Frame One — latest Android test APK' --prerelease --notes-file release/NOTES.md
+            gh release create "$RELEASE_TAG" release/FrameOne-android-debug.apk release/SHA256SUMS.txt release/android-qa-signature.txt --repo "$GITHUB_REPOSITORY" --target "$SOURCE_SHA" --title 'Frame One — latest Android test APK' --prerelease --notes-file release/NOTES.md
           fi
       - name: Confirm downloadable release asset
         shell: bash
         run: |
           set -euo pipefail
           gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -qx 'FrameOne-android-debug.apk'
+          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -qx 'android-qa-signature.txt'

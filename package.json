@@ -7,21 +7,22 @@
     "dev": "vite --host 0.0.0.0",
     "build": "tsc --noEmit && vite build && node scripts/generate-offline.cjs",
     "preview": "vite preview --host 0.0.0.0",
-    "test": "node tests/verify-migration.cjs && node tests/verify-route-history.cjs && node tests/verify-react-lessons.cjs && node tests/verify-react-chapters.cjs && node tests/verify-react-continuity.cjs && node tests/verify-react-colour.cjs && node tests/verify-react-frame.cjs && node tests/verify-react-lighting.cjs && node tests/verify-react-cut.cjs && node tests/verify-react-make.cjs && node tests/verify-react-sound.cjs && node tests/verify-cloudflare.cjs && node tests/verify-offline.cjs"
+    "test": "node tests/verify-migration.cjs && node tests/verify-route-history.cjs && node tests/verify-android-back.cjs && node tests/verify-react-lessons.cjs && node tests/verify-react-chapters.cjs && node tests/verify-react-continuity.cjs && node tests/verify-react-colour.cjs && node tests/verify-react-frame.cjs && node tests/verify-react-lighting.cjs && node tests/verify-react-cut.cjs && node tests/verify-react-make.cjs && node tests/verify-react-sound.cjs && node tests/verify-cloudflare.cjs && node tests/verify-offline.cjs"
   },
   "dependencies": {
+    "@capacitor/app": "8.1.2",
+    "@capacitor/core": "^8.0.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0",
-    "@capacitor/core": "^8.0.0"
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^6.0.0",
-    "vite": "^8.0.0",
-    "typescript": "~5.9.0",
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/ios": "^8.0.0",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
-    "@capacitor/cli": "^8.0.0",
-    "@capacitor/android": "^8.0.0",
-    "@capacitor/ios": "^8.0.0"
+    "@vitejs/plugin-react": "^6.0.0",
+    "typescript": "~5.9.0",
+    "vite": "^8.0.0"
   }
 }
