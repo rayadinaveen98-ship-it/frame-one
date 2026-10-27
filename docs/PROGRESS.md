@@ -108,3 +108,15 @@
 - **Main-branch Android build independently VERIFIED:** [run 40474407084](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40474407084) **SUCCESS** after merge; `frame-one-android-debug-apk` artifact ID `12719424344` published. The reproducible APK pipeline is working on `main`.
 - **Still open:** physical-device install/render/audio/offline/backup/TalkBack tests, permanent application ID and icons, verified production Cloudflare Worker URL and iOS build. This is **debug packaging**, not public-release acceptance.
 - Details: [Android debug QA guide](ANDROID_DEBUG_CI.md).
+
+
+## v0.9F reliability acceptance (27 October 2026)
+
+- **Merged:** [PR #2](https://github.com/rayadinaveen98-ship-it/frame-one/pull/2) as commit `be10983ba128ce5da6f6f2c370c66203a3523690`.
+- Practice drafts save automatically on text input, while the original `frameone-practice-v07` key and manual Save button remain compatible.
+- Backup import now best-effort rolls back partial localStorage writes. Source regressions simulate storage failure during storyboard restoration and verify prior data remains intact.
+- Added mobile safe-area CSS and pre-merge full browser CI.
+- **Verified after merge:** [web verification 40478349107](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478349107) **SUCCESS**; [compiled real-browser QA 40478349333](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478349333) **SUCCESS**; [Android debug APK 40478349105](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478349105) **SUCCESS**.
+- Automatic stable public APK release [40478579858](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478579858) **SUCCESS**: [latest APK release and checksum](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/android-preview-latest). This supersedes older debug APK links for routine testing, but remains test-only.
+- **Next:** independently confirm actual Cloudflare Worker URL/build success, then HTTPS PWA update/offline QA. Complete real-device Android audio, system bars, file backups, accessibility and iOS build. Still no store release or expert content signoff.
+- Details: [v0.9F acceptance and limitations](QA_V09F.md), [revised release checklist](RELEASE_CHECKLIST.md).
