@@ -63,10 +63,10 @@ def render(path:Path,size:int,foreground:bool=False):
     compressor=zlib.compressobj(6)
     payload=[]
     for y in range(size):
-        row=b'\\x00'+b''.join(icon_pixel(x,y,size,foreground) for x in range(size))
+        row=b'\x00'+b''.join(icon_pixel(x,y,size,foreground) for x in range(size))
         payload.append(compressor.compress(row))
     payload.append(compressor.flush())
-    png=b'\\x89PNG\\r\\n\\x1a\\n'
+    png=b'\x89PNG\r\n\x1a\n'
     png+=chunk(b'IHDR',struct.pack('!IIBBBBB',size,size,8,6,0,0,0))
     png+=chunk(b'IDAT',b''.join(payload))
     png+=chunk(b'IEND',b'')
@@ -90,12 +90,12 @@ def android():
     folder=base/'values'
     folder.mkdir(parents=True,exist_ok=True)
     (folder/'ic_launcher_background.xml').write_text(
-      '<resources><color name="ic_launcher_background">#0B1018</color></resources>\\n',encoding='utf8')
-    xml=('<?xml version="1.0" encoding="utf-8"?>\\n'
-         '<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">\\n'
-         '    <background android:drawable="@color/ic_launcher_background"/>\\n'
-         '    <foreground android:drawable="@mipmap/ic_launcher_foreground"/>\\n'
-         '</adaptive-icon>\\n')
+      '<resources><color name="ic_launcher_background">#0B1018</color></resources>\n',encoding='utf8')
+    xml=('<?xml version="1.0" encoding="utf-8"?>\n'
+         '<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">\n'
+         '    <background android:drawable="@color/ic_launcher_background"/>\n'
+         '    <foreground android:drawable="@mipmap/ic_launcher_foreground"/>\n'
+         '</adaptive-icon>\n')
     folder=base/'mipmap-anydpi-v26';folder.mkdir(parents=True,exist_ok=True)
     for filename in ('ic_launcher.xml','ic_launcher_round.xml'):
         (folder/filename).write_text(xml,encoding='utf8')
