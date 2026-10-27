@@ -144,6 +144,12 @@ def make_storyboard():
     ui.adb("shell","input","tap",str((b[0]+b[2])//2),str((b[1]+b[3])//2))
     ui.adb("shell","input","text",SHOT_NOTE)
     find_text(SHOT_NOTE)
+    # With the Android IME open, accessibility bounds for Save scene extend
+    # beyond the shrunken WebView and are not tappable. Dismiss the keyboard
+    # as a human would, and assert the app did not navigate away from Make.
+    ui.adb("shell","input","keyevent","KEYCODE_BACK")
+    time.sleep(1)
+    find_text("What happens in this shot?",tries=4)
     control("Save scene")
     find_text("Saved in this browser.",tries=6)
     ui.capture("state-02-storyboard-saved")
