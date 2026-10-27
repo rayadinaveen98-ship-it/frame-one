@@ -94,7 +94,7 @@ async function verify() {
   for (const lab of ['frame', 'sound', 'cut', 'light', 'story', 'colour', 'continuity']) {
     await page.locator('.lab-tabs [data-lab="' + lab + '"]').click();
     await page.locator('.lab-tabs [data-lab="' + lab + '"][aria-pressed="true"]').waitFor();
-    assert.ok((await page.locator('#content h1').textContent()).trim(), 'Lab ' + lab + ' needs a heading');
+    assert.ok((await page.locator('#main-content .page h1').textContent()).trim(), 'Lab ' + lab + ' needs a heading');
   }
   await photo(page, '04-continuity-desktop.png');
   await page.locator('.lab-tabs [data-lab="frame"]').click();
@@ -125,8 +125,21 @@ async function verify() {
   assert.ok(await page.evaluate(() => localStorage.getItem('frameone-scene-v07')?.includes('The character spots a clue.')));
 
   await page.locator('.lab-tabs [data-lab="continuity"]').click();
-  await page.locator('[data-continuity="changed"]').click();
-  assert.equal(await page.locator('[data-continuity="changed"]').getAttribute('aria-pressed'), 'true');
+  const continuity = page.locator('.react-continuity-lab');
+  await continuity.waitFor();
+  assert.equal(await page.locator('#content').innerHTML(), '', 'React must own continuity markup, without duplicated legacy content');
+  await continuity.locator('[data-continuity="changed"]').click();
+  assert.equal(await continuity.locator('[data-continuity="changed"]').getAttribute('aria-pressed'), 'true');
+  assert.equal(await continuity.locator('.continuity-cup.moved').count(), 1);
+  assert.match(await continuity.locator('.result-box p').textContent(), /continuity mismatch/i);
+  await continuity.locator('[data-lab="frame"]').click();
+  await page.locator('#frameZoom').waitFor();
+  await page.locator('.lab-tabs [data-lab="continuity"]').click();
+  await continuity.waitFor();
+  assert.equal(await continuity.locator('[data-continuity="changed"]').getAttribute('aria-pressed'), 'true', 'React continuity choice survives lab tab navigation');
+  await continuity.locator('[data-continuity="match"]').click();
+  assert.equal(await continuity.locator('.continuity-cup.moved').count(), 0);
+  console.log('PASS: Continuity Lab is React-owned, updates its illustrated prop, and preserves choice across lab navigation');
 
   await page.locator('.lab-tabs [data-lab="sound"]').click();
   await page.locator('#ambience').uncheck();
