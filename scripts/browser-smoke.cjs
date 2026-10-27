@@ -110,9 +110,9 @@ async function verify() {
 
   // Offline claim must be tested with the built service worker, not assumed from the manifest.
   try {
-    await page.evaluate(() => navigator.serviceWorker.ready);
-    await page.reload({ waitUntil: 'domcontentloaded' });
-    await page.waitForFunction(() => Boolean(window.frameOneLegacy));
+    await page.locator('.sidebar [data-page="home"]').click();
+    await page.locator('#content .page').waitFor();
+    await page.waitForFunction(() => Boolean(navigator.serviceWorker?.controller), null, { timeout: 15000 });
     await context.setOffline(true);
     await page.reload({ waitUntil: 'domcontentloaded' });
     await page.waitForFunction(() => Boolean(window.frameOneLegacy));
