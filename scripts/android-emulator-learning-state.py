@@ -79,6 +79,16 @@ def checked(label):
                 return n.attrib.get("checked")=="true"
     return False
 
+def assert_close_framing():
+    # UIAutomator splits JSX HUD "STORYBOARD · SHOT 01 · CLOSE"
+    # into separate TextView nodes. Require the exact current shot tag,
+    # not a substring matching the "Close-up" choice button.
+    for n in nodes():
+        if n.attrib.get("class","").endswith("TextView") and n.attrib.get("text","").strip()=="CLOSE":
+            return
+    ui.capture("state-hud-not-close")
+    raise AssertionError("Make Lab storyboard did not persist first-shot CLOSE framing")
+
 def editor():
     for attempt in range(13):
         for n in nodes():
@@ -129,7 +139,7 @@ def make_storyboard():
     # and storyboard HUD instead of the incorrect accessibility boolean.
     find_text("Will the person stay or leave?",scroll=True)
     control("Close-up")
-    find_text("STORYBOARD · SHOT 01 · CLOSE")
+    assert_close_framing()
     b=editor()
     ui.adb("shell","input","tap",str((b[0]+b[2])//2),str((b[1]+b[3])//2))
     ui.adb("shell","input","text",SHOT_NOTE)
@@ -157,7 +167,7 @@ def verify_after_restart():
     find_text("One moment. Many frames.")
     control("✎ Make")
     find_text("Will the person stay or leave?",scroll=True)
-    find_text("STORYBOARD · SHOT 01 · CLOSE")
+    assert_close_framing()
     find_text(SHOT_NOTE,scroll=True)
     ui.capture("state-04-progress-story-after-restart")
     print("PASS: story question, framing and written first shot persisted offline",flush=True)
