@@ -8,7 +8,7 @@ Beginner-first, interactive education about what films are, how filmmakers tell 
 
 **[Complete verified v0.9B React + TypeScript + Vite + Capacitor source ZIP](releases/frame-one-v09b-source.zip)**. SHA-256: `ee9ab5e2a9f5448ddad559241b5b0fa1dbdadc6b2f7e6efa737d137ba86a561f`.
 
-A GitHub Actions [source import workflow](.github/workflows/import-v09b-source.yml) is configured to expand this archive into browsable project files and attempt an actual build. **Do not assume the import/build passed until GitHub reports it.** Historic runnable standalone HTML prototypes are [archived here](history/README.md), with the latest static preview at [preview/standalone.html](preview/standalone.html).
+The [source import workflow](.github/workflows/import-v09b-source.yml) has **committed the expanded project files to main**. The production web build and browser tests still need independent verification. All twelve historical source checkpoints are also backed up in the [complete development archive](history/frame-one-complete-development-history.tar.xz). Historic runnable standalone HTML prototypes are [archived here](history/README.md), with the latest static preview at [preview/standalone.html](preview/standalone.html).
 
 ## Project records
 

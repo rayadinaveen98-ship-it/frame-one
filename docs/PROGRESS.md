@@ -6,6 +6,6 @@
 
 **Build and release facts:** four local Node source checks passed on 27 October 2026, but npm registry was unavailable then. This **does not verify** the React/Vite production build, native Capacitor shells, browser/device layouts, real offline caching, expert English/Telugu review or public hosting. **No APK/IPA or production URL exists.**
 
-**Source expansion:** [GitHub Actions import workflow](../.github/workflows/import-v09b-source.yml) is designed to unpack the archived v0.9B project into the root and run the actual web build. The workflow's commit/build success must be inspected separately. Until then the ZIP—not normal top-level source files—is the verified backup.
+**Source expansion: COMPLETE.** GitHub Actions produced commit [053d3fd](https://github.com/rayadinaveen98-ship-it/frame-one/commit/053d3fde0e1b77833fd080dc4fd687b6589f1261) with the extracted React/Capacitor source tree; important paths were independently fetched. The exact v0.9B ZIP is also retained. **Historical source recovery: COMPLETE.** All 12 older source snapshots are stored in the compressed development-history archive. The actual web build status remains separate.
 
-**Next:** verify source import and build; fix any errors; test all seven labs and mobile/offline flow; expert content review; deploy web; produce Android test APK; iOS build through Xcode.
+**Next:** verify actual web build; fix any errors; test all seven labs and mobile/offline flow; expert content review; deploy web; produce Android test APK; iOS build through Xcode.

@@ -1,0 +1,41 @@
+name: Frame One web verification
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.ts'
+      - 'tsconfig.json'
+      - '.github/workflows/web-check.yml'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Verify curriculum, routes and offline generation
+        run: npm test
+      - name: Typecheck and build
+        run: npm run build
+      - name: Upload website build
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frame-one-web-dist
+          path: dist/
+          if-no-files-found: error
