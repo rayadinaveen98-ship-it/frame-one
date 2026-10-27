@@ -74,12 +74,17 @@ def find(text: str, exact: bool = False, tries: int = 16) -> list[dict[str, obje
     capture("missing-" + re.sub(r"[^a-z0-9]+","-",text.lower()).strip("-")[:36])
     raise AssertionError(f"Android UI never displayed: {text!r}. See captured screenshot/XML.")
 
-def tap_label(text: str) -> None:
-    # WebView may combine an entire lesson card into one accessibility label.
-    # Match substrings, then select the lowest visible duplicate for bottom tabs.
-    matches = find(text, exact=False)
-    # The bottom nav element has the lowest screen position if duplicate labels exist.
-    target = max(matches, key=lambda n: int(n["bottom"]))
+def tap_label(text: str, *, exact: bool = True) -> None:
+    # Bottom tabs must match EXACT labels: Android's WebView root contains
+    # "Learn" in the app title and covers the whole viewport.
+    # Lesson cards may combine title/subtitle, so they opt into substring mode.
+    matches = find(text, exact=exact)
+    visible = [n for n in matches if int(n["bottom"]) > 0
+               and int(n["x"]) > 0 and int(n["y"]) > 0]
+    if not visible:
+        capture("invisible-" + re.sub(r"[^a-z0-9]+","-",text.lower())[:35])
+        raise AssertionError(f"Could not tap visible Android accessibility target: {text!r}")
+    target = max(visible, key=lambda n: int(n["bottom"]))
     print(f"TAP {text!r} at {target['x']},{target['y']}", flush=True)
     adb("shell", "input", "tap", str(target["x"]), str(target["y"]))
 
@@ -109,7 +114,7 @@ def main() -> None:
     find("YOUR LEARNING JOURNEY")
     capture("02-learn")
     print("PASS: mobile Learn tab and course explorer render in Android", flush=True)
-    tap_label("Why do we watch films?")
+    tap_label("Why do we watch films?", exact=False)
     find("Why do we watch films?")
     find("Back within Frame One")
     capture("03-lesson")
