@@ -7,8 +7,9 @@ on:
       - '.github/workflows/android-debug.yml'
       - 'src/**'
       - 'public/**'
-      - 'scripts/**'
-      - 'tests/**'
+      - 'scripts/generate-offline.cjs'
+      # Browser QA and emulator test scripts are not application assets.
+      # Changes to those files must NOT republish a freshly signed APK.
       - 'package.json'
       - 'package-lock.json'
       - 'capacitor.config.ts'
