@@ -16,6 +16,7 @@ import './legacy/legacy.css';
 import './components/labs/react-labs.css';
 import './native-safe-area.css';
 import './pwa-update.css';
+import './cinematic-v10.css';
 
 // v0.9 migration bridge: React owns the persistent application shell.
 // The v0.8B learning runtime owns only the lesson/lab content region during
@@ -50,13 +51,34 @@ function Navigation({ mobile = false }: { mobile?: boolean }) {
   );
 }
 
+/** Device-local greeting: no account, network request or location permission. */
+export function greetingForHour(hour: number): string {
+  if (hour >= 5 && hour < 12) return 'Good morning.';
+  if (hour >= 12 && hour < 17) return 'Good afternoon.';
+  if (hour >= 17 && hour < 21) return 'Good evening.';
+  return 'Good night.';
+}
 function ProgressTopbar({page}: {page: Destination | 'lesson'}) {
-  return <header className="topbar">
+  const [greeting,setGreeting] = useState(() => greetingForHour(new Date().getHours()));
+  useEffect(() => {
+    const refresh = () => setGreeting(greetingForHour(new Date().getHours()));
+    window.addEventListener('focus',refresh);
+    document.addEventListener('visibilitychange',refresh);
+    const minute = window.setInterval(refresh, 60_000);
+    return () => {
+      window.clearInterval(minute);
+      window.removeEventListener('focus',refresh);
+      document.removeEventListener('visibilitychange',refresh);
+    };
+  },[]);
+  return <header className={page==='home'?'topbar home-topbar':'topbar'}>
     <div className="topbar-leading">
       {page!=='home' ? <button className="mobile-back" type="button" aria-label="Back within Frame One" onClick={()=>window.frameOneLegacy?.goBack()}>
         <span aria-hidden="true">←</span> Back
       </button> : null}
-      <div className="welcome">A little film school, in your pocket.</div>
+      {page==='home'
+        ? <h2 className="home-greeting" aria-live="off">{greeting}</h2>
+        : <div className="welcome">A little film school, in your pocket.</div>}
     </div>
     <div className="top-right">
       <div className="progress-pill">
@@ -93,6 +115,20 @@ export default function App() {
     window.addEventListener('frameone:pwa-update-ready', ready);
     return () => window.removeEventListener('frameone:pwa-update-ready', ready);
   }, []);
+  // Quiet film-thought carousel: never rotate when out of view, backgrounded,
+  // or while a person is reading/focusing its controls.
+  useEffect(() => {
+    if (route.page !== 'home') return;
+    const nextThought = () => {
+      const card = document.querySelector<HTMLElement>('.fact-panel');
+      if (!card || document.hidden || card.matches(':hover, :focus-within')) return;
+      const bounds = card.getBoundingClientRect();
+      if (bounds.bottom <= 0 || bounds.top >= window.innerHeight) return;
+      card.querySelector<HTMLButtonElement>('[data-thought-next]')?.click();
+    };
+    const timer = window.setInterval(nextThought, 12_000);
+    return () => window.clearInterval(timer);
+  }, [route.page]);
   // On SPA navigation, return keyboard/screen-reader focus to the page heading.
   // Skip the initial home mount to avoid stealing focus when booting.
   useEffect(() => {

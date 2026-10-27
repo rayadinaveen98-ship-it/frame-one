@@ -483,6 +483,18 @@ async function verify() {
     phone.on('pageerror', error => record('Mobile browser exception: ' + error.message));
     await phone.goto(base, { waitUntil: 'domcontentloaded' });
     await phone.waitForFunction(() => Boolean(window.frameOneLegacy), { timeout: 15000 });
+    // v0.10: the new cinematic welcome must not consume the entire phone screen.
+    const heroBounds=await phone.locator('#content .hero').boundingBox();
+    assert.ok(heroBounds && heroBounds.height < 385,
+      'Compact original-art home hero should be considerably shorter than the old 485px card');
+    assert.equal(await phone.locator('#content .hero-art').count(),1,
+      'Preserve the original sunset/silhouette artwork');
+    assert.equal(await phone.locator('#content .chapter-quick').count(),0,
+      'Redundant six-chapter Home banner removed; chapters remain inside Learn');
+    assert.match(await phone.locator('.home-greeting').textContent(),
+      /Good (morning|afternoon|evening|night)\./);
+    assert.equal(await phone.locator('.fact-panel #filmThoughtTitle').count(),1);
+    await photo(phone, 'v10-home-' + width + '.png');
     await phone.locator('.mobile-nav [data-page="learn"]').click();
     await phone.locator('.react-learn-view h1').waitFor();
     const backControl=phone.getByRole('button',{name:'Back within Frame One'});
