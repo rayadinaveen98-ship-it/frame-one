@@ -70,3 +70,9 @@
 - Legacy renderer/input events now explicitly skip React Lighting; eight Node suites and Chromium assertions check brightness darkening, side-shadow blur, direction, accessible sliders and 320px/390px layout.
 - [GitHub Actions 40457618029](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40457618029) green and initial mobile/desktop screenshots inspected. A later desktop preview-height refinement is committed, pending a separate run and screenshot.
 - **Current migration: 4/7 implemented, 3/7 legacy**. Next after final Lighting acceptance: **Cut**, then Make and Sound; continue to preserve legacy backup keys and audio/timer cleanup. [Evidence](QA_LIGHTING_V09D.md).
+
+### Lighting final QA — verified (27 October 2026)
+
+- **Full production/build/browser success:** [run 40458020383](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40458020383) on commit `2d74a86a3bb4b1e66ff1e354db59d42faf749d26`; includes a measurable desktop preview-size/alignment check and desktop/320px/390px screenshot captures.
+- Reviewed the refined desktop image: the illustration is beside the controls without an exaggerated bordered blank preview panel. The 320px Lighting illustration and controls were also inspected.
+- **v0.9D React migrations accepted so far: 4/7** — Continuity, Colour, Frame, Lighting. **Legacy labs remaining: Cut, Make, Sound**. Next migrate **Cut Lab** with special attention to timers, playback cancellation and saved lesson compatibility. Separate web hosting, Android APK, iOS, accessibility and expert-content gates remain open. [Detailed Lighting QA](QA_LIGHTING_V09D.md).
