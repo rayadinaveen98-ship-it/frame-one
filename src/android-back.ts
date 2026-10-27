@@ -12,6 +12,19 @@ import { App } from '@capacitor/app';
 export async function registerAndroidBack(): Promise<void> {
   if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== 'android') return;
   await App.addListener('backButton', () => {
+    // Some Android WebViews deliver a system Back event while the soft
+    // keyboard is open. Never discard a lesson or storyboard editor just
+    // because the learner pressed Back to close the keyboard.
+    const active = document.activeElement as HTMLElement | null;
+    if (active && (
+      active.tagName === 'TEXTAREA' ||
+      active.tagName === 'SELECT' ||
+      active.tagName === 'INPUT' ||
+      active.isContentEditable
+    )) {
+      active.blur();
+      return;
+    }
     const hash = window.location.hash.replace(/^#/, '');
     const isHome = hash === '' || hash === 'home';
     if (isHome) {

@@ -27,20 +27,30 @@ LABEL = "My own filmmaking idea"
 
 def editable_node():
     """Find Android's actual WebView textarea, not a page-sized WebView root."""
-    for attempt in range(8):
+    for attempt in range(12):
         xml = ui.adb("shell","cat","/sdcard/frameone-qa.xml",check=False)
         # Refresh the UI hierarchy each time; hide no missing input failures.
         try:
             nodes = ui.hierarchy()
             tree = ET.fromstring(ui.LAST_XML)
             visible=[]
+            nav_top=2260
+            for n in tree.iter("node"):
+                if ("Mobile navigation" in n.attrib.get("content-desc","")
+                    or "Mobile navigation" in n.attrib.get("text","")):
+                    bb=re.fullmatch(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]",n.attrib.get("bounds",""))
+                    if bb: nav_top=min(nav_top,int(bb.group(2)))
+            clear_bottom=min(2125,nav_top-65)
             for n in tree.iter("node"):
                 kind=n.attrib.get("class","")
                 bounds=n.attrib.get("bounds","")
                 match=re.fullmatch(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]",bounds)
                 if match and ("EditText" in kind or n.attrib.get("editable")=="true"):
                     x1,y1,x2,y2=map(int,match.groups())
-                    if (x2-x1)>60 and (y2-y1)>24 and y1>=0 and y2>=0:
+                    # A virtual EditText can be technically visible but
+                    # still covered by Android's bottom navigation. Only
+                    # accept an editor wholly inside the clear reading area.
+                    if (x2-x1)>60 and (y2-y1)>24 and y1>=165 and y2<=clear_bottom:
                         visible.append((x1,y1,x2,y2,n.attrib.get("text",""),kind))
             if visible:
                 # Use lowest valid textarea; first lesson has one writable textarea.
@@ -55,7 +65,11 @@ def open_first_lesson():
     ui.find("WELCOME TO THE WORLD OF CINEMA",tries=20)
     ui.tap_label("Learn")
     ui.find("YOUR LEARNING JOURNEY")
-    ui.tap_label("Why do we watch films?",exact=False)
+    # Lesson cards are offscreen in the full emulator. An accessibility
+    # match to the card can be virtual and tapping it silently does nothing.
+    # The visible Continue learning control reliably opens lesson one.
+    ui.tap_label("Continue learning →")
+    ui.find("My own filmmaking idea",tries=12)
     ui.find("Why do we watch films?")
     ui.capture("persistence-01-lesson-open")
     print("PASS: native lesson rendered for actual text input",flush=True)
@@ -64,9 +78,19 @@ def type_and_verify():
     bounds=editable_node()
     x1,y1,x2,y2,_,_=bounds
     ui.adb("shell","input","tap",str((x1+x2)//2),str((y1+y2)//2))
+    time.sleep(0.5)
+    ui.hierarchy()
+    focused=[]
+    for n in ET.fromstring(ui.LAST_XML).iter("node"):
+        if ("EditText" in n.attrib.get("class","") and
+                n.attrib.get("focused")=="true"):
+            focused.append(n)
+    if not focused:
+        ui.capture("lesson-editor-not-focused")
+        raise AssertionError("Android did not focus the actual lesson note editor before typing")
     ui.adb("shell","input","text",NOTE)
     # Let React onChange synchronously persist using frameone-practice-v07.
-    ui.find(NOTE,tries=7)
+    ui.find(NOTE,tries=10)
     ui.capture("persistence-02-note-entered")
     print("PASS: real Android WebView received and displays typed private note",flush=True)
 
@@ -90,7 +114,8 @@ def restart_offline():
 def verify_persisted_note():
     ui.tap_label("Learn")
     ui.find("YOUR LEARNING JOURNEY")
-    ui.tap_label("Why do we watch films?",exact=False)
+    ui.tap_label("Continue learning →")
+    ui.find("My own filmmaking idea",tries=12)
     ui.find("Why do we watch films?")
     for _ in range(8):
         xml=ui.hierarchy()

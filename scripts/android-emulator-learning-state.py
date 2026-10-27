@@ -22,6 +22,9 @@ spec.loader.exec_module(ui)
 SHOT_NOTE="FrameOneNativeShotQA20261027"
 BUTTON_CLASSES=("Button","ToggleButton","CheckBox")
 TOP=145
+# Android emulators can have different navigation heights and WebView insets.
+# Determine the actual fixed mobile tab-bar top from UIAutomator rather than
+# assuming a constant y=1900 on every Android system image.
 BOTTOM=2125
 
 def nodes():
@@ -50,7 +53,14 @@ def control(label,exact=True,tries=19):
     """
     for attempt in range(tries):
         choices=[]
-        for n in nodes():
+        tree=nodes()
+        tab_tops=[]
+        for node in tree:
+            if "Mobile navigation" in node.attrib.get("content-desc","") or "Mobile navigation" in node.attrib.get("text",""):
+                bounds=bounds_of(node)
+                if bounds and bounds[1]>0:tab_tops.append(bounds[1])
+        bottom=min(BOTTOM, min(tab_tops)-55) if tab_tops else BOTTOM
+        for n in tree:
             kind=n.attrib.get("class","").split(".")[-1]
             if kind not in BUTTON_CLASSES or n.attrib.get("enabled","true")=="false":
                 continue
@@ -58,7 +68,7 @@ def control(label,exact=True,tries=19):
             if not (value==label if exact else label.lower() in value.lower()):
                 continue
             b=bounds_of(n)
-            if b and b[1]>=TOP and b[3]<=BOTTOM and (b[2]-b[0])>20 and (b[3]-b[1])>20:
+            if b and b[1]>=TOP and b[3]<=bottom and (b[2]-b[0])>20 and (b[3]-b[1])>20:
                 choices.append((n,b,value))
         if choices:
             n,b,value=choices[0]
@@ -133,6 +143,11 @@ def make_storyboard():
     find_text("One moment. Many frames.")
     control("✎ Make")
     find_text("Plan a tiny scene.")
+    # On the lightweight ATD, switching labs can retain the prior scroll
+    # position. Android's virtual accessibility nodes are [0,0][0,0]
+    # for the Decision control until the user scrolls back to the TOP.
+    # The control() helper scrolls downward, so first reset to the top.
+    scroll_top()
     control("Decision")
     # Android WebView exposes these as ToggleButton nodes but can leave
     # checked=false despite aria-pressed. Assert rendered story semantics
