@@ -49,6 +49,14 @@ The native navigation handler also now defensively blurs any focused INPUT/TEXTA
 
 The correct test fix (commit `c25e6783`) is to tap the visible, exact **Continue learning →** button and assert that the **My own filmmaking idea** lesson-only field is present *before typing*. The lesson should then be saved normally, including a user-facing Save action, and the actual exported JSON must contain that practice marker along with completed progress and Make Lab scene. Only passing real Android evidence establishes restoration.
 
+## Verified real Android backup recovery (27 October 2026)
+
+- [Full Android API 35 system test 40513125604](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40513125604) — **SUCCESS** on branch commit `a69343c5`. It generated real learner practice and storyboard data, wrote the original v1 JSON via native Filesystem, inspected the cache file's exact data, preserved those actual bytes into external Downloads via ADB, **cleared all app-private data**, reopened Frame One, selected Downloads and the JSON through Android's DocumentsUI, approved the restore prompt, and verified original completed lesson and storyboard values returned. The test ended with `FRAME ONE ANDROID BACKUP EXPORT RESTORE: PASS`.
+- [Independent full Android run 40512859855](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40512859855) also **SUCCESS** on prior branch commit `c25e6783`.
+- The [web build 40513125902](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40513125902), [Chromium UI suite 40513125600](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40513125600) and [Android packaging 40513125595](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40513125595) all **SUCCESS** on `a69343c5`.
+- The lighter [Android ATD 40513125805](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40513125805) was **FAILURE**, *not* a failed backup restore: the automated Make Lab Decision selector was offscreen and returned virtual `[0,0][0,0]` bounds. QA now scrolls to the top before selecting Decision. Re-run required before merging.
+- **Distinction:** automated CI used ADB to preserve the exact native-exported bytes into Downloads. It did not prove that a person can choose Google Drive, Files, or an external share destination on a physical phone. That is a separate release/device gate.
+
 ## Remaining release gates
 
 - Physical phone Share sheet + Save to Files/Drive, Android DocumentsUI import from Downloads/Drive, TalkBack/focus management, offline sharing, storage and permissions across Android OEM versions.
