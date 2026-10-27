@@ -61,6 +61,7 @@ jobs:
         run: |
           npx cap add android
           npx cap sync android
+          python3 scripts/render-brand-icons.py --android
       - name: Restore persistent debug signing identity when provisioned
         if: ${{ github.event_name != 'pull_request' }}
         env:
