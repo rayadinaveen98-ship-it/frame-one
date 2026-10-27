@@ -1,6 +1,6 @@
 # Frame One release readiness checklist — 27 October 2026
 
-This page separates *automated test evidence* from *real-person/device acceptance*. v0.9H is the latest engineering test build, not a public store release.
+This page separates *automated test evidence* from *real-person/device acceptance*. v0.9I is the latest engineering test build, not a public store release.
 
 ## Source and continuous integration
 
@@ -15,7 +15,7 @@ This page separates *automated test evidence* from *real-person/device acceptanc
 - [x] App-local route history and visible mobile Back control validated at 320/390px: [v0.9H Chromium 40482599661](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482599661).
 - [x] v0.9H Android debug packaging and public prerelease: [build 40482599668](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482599668), [publisher 40482775098](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482775098).
 
-## Browser and cloud acceptance
+- [x] Android-only native system Back handler is compiled and auto-linked through the official Capacitor App plugin, verified by [main Android build 40486968418](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486968418).\n- [x] Native Back mock regression runs in npm tests; [full compiled Chromium run 40486968447](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486968447) passed.\n- [x] Public GitHub debug APK has visible signing-certificate receipt (persistent QA signer is NOT provisioned): [release publisher 40487176493](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40487176493).\n\n## Browser and cloud acceptance
 
 - [ ] Confirm exact Cloudflare production Worker URL and latest deployed commit from the connected account.
 - [ ] Test production HTTPS PWA install, offline reopen and non-disruptive refresh after subsequent deployment.
