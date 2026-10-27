@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { LessonView } from './components/LessonView';
 import { LearnView } from './components/LearnView';
+import { PersonalFrames } from './components/PersonalFrames';
 import { ContinuityLab, type ContinuityMode } from './components/labs/ContinuityLab';
 import { ColourLab, type ColourMode } from './components/labs/ColourLab';
 import { FrameLab, type FrameMode } from './components/labs/FrameLab';
@@ -81,6 +82,10 @@ function ProgressTopbar({page}: {page: Destination | 'lesson'}) {
         : <div className="welcome">A little film school, in your pocket.</div>}
     </div>
     <div className="top-right">
+      {page==='home'?<button type="button" className="home-add-frames"
+        aria-label="Add your favourite cinema frames"
+        title="Add images from your gallery"
+        onClick={()=>window.dispatchEvent(new Event('frameone:frames-add-request'))}>+</button>:null}
       <div className="progress-pill">
         <span className="progress-circle" id="progressCircle" style={{'--angle':'0%'} as CSSProperties} />
         <span id="progressLabel">0/33 lessons</span>
@@ -178,6 +183,7 @@ export default function App() {
         <button type="button" onClick={() => window.location.reload()}>Refresh now</button>
       </div> : null}
       {bootError ? <p role="alert">{bootError}</p> : null}
+      {route.page==='home' ? <PersonalFrames /> : null}
       <div id="content" aria-live="off" hidden={route.page==='lesson'||route.page==='learn'||(route.page==='lab'&&(route.lab==='continuity'||route.lab==='colour'||route.lab==='frame'||route.lab==='light'||route.lab==='cut'||route.lab==='story'||route.lab==='sound'))} />
       {route.page==='lab' && route.lab==='continuity' ? <ContinuityLab mode={continuityMode} setMode={setContinuityMode} /> : null}
       {route.page==='lab' && route.lab==='colour' ? <ColourLab mode={colourMode} setMode={setColourMode} strength={colourStrength} setStrength={setColourStrength} /> : null}
