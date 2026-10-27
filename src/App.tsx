@@ -6,6 +6,7 @@ import { ColourLab, type ColourMode } from './components/labs/ColourLab';
 import type { LegacyRoute, LabName } from './legacy/bridge';
 import type { CSSProperties } from 'react';
 import './legacy/legacy.css';
+import './components/labs/react-labs.css';
 
 // v0.9 migration bridge: React owns the persistent application shell.
 // The v0.8B learning runtime owns only the lesson/lab content region during
