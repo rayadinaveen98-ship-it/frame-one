@@ -42,3 +42,12 @@
 - **Verified GitHub Actions SUCCESS:** [run 40451210219](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40451210219), with full 33-lesson sweep, seven labs, offline and backup checks, and Colour screenshots reviewed at desktop/390px/320px.
 - **2 of 7 labs now migrated into React:** Continuity, Colour. **5 legacy labs remain:** Frame, Light, Cut, Make, Sound. Next migration: Frame Lab. No hosted web app or native Android/iOS builds yet.
 - Detailed [Colour Lab acceptance report](QA_COLOUR_V09D.md).
+
+## v0.9D third React Lab — Frame (27 October 2026)
+
+- Frame Lab converted from original JavaScript into React with interactive crop zoom, three presets, framing guides, compare mode and original vector art; all old learning-data keys remain intact.
+- Shared `CinemaScene.tsx` now derives a bounded crop viewBox without changing the original artwork. Cropping does not simulate lens or perspective physics.
+- Added seventh source test and Chromium tests for lab ownership, keyboard slider, SVG cropping, comparison and narrow-phone readability.
+- **Verified:** production + browser tests green in [run 40452193907](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452193907), layout refinement checks green in [40452506346](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452506346).
+- QA screenshot review led to larger, vertically stacked mobile comparisons, removal of redundant small-image labels, and desktop preview spacing adjustment (last CSS modification awaiting an independent run).
+- **React migration 3/7:** Continuity, Colour, Frame. **Legacy remaining 4/7:** Lighting, Cut, Make, Sound. Web hosting, Android APK and iOS builds not yet performed. [Details](QA_FRAME_V09D.md).
