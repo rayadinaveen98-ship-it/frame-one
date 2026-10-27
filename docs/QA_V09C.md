@@ -38,3 +38,13 @@ Artifacts, when a workflow run succeeds or fails: `frame-one-browser-qa-screensh
 ## Gate to v0.9D
 
 Do not mark **R2 Web QA** as passed until the browser workflow is visibly green and the screenshots have been inspected for rendering/navigation defects. Do not ship native apps simply because React compiles.
+
+## Additional v0.9C regression work (27 October 2026)
+
+- Added keyboard/screen-reader focus restoration to the active page heading after SPA route changes in `src/App.tsx` (without stealing focus on initial home mount), plus source and Playwright focus assertions.
+- Expanded the Playwright smoke journey to save a practice note, navigate away, reload, return to the lesson and verify that the note persists; checks browser-back return to the chapter explorer.
+- Retrieved the **prior successful** web build artifact from GitHub Actions run [40440890519](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40440890519). Inspected the actual artifact ZIP: `index.html`, hashed React JS/CSS, separate legacy runtime bundle, service worker, manifest, icons and scene art. The service worker lists ten local precache items and **all ten paths exist in the ZIP**. This is offline-*asset completeness*, not proof that a device can reload offline.
+- Reflected React focus and backup-consent changes in a local source mirror and ran the four existing `npm test` suites successfully. Full React production rebuild remains to be confirmed on the latest commit.
+- Attempted Chromium against the compiled artifact in the local tool environment; navigation was blocked by `net::ERR_BLOCKED_BY_ADMINISTRATOR`. Real-browser QA is therefore still open and must run in GitHub Actions or an unrestricted test environment.
+
+**Do not infer a green browser QA run from the existence of the workflow file or from prior green Vite compilation.**
