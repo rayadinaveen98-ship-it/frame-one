@@ -24,3 +24,17 @@
   .react-frame-lab .frame-comparison {grid-template-columns:1fr;gap:14px;}
   .react-frame-lab .frame-comparison .scene-stage {aspect-ratio:16/9;}
 }
+
+/* Keep the framing illustration near its controls instead of stretching a
+   half-empty preview column to the taller control column. */
+.react-frame-lab .lab-shell {align-items:start;}
+.react-frame-lab .lab-preview {align-self:start; min-height:0;}
+.react-frame-lab .frame-comparison .monitor-hud,
+.react-frame-lab .frame-comparison .frame-corner {display:none;}
+.react-frame-lab .frame-comparison .compare-tag {line-height:1.5; min-height:28px;}
+@media (max-width:760px) {
+  .react-frame-lab .frame-comparison {grid-template-columns:minmax(0,1fr);padding:10px;}
+  .react-frame-lab .frame-comparison .scene-stage{aspect-ratio:16/9;}
+  .react-frame-lab .frame-comparison .compare-tag{min-height:0;margin-bottom:8px;}
+  .react-frame-lab .studio-next {min-width:0;}
+}
