@@ -161,3 +161,9 @@
   .react-sound-lab .sound-ripple span,.react-sound-lab .sound-wave span,.react-sound-lab .sound-progress span{animation:none!important;}
   .react-sound-lab .sound-wave span{transform:scaleY(.65);}
 }
+
+/* The shared SVG stage previously carried Frame Lab HUD labels; the Sound
+   study supplies its own clear 'ONE SCENE' caption instead. */
+.react-sound-lab .monitor-hud,
+.react-sound-lab .frame-corner,
+.react-sound-lab .scene-label{display:none;}
