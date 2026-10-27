@@ -52,3 +52,12 @@ Help complete beginners understand filmmaking through accurate, simple explanati
 - Implemented the original bus-stop scene as locally bundled vector artwork, neutral/warm/cool comparisons and a React-owned overlay slider. The old legacy document-level input listener was found forcing the React tint to zero; both handlers now enforce exclusive ownership.
 - Sixth source-test suite and Chromium desktop/390px/320px comparisons added; [full GitHub browser QA 40451210219](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40451210219) **PASSED** after the fix. Screenshots inspected: the original artwork and cool overlay are visible without horizontal overflow.
 - **Migration: 2/7 labs accepted**; five remain on the original runtime. See [Colour QA evidence](QA_COLOUR_V09D.md).
+
+## Third React Lab — Frame (browser QA passed)
+
+- **3/7 Creative Labs now implemented in React:** Continuity, Colour and Frame. **4/7 remain legacy-owned:** Lighting, Cut, Make and Sound.
+- Frame Lab retains original bus-stop SVG, wide/medium/close preset crops, controlled 1×–3× slider, framing guides, original comparison mode and connected Sound/shot lesson links. Cropping is explicitly not a camera move or lens simulation.
+- [GitHub Actions 40452193907](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452193907) **PASSED** the full production build, 33 lesson completions, seven labs, offline and backup checks.
+- [GitHub Actions 40452506346](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452506346) **PASSED** after adding a test that 320px/390px comparison images stack and omit crowded monitor labels. Desktop and phone screenshots inspected.
+- The final small desktop-only sticky-preview CSS adjustment requires its own CI verification; manual real-device, screen-reader and filmmaking-content signoff still pending. Full details: [Frame QA report](QA_FRAME_V09D.md).
+- **Next migrated lab: Lighting.** Protect original illustration and direction/intensity controls; complete one React lab at a time.
