@@ -408,6 +408,13 @@ async function verify() {
   } finally {
     await context.setOffline(false);
   }
+  // A new deployment should never force-refresh someone writing scene notes.
+  // Show an explicit, accessible action that they may choose later.
+  await page.evaluate(() => window.dispatchEvent(new Event('frameone:pwa-update-ready')));
+  await page.locator('.pwa-update-notice').waitFor();
+  assert.match(await page.locator('.pwa-update-notice').textContent(), /New version available/);
+  assert.equal(await page.getByRole('button',{name:'Refresh now'}).isEnabled(), true);
+  console.log('PASS: PWA updates offer a user-controlled refresh instead of discarding the active session');
   await context.close();
 
   // Separate clean browser profile: verify the actual rendered quiz flow for
