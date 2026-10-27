@@ -69,6 +69,25 @@ async function verify() {
   await photo(page, '03-lesson-desktop.png');
   console.log('PASS: React quiz marks original progress key and advances to next lesson');
 
+  // Learner-created notes must survive navigation and page reloads.
+  const secondLessonTitle = (await page.locator('.react-lesson h1').textContent()).trim();
+  const note = 'I want to frame a shot where an umbrella hides a surprise.';
+  await page.locator('#lessonPractice').fill(note);
+  await page.getByRole('button', { name: /save idea on this device/i }).click();
+  await page.getByText('Saved on this device.', { exact: true }).waitFor();
+  await page.locator('.sidebar [data-page="learn"]').click();
+  await page.locator('.react-learn-view').waitFor();
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => Boolean(window.frameOneLegacy), { timeout: 15000 });
+  await page.locator('.react-learn-view').waitFor();
+  await page.getByRole('button', { name: 'Continue learning →' }).click();
+  await page.locator('.react-lesson h1').waitFor();
+  assert.equal((await page.locator('.react-lesson h1').textContent()).trim(), secondLessonTitle);
+  assert.equal(await page.locator('#lessonPractice').inputValue(), note);
+  await page.goBack({ waitUntil: 'domcontentloaded' });
+  await page.locator('.react-learn-view').waitFor();
+  console.log('PASS: saved practice note survives reload and browser-back route returns to chapters');
+
   await page.locator('.sidebar [data-page="lab"]').click();
   await page.locator('.lab-tabs').waitFor();
   for (const lab of ['frame', 'sound', 'cut', 'light', 'story', 'colour', 'continuity']) {
