@@ -92,17 +92,17 @@ async function verify() {
   await page.locator('.sidebar [data-page="lab"]').click();
   await page.locator('.lab-tabs').waitFor();
   for (const lab of ['frame', 'sound', 'cut', 'light', 'story', 'colour', 'continuity']) {
-    await page.locator('.lab-tabs [data-lab="' + lab + '"]').click();
-    await page.locator('.lab-tabs [data-lab="' + lab + '"][aria-pressed="true"]').waitFor();
+    await page.locator('.lab-tabs:visible [data-lab="' + lab + '"]').click();
+    await page.locator('.lab-tabs:visible [data-lab="' + lab + '"][aria-pressed="true"]').waitFor();
     assert.ok((await page.locator('#main-content .page h1').textContent()).trim(), 'Lab ' + lab + ' needs a heading');
   }
   await photo(page, '04-continuity-desktop.png');
-  await page.locator('.lab-tabs [data-lab="frame"]').click();
+  await page.locator('.lab-tabs:visible [data-lab="frame"]').click();
   await page.locator('.react-continuity-lab').waitFor({ state: 'detached' });
   await page.locator('#content').waitFor({ state: 'visible' });
   await page.locator('#frameZoom').evaluate(el => { el.value = '2.5'; el.dispatchEvent(new Event('input', { bubbles: true })); });
   assert.match(await page.locator('#frameZoomValue').textContent(), /2.5/);
-  await page.locator('.lab-tabs [data-lab="colour"]').click();
+  await page.locator('.lab-tabs:visible [data-lab="colour"]').click();
   const colour = page.locator('.react-colour-lab');
   await colour.waitFor();
   assert.equal(await page.locator('#content').innerHTML(), '', 'React must own Colour Lab without hidden legacy tabs');
@@ -126,28 +126,28 @@ async function verify() {
   await colour.locator('[data-colour="neutral"]').click();
   assert.equal(await colour.locator('.colour-grade').evaluate(el => Number(getComputedStyle(el).opacity)), 0, 'Neutral ignores overlay strength');
   // Exercise the primary learning interaction in the remaining five labs.
-  await page.locator('.lab-tabs [data-lab="light"]').click();
+  await page.locator('.lab-tabs:visible [data-lab="light"]').click();
   await colour.waitFor({ state: 'detached' });
   await page.locator('[data-light="side"]').click();
   assert.equal(await page.locator('[data-light="side"]').getAttribute('aria-pressed'), 'true');
   await page.locator('#lightPower').evaluate(el => { el.value = '70'; el.dispatchEvent(new Event('input', { bubbles: true })); });
   assert.match(await page.locator('#lightPowerValue').textContent(), /70/);
 
-  await page.locator('.lab-tabs [data-lab="cut"]').click();
+  await page.locator('.lab-tabs:visible [data-lab="cut"]').click();
   await page.locator('[data-move="0:right"]').click();
   assert.equal(await page.locator('.timeline-clip').count(), 3);
   await page.locator('[data-cut-play="play"]').click();
   await page.locator('[data-cut-play="stop"]').waitFor();
   await page.locator('[data-cut-play="stop"]').click();
 
-  await page.locator('.lab-tabs [data-lab="story"]').click();
+  await page.locator('.lab-tabs:visible [data-lab="story"]').click();
   await page.locator('[data-story-shot="close"]').click();
   assert.equal(await page.locator('[data-story-shot="close"]').getAttribute('aria-pressed'), 'true');
   await page.locator('#storyNote').fill('The character spots a clue.');
   await page.locator('[data-story-save]').click();
   assert.ok(await page.evaluate(() => localStorage.getItem('frameone-scene-v07')?.includes('The character spots a clue.')));
 
-  await page.locator('.lab-tabs [data-lab="continuity"]').click();
+  await page.locator('.lab-tabs:visible [data-lab="continuity"]').click();
   const continuity = page.locator('.react-continuity-lab');
   await continuity.waitFor();
   assert.equal(await page.locator('#content').innerHTML(), '', 'React must own continuity markup, without duplicated legacy content');
@@ -158,14 +158,14 @@ async function verify() {
   await continuity.locator('[data-lab="frame"]').click();
   await continuity.waitFor({ state: 'detached' });
   await page.locator('#frameZoom').waitFor();
-  await page.locator('.lab-tabs [data-lab="continuity"]').click();
+  await page.locator('.lab-tabs:visible [data-lab="continuity"]').click();
   await continuity.waitFor();
   assert.equal(await continuity.locator('[data-continuity="changed"]').getAttribute('aria-pressed'), 'true', 'React continuity choice survives lab tab navigation');
   await continuity.locator('[data-continuity="match"]').click();
   assert.equal(await continuity.locator('.continuity-cup.moved').count(), 0);
   console.log('PASS: Continuity Lab is React-owned, updates its illustrated prop, and preserves choice across lab navigation');
 
-  await page.locator('.lab-tabs [data-lab="sound"]').click();
+  await page.locator('.lab-tabs:visible [data-lab="sound"]').click();
   await page.locator('#ambience').uncheck();
   assert.equal(await page.locator('#ambience').isChecked(), false);
   console.log('PASS: all seven labs mount and controls respond; timed edit, story save and lab state verified');
@@ -258,7 +258,7 @@ async function verify() {
     await phone.locator('.mobile-nav [data-page="lab"]').click();
     await phone.locator('.lab-tabs').waitFor();
     await photo(phone, '06-lab-' + width + 'px.png');
-    await phone.locator('.lab-tabs [data-lab="continuity"]').click();
+    await phone.locator('.lab-tabs:visible [data-lab="continuity"]').click();
     const mobileContinuity = phone.locator('.react-continuity-lab');
     await mobileContinuity.waitFor();
     await mobileContinuity.locator('[data-continuity="changed"]').click();
