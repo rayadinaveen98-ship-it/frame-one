@@ -375,7 +375,7 @@ async function verify() {
   await page.locator('.sidebar [data-page="learn"]').click();
   await page.locator('.react-learn-view').waitFor();
   const backup = page.locator('.backup-panel');
-  await backup.locator('summary').click();
+  await backup.locator('summary').first().click();
   const downloadEvent = page.waitForEvent('download');
   await backup.getByRole('button', { name: /download learning backup/i }).click();
   const download = await downloadEvent;
@@ -394,6 +394,39 @@ async function verify() {
     try { return JSON.parse(localStorage.getItem('frameone-progress-v01') || '[]').includes('why'); } catch { return false; }
   }), true);
   console.log('PASS: cancelling backup restore leaves previously saved progress unchanged');
+
+  // Android WebView can refuse file downloads or clipboard access, so verify the
+  // visible JSON copy/paste path actually preserves our existing v1 schema.
+  await backup.locator('.backup-text-fallback > summary').click();
+  await backup.getByRole('button',{name:'Show and copy backup text'}).click();
+  const visibleExport = backup.locator('#backupCopyText');
+  await visibleExport.waitFor();
+  assert.equal(await visibleExport.getAttribute('readonly'),'');
+  const portableJSON = JSON.parse(await visibleExport.inputValue());
+  assert.equal(portableJSON.format,'frameone-learning-backup');
+  assert.equal(portableJSON.version,1);
+  assert(Array.isArray(portableJSON.completed));
+  assert(portableJSON.scene && typeof portableJSON.scene.question==='string');
+  assert.equal((await backup.locator('#backupPasteText').getAttribute('maxlength')),'2000000');
+
+  // Restoring pasted text requires exactly the same explicit overwrite consent
+  // and legacy validation as importing from a downloaded file.
+  const newNote = 'Restored safely from a copied JSON backup.';
+  portableJSON.notes.why = newNote;
+  const copyPayload = JSON.stringify(portableJSON);
+  await backup.locator('#backupPasteText').fill(copyPayload);
+  page.once('dialog',dialog=>dialog.dismiss());
+  await backup.getByRole('button',{name:'Restore pasted backup'}).click();
+  await page.getByText('Restore cancelled. Your current learning data is unchanged.').waitFor();
+  assert.notEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('frameone-practice-v07')||'{}').why),newNote,'Cancelled pasted restore must not change notes');
+
+  page.once('dialog',dialog=>dialog.accept());
+  await backup.getByRole('button',{name:'Restore pasted backup'}).click();
+  await page.getByText('Learning backup restored in this browser.').waitFor();
+  assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('frameone-practice-v07')||'{}').why),newNote,'Pasted backup restores notes');
+  assert.equal(await backup.locator('#backupPasteText').inputValue(),'','Clear sensitive pasted JSON after successful restoration');
+  await photo(page,'22-portable-backup-desktop.png');
+  console.log('PASS: private text backup export, cancelled pasted restore, confirmed pasted restore and original v1 learner data');
 
   // Offline claim must be tested with the built service worker, not assumed from the manifest.
   try {
