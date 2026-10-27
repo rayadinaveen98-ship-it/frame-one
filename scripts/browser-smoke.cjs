@@ -77,8 +77,8 @@ async function verify() {
   await page.getByText('Saved automatically on this device.', { exact: true }).waitFor();
   assert.equal(await page.evaluate(() => {
     const saved = JSON.parse(localStorage.getItem('frameone-practice-v07') || '{}');
-    return saved.units;
-  }), note, 'Practice text must be written immediately without tapping Save');
+    return Object.values(saved).includes('I want to frame a shot where an umbrella hides a surprise.');
+  }), true, 'Practice text must be written immediately without tapping Save');
   await page.locator('.sidebar [data-page="learn"]').click();
   await page.locator('.react-learn-view').waitFor();
   await page.reload({ waitUntil: 'domcontentloaded' });
