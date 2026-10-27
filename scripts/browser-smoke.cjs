@@ -495,6 +495,41 @@ async function verify() {
       /Good (morning|afternoon|evening|night)\./);
     assert.equal(await phone.locator('.fact-panel #filmThoughtTitle').count(),1);
     await photo(phone, 'v10-home-' + width + '.png');
+    // Personal cinematic gallery: use generated, original test images only.
+    await phone.locator('[data-gallery-ready="true"]').waitFor();
+    assert.equal(await phone.getByRole('button',{name:'Add your favourite cinema frames'}).count(),1);
+    const png=await phone.evaluate(()=>{
+      const canvas=document.createElement('canvas');canvas.width=320;canvas.height=180;
+      const ctx=canvas.getContext('2d');ctx.fillStyle='#aa683c';ctx.fillRect(0,0,320,180);
+      return canvas.toDataURL('image/png').split(',')[1];
+    });
+    const testImage=Buffer.from(png,'base64');
+    await phone.locator('input[type="file"][accept="image/*"]').setInputFiles([
+      {name:'original-frame-1.png',mimeType:'image/png',buffer:testImage},
+      {name:'original-frame-2.png',mimeType:'image/png',buffer:testImage}
+    ]);
+    await phone.locator('.frames-stage[data-frame-count="2"]').waitFor({timeout:15000});
+    assert.equal(await phone.locator('.frames-stage h1,.frames-stage h2,.frames-stage p,.frames-stage span').count(),0,
+      'Slideshow must have no text overlay');
+    await phone.locator('.frames-touch').click();
+    await phone.getByRole('button',{name:'Frame options'}).click();
+    await phone.getByRole('button',{name:'Edit image'}).click();
+    await phone.getByRole('dialog',{name:'Edit selected frame'}).waitFor();
+    await phone.getByRole('button',{name:'Top',exact:true}).click();
+    assert.equal(await phone.getByRole('button',{name:'Top',exact:true}).getAttribute('aria-pressed'),'true');
+    await phone.getByRole('button',{name:'Move later'}).click();
+    await phone.getByRole('button',{name:'Done',exact:true}).click();
+    await phone.reload({waitUntil:'domcontentloaded'});
+    await phone.waitForFunction(()=>Boolean(window.frameOneLegacy),{timeout:15000});
+    await phone.locator('.frames-stage[data-frame-count="2"]').waitFor({timeout:15000});
+    await photo(phone, 'v10-personal-gallery-'+width+'.png');
+    await phone.locator('.frames-touch').click();
+    await phone.getByRole('button',{name:'Frame options'}).click();
+    phone.once('dialog',dialog=>void dialog.accept());
+    await phone.getByRole('button',{name:'Remove image'}).click();
+    await phone.locator('.frames-stage[data-frame-count="1"]').waitFor({timeout:15000});
+    console.log('PASS: offline personal gallery import, text-free image, focus edit, reorder, reload and safe removal at '+width+'px');
+
     await phone.locator('.mobile-nav [data-page="learn"]').click();
     await phone.locator('.react-learn-view h1').waitFor();
     const backControl=phone.getByRole('button',{name:'Back within Frame One'});
