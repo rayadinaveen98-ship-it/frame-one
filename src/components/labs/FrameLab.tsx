@@ -95,7 +95,10 @@ export function FrameLab({mode,setMode,zoom,setZoom,guides,setGuides,compare,set
           <strong>ONE POSSIBLE INTERPRETATION</strong><p>{selected.description}</p>
         </div>
         <p className="studio-fact">This changes the crop of an existing picture. A camera move or a different lens could produce different perspective and background effects.</p>
-        <button className="btn-secondary" type="button" data-lesson="framing">Read the framing lesson →</button>
+        <div className="studio-next"><span>KEEP EXPLORING</span>
+          <button className="btn-secondary" type="button" data-lab="sound">02 · Try changing the sound →</button>
+          <button className="btn-secondary" type="button" data-lesson="shot">Read the connected lesson →</button>
+        </div>
       </div>
     </div>
   </div>;
