@@ -257,11 +257,46 @@ async function verify() {
   console.log('PASS: React Cut Lab timeline, duration rebinding, complete playback and unmount cleanup');
 
   await page.locator('.lab-tabs:visible [data-lab="story"]').click();
-  await page.locator('[data-story-shot="close"]').click();
-  assert.equal(await page.locator('[data-story-shot="close"]').getAttribute('aria-pressed'), 'true');
-  await page.locator('#storyNote').fill('The character spots a clue.');
-  await page.locator('[data-story-save]').click();
+  const make = page.locator('.react-make-lab');
+  await make.waitFor();
+  assert.equal(await page.locator('#content').innerHTML(),'', 'React must own Make Lab without hidden legacy markup');
+  assert.equal(await make.locator('.story-film-frame svg').count(),1,'Original vector storyboard preserved');
+  const opening = await make.locator('[data-story-question="reunion"]').click();
+  assert.equal(await make.locator('[data-story-question="reunion"]').getAttribute('aria-pressed'),'true');
+  await make.locator('[data-story-shot="close"]').click();
+  assert.equal(await make.locator('[data-story-shot="close"]').getAttribute('aria-pressed'),'true');
+  await make.locator('#storyNote').fill('The character spots a clue.');
+  await make.locator('[data-story-save]').click();
+  assert.match(await make.locator('#storyStatus').textContent(),/Saved in this browser/i);
   assert.ok(await page.evaluate(() => localStorage.getItem('frameone-scene-v07')?.includes('The character spots a clue.')));
+  assert.equal(await page.evaluate(() => window.frameOneLegacy.getStoryboard().question),'reunion','legacy backup engine sees React storyboard changes');
+  await make.locator('[data-story-next]').click();
+  await make.locator('#storyNote').fill('A distant bus approaches.');
+  await make.locator('[data-story-shot="medium"]').click();
+  await make.locator('[data-story-next]').click();
+  await make.locator('#storyNote').fill('They decide to stay.');
+  await make.locator('[data-story-save]').click();
+  assert.ok(await page.evaluate(() => JSON.parse(localStorage.getItem('frameone-scene-v07')).notes[2]==='They decide to stay.'));
+  const planDownload=page.waitForEvent('download');
+  await make.locator('[data-story-export]').click();
+  assert.match((await planDownload).suggestedFilename(),/frame-one-my-first-scene\.txt/);
+  // Backup restoration must update React state without reloading the page.
+  await page.evaluate(() => window.frameOneLegacy.importBackup({
+    format:'frameone-learning-backup',version:1,
+    completed:[],notes:{},scene:{question:'decision',shots:['wide','wide','medium'],notes:['Old restored scene','Restored middle','Restored ending']}
+  }));
+  await page.getByRole('button',{name:'Decision',exact:true}).waitFor();
+  assert.equal(await make.locator('[data-story-question="decision"]').getAttribute('aria-pressed'),'true');
+  assert.equal(await make.locator('#storyNote').inputValue(),'Old restored scene');
+  assert.ok(await page.evaluate(() => localStorage.getItem('frameone-scene-v07')?.includes('Restored middle')));
+  await photo(page,'17-react-make-desktop.png');
+  await make.locator('[data-lab="cut"]').click();
+  await make.waitFor({state:'detached'});
+  await page.locator('.lab-tabs:visible [data-lab="story"]').click();
+  await make.waitFor();
+  assert.equal(await make.locator('[data-story-question="decision"]').getAttribute('aria-pressed'),'true');
+  assert.equal(await make.locator('#storyNote').inputValue(),'Old restored scene','Restored storyboard loads after navigation');
+  console.log('PASS: React Make Lab writes original storage, exports text, survives navigation and updates on backup restore');
 
   await page.locator('.lab-tabs:visible [data-lab="continuity"]').click();
   const continuity = page.locator('.react-continuity-lab');
@@ -422,7 +457,16 @@ async function verify() {
     const cutOverflow=await phone.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
     if(cutOverflow.scroll>cutOverflow.viewport+3)record('React Cut Lab overflow at '+width+'px: '+cutOverflow.scroll+'/'+cutOverflow.viewport);
     await photo(phone,'16-react-cut-'+width+'px.png');
-    console.log('PASS: mobile ' + width + 'px navigates five native React Labs (Cut overflow: ' + cutOverflow.scroll + '/' + cutOverflow.viewport + ')');
+    await mobileCut.locator('[data-lab="story"]').click();
+    const mobileMake=phone.locator('.react-make-lab');
+    await mobileMake.waitFor();
+    await mobileMake.locator('[data-story-question="decision"]').click();
+    await mobileMake.locator('[data-story-step="1"]').click();
+    await mobileMake.locator('#storyNote').fill('A clue in the rain.');
+    const storyOverflow=await phone.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
+    if(storyOverflow.scroll>storyOverflow.viewport+3)record('React Make Lab overflow at '+width+'px: '+storyOverflow.scroll+'/'+storyOverflow.viewport);
+    await photo(phone,'18-react-make-'+width+'px.png');
+    console.log('PASS: mobile ' + width + 'px navigates six native React Labs (Make overflow: ' + storyOverflow.scroll + '/' + storyOverflow.viewport + ')');
     await mobile.close();
   }
   if (failures.length) throw Error(failures.join('\n'));
