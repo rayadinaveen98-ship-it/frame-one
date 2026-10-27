@@ -516,7 +516,10 @@ async function verify() {
     await phone.getByRole('button',{name:'Edit image'}).click();
     await phone.getByRole('dialog',{name:'Edit selected frame'}).waitFor();
     await phone.getByRole('button',{name:'Top',exact:true}).click();
-    assert.equal(await phone.getByRole('button',{name:'Top',exact:true}).getAttribute('aria-pressed'),'true');
+    // IndexedDB writes are async; observe the committed edit, not an
+    // immediate intermediate React render while the control is busy.
+    await phone.waitForFunction(()=>document.querySelector(
+      '.frames-focus-controls button[aria-pressed="true"]')?.textContent?.trim()==='Top');
     await phone.getByRole('button',{name:'Move later'}).click();
     await phone.getByRole('button',{name:'Done',exact:true}).click();
     await phone.reload({waitUntil:'domcontentloaded'});
