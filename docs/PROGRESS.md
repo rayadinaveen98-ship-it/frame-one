@@ -59,3 +59,9 @@
 - [GitHub Action 40457618029](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40457618029) **SUCCESS** on the first complete Lightning source/browser flow. Desktop/320px screenshots inspected; mobile image is readable.
 - Screenshot review identified excessive desktop empty preview area. CSS and a measurable browser QA assertion have been added; final run/screenshot still requires separate verification.
 - **React implementation 4/7**, legacy labs **3/7: Cut, Make, Sound**. Latest plans and open QA gates: [Lighting QA](QA_LIGHTING_V09D.md). Web hosting, Android APK and iOS not started.
+
+### Lighting final QA — verified (27 October 2026)
+
+- **Full production/build/browser success:** [run 40458020383](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40458020383) on commit `2d74a86a3bb4b1e66ff1e354db59d42faf749d26`; includes a measurable desktop preview-size/alignment check and desktop/320px/390px screenshot captures.
+- Reviewed the refined desktop image: the illustration is beside the controls without an exaggerated bordered blank preview panel. The 320px Lighting illustration and controls were also inspected.
+- **v0.9D React migrations accepted so far: 4/7** — Continuity, Colour, Frame, Lighting. **Legacy labs remaining: Cut, Make, Sound**. Next migrate **Cut Lab** with special attention to timers, playback cancellation and saved lesson compatibility. Separate web hosting, Android APK, iOS, accessibility and expert-content gates remain open. [Detailed Lighting QA](QA_LIGHTING_V09D.md).
