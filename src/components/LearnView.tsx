@@ -63,6 +63,8 @@ export function LearnView() {
   const [query,setQuery] = useState('');
   const [glossaryQuery,setGlossaryQuery] = useState('');
   const [revision,setRevision] = useState(0);
+  // Keep the course approachable on narrow screens: open only one chapter at a time.
+  const [expandedChapters,setExpandedChapters] = useState<Set<number>>(()=>new Set([0]));
   // Read on render: completed lessons are stored in the same original progress key.
   const completed = safeProgress(ids);
   const completedCount=completed.size;
@@ -85,8 +87,14 @@ export function LearnView() {
       const count=c.ids.filter(id=>completed.has(id)).length;
       return <section key={c.name} className="chapter-panel" aria-labelledby={`reactChapter${i}`}>
         <div className="chapter-head"><div className="chapter-number">{String(i+1).padStart(2,'0')}</div><div><span className="eyebrow-secondary">CHAPTER {i+1} · {count}/{c.ids.length} COMPLETE</span><h2 id={`reactChapter${i}`}>{c.name.replace(/^\d+\s*[·.\-]\s*/, '')}</h2><p>{c.strap}</p></div><div className="chapter-meter" role="progressbar" aria-label={`Chapter ${i+1} lessons finished`} aria-valuenow={count} aria-valuemin={0} aria-valuemax={c.ids.length}><div style={{width:`${Math.round(count/c.ids.length*100)}%`}} /></div></div>
-        <div className="chapter-lessons">{c.ids.map(id=>byId.get(id)).filter((l):l is Lesson=>Boolean(l)).map(l=><LessonRow key={l.id} lesson={l} completed={completed.has(l.id)}/>)}</div>
-        {c.later.length ? <details className="coming-chapters"><summary>Future topics · {c.later.length}</summary><div>{c.later.map(x=><span key={x}>{x}</span>)}</div></details> : <div className="chapter-finished">✓ All lessons in this chapter are available</div>}
+        <button className="chapter-mobile-toggle" type="button" aria-expanded={expandedChapters.has(i)} aria-controls={`chapterLessons${i}`} onClick={()=>setExpandedChapters(previous=>new Set(previous.has(i)?[]:[i]))}>
+          <span>{expandedChapters.has(i)?'Hide lessons':`Explore ${c.ids.length} lessons`}</span>
+          <span aria-hidden="true">{expandedChapters.has(i)?'−':'+'}</span>
+        </button>
+        <div id={`chapterLessons${i}`} className={`chapter-body ${expandedChapters.has(i)?'is-expanded':''}`}>
+          <div className="chapter-lessons">{c.ids.map(id=>byId.get(id)).filter((l):l is Lesson=>Boolean(l)).map(l=><LessonRow key={l.id} lesson={l} completed={completed.has(l.id)}/>)}</div>
+          {c.later.length ? <details className="coming-chapters"><summary>Future topics · {c.later.length}</summary><div>{c.later.map(x=><span key={x}>{x}</span>)}</div></details> : <div className="chapter-finished">✓ All lessons in this chapter are available</div>}
+        </div>
       </section>;
     })}</div>}
     <LearningBackup onRestored={()=>setRevision(n=>n+1)}/>
