@@ -7,7 +7,7 @@ const app=read('src/App.tsx'),cut=read('src/components/labs/CutLab.tsx'),
 assert(app.includes("import { CutLab, type CutOrder, type CutDurations }"),'App imports typed React Cut Lab');
 for(const field of ['cutOrder','cutDurations','cutStep'])assert(app.includes('set'+field[0].toUpperCase()+field.slice(1)),'App preserves '+field);
 assert(app.includes("route.lab==='cut' ? <CutLab"),'Cut renders through React only');
-assert(old.includes("['continuity','colour','frame','light','cut'].includes(state.lab)?'':"),'legacy leaves Cut Lab DOM empty');
+assert(old.includes("['continuity','colour','frame','light','cut','story'].includes(state.lab)?'':"),'legacy leaves Cut Lab DOM empty');
 assert(old.includes(".react-lighting-lab,.react-cut-lab')"),'old delegated input handler skips React Cut slider');
 for(const shot of ['place','detail','person'])assert(cut.includes(shot+':{title:'),'original storyboard shot '+shot);
 assert(cut.includes('className={`cut-illustration ${shot}`}')&&cut.includes('cut-stop')&&cut.includes('cut-watch'),'original CSS storyboard art retained');
