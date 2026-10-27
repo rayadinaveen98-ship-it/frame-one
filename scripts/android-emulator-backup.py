@@ -40,7 +40,11 @@ def tap_text(label,tries=24,scroll=True,exact=False):
             b=state.bounds_of(n)
             if not matched or not b or b[2]-b[0]<25 or b[3]-b[1]<18:
                 continue
-            if b[1]<100 or b[1]>2180 or b[3]>2190:
+            # The mobile bottom nav overlays WebView content from roughly
+            # y=2000 onward on the 1080x2340 API35 phone. Taps at y=2050
+            # will hit navigation instead of the document/backup control.
+            # Require target fully above the bottom bar and scroll first.
+            if b[1]<150 or b[3]>1850:
                 continue
             kind=n.attrib.get("class","").split(".")[-1]
             if kind not in ("TextView","Button","ToggleButton","View","CheckBox"):
