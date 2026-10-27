@@ -1,0 +1,76 @@
+name: Publish downloadable Frame One Android preview
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-android-preview.yml'
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: 'Successful main-branch Android build run ID'
+        required: true
+        type: string
+        default: '40474407084'
+      tag_name:
+        description: 'Unique preview release tag'
+        required: true
+        type: string
+        default: 'v0.9e-android-debug-1'
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  publish-android-preview:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_RUN_ID: ${{ inputs.source_run_id || '40474407084' }}
+      RELEASE_TAG: ${{ inputs.tag_name || 'v0.9e-android-debug-1' }}
+    steps:
+      - name: Confirm source run is successful and from main
+        shell: bash
+        run: |
+          set -euo pipefail
+          state="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${SOURCE_RUN_ID}" --jq '.conclusion + ":" + .head_branch')"
+          test "$state" = "success:main"
+      - name: Download the previously verified APK artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          gh run download "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" --name frame-one-android-debug-apk --dir release
+          test -s release/app-debug.apk
+          unzip -tqq release/app-debug.apk
+          unzip -Z1 release/app-debug.apk | grep -qx 'assets/public/index.html'
+          mv release/app-debug.apk release/FrameOne-v0.9E-debug.apk
+          sha256sum release/FrameOne-v0.9E-debug.apk | tee release/SHA256SUMS.txt
+      - name: Publish GitHub prerelease with direct APK download
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat >release/NOTES.md <<'EOF'
+          ## Frame One v0.9E — Android debug test build
+
+          This is a **test APK**, not a Google Play or public production release.
+          Built from the repository's verified main-branch Android workflow.
+
+          Download **FrameOne-v0.9E-debug.apk** below and open it on an Android test device.
+          Android may ask you to permit installation from the Files app or browser.
+          Please test lessons, all seven creative labs, Sound playback, offline navigation and backup export.
+
+          **Known limitations:** real-device audio and accessibility testing is still pending; the current Android package ID is provisional; user data remains local to the installation. Export saved learning data before uninstalling.
+          EOF
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" release/FrameOne-v0.9E-debug.apk release/SHA256SUMS.txt --clobber --repo "$GITHUB_REPOSITORY"
+          else
+            gh release create "$RELEASE_TAG" release/FrameOne-v0.9E-debug.apk release/SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title 'Frame One v0.9E — Android test APK' --prerelease --notes-file release/NOTES.md
+          fi
+      - name: Confirm public release asset
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -qx 'FrameOne-v0.9E-debug.apk'
