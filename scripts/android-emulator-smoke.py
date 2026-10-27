@@ -151,18 +151,25 @@ def main() -> None:
 
     system_back()
     time.sleep(2)
-    activities=adb("shell","dumpsys","activity","activities",timeout=40)
-    resumed=[line.strip() for line in activities.splitlines()
-             if "topResumedActivity=" in line or "mResumedActivity:" in line]
-    (OUTPUT / "after-home-back-activity.txt").write_text(
-        "\n".join(resumed)+"\n",encoding="utf-8")
+    # Android activity transitions can lag an adb key event. Poll actual
+    # foreground state rather than declaring failure from one early snapshot.
+    resumed=[]
+    for attempt in range(10):
+        activities=adb("shell","dumpsys","activity","activities",timeout=40)
+        resumed=[line.strip() for line in activities.splitlines()
+                 if "topResumedActivity=" in line or "mResumedActivity:" in line]
+        (OUTPUT / "after-home-back-activity.txt").write_text(
+            "\n".join(resumed)+"\n",encoding="utf-8")
+        if resumed and all(PACKAGE not in line for line in resumed):
+            break
+        time.sleep(1)
     if not resumed:
         capture("06-home-minimize-unconfirmed")
         raise AssertionError("Cannot determine foreground Android activity after Home Back")
     print("Foreground activity after Back on Home: " + " | ".join(resumed[-3:]),flush=True)
     if any(PACKAGE in line for line in resumed):
         capture("06-home-not-minimized")
-        raise AssertionError("System Back from Frame One Home did not minimize the activity")
+        raise AssertionError("System Back from Frame One Home did not minimize the activity after 10 seconds")
     pid=adb("shell","pidof",PACKAGE,check=False)
     if not pid:
         capture("06-process-exited")
