@@ -17,6 +17,9 @@ function mock(platform,hash){
   let cb=null;
   let minimized=0, navigated=0, subscribed=0;
   const m={exports:{}};
+  let blurred=0;
+  const document={activeElement:null};
+  const focus=(tagName='TEXTAREA')=>{document.activeElement={tagName,isContentEditable:false,blur(){blurred++;document.activeElement=null;}};};
   const win={location:{hash},frameOneLegacy:{goBack(){navigated++}}};
   const app={
     addListener:async (name,callback)=>{
@@ -31,9 +34,9 @@ function mock(platform,hash){
   };
   vm.runInNewContext(compiled.outputText,{module:m,exports:m.exports,require:name=>{
     assert(Object.hasOwn(modules,name),'No unexpected dependency '+name);return modules[name];
-  },window:win,console},{filename:file,timeout:5000});
-  return {register:m.exports.registerAndroidBack,back:()=>{assert(cb,'listener was not installed');cb();},
-    stats:()=>({minimized,navigated,subscribed}),window:win};
+  },window:win,document,console},{filename:file,timeout:5000});
+  return {register:m.exports.registerAndroidBack,back:()=>{assert(cb,'listener was not installed');cb();},focus,
+    stats:()=>({minimized,navigated,subscribed,blurred}),window:win};
 }
 (async()=>{
   for(const platform of ['web','ios']){
@@ -44,10 +47,17 @@ function mock(platform,hash){
   const d=mock('android','#lesson/why');
   await d.register();
   assert.equal(d.stats().subscribed,1,'register official Capacitor plugin on Android');
+  d.focus('TEXTAREA');
   d.back();
-  assert.equal(d.stats().navigated,1,'native Back delegates to existing validated learning history');
+  assert.equal(d.stats().blurred,1,'Back blurs Android focused textarea to close IME');
+  assert.equal(d.stats().navigated,0,'closing Android keyboard must not navigate away from an unsaved lesson');
+  d.back();
+  assert.equal(d.stats().navigated,1,'second Back delegates to validated learning history');
   assert.equal(d.stats().minimized,0,'lesson Back must not minimize app');
   d.window.location.hash='#lab';
+  d.focus('INPUT');
+  d.back();
+  assert.equal(d.stats().navigated,1,'Back in an editing field must not leave a lab');
   d.back();
   assert.equal(d.stats().navigated,2,'lab Back delegates to existing learning history');
   d.window.location.hash='#home';
@@ -55,5 +65,5 @@ function mock(platform,hash){
   await new Promise(resolve=>setImmediate(resolve));
   assert.equal(d.stats().navigated,2,'Home Back must not navigate to external page');
   assert.equal(d.stats().minimized,1,'Home Back minimizes instead of terminating activity');
-  console.log('PASS: native Capacitor App Back is Android-only; lesson/lab Back remains internal; Home minimizes.');
+  console.log('PASS: Android Back first blurs active editors, then navigates safely; Home minimizes.');
 })().catch(e=>{console.error(e);process.exitCode=1});
