@@ -16,12 +16,21 @@ On Android, an ordinary browser download can behave differently inside a Capacit
 - Pasted private JSON is cleared after successful restore. The learner is warned not to post backups publicly; backups include authored notes.
 - No new permissions, backend, remote service, account, telemetry or local-storage key changes.
 
+## Verified source, browser and Android receipts
+
+- **Merged** via [PR #3](https://github.com/rayadinaveen98-ship-it/frame-one/pull/3), squash commit `30ebb23c8e09f5126deb6bb1b82f40e9f3a8a4e8`.
+- [Source/TypeScript/Vite 40480555312](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480555312) — **SUCCESS** on merged v0.9G.
+- [Full compiled Chromium browser QA 40480555273](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480555273) — **SUCCESS**, including portable backup copy/paste, cancellation, verified restore, 33 lessons, seven labs and offline.
+- [Android debug APK 40480555401](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480555401) — **SUCCESS**.
+- [Stable GitHub prerelease publisher 40480801867](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480801867) — **SUCCESS**. Confirmed public asset `FrameOne-android-debug.apk` (4,382,199 bytes) at [stable release](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/android-preview-latest); new asset timestamp 27 October 2026 09:26 UTC.
+- **Verification boundary:** compiled-browser behavior and build/artifact publication proven; no physical Android backup clipboard/download, web-hosted Cloudflare URL, iOS or expert filmmaking/Telugu signoff proven.
+
 ## Automated acceptance gates
 
 - `tests/verify-react-chapters.cjs` checks typed bridge presence and actual v1 JSON export.
 - `scripts/browser-smoke.cjs` tests compiled-app export, visible fallback JSON, cancellation preserving saved notes, explicit confirmed restore and clear-on-success behavior.
 - The full suite still needs to check all 33 lessons, seven React Creative Labs, existing file backup, offline and responsive layouts.
-- **Do not claim Chromium or native Android acceptance before a passing GitHub Actions run.** Link tested commit, run ID and result after confirmation.
+- **Both the source and compiled Chromium automated tests have passed** for the merged commit; manual device-specific QA still pending.
 
 ## Remaining limitations
 
