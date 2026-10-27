@@ -90,3 +90,11 @@
 - Tenth source regression and production browser journey passed [GitHub Actions 40462953360](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40462953360), covering all 33 lessons, seven labs, save/export/backup restore, offline reload and 320px/390px screen layouts.
 - Reviewed the final Make desktop and narrow-phone QA screenshots; the original visual teaching activity and editing controls remain usable. Real device/accessibility/expert review remains open.
 - **6/7 React lab migrations accepted. Only Sound remains legacy.** Next: Sound migration, then HTTPS/PWA deployment, Android APK testing and iOS build. [Evidence](QA_MAKE_V09D.md).
+
+## v0.9D milestone closed — all Creative Labs in React (27 October 2026)
+
+- Completed the **seventh and final Sound Lab** with the original locally authored bus-stop artwork, three teaching modes, independently controlled synthesized ambience, user-initiated playback, no automatic audio, and five-second sound sketches.
+- A dedicated React/Web Audio module owns the oscillator/noise sources, timer and AudioContext, cleaning them up on Stop, mode change and unmount. The old runtime delegates no audio UI rendering and never mutates React-owned Sound controls.
+- Eleventh source regression suite plus actual compiled Chromium smoke tests count AudioContexts created and closed, confirm no sound resource allocation in silent mode, and cover original data/backups, 33 lessons, seven labs and offline reload.
+- **Verified green:** [run 40464897808](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40464897808) for full audio behavior and [final run 40465373226](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40465373226) for clean desktop/mobile artwork after removing inherited Frame HUD labels. Visually reviewed desktop, 320px and 390px Sound screenshots.
+- **React Creative Lab migration 7/7 = complete for automated web QA.** Next work is release engineering and manual quality gates; web hosting, real Android APK and iOS app not built in this milestone. [Full Sound QA](QA_SOUND_V09D.md).
