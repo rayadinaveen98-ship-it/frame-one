@@ -75,7 +75,9 @@ def find(text: str, exact: bool = False, tries: int = 16) -> list[dict[str, obje
     raise AssertionError(f"Android UI never displayed: {text!r}. See captured screenshot/XML.")
 
 def tap_label(text: str) -> None:
-    matches = find(text, exact=True)
+    # WebView may combine an entire lesson card into one accessibility label.
+    # Match substrings, then select the lowest visible duplicate for bottom tabs.
+    matches = find(text, exact=False)
     # The bottom nav element has the lowest screen position if duplicate labels exist.
     target = max(matches, key=lambda n: int(n["bottom"]))
     print(f"TAP {text!r} at {target['x']},{target['y']}", flush=True)
