@@ -12,6 +12,7 @@ on:
       - 'package-lock.json'
       - '.node-version'
       - 'vite.config.ts'
+      - 'wrangler.jsonc'
       - 'scripts/verify-pages-dist.cjs'
       - '.github/workflows/browser-qa.yml'
   workflow_dispatch:
@@ -38,6 +39,8 @@ jobs:
         run: npm run build
       - name: Verify Cloudflare Pages publish directory
         run: node scripts/verify-pages-dist.cjs
+      - name: Validate Cloudflare Workers static asset deploy (dry run only)
+        run: npx --yes wrangler@4 deploy --dry-run
       - name: Install test browser
         run: npx playwright install --with-deps chromium
       - name: Run desktop and mobile smoke checks
