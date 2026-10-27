@@ -140,3 +140,13 @@
 - **Main checks all passed:** [web 40482599685](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482599685), [desktop/mobile Chromium 40482599661](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482599661), [Android debug 40482599668](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482599668), [public APK publisher 40482775098](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482775098): **all SUCCESS**.
 - The stable [public Android test APK](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/android-preview-latest) now includes v0.9H (4,382,543 bytes).
 - **Still pending:** native hardware/gesture Back integration and real-device acceptance, fixed test signing for upgrades, exact Cloudflare Worker production URL, Safari/iOS and editorial review. Read [v0.9H QA](QA_V09H.md).
+
+
+## v0.9I — Android system Back and signing-certificate QA (27 October 2026)
+
+- [PR #5](https://github.com/rayadinaveen98-ship-it/frame-one/pull/5) merged as `82bcf861afb2355158d48036d524f8bf7d7a50fc`.
+- Implemented official `@capacitor/app@8.1.2` plugin and Android-only Back handler; delegates within lessons/labs, minimizes at Home. No changes to course content or local-storage schemas.
+- Android debug builds optionally accept a protected `FRAMEONE_QA_DEBUG_KEYSTORE_B64` secret on trusted main runs, and publish their signing-certificate fingerprint and persistent-signer YES/NO alongside APK. **The secret is not yet configured; current builds use temporary signing identities and may not upgrade over one another.**
+- **Main-branch acceptance:** [web 40486968443](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486968443), [Chromium desktop/mobile 40486968447](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486968447), [Android build 40486968418](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486968418), [stable release 40487176493](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40487176493): **all SUCCESS**.
+- The [latest public test APK](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/android-preview-latest) is v0.9I, 4,391,455 bytes, with SHA-256 and signing-certificate receipts.
+- **Next release gates:** secret-backed QA identity and two-build in-place Android installation; actual native system Back and edge gesture tests; Android offline/audio/backup acceptance; Cloudflare Worker exact production URL verification; iOS and editorial signoff. [Full v0.9I QA report](QA_V09I.md).
