@@ -75,3 +75,9 @@ This version is an app-code upgrade (unlike QA-only v0.9J/K/L) and must pass Git
 - [Public debug test APK](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/android-preview-latest) now includes v0.9M, size **4,525,951 bytes**, along with `SHA256SUMS.txt` and `android-qa-signature.txt`.
 - **Warning:** main Android packaging reports `Persistent QA signer: NO`; this CI runner used an ephemeral debug keystore, so users must export and verify a backup *before* testing an update over an existing installation. Do not claim update-in-place is safe.
 - Independent post-merge full and lightweight emulator reruns are still to be recorded separately. The full CI external-save step uses ADB to preserve app-produced bytes; it does not establish that a person saved the file using the Android chooser on a physical phone.
+
+## Independent main Android restore confirmation
+
+[Full-system Android API35 job 40533677486](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40533677486) — **SUCCESS** on merged `main` revision `1f07b26f`. The native log explicitly confirms `PASS: native Filesystem wrote exact learner practice/progress/storyboard backup bytes`, `PASS: Android system file picker imported backup after user confirmation`, `PASS: exported JSON restored completed lesson and Make Lab story after total app data clear`, and finally `FRAME ONE ANDROID BACKUP EXPORT RESTORE: PASS`.
+
+This independently verifies the full Android *restoration* acceptance after merge. The test still uses an ADB copy of the actual exported bytes as the simulated external save step; real-device share destination acceptance and stable signed in-place updates remain pending.
