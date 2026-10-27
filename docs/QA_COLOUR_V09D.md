@@ -1,7 +1,7 @@
 # Frame One v0.9D — Colour Lab migration review
 
 **Date:** 27 October 2026  
-**Status:** React Colour Lab implemented and committed; final real-browser CI result to be verified.
+**Status:** **ACCEPTED for automated web-browser QA**; real-device and accessibility/content release gates remain.
 
 ## Scope completed
 
@@ -18,11 +18,11 @@
 - Added sixth Node source contract `tests/verify-react-colour.cjs`, included in `npm test`.
 - Compiled Chromium smoke now verifies original SVG scene count, mode labels and selection state, strength changes from keyboard interaction, overlay alpha, native React route round-trips, and screenshots with no horizontal overflow at 390px and 320px.
 - Initial runs exposed tab-navigation transitions and a too-early opacity assertion; browser tests were tightened to select visible tabs and wait for CSS transitions. These are diagnostic observations, not successful QA claims.
-- **Acceptance requires a verified green GitHub Actions real-browser run on the post-fix commit**, plus review of desktop/mobile Colour screenshots.
+- **Acceptance passed:** [GitHub Actions 40451210219](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40451210219) succeeded on commit `09a63faf99ef55580b51490c883805481b2fca1d`. Desktop and 390px/320px browser captures were visually reviewed.
 
 ## Follow-up
 
-Once accepted, mark v0.9D as **2/7 labs migrated** and move to Frame Lab; continue to preserve the five legacy modules until each replacement passes. Independent film education, Telugu, real-device/screen-reader/audio, HTTPS PWA and native packaging gates remain pending.
+v0.9D now has **2/7 labs migrated**. Next is Frame Lab; continue to preserve the five legacy modules until each replacement passes. Independent film education, Telugu, real-device/screen-reader/audio, HTTPS PWA and native packaging gates remain pending.
 
 ## Real-browser defect identified and corrected
 
@@ -30,4 +30,4 @@ GitHub run [40450839303](https://github.com/rayadinaveen98-ship-it/frame-one/act
 
 **Source fix:** React Colour input/onChange handlers stop propagation. The old engine's global input delegate explicitly ignores controls under `.react-colour-lab` or `.react-continuity-lab`. The sixth source regression now checks that both protections remain in place. This avoids hidden cross-framework ownership collisions as later labs migrate.
 
-**Acceptance:** Re-run the entire GitHub browser suite after commit `09a63faf99ef55580b51490c883805481b2fca1d` and inspect the resulting coloured preview screenshots. Do not mark the second lab complete solely on source-level checks.
+**Acceptance confirmation:** The full suite passed on [run 40451210219](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40451210219). Reviewed both mobile breakpoints and the desktop screenshot, confirming the cool-blue overlay visibly affects the original illustration; no duplicated legacy tab bars or horizontal overflow were visible. Final QA screenshot archive: artifact `12710801403`.
