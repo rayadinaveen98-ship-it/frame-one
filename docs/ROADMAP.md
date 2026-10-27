@@ -18,7 +18,7 @@ Help complete beginners understand filmmaking through accurate, simple explanati
 | **v0.9B** | **React chapter browser/search/glossary, source checks, offline cache builder, CI design** | **Current source milestone; not compiled/released** |
 
 ## Forward release gates
-1. **R1 — Build:** Complete v0.9B source is restored on GitHub; now generate lockfile; run `npm install`, `npm test`, `npm run build` in connected CI; resolve type/build issues.
+1. **R1 — Web build (achieved):** Full v0.9B source on GitHub; npm install, four source suites, TypeScript and Vite production build passed in [GitHub Actions](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40440890519). **Reproducibility follow-up:** generate/commit lockfile.
 2. **R2 — Web QA:** Test all 33 lessons, 7 labs, audio, backup/restore, responsive/mobile viewports, safe areas, keyboard and offline PWA in real browsers.
 3. **R3 — React lab modernization:** Convert the remaining seven labs, home and crew map into maintainable React components, preserving interaction.
 4. **R4 — Content signoff:** Professional filmmaker/educator and Telugu reviewer validate technical claims, quizzes, history and translations.
