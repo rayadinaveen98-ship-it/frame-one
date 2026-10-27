@@ -182,6 +182,15 @@ async function verify() {
     await phone.waitForFunction(() => Boolean(window.frameOneLegacy), { timeout: 15000 });
     await phone.locator('.mobile-nav [data-page="learn"]').click();
     await phone.locator('.react-learn-view h1').waitFor();
+    assert.equal(await phone.locator('.chapter-mobile-toggle').count(), 6);
+    assert.equal(await phone.locator('.chapter-body.is-expanded').count(), 1);
+    assert.equal(await phone.locator('.chapter-mobile-toggle').first().getAttribute('aria-expanded'), 'true');
+    await phone.locator('.chapter-mobile-toggle').nth(1).click();
+    assert.equal(await phone.locator('.chapter-body.is-expanded').count(), 1);
+    assert.equal(await phone.locator('.chapter-mobile-toggle').nth(1).getAttribute('aria-expanded'), 'true');
+    await phone.locator('.chapter-mobile-toggle').first().click();
+    assert.equal(await phone.locator('.chapter-body.is-expanded').count(), 1);
+    assert.equal(await phone.locator('.chapter-mobile-toggle').first().getAttribute('aria-expanded'), 'true');
     const horizontal = await phone.evaluate(() => ({ scroll: document.documentElement.scrollWidth, viewport: document.documentElement.clientWidth }));
     if (horizontal.scroll > horizontal.viewport + 3) record('Horizontal overflow at ' + width + 'px: ' + horizontal.scroll + ' vs ' + horizontal.viewport);
     await photo(phone, '05-chapters-' + width + 'px.png');
