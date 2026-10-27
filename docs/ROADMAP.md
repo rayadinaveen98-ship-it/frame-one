@@ -41,8 +41,14 @@ Help complete beginners understand filmmaking through accurate, simple explanati
 
 ## v0.9D implementation checkpoint — 27 October 2026
 
-- **1/7 Creative Labs migrated into React:** Continuity Lab component, original desk artwork, interactive choice, accessible state and lesson link committed; source test coverage added.
-- **6/7 Creative Labs remain on proven legacy runtime:** Colour, Frame, Lighting, Cut, Make and Sound. Original saved progress/storyboards and 33-lesson course preserved.
+- **2/7 Creative Labs migrated into React:** Continuity Lab component, original desk artwork, interactive choice, accessible state and lesson link committed; source test coverage added.
+- **5/7 Creative Labs remain on proven legacy runtime:** Frame, Lighting, Cut, Make and Sound. Original saved progress/storyboards and 33-lesson course preserved.
 - Exclusive DOM ownership and explicit lab route event implemented; tests now cover migration boundary.
 - **Automated acceptance PASSED:** [GitHub Actions run 40449195578](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40449195578) passed after fixing navigation and exclusive DOM ownership; desktop Continuity screenshot inspected. Mobile Continuity-specific screenshots were added as a follow-up test; real-device and manual accessibility reviews remain open.
-- Next after green: Colour Lab migration, then the remaining five per [v0.9D plan](LABS_REACT_MIGRATION_V09D.md). Full acceptance evidence: [QA_V09D.md](QA_V09D.md).
+- Next: Frame Lab migration, then the remaining four per [v0.9D plan](LABS_REACT_MIGRATION_V09D.md). Full acceptance evidence: [QA_V09D.md](QA_V09D.md).
+
+### Second React lab — Colour (accepted)
+
+- Implemented the original bus-stop scene as locally bundled vector artwork, neutral/warm/cool comparisons and a React-owned overlay slider. The old legacy document-level input listener was found forcing the React tint to zero; both handlers now enforce exclusive ownership.
+- Sixth source-test suite and Chromium desktop/390px/320px comparisons added; [full GitHub browser QA 40451210219](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40451210219) **PASSED** after the fix. Screenshots inspected: the original artwork and cool overlay are visible without horizontal overflow.
+- **Migration: 2/7 labs accepted**; five remain on the original runtime. See [Colour QA evidence](QA_COLOUR_V09D.md).
