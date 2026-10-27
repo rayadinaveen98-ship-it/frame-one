@@ -1,6 +1,6 @@
 # Frame One — Android debug APK build and device test (v0.9E)
 
-Status: a **debug-build CI workflow**, not a verified app-store release. This document describes the source-built artifact and the remaining acceptance gates.
+Status: **first Android debug APK build VERIFIED in GitHub Actions** on 27 October 2026; not an installed/device-tested or app-store release. [Successful run 40474122825](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40474122825) on commit `d395c0434c022b368465ee9aaadbf6bda7f2e951` uploaded artifact `frame-one-android-debug-apk` (ID `12719818584`, 4,017,400-byte ZIP).
 
 ## Reproducible build
 
@@ -28,4 +28,4 @@ Confirm permanent Android application ID, release icon/splash, Android UI/system
 
 ## Status truth boundary
 
-Creating this workflow does **not** establish that a Gradle APK build passed. Link the *specific successful* GitHub Actions run and its artifact before reporting APK availability. A passing build does not mean a human tested its installed behavior.
+The first Gradle debug APK build **passed** and produced an artifact; this verifies packaging only. It does **not** prove that anyone has installed the APK, heard audio through a real speaker, passed TalkBack, checked backups on physical Android or verified Play release compliance.
