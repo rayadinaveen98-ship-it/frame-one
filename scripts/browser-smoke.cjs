@@ -174,6 +174,30 @@ async function verify() {
   }
   await context.close();
 
+  // Separate clean browser profile: verify the actual rendered quiz flow for
+  // every lesson, independent from the main demo's saved notes and storyboard.
+  const lessonContext = await browser.newContext({ viewport:{width:1280,height:800}, acceptDownloads:false });
+  const sweep = await lessonContext.newPage();
+  sweep.on('pageerror', error => record('33-lesson sweep browser exception: ' + error.message));
+  await sweep.goto(base, { waitUntil: 'domcontentloaded' });
+  await sweep.waitForFunction(() => Boolean(window.frameOneLegacy));
+  for (const item of curriculum.lessons) {
+    await sweep.evaluate(id => window.frameOneLegacy.navigate('lesson', id), item.id);
+    const heading = sweep.locator('.react-lesson h1');
+    await heading.waitFor();
+    assert.equal((await heading.textContent()).trim(), item.title, 'Route title for ' + item.id);
+    await sweep.locator('.quiz-option').nth(item.answer).click();
+    const completeButton = sweep.getByRole('button', { name: /mark lesson complete/i });
+    assert.equal(await completeButton.isEnabled(), true, 'Quiz complete for ' + item.id);
+    await completeButton.click();
+    const stored = await sweep.evaluate(() => JSON.parse(localStorage.getItem('frameone-progress-v01') || '[]'));
+    assert.ok(stored.includes(item.id), 'Progress not persisted for ' + item.id);
+  }
+  const allDone = await sweep.evaluate(() => JSON.parse(localStorage.getItem('frameone-progress-v01') || '[]').length);
+  assert.equal(allDone, 33);
+  console.log('PASS: all 33 lesson pages, correct quiz answers and completed progress');
+  await lessonContext.close();
+
   for (const width of [390, 320]) {
     const mobile = await browser.newContext({ viewport: { width, height: 800 }, isMobile: true, deviceScaleFactor: 2, hasTouch: true, acceptDownloads: true });
     const phone = await mobile.newPage();
