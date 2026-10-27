@@ -17,7 +17,7 @@ for(const f of ['src/App.tsx','src/components/LessonView.tsx','src/components/Le
  const transpiled=ts.transpileModule(code,{fileName:f,reportDiagnostics:true,compilerOptions:{jsx:ts.JsxEmit.ReactJSX,module:ts.ModuleKind.ESNext}});
  assert.strictEqual((transpiled.diagnostics||[]).filter(x=>x.category===ts.DiagnosticCategory.Error).length,0,`TS source transpile: ${f}`);
 }
-for(const needle of ['setFilter','setQuery','setGlossaryQuery','safeProgress','chapters.map','filter===','glossary.filter','aria-valuenow','LearningBackup','importBackup','exportBackup'])assert(tsx.includes(needle),'React chapter feature: '+needle);
+for(const needle of ['setFilter','setQuery','setGlossaryQuery','safeProgress','chapters.map','filter===','glossary.filter','aria-valuenow','LearningBackup','importBackup','exportBackup','getBackupJSON','backupPasteText','backupCopyText','Restore pasted backup'])assert(tsx.includes(needle),'React chapter feature: '+needle);
 assert(tsx.includes("window.confirm('Restore this backup?"),'restoring local learning data requires explicit consent');
 assert(tsx.includes("if(!window.frameOneLegacy) throw new Error('Learning engine not ready')"),'backup download must not claim success when engine is unavailable');
 assert(app.includes("heading.focus({ preventScroll: true })"), 'page navigation must restore accessible focus');
@@ -38,6 +38,11 @@ const c={document:{getElementById:k=>elem[k]||null,querySelectorAll:()=>[],query
 vm.runInNewContext(runtime.replace(/export\s*\{\s*\};?\s*$/,''),c,{timeout:7000});
 const bridge=c.window.frameOneLegacy;
 assert(bridge);
+assert.strictEqual(typeof bridge.getBackupJSON,'function','bridge provides portable backup JSON');
+const exported = JSON.parse(bridge.getBackupJSON());
+assert.strictEqual(exported.format,'frameone-learning-backup');
+assert.strictEqual(exported.version,1);
+assert(Array.isArray(exported.completed) && typeof exported.notes==='object' && exported.scene,'text backup contains original schema and learner story');
 const valid={format:'frameone-learning-backup',version:1,completed:['why','history','unknown'],notes:{why:'A scene of my own'},scene:{question:'mystery',shots:['wide','medium','close'],notes:['one','two','three']}};
 // Account for original scene question IDs rather than presuming a named ID.
 const script=fs.readFileSync(path.join(root,'src/legacy/runtime.js'),'utf8');
