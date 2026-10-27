@@ -326,6 +326,7 @@ async function verify() {
   assert.equal(await page.locator('#content').innerHTML(),'','React must own Sound Lab without legacy duplication');
   assert.equal(await sound.locator('.sound-wave span').count(),31);
   assert.equal(await sound.locator('.audio-picture svg').count(),1,'Original local bus-stop illustration preserved');
+  assert.equal(await sound.locator('.monitor-hud:visible,.frame-corner:visible,.scene-label:visible').count(),0,'Framing labels must not crowd the Sound illustration');
   assert.equal(await sound.locator('[data-sound="silence"]').getAttribute('aria-pressed'),'true');
   await page.evaluate(() => {
     window.__f1SoundQa={created:0,closed:0};
@@ -517,6 +518,7 @@ async function verify() {
     const mobileSound=phone.locator('.react-sound-lab');
     await mobileSound.waitFor();
     await mobileSound.locator('[data-sound="tension"]').click();
+    assert.equal(await mobileSound.locator('.monitor-hud:visible,.frame-corner:visible,.scene-label:visible').count(),0,'Sound stage cannot show old Frame HUD on narrow phones');
     assert.equal(await mobileSound.locator('[data-sound="tension"]').getAttribute('aria-pressed'),'true');
     const soundOverflow=await phone.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
     if(soundOverflow.scroll>soundOverflow.viewport+3)record('React Sound Lab overflow at '+width+'px: '+soundOverflow.scroll+'/'+soundOverflow.viewport);
