@@ -40,6 +40,8 @@ jobs:
           case "$SOURCE_RUN_ID" in *[!0-9]* ) echo 'Invalid run identifier'; exit 1 ;; esac
           state="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${SOURCE_RUN_ID}" --jq '.conclusion + ":" + .head_branch')"
           test "$state" = "success:main"
+          workflow="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${SOURCE_RUN_ID}" --jq '.name')"
+          test "$workflow" = "Frame One Android debug APK"
           sha="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${SOURCE_RUN_ID}" --jq '.head_sha')"
           printf 'SOURCE_SHA=%s\n' "$sha" >> "$GITHUB_ENV"
       - name: Download and verify the existing compiled APK
@@ -78,9 +80,21 @@ jobs:
           else
             gh release create "$RELEASE_TAG" release/FrameOne-android-debug.apk release/SHA256SUMS.txt release/android-qa-signature.txt --repo "$GITHUB_REPOSITORY" --target "$SOURCE_SHA" --title 'Frame One — latest Android test APK' --prerelease --notes-file release/NOTES.md
           fi
+          # android-preview-latest is deliberately a moving preview tag. The APK
+          # and release notes already change on each publish; its Git ref and
+          # release metadata must identify the exact build commit too.
+          release_id="$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}" --jq '.id')"
+          gh api --method PATCH "repos/${GITHUB_REPOSITORY}/releases/${release_id}" -f target_commitish="$SOURCE_SHA" >/dev/null
+          tag_sha="$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${RELEASE_TAG}" --jq '.object.sha')"
+          if [ "$tag_sha" != "$SOURCE_SHA" ]; then
+            gh api --method PATCH "repos/${GITHUB_REPOSITORY}/git/refs/tags/${RELEASE_TAG}" -f sha="$SOURCE_SHA" -F force=true >/dev/null
+          fi
       - name: Confirm downloadable release asset
         shell: bash
         run: |
           set -euo pipefail
           gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -qx 'FrameOne-android-debug.apk'
           gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -qx 'android-qa-signature.txt'
+          # Fails publishing if the public tag or release provenance is stale.
+          test "$(gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${RELEASE_TAG}" --jq '.object.sha')" = "$SOURCE_SHA"
+          test "$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}" --jq '.target_commitish')" = "$SOURCE_SHA"
