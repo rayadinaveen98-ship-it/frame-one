@@ -22,7 +22,10 @@ spec.loader.exec_module(ui)
 SHOT_NOTE="FrameOneNativeShotQA20261027"
 BUTTON_CLASSES=("Button","ToggleButton","CheckBox")
 TOP=145
-BOTTOM=2125
+# The fixed mobile tab bar begins near y=1990 on 1080×2340.
+# A button at y=2028 can be accessible but a tap hits the tab bar.
+# Require the entire control above y=1900; scroll content otherwise.
+BOTTOM=1900
 
 def nodes():
     ui.hierarchy()
