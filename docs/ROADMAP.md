@@ -75,3 +75,11 @@ Help complete beginners understand filmmaking through accurate, simple explanati
 - **Full production/build/browser success:** [run 40458020383](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40458020383) on commit `2d74a86a3bb4b1e66ff1e354db59d42faf749d26`; includes a measurable desktop preview-size/alignment check and desktop/320px/390px screenshot captures.
 - Reviewed the refined desktop image: the illustration is beside the controls without an exaggerated bordered blank preview panel. The 320px Lighting illustration and controls were also inspected.
 - **v0.9D React migrations accepted so far: 4/7** — Continuity, Colour, Frame, Lighting. **Legacy labs remaining: Cut, Make, Sound**. Next migrate **Cut Lab** with special attention to timers, playback cancellation and saved lesson compatibility. Separate web hosting, Android APK, iOS, accessibility and expert-content gates remain open. [Detailed Lighting QA](QA_LIGHTING_V09D.md).
+
+## Fifth React Lab — Cut accepted (27 October 2026)
+
+- **5/7 Creative Labs migrated and browser-accepted:** Continuity, Colour, Frame, Lighting, Cut. **2/7 remain legacy-owned:** Make and Sound.
+- Cut Lab now uses React for its original three storyboard illustrations, clip order, per-shot duration, frame preview, previous/next controls, playback and reset. Moving a clip carries its hold duration. Playback is a timed storyboard, not filmed motion, with a cancellable timer that is cleaned up on route/unmount.
+- **Verified green GitHub Actions:** [40460565715](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40460565715) ran nine source suites, TypeScript/Vite production compilation, all 33 lesson journeys, all seven labs, backup/offline and the Cut timeline/timer tests.
+- Reviewed desktop/320px/390px screenshots: original illustrations, timeline controls and explanations remain usable without material width overflow. [Cut acceptance report](QA_CUT_V09D.md).
+- **Next React migration:** Make/storyboard Lab, preserving existing `frameone-scene-v07` storage and JSON backup compatibility. After Make, Sound requires extra testing of WebAudio and cancellation. Hosted release, Android and iOS builds still pending.
