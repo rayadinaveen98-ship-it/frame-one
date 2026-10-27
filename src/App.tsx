@@ -169,7 +169,7 @@ export default function App() {
     <LaunchExperience />
     <aside className="sidebar" aria-label="Main navigation">
       <a className="logo" href="#home" id="brand" aria-label="Frame One home">
-        <span className="logo-mark" aria-hidden="true">▧</span>
+        <img className="logo-mark" src="./frame-one-icon.svg" alt="" aria-hidden="true" />
         <span className="logo-type">FRAME ONE<span>THE ART OF FILM</span></span>
       </a>
       <Navigation />
