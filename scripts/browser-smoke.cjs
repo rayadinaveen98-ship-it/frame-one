@@ -57,6 +57,7 @@ async function verify() {
 
   await page.locator('.react-lesson-card').first().click();
   await page.locator('.react-lesson h1').waitFor();
+  await page.waitForFunction(() => document.activeElement?.matches('.react-lesson h1'), null, { timeout: 10000 });
   assert.equal((await page.locator('.react-lesson h1').textContent()).trim(), curriculum.lessons[0].title);
   await page.locator('.quiz-option').nth(curriculum.lessons[0].answer).click();
   const complete = page.getByRole('button', { name: /mark lesson complete/i });
