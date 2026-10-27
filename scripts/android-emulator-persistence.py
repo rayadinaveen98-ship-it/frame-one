@@ -55,12 +55,11 @@ def open_first_lesson():
     ui.find("WELCOME TO THE WORLD OF CINEMA",tries=20)
     ui.tap_label("Learn")
     ui.find("YOUR LEARNING JOURNEY")
-    # Full AOSP WebView preserves scroll offset across route transitions.
-    # The first lesson is above the viewport after returning from a lower
-    # chapter; scroll toward the TOP before trying to open it.
-    for _ in range(8):
-        ui.adb("shell","input","swipe","540","650","540","1910","260")
-    ui.tap_label("Why do we watch films?",exact=False)
+    # Lesson cards are offscreen in the full emulator. An accessibility
+    # match to the card can be virtual and tapping it silently does nothing.
+    # The visible Continue learning control reliably opens lesson one.
+    ui.tap_label("Continue learning →")
+    ui.find("My own filmmaking idea",tries=12)
     ui.find("Why do we watch films?")
     ui.capture("persistence-01-lesson-open")
     print("PASS: native lesson rendered for actual text input",flush=True)
@@ -95,7 +94,8 @@ def restart_offline():
 def verify_persisted_note():
     ui.tap_label("Learn")
     ui.find("YOUR LEARNING JOURNEY")
-    ui.tap_label("Why do we watch films?",exact=False)
+    ui.tap_label("Continue learning →")
+    ui.find("My own filmmaking idea",tries=12)
     ui.find("Why do we watch films?")
     for _ in range(8):
         xml=ui.hierarchy()
