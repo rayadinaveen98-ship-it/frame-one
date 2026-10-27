@@ -136,6 +136,11 @@ def make_storyboard():
     find_text("One moment. Many frames.")
     control("✎ Make")
     find_text("Plan a tiny scene.")
+    # On the lightweight ATD, switching labs can retain the prior scroll
+    # position. Android's virtual accessibility nodes are [0,0][0,0]
+    # for the Decision control until the user scrolls back to the TOP.
+    # The control() helper scrolls downward, so first reset to the top.
+    scroll_top()
     control("Decision")
     # Android WebView exposes these as ToggleButton nodes but can leave
     # checked=false despite aria-pressed. Assert rendered story semantics
