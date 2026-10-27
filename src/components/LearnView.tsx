@@ -34,6 +34,10 @@ function LearningBackup({onRestored}: {onRestored:()=>void}) {
       const json:unknown=JSON.parse(await file.text());
       const bridge=window.frameOneLegacy;
       if(!bridge) throw new Error('Learning engine is not ready yet.');
+      if (!window.confirm('Restore this backup? It will replace the learning progress, practice notes and storyboard currently saved in this browser.')) {
+        setMessage('Restore cancelled. Your current learning data is unchanged.');
+        return;
+      }
       bridge.importBackup(json); // strict original v0.8B validation
       setMessage('Learning backup restored in this browser.');
       onRestored();
@@ -45,7 +49,7 @@ function LearningBackup({onRestored}: {onRestored:()=>void}) {
     <summary>Keep a copy of your learning <span>Save / restore locally</span></summary>
     <p>A different browser or app address can have separate saved data. Export your progress and storyboard before switching devices or versions.</p>
     <div className="backup-actions">
-      <button className="btn-secondary" type="button" onClick={()=>{ try{window.frameOneLegacy?.exportBackup();setMessage('Backup download prepared.');}catch{setMessage('Backup download is unavailable here.');}}}>Download learning backup</button>
+      <button className="btn-secondary" type="button" onClick={()=>{ try{if(!window.frameOneLegacy) throw new Error('Learning engine not ready');window.frameOneLegacy.exportBackup();setMessage('Backup download prepared.');}catch{setMessage('Backup download is unavailable here.');}}}>Download learning backup</button>
       <button className="btn-secondary" type="button" onClick={()=>fileRef.current?.click()}>Restore a backup JSON file</button>
       <input ref={fileRef} className="sr-only" type="file" accept=".json,application/json" onChange={onFile} aria-label="Choose a Frame One backup JSON" />
     </div>
