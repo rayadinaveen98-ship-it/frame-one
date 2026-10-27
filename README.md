@@ -22,6 +22,12 @@ The [source import workflow](.github/workflows/import-v09b-source.yml) has **com
 
 React 19 + TypeScript + Vite + Capacitor 8 planned for web/Android/iOS. All seven Creative Labs are now React-owned; the legacy engine remains a compatibility bridge for progress, original home, film-role and backup functions; mobile package ID `com.frameone.learncinema` is provisional. All user work stays locally on device/browser. No backend, accounts or third-party film clips. Public repository without an explicit open-source license. Expert film and Telugu review remain pending.
 
+## Download the Android test APK
+
+**[Direct public APK download — Frame One v0.9E](https://github.com/rayadinaveen98-ship-it/frame-one/releases/download/v0.9e-android-debug-1/FrameOne-v0.9E-debug.apk)** · [Release page and SHA-256 checksum](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/v0.9e-android-debug-1).
+
+This is a **test-only debug build** distributed through our public GitHub Releases rather than requiring a signed-in GitHub Actions artifact download. Built from the successful main-branch run [40474407084](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40474407084). Release-publishing workflow [40475269118](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40475269118) passed. Real Android device testing is still required.
+
 ## Android debug APK — first build verified
 
 GitHub Actions [Android debug run 40474122825](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40474122825) **PASSED** on 27 October 2026 after installing Android SDK 36, running source tests, compiling the offline web build, generating Capacitor 8's Android project, assembling Gradle debug and checking that the APK embeds the actual web app. Run artifact **frame-one-android-debug-apk** (GitHub artifact ID `12719818584`) contains `app-debug.apk`. [Download and real-device QA instructions](docs/ANDROID_DEBUG_CI.md). This is a **debug build only**: not installed on a physical device, release-signed, tested on iOS or approved for stores.
