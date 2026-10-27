@@ -16,10 +16,10 @@ The [source import workflow](.github/workflows/import-v09b-source.yml) has **com
 
 ## Web hosting and automatic updates
 
-**Chosen host: Cloudflare Pages** with automatic GitHub deployments (Vite build: `npm run build`, publish: `dist`, Node 22). Git configuration, cache-refresh headers, offline versioning and a non-disruptive refresh notice are committed. [One-time connection guide](docs/CLOUDFLARE_PAGES_SETUP.md) · [Deployment status](docs/DEPLOYMENT_STATUS.md).
+**Chosen provider: Cloudflare.** The existing account project is a **Workers static-asset deployment**, not a Pages site. It connects to GitHub and uses `npm run build` followed by `npx wrangler deploy`. The repo includes a `wrangler.jsonc`, cache-refresh rules, offline versioning, and a user-controlled PWA refresh notice. [Worker setup](docs/CLOUDFLARE_WORKERS_SETUP.md) · [Deployment status](docs/DEPLOYMENT_STATUS.md).
 
 ## Technology and limitations
 
 React 19 + TypeScript + Vite + Capacitor 8 planned for web/Android/iOS. All seven Creative Labs are now React-owned; the legacy engine remains a compatibility bridge for progress, original home, film-role and backup functions; mobile package ID `com.frameone.learncinema` is provisional. All user work stays locally on device/browser. No backend, accounts or third-party film clips. Public repository without an explicit open-source license. Expert film and Telugu review remain pending.
 
-**Next gate:** [Connect Cloudflare Pages to GitHub](docs/CLOUDFLARE_PAGES_SETUP.md) once, verify the actual live deployment and fresh PWA updates, then run real-device QA and package Android/iOS. There is **no verified Frame One live URL or APK** yet. See [deployment status](docs/DEPLOYMENT_STATUS.md).
+**Next gate:** [Verify the connected Cloudflare Worker](docs/CLOUDFLARE_WORKERS_SETUP.md) once, verify the actual live deployment and fresh PWA updates, then run real-device QA and package Android/iOS. There is **no verified Frame One live URL or APK** yet. See [deployment status](docs/DEPLOYMENT_STATUS.md).
