@@ -1,7 +1,7 @@
 # Frame One v0.9D — React Frame Lab migration report
 
 **Date:** 27 October 2026  
-**Status:** Third Creative Lab implemented, production-built and initially browser-tested; final comparison-layout verification tracked separately.
+**Status:** Third Creative Lab implemented and automated acceptance passed; latest desktop-only layout refinement requires independent CI verification.
 
 ## Work implemented
 
@@ -21,3 +21,11 @@
 ## Release boundaries
 
 This is **3 of 7 labs implemented** with initial automation green. Do not conflate CI with manual real-device usability, screen-reader testing, educational accuracy review or production HTTPS/PWA testing. Android/iOS packages have not yet been built.
+
+## Verified real-browser acceptance
+
+- [GitHub Actions 40452193907](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452193907) **SUCCESS**: all 33 lesson completions, seven labs, React Frame presets, SVG viewBox, keyboard slider, comparison, guides, offline reload and backup tests.
+- [GitHub Actions 40452506346](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452506346) **SUCCESS**: added explicit 320px/390px comparison stacking and non-crowded HUD assertions.
+- Inspected images from [run 40452464003](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452464003): desktop artwork sharp and correct; 320px stacked crop comparison with no visible overflow, unlike the earlier cramped two-column screenshots.
+- **Final desktop-only layout polish:** commit `013e14978dcae52f5ae74231aa3cd71be5eca0ef` removes the oversized bordered empty preview panel and keeps the original illustration available while scrolling. This final CSS adjustment should be verified by its own browser run and screenshot.
+- Automated first-pass acceptance is successful; real Android/iOS/assistive-technology tests and filmmaking educator review are independent release gates.
