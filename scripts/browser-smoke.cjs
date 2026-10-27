@@ -184,7 +184,7 @@ async function verify() {
   for (const item of curriculum.lessons) {
     await sweep.evaluate(id => window.frameOneLegacy.navigate('lesson', id), item.id);
     const heading = sweep.locator('.react-lesson h1');
-    await heading.waitFor();
+    await sweep.waitForFunction(title => document.querySelector('.react-lesson h1')?.textContent?.trim() === title, item.title, { timeout: 12000 });
     assert.equal((await heading.textContent()).trim(), item.title, 'Route title for ' + item.id);
     await sweep.locator('.quiz-option').nth(item.answer).click();
     const completeButton = sweep.getByRole('button', { name: /mark lesson complete/i });
