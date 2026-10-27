@@ -174,3 +174,13 @@ The independent [main Android emulator run 40492047719](https://github.com/rayad
 - The existing Home minimize test proved sensitive to native activity transition timing; it now checks the actual foreground activity with bounded polling. This preserves, rather than removes, the strict minimize assertion.
 - **No application or storage-key changes** and no separate v0.9K APK. Latest app code is still v0.9I. Full [v0.9K QA report](QA_V09K.md).
 - **Pending acceptance:** JSON backup download/restore, completed-progress and storyboard persistence, physical phone audio and gestures, two-version signed Android upgrade, actual Cloudflare production site and iOS testing.
+
+
+## v0.9L — first completed lesson and authored storyboard survive Android offline restart (27 October 2026)
+
+- [PR #8](https://github.com/rayadinaveen98-ship-it/frame-one/pull/8) merged QA-only Android UIAutomator suite as `28b5cf2642f0dbea8d86a2210f1a2f7c89cb1e67`. Learner curriculum, installed app, local data format and UI unchanged.
+- **Verified native emulator success:** [run 40498806973](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40498806973). Answered real first lesson quiz, marked it complete, saw 1/33, selected **Decision** and first-shot **Close-up** in Make, wrote a private shot note and pressed Save scene. After an Android force-stop and airplane-mode cold launch, 1/33 progress, story question, CLOSE framing and authored note all remained.
+- The v0.9K private-note and v0.9J native Back regressions also passed in the same full emulator run. Companion [web 40498806952](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40498806952) and [Chromium browser 40498806967](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40498806967) checks were **SUCCESS**.
+- Android's UIAutomator exposes `aria-pressed` as ToggleButtons with unreliable checked attributes and splits the storyboard HUD into multiple text nodes. The test checks actual displayed story and CLOSE values; it also dismisses the Android keyboard before pressing Save scene.
+- The latest implementation remains **v0.9I test APK**; v0.9J/K/L improve native QA rather than adding app features. [v0.9L QA evidence](QA_V09L.md).
+- **Still pending:** actual Android file backup export/import and multi-install restore, physical phone tests, persistent signed in-place APK upgrades, verified live Cloudflare HTTPS site, iOS and pedagogical/visual redesign.
