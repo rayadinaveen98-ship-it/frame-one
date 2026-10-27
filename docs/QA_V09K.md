@@ -41,3 +41,10 @@ The first combined run failed on an intermittently late Home minimize assertion 
 - A verified live Cloudflare Worker URL and iOS native testing.
 
 **This is not a new APK version.** Frame One v0.9I remains the latest app implementation; v0.9J/K are additional QA gates. App-store release is not approved.
+
+
+## Independent post-merge main-branch verification — PASS
+
+[Android emulator run 40494850734](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40494850734) completed **SUCCESS** against the merged `main` implementation. The actual Android API 35 log confirms `PASS: Frame One cold-started offline after Android force-stop`, `PASS: private learner note survived force-stop and offline cold restart`, and `FRAME ONE ANDROID PERSISTENCE OFFLINE: PASS`. In the same run, the native system Back test ended with `FRAME ONE ANDROID EMULATOR SMOKE: PASS`, including Home minimize.
+
+This is a fourth independent successful native persistence/Back suite counting the three pre-merge branch runs. No physical handset, signed upgrade or backup-file restore has been accepted yet.
