@@ -48,3 +48,9 @@ Do not mark **R2 Web QA** as passed until the browser workflow is visibly green 
 - Attempted Chromium against the compiled artifact in the local tool environment; navigation was blocked by `net::ERR_BLOCKED_BY_ADMINISTRATOR`. Real-browser QA is therefore still open and must run in GitHub Actions or an unrestricted test environment.
 
 **Do not infer a green browser QA run from the existence of the workflow file or from prior green Vite compilation.**
+
+## Seven-lab interaction coverage added
+
+The Playwright workflow now goes beyond mounting the labs: it drives framing crop and colour strength; selects side lighting and changes brightness; moves a timeline clip and starts/stops preview; changes a storyboard shot and checks local draft persistence; toggles a continuity difference; and disables Sound Lab ambience. These are **committed test assertions**, not confirmed green browser results.
+
+On a local source mirror, four Node regression suites pass after adding SPA heading-focus handling and backup safety checks. A previously successful compiled build artifact was inspected for complete offline cache paths. The latest browser and device results remain the outstanding release gate.
