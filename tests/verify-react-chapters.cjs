@@ -26,7 +26,7 @@ assert(tsx.includes('previous.has(i)?[]:[i]'), 'only one chapter expands on narr
 assert(app.includes("route.page==='learn' ? <LearnView />"));
 assert(app.includes("route.page==='lesson'||route.page==='learn'"));
 assert(runtime.includes("state.page==='learn'?'':"),'legacy does not own React chapter DOM');
-for(const needle of ['exportBackup:()=>downloadBackup()','importBackup:(payload)=>{restoreBackup(payload);render()}'])assert(runtime.includes(needle),'legacy backed export or validated import');
+for(const needle of ['exportBackup:()=>downloadBackup()','importBackup:(payload)=>{restoreBackup(payload);window.dispatchEvent(new Event(\'frameone:story-restored\'));render()}'])assert(runtime.includes(needle),'legacy backed export or validated import');
 assert(types.includes('importBackup: (data: unknown) => void'));
 // Exercise backup import through exact legacy validation including rejecting malformed input.
 const memory={};const ev={};const view={innerHTML:''},count={textContent:''};
