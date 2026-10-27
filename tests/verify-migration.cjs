@@ -39,6 +39,7 @@ ctx.window.frameOneLegacy.completeLesson('history');
 assert.strictEqual(els.progressLabel.textContent,'3/33 lessons');
 assert.strictEqual(routes.at(-1).lesson,'units');
 click({page:'lab'});assert(click({lab:'colour'}).includes('colour'));
-assert(click({lab:'continuity'}).includes('continuity'));
+assert.strictEqual(click({lab:'continuity'}),'', 'React owns Continuity Lab; legacy leaves content empty');
+assert.strictEqual(routes.at(-1).lab,'continuity', 'legacy route supplies selected lab to React');
 assert(click({lab:'story'}).includes('SHOT'));
 console.log('PASS: React migration source contract, 33 lesson records, 7 lab routes, React route event bridge, preserved storage identifiers, portable static preview.');
