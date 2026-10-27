@@ -1,5 +1,5 @@
 const fs=require('fs'),path=require('path'),vm=require('vm'),assert=require('assert');
-const ts=require('/opt/nvm/versions/node/v22.16.0/lib/node_modules/typescript');
+const ts=require('typescript');
 const root=path.join(__dirname,'..');
 const data=JSON.parse(fs.readFileSync(path.join(root,'src/data/curriculum.v08b.json')));
 const board=JSON.parse(fs.readFileSync(path.join(root,'src/data/storyboards.json')));
