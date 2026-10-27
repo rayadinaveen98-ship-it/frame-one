@@ -99,3 +99,11 @@
 - The legacy runtime now renders empty markup for six React labs and ignores their delegated inputs. Backup import dispatches `frameone:story-restored`; React refreshes its view from the original validated story. Existing drafts reopen intact.
 - **Automated browser QA PASSED:** [GitHub 40462953360](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40462953360), ten Node source suites, all lessons/labs, storyboard save/export, old-format import, offline reload, responsive screenshots. Reviewed the desktop/320px/390px Make screenshots. [Full QA](QA_MAKE_V09D.md).
 - **6/7 accepted; only Sound remains.** Next phase: native React Sound with WebAudio permission/user gesture controls, timers/sources/AudioContext closure on stop/unmount, offline fallback and real-device audio testing. All release gates remain independent. 
+
+## Seventh implementation checkpoint — Sound and completed migration
+
+- React Sound Lab retains all original listening choices and illustrative descriptions. Generated wave/noise is local, requires deliberate Play, has a five-second lifetime, and is explicitly separate from the No music option.
+- Its engine stops active sources, closes AudioContext and cancels timers on Stop, mode/ambience change, and route unmount. The page also shows clear non-support and no-output messages. Original image and CSS sound-wave animation retained without leaked Frame Lab labels.
+- The **eleventh regression suite**, production TypeScript/Vite build and Chromium tests **PASSED** in [40464897808](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40464897808), with the exact final polished source/visual assertions **PASSED** in [40465373226](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40465373226). Sound screenshots reviewed at desktop, 320px and 390px. [Sound QA](QA_SOUND_V09D.md).
+- **7/7 migrated into React and automated-browser accepted.** No lab remains legacy-owned. The older runtime still handles other app functions and backward-compatible storage; deleting it is **not** included in v0.9D.
+- **Next: v0.9E release integration** — PWA/HTTPS deployment, backup/update/offline verification, accessible UI audit, real-device audio, Android build/tests and iOS/macOS build. Independent filming-content accuracy and Telugu language review before a public launch.
