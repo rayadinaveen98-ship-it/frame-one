@@ -10,6 +10,8 @@ export interface LegacyBridge {
   savePractice: (id: string, note: string) => boolean;
   setTelugu: (enabled: boolean) => void;
   exportBackup: () => void;
+  /** Same legacy backup schema, exposed as local text for WebViews that block downloads. */
+  getBackupJSON: () => string;
   importBackup: (data: unknown) => void;
   /** Typed Make Lab adapter: keeps the v0.7 storyboard inside the old backup engine. */
   getStoryboard: () => StoryPlan;
