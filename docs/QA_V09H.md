@@ -37,3 +37,12 @@ The app remains a **debug APK** with potentially inconsistent CI signing; do not
 - These are pre-merge/PR checks. The independent main-branch checks and stable release update are tracked separately.
 
 **Hardware/gesture Back remains pending; this is only a visible in-app Back UI with verified browser navigation.**
+
+## Verified after main merge
+
+- [Web source/build 40482599685](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482599685) — **SUCCESS**.
+- [Compiled desktop/mobile Chromium QA 40482599661](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482599661) — **SUCCESS**.
+- [Android debug APK build 40482599668](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482599668) — **SUCCESS**.
+- [Automatic release publication 40482775098](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482775098) — **SUCCESS**, stable [public APK release](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/android-preview-latest), asset `FrameOne-android-debug.apk`, **4,382,543 bytes** (updated October 27, 2026 09:42 UTC).
+
+This confirms the source-to-debug-APK pipeline, not a human's Android hardware Back or gesture test.
