@@ -512,7 +512,7 @@ async function verify() {
     assert.equal(await phone.locator('.frames-stage h1,.frames-stage h2,.frames-stage p,.frames-stage span').count(),0,
       'Slideshow must have no text overlay');
     await phone.locator('.frames-touch').click();
-    await phone.getByRole('button',{name:'Frame options'}).click();
+    await phone.getByRole('button',{name:'Frame options',exact:true}).click();
     await phone.getByRole('button',{name:'Edit image'}).click();
     await phone.getByRole('dialog',{name:'Edit selected frame'}).waitFor();
     await phone.getByRole('button',{name:'Top',exact:true}).click();
@@ -524,7 +524,7 @@ async function verify() {
     await phone.locator('.frames-stage[data-frame-count="2"]').waitFor({timeout:15000});
     await photo(phone, 'v10-personal-gallery-'+width+'.png');
     await phone.locator('.frames-touch').click();
-    await phone.getByRole('button',{name:'Frame options'}).click();
+    await phone.getByRole('button',{name:'Frame options',exact:true}).click();
     phone.once('dialog',dialog=>void dialog.accept());
     await phone.getByRole('button',{name:'Remove image'}).click();
     await phone.locator('.frames-stage[data-frame-count="1"]').waitFor({timeout:15000});
