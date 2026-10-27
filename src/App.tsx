@@ -115,6 +115,20 @@ export default function App() {
     window.addEventListener('frameone:pwa-update-ready', ready);
     return () => window.removeEventListener('frameone:pwa-update-ready', ready);
   }, []);
+  // Quiet film-thought carousel: never rotate when out of view, backgrounded,
+  // or while a person is reading/focusing its controls.
+  useEffect(() => {
+    if (route.page !== 'home') return;
+    const nextThought = () => {
+      const card = document.querySelector<HTMLElement>('.fact-panel');
+      if (!card || document.hidden || card.matches(':hover, :focus-within')) return;
+      const bounds = card.getBoundingClientRect();
+      if (bounds.bottom <= 0 || bounds.top >= window.innerHeight) return;
+      card.querySelector<HTMLButtonElement>('[data-thought-next]')?.click();
+    };
+    const timer = window.setInterval(nextThought, 12_000);
+    return () => window.clearInterval(timer);
+  }, [route.page]);
   // On SPA navigation, return keyboard/screen-reader focus to the page heading.
   // Skip the initial home mount to avoid stealing focus when booting.
   useEffect(() => {
