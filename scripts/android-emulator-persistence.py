@@ -72,8 +72,9 @@ def type_and_verify():
     x1,y1,x2,y2,_,_=bounds
     ui.adb("shell","input","tap",str((x1+x2)//2),str((y1+y2)//2))
     time.sleep(0.5)
+    ui.hierarchy()
     focused=[]
-    for n in ET.fromstring(ui.hierarchy() and ui.LAST_XML).iter("node"):
+    for n in ET.fromstring(ui.LAST_XML).iter("node"):
         if ("EditText" in n.attrib.get("class","") and
                 n.attrib.get("focused")=="true"):
             focused.append(n)
