@@ -81,3 +81,9 @@ This version is an app-code upgrade (unlike QA-only v0.9J/K/L) and must pass Git
 [Full-system Android API35 job 40533677486](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40533677486) — **SUCCESS** on merged `main` revision `1f07b26f`. The native log explicitly confirms `PASS: native Filesystem wrote exact learner practice/progress/storyboard backup bytes`, `PASS: Android system file picker imported backup after user confirmation`, `PASS: exported JSON restored completed lesson and Make Lab story after total app data clear`, and finally `FRAME ONE ANDROID BACKUP EXPORT RESTORE: PASS`.
 
 This independently verifies the full Android *restoration* acceptance after merge. The test still uses an ADB copy of the actual exported bytes as the simulated external save step; real-device share destination acceptance and stable signed in-place updates remain pending.
+
+## Independent main lightweight-emulator acceptance — PASS
+
+[Main Android API35 native suite 40533677695](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40533677695) — **SUCCESS** on the merged implementation. The actual log confirms offline practice-note recovery, completed first lesson and Make storyboard after offline restart, native Filesystem backup JSON export, Android system Back from lessons/labs and Home minimize while the app process stays alive. It ends with `FRAME ONE ANDROID EMULATOR SMOKE: PASS`.
+
+Together with [main full Android system restore 40533677486](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40533677486) **SUCCESS**, the complete merged-main native acceptance is now passed. Physical Android share-destination acceptance, permanent signing identity, app-store release and verified Cloudflare live deployment remain pending.
