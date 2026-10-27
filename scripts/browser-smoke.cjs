@@ -283,7 +283,7 @@ async function verify() {
   // Backup restoration must update React state without reloading the page.
   await page.evaluate(() => window.frameOneLegacy.importBackup({
     format:'frameone-learning-backup',version:1,
-    completed:[],notes:{},scene:{question:'decision',shots:['wide','wide','medium'],notes:['Old restored scene','Restored middle','Restored ending']}
+    completed:['why'],notes:{},scene:{question:'decision',shots:['wide','wide','medium'],notes:['Old restored scene','Restored middle','Restored ending']}
   }));
   await page.waitForFunction(() => {
     const root=document.querySelector('.react-make-lab');
