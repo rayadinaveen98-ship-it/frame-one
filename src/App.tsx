@@ -16,6 +16,7 @@ import './legacy/legacy.css';
 import './components/labs/react-labs.css';
 import './native-safe-area.css';
 import './pwa-update.css';
+import './cinematic-v10.css';
 
 // v0.9 migration bridge: React owns the persistent application shell.
 // The v0.8B learning runtime owns only the lesson/lab content region during
