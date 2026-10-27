@@ -1,7 +1,7 @@
 # Frame One v0.9D — React Sound Lab QA
 
 **Date:** 27 October 2026  
-**Status:** Seventh Creative Lab implemented and committed; final full CI run and responsive screenshot acceptance tracked below.
+**Status:** **ACCEPTED for automated web-browser QA**, including the final polished desktop and mobile appearance. Real-device audio, accessibility and educational reviews remain pending.
 
 ## Implementation
 
@@ -30,5 +30,12 @@ v0.9D is architecturally **7/7 labs implemented**. Mark **7/7 automatically acce
 
 - [GitHub Actions 40464897808](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40464897808) **SUCCESS**, commit `4b826e51738ada432dc8874b86cdb0ac8b68dba9`. The eleven source suites, production TypeScript/Vite build, 33/33 lessons, seven labs, backup/offline and audio opt-in/stop/change/unmount tests all passed.
 - Screenshot artifact `12715852873` was downloaded and inspected: `19-react-sound-desktop.png`, `20-react-sound-320px.png`, `20-react-sound-390px.png`. Sound choices, waveform, ambience controls, illustration and mobile layout render without evident horizontal overflow.
-- Visual review exposed inherited Frame Lab HUD labels overlapping the sound illustration. **Polish committed** to hide those labels only inside `.react-sound-lab`; desktop/mobile Chromium assertions now enforce it. The final polished commit requires a fresh green run and screenshot before visual acceptance can be considered closed.
+- Visual review exposed inherited Frame Lab HUD labels overlapping the sound illustration. **Polish committed** to hide those labels only inside `.react-sound-lab`; desktop/mobile Chromium assertions now enforce it. Final polish subsequently **PASSED** [GitHub Actions 40465373226](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40465373226) on commit `ac46a7199b032281e14b22bb76f0c02cb7d41d09`; Chromium verified that no inherited HUD labels remain visible on desktop or phones.
 - **All seven React lab implementations passed automated behavioral checks on the first green run.** Real-device audible output, Safari/mobile background behavior, keyboard/screen reader, expert filmmaking and Telugu review remain open.
+
+## Final seventh-lab acceptance
+
+- **Final full GitHub CI:** [40465373226](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40465373226) — **SUCCESS**. Its verified source commit includes the clean Sound preview CSS and explicit desktop/mobile assertions eliminating leftover framing labels.
+- **Earlier complete audio-lifecycle build:** [40464897808](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40464897808) — **SUCCESS**, including sound selection, separate ambience control, deliberate no-generated-sound case, idempotent Stop, Web Audio context closure on mode change/Stop/navigation, 33 lesson completions, backup/offline, all seven lab interactions and eleven source suites.
+- **Visual QA reviewed:** final-polish screenshot archive from [40465335458](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40465335458) (artifact `12715723834`). Inspected Sound Lab at desktop and 320px/390px; the original bus-stop artwork, waveform, Play/Stop controls and choice list are clear, without previous framing-label collisions or material horizontal overflow.
+- **Automated React Creative Lab migration: 7/7 ACCEPTED.** This verifies rendering and instrumented playback lifecycle, **not** real listener-perceived sound quality or audio behavior across all physical devices.
