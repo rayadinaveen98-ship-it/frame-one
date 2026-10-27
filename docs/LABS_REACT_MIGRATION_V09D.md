@@ -56,3 +56,10 @@
 - The old global input listener was mistakenly setting the React overlay opacity to zero. Source and browser diagnostics confirmed the defect; propagation and legacy filtering were corrected and added to regression coverage.
 - Verified **SUCCESS** [GitHub real-browser run 40451210219](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40451210219), with screenshots reviewed at 1440px, 390px and 320px. Full evidence: [QA_COLOUR_V09D.md](QA_COLOUR_V09D.md).
 - **Current count: 2/7 React; 5/7 still legacy.** Next: Frame Lab, preserving original crop illustration and avoiding lens/perspective simulation claims.
+
+## Third implementation checkpoint — Frame Lab (browser QA passed)
+
+- React Frame Lab now owns modes, crop, guides and comparison. It reuses the same locally bundled SVG as Colour with distinct gradient identifiers for each illustration. Legacy input delegation explicitly ignores React Frame controls.
+- Production Chromium automation verifies three presets, 1×–3× crop, SVG viewBox, two-image comparison, guide state, original data preservation and desktop/390px/320px navigation.
+- [Run 40452193907](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452193907) **passed** and [run 40452506346](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452506346) **passed** the stacked-mobile-comparison refinement. Screenshots inspected; desktop sticky-preview polish is the latest outstanding CSS-specific QA check.
+- **3/7 labs migrated. Four remain: Lighting, Cut, Make and Sound.** Next migrate Lighting with the same exclusive-DOM and delegated-event protections. [Frame QA](QA_FRAME_V09D.md).
