@@ -8,7 +8,7 @@ The previous v0.9I native Android Back implementation passed TypeScript, browser
 
 ## Implemented QA
 
-- **Workflow:** `.github/workflows/android-emulator-qa.yml`, based on the official ReactiveCircus Android emulator runner on Ubuntu 24.04 (API 35, x86_64 Google APIs).
+- **Workflow:** `.github/workflows/android-emulator-qa.yml`, based on the official ReactiveCircus Android emulator runner on Ubuntu 24.04 (API 35, x86_64 AOSP Android Test Device).
 - **Actual app build:** fresh locked npm dependencies; source tests; TypeScript/Vite and offline asset build; `npx cap add android` and `npx cap sync android`; Gradle `assembleDebug`.
 - **Real emulator run:** install the generated `app-debug.apk`, launch the `com.frameone.learncinema` Android activity, verify the built-in WebView home, use Android UI accessibility hierarchy to open Learn and the first lesson, send **Android KEYCODE_BACK**, verify the previous lesson/list/home screens, then check Lab → Home and Home → minimize.
 - **Artifact evidence:** screenshots, `uiautomator` XML hierarchy and current foreground activity evidence are uploaded even when the test fails. Never treat an emulator launch or nonempty screenshot as proof of a passed navigation assertion.
@@ -58,3 +58,11 @@ The final launcher-based script passed again at [GitHub Actions run 40491292091]
 This **second independent full pass** verified actual Android API 35 `aosp_atd` installation, Home rendering, Learn and first lesson, Back to Learn and Home, Lab Back to Home, and that Home Back foregrounded `com.android.fakesystemapp/.launcher.EmptyHomeActivity` while the Frame One app process remained alive. The log ended with `FRAME ONE ANDROID EMULATOR SMOKE: PASS`, and the QA screenshots/UI XML/foreground-activity evidence were uploaded.
 
 The working and representative launch method is the app launcher intent. Do not replace it with `am start` for this root-task minimize assertion.
+
+## Integration into main
+
+[PR #6](https://github.com/rayadinaveen98-ship-it/frame-one/pull/6) merged the evidence-based emulator test suite into `main` as `ac7df213fc5a62efaa3aad0d5f87c3904462a18f`.
+
+The workflow has subsequently been configured to run on relevant main-branch app changes and corresponding pull requests, and can be started manually. It is a **native Android runtime QA gate**, separate from the existing web/Chromium tests and the public Android APK release workflow. The last publicly published application build remains **v0.9I**, because v0.9J adds CI/testing rather than app code.
+
+Any new main-branch emulator run must be checked independently rather than inferred from the two green branch results.
