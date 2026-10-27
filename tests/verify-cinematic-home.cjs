@@ -18,8 +18,8 @@ assert(runtime.includes("frameone-progress-v01"),'saved learning progress key in
 const greeting=app.match(/export function greetingForHour\(hour: number\): string \{[\s\S]*?\n\}/);
 assert(greeting,'device-local greeting helper exists');
 const translated=ts.transpileModule(greeting[0],{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
-const module={exports:{}};vm.runInNewContext(translated,{module,exports:module.exports});
-const hour=module.exports.greetingForHour;
+const compiledModule={exports:{}};vm.runInNewContext(translated,{module:compiledModule,exports:compiledModule.exports});
+const hour=compiledModule.exports.greetingForHour;
 for(const [h,label] of [[0,'Good night.'],[4,'Good night.'],[5,'Good morning.'],[11,'Good morning.'],[12,'Good afternoon.'],[16,'Good afternoon.'],[17,'Good evening.'],[20,'Good evening.'],[21,'Good night.'],[23,'Good night.']]) assert.equal(hour(h),label);
 const memory={'frameone-progress-v01':JSON.stringify(['why'])};
 const handlers={};
