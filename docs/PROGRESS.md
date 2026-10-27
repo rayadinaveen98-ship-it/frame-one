@@ -120,3 +120,14 @@
 - Automatic stable public APK release [40478579858](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478579858) **SUCCESS**: [latest APK release and checksum](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/android-preview-latest). This supersedes older debug APK links for routine testing, but remains test-only.
 - **Next:** independently confirm actual Cloudflare Worker URL/build success, then HTTPS PWA update/offline QA. Complete real-device Android audio, system bars, file backups, accessibility and iOS build. Still no store release or expert content signoff.
 - Details: [v0.9F acceptance and limitations](QA_V09F.md), [revised release checklist](RELEASE_CHECKLIST.md).
+
+
+
+## v0.9G portable backup acceptance (27 October 2026)
+
+- **Merged** [PR #3](https://github.com/rayadinaveen98-ship-it/frame-one/pull/3) into main as `30ebb23c8e09f5126deb6bb1b82f40e9f3a8a4e8`.
+- Learn now offers a user-initiated text copy/paste alternative for the exact original v1 learning backup, keeping progress/notes/storyboard storage and the original file export/import unchanged. Clipboard denial leaves a visible manual copy fallback. Pasted restores share schema validation and explicit overwrite consent.
+- **Verified after merge:** [web 40480555312](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480555312), [compiled Chromium 40480555273](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480555273), [Android debug APK 40480555401](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480555401), [GitHub public release publisher 40480801867](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480801867): **all SUCCESS**.
+- The same stable [latest Android APK release](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/android-preview-latest) now contains the v0.9G debug APK, 4,382,199 bytes.
+- **Still blocked:** No independently verified Cloudflare Worker production URL in available user records or connected tools. Real-device Android WebView clipboard/files, screen bars, speaker/headphones, signing update identity, accessibility and iOS are not yet accepted.
+- Full details: [v0.9G QA](QA_V09G.md), [Cloudflare status](DEPLOYMENT_STATUS.md).
