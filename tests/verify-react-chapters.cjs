@@ -33,7 +33,7 @@ const memory={};const ev={};const view={innerHTML:''},count={textContent:''};
 const elem={content:view,progressCircle:{style:{setProperty(){}}},progressLabel:count};
 const c={document:{getElementById:k=>elem[k]||null,querySelectorAll:()=>[],querySelector:()=>null,addEventListener:(n,fn)=>ev[n]=fn,body:{appendChild(){}},createElement:()=>({click(){},remove(){}})},
  localStorage:{getItem:k=>memory[k]??null,setItem:(k,v)=>{memory[k]=v}},window:{addEventListener(){},dispatchEvent(){},scrollTo(){}},navigator:{},
- location:{hash:'',protocol:'file:'},history:{pushState(){},replaceState(){}},confirm:()=>true,CustomEvent:class{constructor(t,d){this.type=t;this.detail=d.detail}},
+ location:{hash:'',protocol:'file:'},history:{pushState(){},replaceState(){}},confirm:()=>true,Event:class{constructor(t){this.type=t;}},CustomEvent:class{constructor(t,d){this.type=t;this.detail=d.detail}},
  Blob,URL:{createObjectURL:()=> 'blob:x',revokeObjectURL(){}},Date,JSON,Object,Set,setTimeout,clearTimeout,console};
 vm.runInNewContext(runtime.replace(/export\s*\{\s*\};?\s*$/,''),c,{timeout:7000});
 const bridge=c.window.frameOneLegacy;
