@@ -77,3 +77,34 @@
   .react-lighting-lab .lighting-badge{font-size:8px;right:8px;top:8px;padding:4px 7px;max-width:58%;}
   .react-lighting-lab .lab-preview{min-width:0;}
 }
+
+/* React Cut Lab: original storyboard artwork, accessible timeline actions.
+   Avoid horizontal overflow from the three weighted clips on narrow phones. */
+.react-cut-lab .cut-shell{align-items:start;}
+.react-cut-lab .cut-preview,.react-cut-lab .cut-explain{min-width:0;}
+.react-cut-lab .editor-timeline{min-width:0;width:100%;flex-wrap:nowrap;}
+.react-cut-lab .timeline-clip{min-width:0;}
+.react-cut-lab :is(.lab-tab,.clip-select,.clip-actions button,.btn-secondary,.cta,input[type="range"]):focus-visible{
+  outline:3px solid #edb88e;outline-offset:2px;
+}
+@media (max-width:760px){
+  .react-cut-lab .cut-shell{grid-template-columns:minmax(0,1fr);}
+  .react-cut-lab .cut-illustration{height:260px;}
+  .react-cut-lab .editor-timeline{gap:5px;}
+  .react-cut-lab .clip-select{padding:8px 5px;min-height:64px;}
+  .react-cut-lab .clip-select strong{font-size:11px;overflow-wrap:anywhere;}
+  .react-cut-lab .clip-select span{font-size:8px;}
+  .react-cut-lab .clip-actions button{min-height:35px;}
+}
+@media (max-width:350px){
+  .react-cut-lab .cut-illustration{height:220px;}
+  .react-cut-lab .cut-preview{padding:10px;}
+  .react-cut-lab .editor-timeline{gap:4px;}
+  .react-cut-lab .clip-select strong{font-size:10px;}
+  .react-cut-lab .clip-select span{font-size:7px;letter-spacing:0;}
+  .react-cut-lab .cut-controls{gap:5px;flex-wrap:wrap;}
+  .react-cut-lab .cut-controls .btn-secondary{font-size:11px;padding:9px;}
+}
+@media (prefers-reduced-motion:reduce){
+  .react-cut-lab .timeline-clip,.react-cut-lab .clip-playhead{animation:none;transition:none;}
+}
