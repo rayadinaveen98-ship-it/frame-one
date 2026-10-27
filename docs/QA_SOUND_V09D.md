@@ -25,3 +25,10 @@
 v0.9D is architecturally **7/7 labs implemented**. Mark **7/7 automatically accepted** only after the latest complete GitHub Actions run and screenshot review, not on earlier source commits. This does **not** mean web/Android/iOS public release is ready.
 
 **After v0.9D:** validate PWA update/restore compatibility, deploy HTTPS web preview, produce Android debug APK and test devices; iOS requires a macOS/Xcode build. Independently review filmmaking accuracy, Telugu explanations, screen reader interaction and Web Audio on real devices.
+
+## Verified first full browser acceptance — 27 October 2026
+
+- [GitHub Actions 40464897808](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40464897808) **SUCCESS**, commit `4b826e51738ada432dc8874b86cdb0ac8b68dba9`. The eleven source suites, production TypeScript/Vite build, 33/33 lessons, seven labs, backup/offline and audio opt-in/stop/change/unmount tests all passed.
+- Screenshot artifact `12715852873` was downloaded and inspected: `19-react-sound-desktop.png`, `20-react-sound-320px.png`, `20-react-sound-390px.png`. Sound choices, waveform, ambience controls, illustration and mobile layout render without evident horizontal overflow.
+- Visual review exposed inherited Frame Lab HUD labels overlapping the sound illustration. **Polish committed** to hide those labels only inside `.react-sound-lab`; desktop/mobile Chromium assertions now enforce it. The final polished commit requires a fresh green run and screenshot before visual acceptance can be considered closed.
+- **All seven React lab implementations passed automated behavioral checks on the first green run.** Real-device audible output, Safari/mobile background behavior, keyboard/screen reader, expert filmmaking and Telugu review remain open.
