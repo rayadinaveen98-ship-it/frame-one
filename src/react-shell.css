@@ -1,0 +1,3 @@
+.nav-symbol { display:inline-flex; align-items:center; justify-content:center; flex:0 0 19px; font-size:21px; line-height:1; }
+.mobile-nav [aria-current="page"] { color:#ffd3aa; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior:auto !important; animation-duration:0.01ms !important; transition-duration:0.01ms !important; } }

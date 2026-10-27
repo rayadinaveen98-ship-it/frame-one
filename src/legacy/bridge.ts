@@ -1,0 +1,22 @@
+/** Narrow integration boundary while the seven labs continue using the original runtime. */
+export type LegacyPage = 'home' | 'learn' | 'lesson' | 'lab' | 'crafts';
+export type LabName = 'frame' | 'sound' | 'light' | 'cut' | 'story' | 'colour' | 'continuity';
+export interface LegacyRoute { page: LegacyPage; lesson: string | null }
+export interface LegacyBridge {
+  navigate: (page: LegacyPage, lesson?: string) => void;
+  openLab: (lab: LabName) => void;
+  completeLesson: (id: string) => void;
+  savePractice: (id: string, note: string) => boolean;
+  setTelugu: (enabled: boolean) => void;
+  exportBackup: () => void;
+  importBackup: (data: unknown) => void;
+  illustration: (shape: 'place' | 'person' | 'detail') => string;
+}
+declare global {
+  interface Window { frameOneLegacy?: LegacyBridge }
+}
+export function navigate(page: LegacyPage, lesson?: string): void {
+  window.frameOneLegacy?.navigate(page, lesson);
+}
+export function openLab(lab: LabName): void { window.frameOneLegacy?.openLab(lab); }
+export function completeLesson(id: string): void { window.frameOneLegacy?.completeLesson(id); }

@@ -1,0 +1,25 @@
+{
+  "id": "./",
+  "name": "Frame One \u2014 Learn Cinema",
+  "short_name": "Frame One",
+  "description": "33 beginner filmmaking lessons and seven interactive labs.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0d11",
+  "theme_color": "#0b0d11",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

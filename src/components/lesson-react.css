@@ -1,0 +1,11 @@
+/* React-owned lesson reader. Original visual language remains the foundation. */
+#content[hidden] {display:none!important;}
+.react-lesson .activity-option[aria-pressed='true'],
+.react-lesson .scene-beat-buttons button[aria-pressed='true'] {outline: 2px solid var(--orange, #d65b35);outline-offset: 2px;}
+.react-lesson .scene-beat-stage .react-board-art {width:100%;overflow:hidden;border-radius:12px;}
+.react-lesson .react-board-art svg {width:100%;height:auto;display:block;max-height:350px;}
+.react-lesson button {touch-action:manipulation;}
+.react-lesson button:focus-visible, .react-lesson textarea:focus-visible {outline:3px solid #eaa36a;outline-offset:3px;}
+.react-lesson .quiz-option:disabled {cursor:default;}
+.react-lesson .note-status {min-height:1.4rem;display:inline-block;}
+@media (prefers-reduced-motion: reduce) {.react-lesson *, .react-lesson *::before, .react-lesson *::after {animation:none!important;transition:none!important;}}

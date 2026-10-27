@@ -1,0 +1,202 @@
+{
+  "units": {
+    "title": "A storyboard is not a recorded shot",
+    "items": [
+      [
+        "place",
+        "Sketch the place",
+        "A frame is one still image. This is a storyboard illustration of a possible shot, not actual recorded footage."
+      ],
+      [
+        "detail",
+        "Sketch a detail",
+        "A shot in a finished film is a continuous stretch of images between cuts. A take is an attempt to record that shot."
+      ],
+      [
+        "person",
+        "Sketch the character",
+        "Several planned shots could be filmed and assembled into a scene."
+      ]
+    ]
+  },
+  "story": {
+    "title": "One situation. Three possible story beats.",
+    "items": [
+      [
+        "place",
+        "Introduce the situation",
+        "A person waits at a bus stop. The viewer sees where the action takes place."
+      ],
+      [
+        "detail",
+        "Suggest a question",
+        "A closer image of a clock could make waiting or an appointment feel relevant."
+      ],
+      [
+        "person",
+        "Focus on a response",
+        "A closer planned shot could invite us to notice the person’s next choice or expression."
+      ]
+    ]
+  },
+  "shot": {
+    "title": "How the image directs attention",
+    "items": [
+      [
+        "place",
+        "Begin wide",
+        "A wider view places the person in their surroundings."
+      ],
+      [
+        "person",
+        "Move closer",
+        "A closer view makes the person more prominent."
+      ],
+      [
+        "detail",
+        "Show an object",
+        "A detail shot can direct attention to an object, such as the clock."
+      ]
+    ]
+  },
+  "editing": {
+    "title": "Choose what the audience learns first",
+    "items": [
+      [
+        "place",
+        "Place first",
+        "The location becomes the viewer’s first information."
+      ],
+      [
+        "detail",
+        "Detail first",
+        "The clock may raise a question about time before we know the location."
+      ],
+      [
+        "person",
+        "Person first",
+        "The person becomes our first point of attention."
+      ]
+    ]
+  },
+  "making": {
+    "title": "Start with a filmable idea",
+    "items": [
+      [
+        "place",
+        "One location",
+        "A single familiar location can be enough for a first exercise."
+      ],
+      [
+        "detail",
+        "One useful detail",
+        "A small object can give an action meaning within the story."
+      ],
+      [
+        "person",
+        "One decision",
+        "Even a brief action can create a beginning, middle and end."
+      ]
+    ]
+  },
+  "genres": {
+    "title": "One image could begin many genres",
+    "items": [
+      [
+        "place",
+        "Ordinary moment",
+        "A person waiting at a bus stop might be part of a drama, comedy or mystery. The image alone does not decide the genre."
+      ],
+      [
+        "detail",
+        "Possible clue",
+        "An illustrated clock could suggest an urgent appointment or could be a harmless detail."
+      ],
+      [
+        "person",
+        "Possible reaction",
+        "A response can help viewers interpret the scene—but context still matters."
+      ]
+    ]
+  },
+  "character": {
+    "title": "Want → obstacle → choice",
+    "items": [
+      [
+        "place",
+        "What does the person want?",
+        "Perhaps they want to catch a bus. This is a possible story setup, not a full screenplay."
+      ],
+      [
+        "detail",
+        "What changes?",
+        "A clock may suggest limited time if the wider story establishes an appointment."
+      ],
+      [
+        "person",
+        "What will they do?",
+        "Their decision, once performed, might reveal what matters to them."
+      ]
+    ]
+  },
+  "dialogue": {
+    "title": "Words need a situation",
+    "items": [
+      [
+        "place",
+        "Establish context",
+        "Two strangers at a bus stop could speak politely or uncomfortably."
+      ],
+      [
+        "person",
+        "Focus on behavior",
+        "A character’s expression or movement can change the possible meaning of simple words."
+      ],
+      [
+        "detail",
+        "Direct attention",
+        "An object can give the dialogue another layer of meaning if the scene establishes why it matters."
+      ]
+    ]
+  },
+  "composition": {
+    "title": "Where do you guide attention?",
+    "items": [
+      [
+        "place",
+        "Space and subject",
+        "A wide illustration provides information about the location and the person."
+      ],
+      [
+        "person",
+        "Emphasize the character",
+        "A closer view gives the person more visual prominence."
+      ],
+      [
+        "detail",
+        "Choose a detail",
+        "A detail illustration can call attention to a particular object."
+      ]
+    ]
+  },
+  "shotlist": {
+    "title": "Plan pictures before recording",
+    "items": [
+      [
+        "place",
+        "Shot plan 1 · Location",
+        "A wide view could establish where the scene happens."
+      ],
+      [
+        "detail",
+        "Shot plan 2 · Important detail",
+        "You might plan to film a specific object if the story needs it."
+      ],
+      [
+        "person",
+        "Shot plan 3 · Reaction",
+        "You might also plan a view of the character. The final edit may use these in any order."
+      ]
+    ]
+  }
+}

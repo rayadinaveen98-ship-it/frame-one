@@ -1,0 +1,12 @@
+/* React-owned course explorer: preserve original design, improve touch & keyboard access. */
+.react-learn-view .react-lesson-card { color:inherit; width:100%; text-align:left; cursor:pointer; }
+.react-learn-view .react-lesson-card:focus-visible, .react-learn-view button:focus-visible,
+.react-learn-view input:focus-visible, .react-learn-view summary:focus-visible { outline: 3px solid #edb88e; outline-offset:3px; }
+.react-learn-view .react-lesson-card .list-icon { font-size:24px; font-weight:500; }
+.react-learn-view .glossary-search {padding:15px 20px; border-top:1px solid #393c45;}
+.react-learn-view .glossary-search input {width:100%; max-width:480px;}
+.react-learn-view .filter-row {display:flex;overflow-x:auto;scrollbar-width:thin;padding-bottom:8px;}
+.react-learn-view .filter-chip {flex:none;min-height:44px;}
+.react-learn-view .backup-panel summary, .react-learn-view .glossary-block summary {min-height:44px;}
+.react-learn-view button {touch-action:manipulation;}
+@media(max-width:760px){.react-learn-view .search-row {flex-wrap:wrap}.react-learn-view .journey-summary {gap:12px;}.react-learn-view .glossary-search {padding:12px}}

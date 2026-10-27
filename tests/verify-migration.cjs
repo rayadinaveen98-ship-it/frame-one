@@ -1,0 +1,44 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert'),path=require('path');
+const root=path.join(__dirname,'..');
+const js=fs.readFileSync(path.join(root,'src/legacy/runtime.js'),'utf8');
+const standalone=fs.readFileSync(path.join(root,'preview/index.html'),'utf8');
+const data=JSON.parse(fs.readFileSync(path.join(root,'src/data/curriculum.v08b.json'),'utf8'));
+const pkg=JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8'));
+assert.strictEqual(data.lessons.length,33);assert.strictEqual(data.chapters.length,6);
+assert.strictEqual(data.glossary.length,47);assert.strictEqual(data.crafts.length,9);
+assert.strictEqual(new Set(data.lessons.map(x=>x.id)).size,33);
+for(const l of data.lessons){
+ assert(l.title && l.sections?.length===3 && l.opts?.length===3);
+ assert(Number.isInteger(l.answer)&&l.answer>=0&&l.answer<3,`valid answer: ${l.id}`);
+ assert(data.teluguNotes[l.id], `short Telugu helper: ${l.id}`);
+}
+for(const lab of ['frame','sound','cut','light','story','colour','continuity']) assert(js.includes(`data-lab="${lab}"`)||js.includes(`data-lab="${lab}`)||js.includes(`lab:'${lab}'`)||js.includes(`lab==='${lab}'`),`lab: ${lab}`);
+for(const key of ['frameone-progress-v01','frameone-scene-v07','frameone-practice-v07']) assert(js.includes(key),key);
+for(const file of ['src/App.tsx','src/main.tsx','src/legacy/legacy.css','public/sw.js','capacitor.config.ts','preview/app.js','preview/app.css','preview/manifest.webmanifest']) assert(fs.existsSync(path.join(root,file)),file);
+assert(standalone.includes('<link rel="stylesheet" href="./app.css">'));
+assert(standalone.includes('<script src="./app.js" defer></script>'));
+assert(!standalone.includes('<script>'), 'external scripts separated');
+assert.strictEqual(pkg.dependencies.react.slice(0,3),'^19');
+const memory={'frameone-progress-v01':JSON.stringify(['why','shot'])};const events={};const routes=[];
+const els={content:{innerHTML:''},progressCircle:{style:{setProperty(){}}},progressLabel:{textContent:''}};
+const doc={getElementById:k=>els[k]||null,querySelectorAll:()=>[],querySelector:()=>({scrollIntoView(){}}),addEventListener:(n,fn)=>events[n]=fn,body:{appendChild(){}},createElement:()=>({click(){},remove(){}})};
+const ctx={document:doc,localStorage:{getItem:k=>memory[k]||null,setItem:(k,v)=>memory[k]=v},window:{addEventListener(){},dispatchEvent(event){if(event.type==='frameone:route')routes.push(event.detail)},scrollTo(){}},CustomEvent:class {constructor(type,options){this.type=type;this.detail=options.detail;}},navigator:{},history:{replaceState(){},pushState(){}},location:{hash:'',protocol:'file:'},confirm:()=>true,console,Set,Blob,Date,clearTimeout,setTimeout,URL:{createObjectURL(){return'blob:test'},revokeObjectURL(){}}};
+vm.runInNewContext(js.replace(/export\s*\{\s*\};?\s*$/, ''),ctx,{timeout:5000});
+assert.strictEqual(els.progressLabel.textContent,'2/33 lessons');
+function click(dataset){events.click({target:{closest(){return {dataset,id:''}}}});return els.content.innerHTML;}
+assert.strictEqual(click({page:'learn'}),'', 'React owns chapter explorer markup');assert.strictEqual(routes.at(-1).page,'learn');
+click({lesson:'why'});assert.strictEqual(els.content.innerHTML,'', 'React owns lesson markup');assert.strictEqual(routes.at(-1).page,'lesson');assert.strictEqual(routes.at(-1).lesson,'why');assert(ctx.window.frameOneLegacy, 'React bridge exposed');
+assert.strictEqual(typeof ctx.window.frameOneLegacy.exportBackup,'function');
+assert.strictEqual(typeof ctx.window.frameOneLegacy.importBackup,'function');
+assert(ctx.window.frameOneLegacy.savePractice('why','a real React note'));
+assert.strictEqual(JSON.parse(memory['frameone-practice-v07']).why,'a real React note');
+ctx.window.frameOneLegacy.setTelugu(true);
+assert.strictEqual(memory['frameone-telugu-helper-v03'],'yes');
+click({lesson:'history'});
+ctx.window.frameOneLegacy.completeLesson('history');
+assert.strictEqual(els.progressLabel.textContent,'3/33 lessons');
+assert.strictEqual(routes.at(-1).lesson,'units');
+click({page:'lab'});assert(click({lab:'colour'}).includes('colour'));
+assert(click({lab:'continuity'}).includes('continuity'));
+assert(click({lab:'story'}).includes('SHOT'));
+console.log('PASS: React migration source contract, 33 lesson records, 7 lab routes, React route event bridge, preserved storage identifiers, portable static preview.');

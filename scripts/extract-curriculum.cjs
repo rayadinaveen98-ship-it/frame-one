@@ -1,0 +1,12 @@
+const fs=require('fs'),vm=require('vm'),path=require('path');
+const file=path.join(__dirname,'../src/legacy/runtime.js');
+let source=fs.readFileSync(file,'utf8');
+source=source.replace(/\}\)\(\);\s*(?:export\s*\{\s*\};?)?\s*$/, 'globalThis.__curriculum={lessons,chapters,teluguNotes,glossary,crafts,choices};})();');
+const els={content:{innerHTML:''},progressCircle:{style:{setProperty(){}}},progressLabel:{textContent:''}};
+const doc={getElementById:id=>els[id]||null,querySelectorAll:()=>[],querySelector:()=>null,addEventListener() {},body:{appendChild(){}},createElement:()=>({click(){},remove(){}})};
+const ctx={document:doc,localStorage:{getItem:()=>null,setItem(){}},window:{addEventListener(){},scrollTo(){}},navigator:{},history:{replaceState(){},pushState(){}},location:{hash:'',protocol:'file:'},confirm:()=>true,console,Set,Blob,Date,clearTimeout,setTimeout,URL:{createObjectURL:()=>'',revokeObjectURL(){}}};
+vm.runInNewContext(source,ctx,{timeout:5000});
+const content=JSON.parse(JSON.stringify(ctx.__curriculum));
+const dst=path.join(__dirname,'../src/data/curriculum.v08b.json');
+fs.writeFileSync(dst,JSON.stringify(content,null,2)+'\n');
+console.log(`Exported ${content.lessons.length} lessons, ${content.chapters.length} chapters, ${content.glossary.length} glossary records`);
