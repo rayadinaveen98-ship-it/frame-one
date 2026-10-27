@@ -294,7 +294,7 @@ async function verify() {
   assert.equal(await make.locator('#storyNote').inputValue(),'Old restored scene');
   assert.ok(await page.evaluate(() => localStorage.getItem('frameone-scene-v07')?.includes('Restored middle')));
   await photo(page,'17-react-make-desktop.png');
-  await make.locator('[data-lab="cut"]').click();
+  await make.locator('.lab-tabs [data-lab="cut"]').click();
   await make.waitFor({state:'detached'});
   await page.locator('.lab-tabs:visible [data-lab="story"]').click();
   await make.waitFor();
