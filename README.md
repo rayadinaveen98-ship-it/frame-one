@@ -1,6 +1,6 @@
 # Frame One — Learn the art of filmmaking
 
-**Engineering checkpoint v0.9J — Android API 35 native-emulator QA passed twice; latest installable debug APK remains v0.9I · 27 October 2026 · not app-store released.**
+**Engineering checkpoint v0.9K — native Android offline note persistence and system Back accepted; latest app build remains v0.9I · 27 October 2026 · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
 
@@ -39,6 +39,12 @@ The stable public address is updated automatically after successful main-branch 
 Our bundled Capacitor Android app was installed and exercised in a real **Android API 35 emulator**. [Feature branch run 40490569350](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40490569350), [repeat run 40491292091](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40491292091), and [independent main run 40492047719](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40492047719) all passed Home → Learn → first lesson, Android system Back to Learn/Home, Lab → Home, and Home Back minimizing the activity while the app process remained alive. [Full acceptance report and artifacts](docs/QA_V09J.md). [Emulator QA pipeline](.github/workflows/android-emulator-qa.yml) now runs on relevant native/UI code changes and by manual dispatch.
 
 **This is QA-only; there is no v0.9J APK.** The latest public debug APK is still **v0.9I**, and its signing identity is temporary. The emulator does not replace testing on a physical phone, iOS, or the real Cloudflare Worker URL.
+
+## v0.9K — learning data survives an offline Android restart
+
+Native Android API 35 testing now proves that a learner can type a private practice note in the real WebView, force-stop Frame One, enable airplane mode, reopen it and find the **same note still saved**. The native Back/navigation suite still passes alongside it. Independent [emulator passes 40494188012](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40494188012), [40494209385](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40494209385) and [final run 40494253148](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40494253148); full [v0.9K QA report](docs/QA_V09K.md).
+
+No app code, curriculum or saved-data keys changed. **v0.9K is a testing milestone, not a separate APK.** The latest publicly distributed application build continues to use temporary debug signing; physical Android, backup-file recovery, in-place upgrades and the live Cloudflare site remain unverified.
 
 ## Android debug APK — first build verified
 
