@@ -1,0 +1,138 @@
+import { useEffect, useState, type MouseEvent } from 'react';
+import type { LabName } from '../../legacy/bridge';
+import { StoryboardArt } from './StoryboardArt';
+import { safeStory, INITIAL_STORY, storyQuestions, storyPhases,
+  type StoryPlan, type StoryQuestion, type StoryFraming } from './story-data';
+
+const tabs:{id:LabName;label:string}[]=[
+  {id:'frame',label:'▣ Frame'}, {id:'sound',label:'♫ Sound'},
+  {id:'cut',label:'✂ Cut'}, {id:'light',label:'☼ Light'},
+  {id:'story',label:'✎ Make'}, {id:'colour',label:'◐ Colour'},
+  {id:'continuity',label:'↔ Match'}
+];
+function readSavedPlan():StoryPlan{
+  // The original runtime remains the source of truth for v0.7 storage and
+  // backup serialization, even though React owns this screen.
+  return safeStory(window.frameOneLegacy?.getStoryboard() ?? INITIAL_STORY);
+}
+export function MakeLab(){
+  const [plan,setPlan]=useState<StoryPlan>(readSavedPlan);
+  const [step,setStep]=useState(0);
+  const [status,setStatus]=useState('');
+  const current=storyQuestions[plan.question];
+  const framing=plan.shots[step];
+
+  useEffect(()=>{
+    const onRestore=()=>{setPlan(readSavedPlan());setStep(0);setStatus('Restored storyboard is ready.');};
+    window.addEventListener('frameone:story-restored',onRestore);
+    return ()=>window.removeEventListener('frameone:story-restored',onRestore);
+  },[]);
+
+  function keep(event:MouseEvent<HTMLButtonElement>){event.stopPropagation();}
+  function commit(next:StoryPlan,showStatus=false){
+    const sanitized=safeStory(next);
+    setPlan(sanitized);
+    const okay=window.frameOneLegacy?.saveStoryboard(sanitized)??false;
+    if(showStatus)setStatus(okay?'Saved in this browser.':'Unable to save; you can still export the plan.');
+    else if(!okay)setStatus('Browser storage unavailable. Export a shot list to keep your work.');
+    else setStatus('');
+    return okay;
+  }
+  function chooseQuestion(event:MouseEvent<HTMLButtonElement>,question:StoryQuestion){
+    keep(event);commit({...plan,question});
+  }
+  function chooseShot(event:MouseEvent<HTMLButtonElement>,shot:StoryFraming){
+    keep(event);
+    const shots=[...plan.shots] as StoryPlan['shots'];shots[step]=shot;
+    commit({...plan,shots});
+  }
+  function chooseStep(event:MouseEvent<HTMLButtonElement>,value:number){
+    keep(event);setStep(Math.max(0,Math.min(2,value)));setStatus('');
+  }
+  function changeNote(text:string){
+    const notes=[...plan.notes] as StoryPlan['notes'];
+    notes[step]=text.slice(0,240);commit({...plan,notes});
+  }
+  function exportPlan(event:MouseEvent<HTMLButtonElement>){
+    keep(event);
+    commit(plan);
+    try{
+      if(!window.frameOneLegacy)throw new Error('Learning engine not ready');
+      window.frameOneLegacy.exportShotList();
+      setStatus('Shot-list export prepared.');
+    }catch{setStatus('Export is unavailable here. Your text remains in the editor.');}
+  }
+  return <div className="page react-make-lab">
+    <div className="page-intro cinematic-heading">
+      <div className="eyebrow">DIRECTOR'S STUDIO / YOUR FIRST CREATION</div>
+      <h1>Plan a tiny scene.</h1>
+      <p>Pick a story question, plan three shots and describe the action. Make something you could try filming on a phone.</p>
+    </div>
+    <div className="lab-tabs" role="group" aria-label="Choose a creative experiment">
+      {tabs.map(tab=><button className="lab-tab" type="button" key={tab.id}
+        data-lab={tab.id} aria-pressed={tab.id==='story'}>{tab.label}</button>)}
+    </div>
+    <div className="story-lead">
+      <section className="story-workspace">
+        <span className="eyebrow">FIRST FILM PROJECT · BUS STOP</span>
+        <h2>What is the story about?</h2>
+        <div className="scene-prompt-grid" role="group" aria-label="Select a story question">
+          {(Object.entries(storyQuestions) as [StoryQuestion,typeof current][]).map(([id,choice])=>
+            <button type="button" key={id} data-story-question={id}
+              aria-pressed={plan.question===id} onClick={event=>chooseQuestion(event,id)}>
+              {choice.label}
+            </button>)}
+        </div>
+        <p>{current.question}</p>
+        <div className="story-film-frame">
+          <StoryboardArt shot={framing}/>
+          <span className="story-frame-hud">STORYBOARD · SHOT 0{step+1} · {framing.toUpperCase()}</span>
+        </div>
+        <div className="story-caption"><span>Sketch for framing only, not footage</span><span>0{step+1} / 03</span></div>
+        <div className="story-panel-steps" aria-label="Choose a story beat">
+          {storyPhases.map((phase,index)=><button type="button" key={phase.name}
+            data-story-step={index} aria-current={step===index?'step':undefined}
+            onClick={event=>chooseStep(event,index)}>
+            <span>SHOT 0{index+1}</span><strong>{phase.name}</strong>
+            <small>{plan.notes[index]||'Add your action idea'}</small>
+          </button>)}
+        </div>
+      </section>
+      <section className="story-inspector">
+        <span className="eyebrow">PLAN SHOT 0{step+1}</span>
+        <h3>{storyPhases[step].name}</h3>
+        <p>{storyPhases[step].prompt}</p>
+        <div className="story-framing-choice">
+          <p className="story-control-label">Choose the framing</p>
+          <div className="story-shot-buttons" role="group" aria-label="Choose the current shot framing">
+            {([['wide','Wide'],['medium','Medium'],['close','Close-up']] as const).map(([id,label])=>
+              <button type="button" key={id} data-story-shot={id}
+                aria-pressed={framing===id} onClick={event=>chooseShot(event,id)}>{label}</button>)}
+          </div>
+        </div>
+        <label htmlFor="storyNote">What happens in this shot?</label>
+        <textarea id="storyNote" maxLength={240} placeholder="Write a simple action you could film..."
+          value={plan.notes[step]}
+          onChange={event=>{event.stopPropagation();changeNote(event.currentTarget.value);}}
+          onInput={event=>event.stopPropagation()}/>
+        <p className="story-help">{current.hints[step]} Your drawing shows only framing; the written action is a plan for what you might film.</p>
+        <div className="story-actions">
+          <button className="cta" type="button" data-story-save onClick={event=>{keep(event);commit(plan,true);}}>Save scene</button>
+          <button className="btn-secondary" type="button" data-story-export onClick={exportPlan}>Export shot list</button>
+        </div>
+        <span className="story-confirm" id="storyStatus" role="status" aria-live="polite">{status}</span>
+        <div className="story-actions">
+          <button className="btn-secondary" type="button" data-story-prev disabled={step===0}
+            onClick={event=>chooseStep(event,step-1)}>← Previous</button>
+          <button className="btn-secondary" type="button" data-story-next disabled={step===2}
+            onClick={event=>chooseStep(event,step+1)}>Next shot →</button>
+        </div>
+      </section>
+    </div>
+    <div className="story-footnote"><strong>Beginner filmmaking tip:</strong> A storyboard is a visual plan, not a rulebook. You can later change the number of shots, the camera position or the order. These drawings reuse the same original scene to compare framing; they do not simulate lens physics or moving footage.</div>
+    <div className="studio-next"><span>CONNECT THIS TO LEARNING</span>
+      <button className="btn-secondary" type="button" data-lesson="making">Read: your first film →</button>
+      <button className="btn-secondary" type="button" data-lab="cut">Try arranging filmed moments →</button>
+    </div>
+  </div>;
+}
