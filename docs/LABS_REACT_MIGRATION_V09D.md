@@ -63,3 +63,10 @@
 - Production Chromium automation verifies three presets, 1×–3× crop, SVG viewBox, two-image comparison, guide state, original data preservation and desktop/390px/320px navigation.
 - [Run 40452193907](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452193907) **passed** and [run 40452506346](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452506346) **passed** the stacked-mobile-comparison refinement. Screenshots inspected; desktop sticky-preview polish passed [run 40452722135](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452722135) and the screenshot was inspected.
 - **3/7 labs migrated. Four remain: Lighting, Cut, Make and Sound.** Next migrate Lighting with the same exclusive-DOM and delegated-event protections. [Frame QA](QA_FRAME_V09D.md).
+
+## Fourth implementation checkpoint — Lighting Lab
+
+- Original vector portrait/drawn front/side/back illumination, modelled brightness and shadow edge controls migrated to React, using authored SVG markup and preserving original caveats and practice safety guidance.
+- Legacy renderer/input events now explicitly skip React Lighting; eight Node suites and Chromium assertions check brightness darkening, side-shadow blur, direction, accessible sliders and 320px/390px layout.
+- [GitHub Actions 40457618029](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40457618029) green and initial mobile/desktop screenshots inspected. A later desktop preview-height refinement is committed, pending a separate run and screenshot.
+- **Current migration: 4/7 implemented, 3/7 legacy**. Next after final Lighting acceptance: **Cut**, then Make and Sound; continue to preserve legacy backup keys and audio/timer cleanup. [Evidence](QA_LIGHTING_V09D.md).
