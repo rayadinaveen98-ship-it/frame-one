@@ -29,3 +29,35 @@
   .react-learn-view .chapter-body:not(.is-expanded) { display:none; }
   .react-learn-view .chapter-panel { contain:layout style; }
 }
+
+/* Portable backup text alternative for Android WebViews where file downloads
+   or clipboard writes may be unavailable. Learner data is never uploaded. */
+.react-learn-view .backup-text-fallback {
+  margin-top:18px; padding:14px 16px; border:1px solid #475263;
+  border-radius:13px; background:#1a2029; min-width:0;
+}
+.react-learn-view .backup-text-fallback > summary {
+  font-size:13px; font-weight:750; color:#f0d6c2;
+  cursor:pointer; padding:5px 0; min-height:44px;
+}
+.react-learn-view .backup-text-fallback > p {
+  margin:8px 0 16px; font-size:12px; color:#ccd2dd; line-height:1.7;
+}
+.react-learn-view .backup-text-fallback > button,
+.react-learn-view .backup-text-field button {min-height:44px; max-width:100%;}
+.react-learn-view .backup-text-field {margin-top:15px; min-width:0;}
+.react-learn-view .backup-text-field label {
+  display:block; font-size:12px; color:#e4dfdc; font-weight:650; margin-bottom:8px;
+}
+.react-learn-view .backup-text-field textarea {
+  display:block; width:100%; max-width:100%; min-width:0; resize:vertical;
+  border:1px solid #536070; border-radius:10px; background:#0d141e;
+  color:#f2eae3; padding:11px 12px; font:12px/1.6 ui-monospace,monospace;
+  overflow-wrap:anywhere; margin-bottom:11px;
+}
+.react-learn-view .backup-text-field textarea:focus-visible {outline:3px solid #edb88e;outline-offset:3px;}
+@media(max-width:540px) {
+  .react-learn-view .backup-text-fallback {padding:12px;}
+  .react-learn-view .backup-text-fallback > button,
+  .react-learn-view .backup-text-field button {width:100%;}
+}
