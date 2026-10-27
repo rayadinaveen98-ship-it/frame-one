@@ -6,6 +6,11 @@ const fs=require('node:fs'),path=require('node:path');
 const root=path.join(__dirname,'..');
 const read=file=>fs.readFileSync(path.join(root,file),'utf8');
 const pkg=JSON.parse(read('package.json'));
+const worker=JSON.parse(read('wrangler.jsonc'));
+assert.equal(worker.name,'frame-one','Wrangler targets the existing Cloudflare Worker');
+assert.equal(worker.assets.directory,'./dist','Worker deploys the complete Vite dist');
+assert.equal(worker.assets.not_found_handling,'single-page-application','Workers serves React routes');
+assert(!('main' in worker),'Static-only Worker needs no server-side script');
 const vite=read('vite.config.ts');
 const headers=read('public/_headers');
 const pwa=read('src/pwa.ts');
@@ -30,4 +35,4 @@ assert.match(app,/window\.location\.reload\(\)/,'refresh button actually reloads
 assert.match(app,/Finish what you're doing/,'unsaved editing not interrupted without prompt');
 assert.match(worker,/frame-one-pwa-/,'service worker cache uses built hash');
 assert.match(worker,/caches\.match\('\.\/index.html'\)/,'offline shell navigation kept');
-console.log('PASS: Cloudflare Pages source contract (Node 22, Vite dist, PWA cache headers and safe refresh).');
+console.log('PASS: Cloudflare Workers static-asset deployment plus Pages-compatible Vite/PWA build contract.');
