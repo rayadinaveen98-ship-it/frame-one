@@ -14,7 +14,7 @@ assert(app.includes("import { ColourLab, type ColourMode }"), 'App imports React
 assert(app.includes("const [colourMode,setColourMode]"), 'Colour mode state persists in React App');
 assert(app.includes("const [colourStrength,setColourStrength]"), 'Colour strength state persists in React App');
 assert(app.includes("route.lab==='colour' ? <ColourLab"), 'App renders colour only for its route');
-assert(legacy.includes("['continuity','colour'].includes(state.lab)?'':"), 'legacy yields exclusive rendering of two migrated labs');
+assert(legacy.includes("['continuity','colour','frame'].includes(state.lab)?'':"), 'legacy yields exclusive rendering of two migrated labs');
 assert(legacy.includes("lab:state.page==='lab'?state.lab:undefined"), 'legacy bridge emits active lab');
 assert(colour.includes("event.stopPropagation()"), 'mode choices do not double-dispatch legacy events');
 for (const mode of ["neutral","warm","cool"]) assert(colour.includes("data-colour={id}") && colour.includes(mode+":"), 'all colour modes preserved');
@@ -22,13 +22,13 @@ assert(colour.includes("mode === 'neutral' ? 0"), 'neutral mode cannot apply tin
 assert(colour.includes("100*.42"), 'overlay alpha formula maintains 42% max');
 assert(colour.includes("onInput=") && colour.includes("onChange="), 'slider supports drag and keyboard input');
 assert(colour.includes("onInput={event=>{event.stopPropagation()") && colour.includes("onChange={event=>{event.stopPropagation()"), 'React slider events cannot reach obsolete legacy input handler');
-assert(legacy.includes("e.target.closest?.('.react-colour-lab,.react-continuity-lab')"), 'legacy delegated input handler skips React-owned lab inputs');
+assert(legacy.includes("e.target.closest?.('.react-colour-lab,.react-continuity-lab,.react-frame-lab')"), 'legacy delegated input handler skips React-owned lab inputs');
 assert(colour.includes("aria-pressed={id===mode}"), 'colour options have accessible selection state');
 assert(colour.includes('Read the colour lesson'), 'lesson deep link retained');
 assert(colour.includes('a coloured overlay is not colour grading'), 'accuracy caveat retained');
 assert(scene.includes('Original storyboard image showing the same person at a bus stop'), 'original scene retained');
 for(const identifier of ['fSky','fSun','fCoat']) assert(scene.includes(identifier), 'SVG gradient '+identifier);
-assert(scene.includes("originalMarkup.replace"), 'original art is bundled and graduate IDs are scoped');
+assert(scene.includes("originalMarkup") && scene.includes(".replace(/\\b(fSky|fSun|fCoat)\\b/g"), 'original art is bundled and graduate IDs are scoped');
 for(const key of ['frameone-progress-v01','frameone-practice-v07','frameone-scene-v07']) assert(legacy.includes(key), 'saved learning storage '+key);
 for(const cls of ['colour-compare','colour-picture','colour-grade','colour-choices','colour-shell']) assert(style.includes('.'+cls), 'original lab CSS '+cls);
 assert(qa.includes("React must own Colour Lab") && qa.includes("10-react-colour-"), 'browser smoke covers both mobile and desktop');
