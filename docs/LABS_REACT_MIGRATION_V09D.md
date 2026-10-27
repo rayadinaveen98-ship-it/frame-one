@@ -48,4 +48,11 @@
 - **State management:** Continuity choice is React state held in App (retained during tab-to-tab navigation), uses accessible `aria-pressed`, and does not touch progress, practice notes or storyboard storage.
 - **Checks added:** `tests/verify-react-continuity.cjs` in `npm test`, updated legacy runtime contract, and compiled-browser test asserting React ownership, changed/matched cup and return navigation.
 - **Acceptance: automated browser QA passed.** [GitHub Actions run 40449195578](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40449195578) verified the integrated React Continuity Lab, six legacy labs, 33 lessons, backup/offline behavior and mobile baseline. Desktop screenshot was inspected. A follow-up 320px/390px Continuity-specific screenshot check is also added; verify its run separately. Manual device/accessibility review remains open.
-- **Next once green:** Inspect fresh desktop/mobile screenshots, then begin **Colour Lab** as the next independently migrated React component. Do not mark all seven labs migrated.
+- **Continuity accepted.** Colour has now also passed browser acceptance; next migrate **Frame Lab**. Do not mark all seven labs migrated.
+
+## Second implementation checkpoint — Colour Lab (accepted)
+
+- React `ColourLab.tsx` owns overlay mode (neutral/warm/cool) and strength. Locally authored original bus-stop SVG is shared through `CinemaScene.tsx`; labels and colour-science disclaimers are preserved.
+- The old global input listener was mistakenly setting the React overlay opacity to zero. Source and browser diagnostics confirmed the defect; propagation and legacy filtering were corrected and added to regression coverage.
+- Verified **SUCCESS** [GitHub real-browser run 40451210219](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40451210219), with screenshots reviewed at 1440px, 390px and 320px. Full evidence: [QA_COLOUR_V09D.md](QA_COLOUR_V09D.md).
+- **Current count: 2/7 React; 5/7 still legacy.** Next: Frame Lab, preserving original crop illustration and avoiding lens/perspective simulation claims.
