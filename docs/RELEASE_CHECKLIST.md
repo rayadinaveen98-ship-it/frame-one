@@ -26,6 +26,8 @@ This page separates *automated test evidence* from *real-person/device acceptanc
 - [ ] **Physical phone** external save/share chooser and JSON import verification; the emulator's ADB copy is not evidence that a person saved a backup to Files/Drive.
 - [ ] **Stable QA signing**: persistent secret-managed keystore, two successive same-certificate builds and Android in-place upgrade retention; current public debug APK reports `Persistent QA signer: NO`.
 
+- [x] Post-merge main API35 [native Back/offline/backup-export suite 40533677695](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40533677695) and [full DocumentsUI backup restoration 40533677486](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40533677486) **both PASS**.
+
 ## Browser and cloud acceptance
 
 - [ ] Confirm exact Cloudflare production Worker URL and latest deployed commit from the connected account.
