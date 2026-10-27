@@ -49,3 +49,12 @@ The actual native runtime log confirms:
 
 **Scope:** This passes emulator **system-key** Back and native activity minimization. It is not a physical Samsung/Pixel device acceptance, predictive edge-gesture animation review, audio or keyboard/backup test, signing continuity test, or Cloudflare deployment.
 
+
+
+## Repeated final acceptance — PASS
+
+The final launcher-based script passed again at [GitHub Actions run 40491292091](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40491292091) on commit `a558246b09adf4a72f2353b2af3d0a6d5a4ee629`.
+
+This **second independent full pass** verified actual Android API 35 `aosp_atd` installation, Home rendering, Learn and first lesson, Back to Learn and Home, Lab Back to Home, and that Home Back foregrounded `com.android.fakesystemapp/.launcher.EmptyHomeActivity` while the Frame One app process remained alive. The log ended with `FRAME ONE ANDROID EMULATOR SMOKE: PASS`, and the QA screenshots/UI XML/foreground-activity evidence were uploaded.
+
+The working and representative launch method is the app launcher intent. Do not replace it with `am start` for this root-task minimize assertion.
