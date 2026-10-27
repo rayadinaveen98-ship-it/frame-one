@@ -123,7 +123,7 @@ def main() -> None:
     print("PASS: Android system Back returns from Learn to Home", flush=True)
 
     tap_label("Lab")
-    find("Creative Lab")
+    find("One moment. Many frames.")
     capture("05-lab")
     system_back()
     find("WELCOME TO THE WORLD OF CINEMA")
@@ -135,7 +135,7 @@ def main() -> None:
     resumed=[line.strip() for line in activities.splitlines()
              if "topResumedActivity=" in line or "mResumedActivity:" in line]
     (OUTPUT / "after-home-back-activity.txt").write_text(
-        "\\n".join(resumed)+"\\n",encoding="utf-8")
+        "\n".join(resumed)+"\n",encoding="utf-8")
     if not resumed:
         capture("06-home-minimize-unconfirmed")
         raise AssertionError("Cannot determine foreground Android activity after Home Back")
