@@ -74,8 +74,11 @@ async function verify() {
   const secondLessonTitle = (await page.locator('.react-lesson h1').textContent()).trim();
   const note = 'I want to frame a shot where an umbrella hides a surprise.';
   await page.locator('#lessonPractice').fill(note);
-  await page.getByRole('button', { name: /save idea on this device/i }).click();
-  await page.getByText('Saved on this device.', { exact: true }).waitFor();
+  await page.getByText('Saved automatically on this device.', { exact: true }).waitFor();
+  assert.equal(await page.evaluate(() => {
+    const saved = JSON.parse(localStorage.getItem('frameone-practice-v07') || '{}');
+    return Object.values(saved).includes('I want to frame a shot where an umbrella hides a surprise.');
+  }), true, 'Practice text must be written immediately without tapping Save');
   await page.locator('.sidebar [data-page="learn"]').click();
   await page.locator('.react-learn-view').waitFor();
   await page.reload({ waitUntil: 'domcontentloaded' });
@@ -87,7 +90,7 @@ async function verify() {
   assert.equal(await page.locator('#lessonPractice').inputValue(), note);
   await page.goBack({ waitUntil: 'domcontentloaded' });
   await page.locator('.react-learn-view').waitFor();
-  console.log('PASS: saved practice note survives reload and browser-back route returns to chapters');
+  console.log('PASS: auto-saved practice note survives reload and browser-back route returns to chapters');
 
   await page.locator('.sidebar [data-page="lab"]').click();
   await page.locator('.lab-tabs').waitFor();

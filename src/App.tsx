@@ -14,6 +14,7 @@ import type { LegacyRoute, LabName } from './legacy/bridge';
 import type { CSSProperties } from 'react';
 import './legacy/legacy.css';
 import './components/labs/react-labs.css';
+import './native-safe-area.css';
 import './pwa-update.css';
 
 // v0.9 migration bridge: React owns the persistent application shell.

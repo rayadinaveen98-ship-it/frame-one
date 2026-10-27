@@ -1,10 +1,11 @@
 name: Publish downloadable Frame One Android preview
 
 on:
-  push:
+  # Every verified Android build on main refreshes the same stable public URL.
+  workflow_run:
+    workflows: ['Frame One Android debug APK']
+    types: [completed]
     branches: [main]
-    paths:
-      - '.github/workflows/publish-android-preview.yml'
   workflow_dispatch:
     inputs:
       source_run_id:
@@ -12,32 +13,36 @@ on:
         required: true
         type: string
         default: '40474407084'
-      tag_name:
-        description: 'Unique preview release tag'
-        required: true
-        type: string
-        default: 'v0.9e-android-debug-1'
 
 permissions:
   actions: read
   contents: write
 
+concurrency:
+  group: frame-one-public-android-preview
+  cancel-in-progress: false
+
 jobs:
   publish-android-preview:
+    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main') }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 12
     env:
       GH_TOKEN: ${{ github.token }}
-      SOURCE_RUN_ID: ${{ inputs.source_run_id || '40474407084' }}
-      RELEASE_TAG: ${{ inputs.tag_name || 'v0.9e-android-debug-1' }}
+      SOURCE_RUN_ID: ${{ github.event.workflow_run.id || inputs.source_run_id }}
+      RELEASE_TAG: android-preview-latest
     steps:
-      - name: Confirm source run is successful and from main
+      - name: Verify trusted main-branch source build
         shell: bash
         run: |
           set -euo pipefail
+          test -n "$SOURCE_RUN_ID"
+          case "$SOURCE_RUN_ID" in *[!0-9]* ) echo 'Invalid run identifier'; exit 1 ;; esac
           state="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${SOURCE_RUN_ID}" --jq '.conclusion + ":" + .head_branch')"
           test "$state" = "success:main"
-      - name: Download the previously verified APK artifact
+          sha="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${SOURCE_RUN_ID}" --jq '.head_sha')"
+          printf 'SOURCE_SHA=%s\n' "$sha" >> "$GITHUB_ENV"
+      - name: Download and verify the existing compiled APK
         shell: bash
         run: |
           set -euo pipefail
@@ -46,31 +51,32 @@ jobs:
           test -s release/app-debug.apk
           unzip -tqq release/app-debug.apk
           unzip -Z1 release/app-debug.apk | grep -qx 'assets/public/index.html'
-          mv release/app-debug.apk release/FrameOne-v0.9E-debug.apk
-          sha256sum release/FrameOne-v0.9E-debug.apk | tee release/SHA256SUMS.txt
-      - name: Publish GitHub prerelease with direct APK download
+          mv release/app-debug.apk release/FrameOne-android-debug.apk
+          (cd release && sha256sum FrameOne-android-debug.apk > SHA256SUMS.txt)
+      - name: Publish same stable direct APK URL with verified build receipt
         shell: bash
         run: |
           set -euo pipefail
-          cat >release/NOTES.md <<'EOF'
-          ## Frame One v0.9E — Android debug test build
+          cat >release/NOTES.md <<EOF
+          ## Frame One — latest Android debug APK
 
-          This is a **test APK**, not a Google Play or public production release.
-          Built from the repository's verified main-branch Android workflow.
+          **Test build only**, not Play Store ready. The current permanent package ID, Android/iOS behavior and accessibility have not been independently approved.
 
-          Download **FrameOne-v0.9E-debug.apk** below and open it on an Android test device.
-          Android may ask you to permit installation from the Files app or browser.
-          Please test lessons, all seven creative labs, Sound playback, offline navigation and backup export.
+          Verified source commit: \`$SOURCE_SHA\`
+          Verified GitHub Actions run: https://github.com/$GITHUB_REPOSITORY/actions/runs/$SOURCE_RUN_ID
 
-          **Known limitations:** real-device audio and accessibility testing is still pending; the current Android package ID is provisional; user data remains local to the installation. Export saved learning data before uninstalling.
+          Download **FrameOne-android-debug.apk** from the assets below. Install it on an Android test phone and check all lessons, seven creative labs, sound playback, notes, backups, safe-area layout and offline reload.
+
+          Export a learning backup before uninstalling an older version. No private signing keys or learner data are included in this artifact.
           EOF
           if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release upload "$RELEASE_TAG" release/FrameOne-v0.9E-debug.apk release/SHA256SUMS.txt --clobber --repo "$GITHUB_REPOSITORY"
+            gh release upload "$RELEASE_TAG" release/FrameOne-android-debug.apk release/SHA256SUMS.txt --clobber --repo "$GITHUB_REPOSITORY"
+            gh release edit "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --notes-file release/NOTES.md
           else
-            gh release create "$RELEASE_TAG" release/FrameOne-v0.9E-debug.apk release/SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title 'Frame One v0.9E — Android test APK' --prerelease --notes-file release/NOTES.md
+            gh release create "$RELEASE_TAG" release/FrameOne-android-debug.apk release/SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --target "$SOURCE_SHA" --title 'Frame One — latest Android test APK' --prerelease --notes-file release/NOTES.md
           fi
-      - name: Confirm public release asset
+      - name: Confirm downloadable release asset
         shell: bash
         run: |
           set -euo pipefail
-          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -qx 'FrameOne-v0.9E-debug.apk'
+          gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -qx 'FrameOne-android-debug.apk'

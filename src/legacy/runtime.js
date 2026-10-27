@@ -1570,10 +1570,25 @@
       const savedScene=payload.scene;if(!savedScene||typeof savedScene!=='object'||!Object.hasOwn(sceneQuestions,savedScene.question)||!Array.isArray(savedScene.shots)||!Array.isArray(savedScene.notes))throw new Error('Scene in backup is invalid.');
       const safeScene={question:savedScene.question,shots:[0,1,2].map(i=>['wide','medium','close'].includes(savedScene.shots[i])?savedScene.shots[i]:'wide'),notes:[0,1,2].map(i=>typeof savedScene.notes[i]==='string'?savedScene.notes[i].slice(0,240):'')};
       // Validate everything BEFORE replacing any in-memory or persisted values.
+      // localStorage lacks transactions: snapshot existing values, and try to
+      // roll them back if quota/private-mode errors interrupt a multi-key save.
+      // Do not mutate live UI state until all three writes have succeeded.
       const nextProgress=[...new Set(restoredIds)];
-      localStorage.setItem(STORAGE_KEY,JSON.stringify(nextProgress));
-      localStorage.setItem(NOTES_KEY,JSON.stringify(incomingNotes));
-      localStorage.setItem(STORY_KEY,JSON.stringify(safeScene));
+      const restoreKeys=[STORAGE_KEY,NOTES_KEY,STORY_KEY];
+      const previous=restoreKeys.map(key=>localStorage.getItem(key));
+      try {
+        localStorage.setItem(STORAGE_KEY,JSON.stringify(nextProgress));
+        localStorage.setItem(NOTES_KEY,JSON.stringify(incomingNotes));
+        localStorage.setItem(STORY_KEY,JSON.stringify(safeScene));
+      } catch {
+        for(let i=0;i<restoreKeys.length;i++){
+          try {
+            if(previous[i]===null)localStorage.removeItem(restoreKeys[i]);
+            else localStorage.setItem(restoreKeys[i],previous[i]);
+          } catch {} // Storage may remain unavailable; never claim a guaranteed rollback.
+        }
+        throw new Error('The backup could not be saved. Check device storage and retry; existing data was restored where possible.');
+      }
       finished.clear();nextProgress.forEach(x=>finished.add(x));state.notes=incomingNotes;state.story=safeScene;state.storyStep=0;
     }
     function downloadBackup(){
