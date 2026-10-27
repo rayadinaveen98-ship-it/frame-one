@@ -53,7 +53,7 @@ async function verify() {
   assert.equal(await launchScreen.locator('.launch-wordmark').textContent(),'FRAME ONE');
   await launchPage.waitForFunction(()=>Boolean(window.frameOneLegacy),null,{timeout:12000});
   await launchPage.waitForTimeout(1950);
-  await photo(launchPage,'00-cinematic-launch-390.png');
+  await launchPage.screenshot({path:path.join(shots,'00-cinematic-launch-390.png'),fullPage:false,animations:'allow'});
   await launchScreen.waitFor({state:'detached',timeout:7000});
   assert.equal(await launchPage.locator('.home-greeting').count(),1);
   console.log('PASS: branded mobile title displays, uses exactly four seconds and yields to Home');
