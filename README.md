@@ -1,6 +1,6 @@
 # Frame One — Learn the art of filmmaking
 
-**Engineering checkpoint v0.9F — protected notes and backups, compiled Chromium QA and downloadable Android debug APK · 27 October 2026 · not app-store released.**
+**Engineering checkpoint v0.9G — protected learner data, portable JSON copy/paste backups and verified Android debug APK · 27 October 2026 · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
 
@@ -28,7 +28,9 @@ React 19 + TypeScript + Vite + Capacitor 8 powers the built web app and Android 
 
 The stable public address is updated automatically after successful main-branch Android debug builds. **v0.9F** was verified by [web build 40478349107](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478349107), [compiled browser QA 40478349333](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478349333), [Android build 40478349105](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478349105), and the [public release publisher 40478579858](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478579858). Preserve the earlier [v0.9E test APK release](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/v0.9e-android-debug-1) for rollback/reference.
 
-This remains a **test-only debug build**, not a Play Store or iOS release. Learning ideas now auto-save; interrupted backup imports attempt to roll back previous saved data; the mobile shell respects exposed safe-area insets. Real-device listening, storage/export, status bars and accessibility still need structured testing. [v0.9F QA report](docs/QA_V09F.md).
+**v0.9G (latest)** now adds a private, user-initiated **copy/paste JSON learning-backup alternative** under Learn, without changing the existing file download/import path or data schema. Merged code passed [web build 40480555312](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480555312), [compiled Chromium QA 40480555273](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480555273), [Android APK 40480555401](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480555401) and [latest public APK publisher 40480801867](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480801867). [v0.9G QA report](docs/QA_V09G.md).
+
+This remains a **test-only debug build**, not a Play Store or iOS release. Practice ideas now auto-save, interrupted backup imports attempt rollback, and mobile content respects safe-area insets. Real-device listening, clipboard, storage/export, status bars and accessibility still need structured testing. [v0.9F QA report](docs/QA_V09F.md).
 
 ## Android debug APK — first build verified
 
