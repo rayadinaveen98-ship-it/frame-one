@@ -285,7 +285,11 @@ async function verify() {
     format:'frameone-learning-backup',version:1,
     completed:[],notes:{},scene:{question:'decision',shots:['wide','wide','medium'],notes:['Old restored scene','Restored middle','Restored ending']}
   }));
-  await page.getByRole('button',{name:'Decision',exact:true}).waitFor();
+  await page.waitForFunction(() => {
+    const root=document.querySelector('.react-make-lab');
+    return root?.querySelector('[data-story-question="decision"]')?.getAttribute('aria-pressed')==='true'
+      && root?.querySelector('#storyNote')?.value==='Old restored scene';
+  },null,{timeout:10000});
   assert.equal(await make.locator('[data-story-question="decision"]').getAttribute('aria-pressed'),'true');
   assert.equal(await make.locator('#storyNote').inputValue(),'Old restored scene');
   assert.ok(await page.evaluate(() => localStorage.getItem('frameone-scene-v07')?.includes('Restored middle')));
