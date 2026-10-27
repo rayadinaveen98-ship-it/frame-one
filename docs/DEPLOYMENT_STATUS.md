@@ -1,48 +1,37 @@
-# Frame One — web deployment status
+# Frame One — Cloudflare web deployment truth
 
-**Hosting decision:** Cloudflare Pages (Git integration), not Vercel.  
-**Last checked:** 27 October 2026.
+**Checked:** 27 October 2026. **Chosen provider and existing account project: Cloudflare Workers (static assets), project `frame-one`**, connected to the GitHub repository `rayadinaveen98-ship-it/frame-one`. A **verified live HTTPS URL has not been provided or independently checked**.
 
-## GitHub source is prepared
+## Confirmed repository configuration
 
-- `.node-version` fixes the Cloudflare Pages build runtime to Node.js 22.
-- `npm run build` compiles TypeScript/React/Vite, generates actual offline precache; Pages publishes `dist/`.
-- `public/_headers` revalidates the HTML shell, manifest and service worker so frequent GitHub redeployments do not leave stale browser resources.
-- `src/pwa.ts` requests worker update on load; `App.tsx` offers a safe, user-driven **Refresh now** notice after an updated worker takes control. No forced refresh while writing.
-- `tests/verify-cloudflare.cjs` guards the source setup; `scripts/verify-pages-dist.cjs` checks the *actual* built output. Both are part of GitHub browser CI.
-- Instructions for one-time authorization: [Cloudflare Pages setup](CLOUDFLARE_PAGES_SETUP.md).
+- `wrangler.jsonc` identifies the Worker `frame-one`, publishes `./dist` static assets and uses SPA fallback.
+- Worker build settings previously shown in the Cloudflare account screenshot: `npm run build` followed by `npx wrangler deploy`; repository branch `main`.
+- Node 22, TypeScript/Vite production build, offline precache, PWA assets and refresh UI are present.
+- GitHub Actions builds and performs **Wrangler dry runs**, plus full Chromium desktop/phone tests. A dry run proves source configuration, **not actual Cloudflare account deployment**.
+- The Worker guide is [CLOUDFLARE_WORKERS_SETUP.md](CLOUDFLARE_WORKERS_SETUP.md). The earlier [Pages guide](CLOUDFLARE_PAGES_SETUP.md) is historical, not a reason to create a second Pages project.
 
-## Still pending — account-side, cannot be completed via currently connected tools
+## Still unverified, must not be claimed
 
-- Cloudflare Pages project creation and **GitHub repository authorization** must be carried out in the Cloudflare account dashboard. ChatGPT's available connected tools can update GitHub but do not have direct access to the Cloudflare account.
-- Therefore there is **no verified live Frame One `pages.dev` address yet**. Do not infer one from proposed project names.
-- First real Cloudflare Pages build and public site inspection are pending, even after GitHub Actions succeeds.
-- Android APK, iOS package, independent learner-device/audio/accessibility/content review are separate release gates.
+- The Cloudflare dashboard's latest production deployment actually completed successfully
+- Exact Cloudflare `workers.dev` / custom-domain URL serving current Frame One
+- Whether pushing `main` updates the connected live Worker automatically
+- Live HTTPS PWA install, service-worker refresh, real offline reopen and origin-specific backup migration
 
-## Intended operational flow
+No Cloudflare account-management connector is currently available, and prior project records contain **no user-confirmed Frame One live URL**. Do not invent a `workers.dev` account subdomain or reuse other project links.
 
-GitHub push to `main` → Cloudflare Git integration builds `npm run build` → publishes `dist` to the same HTTPS Pages URL → user opens/reloads that link. Production deploy after successful build, not instantly while code is being written. For risky experiments, use GitHub feature branches and Cloudflare preview URLs.
+## How to close this gate
 
-**Next action:** connect [Workers & Pages](https://dash.cloudflare.com/?to=/:account/workers-and-pages) to the existing GitHub repository using the exact values in [setup](CLOUDFLARE_PAGES_SETUP.md). Once the first successful deployment exists, add its actual dashboard URL here and conduct the live-update/offline/backup QA.
+1. Inspect the existing Cloudflare **Workers & Pages → frame-one → Deployments** view, confirm the latest production deployment is **Success**, and copy the displayed production URL from **Domains/Overview**.
+2. Test that exact production URL for the Frame One home, chapter explorer, a lesson, all seven labs and offline reload.
+3. Confirm a later GitHub `main` push triggers a new Cloudflare production deployment and update notice without a new domain.
+4. Test moving local progress by exporting a JSON backup (or the v0.9G private copy/paste fallback) and importing it in a separate origin/profile. Do not overwrite real learner data without a verified backup.
 
-## Verified GitHub preparation gate
+## Technical verification already achieved
 
-- [GitHub Actions run 40468085250](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40468085250): **SUCCESS** after adding the built-`dist` verification; the production Vite output contains the Cloudflare-ready PWA, offline worker, icons and `_headers`.
-- [GitHub Actions run 40468172467](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40468172467): **SUCCESS** for the in-app user-controlled refresh notice after a new service worker takes control, alongside the full desktop/mobile browser smoke test.
-- **Result:** repository is ready to connect to Cloudflare Pages. This is proof of the source/build pipeline, **not** a Cloudflare dashboard deployment or public link.
+- [Web build and Cloudflare dry run 40478349107](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478349107) — success for v0.9F.
+- [Compiled Chromium QA 40478349333](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478349333) — success for v0.9F.
+- [v0.9G PR browser QA 40480298910](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480298910) — success, including portable text backup. **Post-merge checks are separate.**
 
+## Release boundary
 
-## New account evidence: Cloudflare Workers project, not Pages (27 October 2026)
-
-The screenshot from Cloudflare shows **Workers & Pages → frame-one → Production → Deployments**, connected to `rayadinaveen98-ship-it/frame-one` with build command `npm run build` and deploy command `npx wrangler deploy`. This is a **Workers Builds** project; it was **Deploying**, not yet verified successful at screenshot time.
-
-To reuse the existing setup, `wrangler.jsonc` now defines the same Worker `frame-one`, serves `./dist` as static assets and enables SPA routing. Cloudflare Workers Builds supports automatic GitHub deploys, and Workers static assets reads our existing `_headers`. A new [Workers setup guide](CLOUDFLARE_WORKERS_SETUP.md) supersedes the earlier [Pages-only instructions](CLOUDFLARE_PAGES_SETUP.md) for this already-created Cloudflare service.
-
-**Current blocker:** we cannot directly query this Cloudflare account. The actual `workers.dev` URL and whether the latest Cloudflare deploy succeeded are still unverified. Confirm both in Cloudflare's **Overview/Deployments** after the new GitHub commit.
-
-
-## Workers-specific source/build check — passed
-
-[GitHub Actions run 40470087931](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40470087931) **SUCCESS** on commit `5ba3de97ff7de3c7525a908b3b26aa062a250c65`. It verified all regression suites, TypeScript/Vite build, the published `dist/` files, full browser QA and **`npx wrangler@4 deploy --dry-run`**. Wrangler 4.153.0 successfully found **13 files** in the static asset directory and exited without uploading. This confirms the Worker configuration is deployable from source.
-
-**Still not a verified live deployment:** this was a dry run in GitHub CI, not the account's production Cloudflare deployment. Open the Cloudflare dashboard deployment and check that its production deploy completed successfully, then copy the exact site URL.
+Public GitHub Android debug APK downloads are verified separately. A published APK **does not** prove a Cloudflare-hosted site has deployed, and a green Chrome browser run **does not** replace physical Android/iPhone QA.
