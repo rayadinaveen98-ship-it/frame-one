@@ -76,3 +76,10 @@
 - **Full production/build/browser success:** [run 40458020383](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40458020383) on commit `2d74a86a3bb4b1e66ff1e354db59d42faf749d26`; includes a measurable desktop preview-size/alignment check and desktop/320px/390px screenshot captures.
 - Reviewed the refined desktop image: the illustration is beside the controls without an exaggerated bordered blank preview panel. The 320px Lighting illustration and controls were also inspected.
 - **v0.9D React migrations accepted so far: 4/7** — Continuity, Colour, Frame, Lighting. **Legacy labs remaining: Cut, Make, Sound**. Next migrate **Cut Lab** with special attention to timers, playback cancellation and saved lesson compatibility. Separate web hosting, Android APK, iOS, accessibility and expert-content gates remain open. [Detailed Lighting QA](QA_LIGHTING_V09D.md).
+
+## Fifth implementation checkpoint — Cut Lab (accepted)
+
+- Original three-shot timeline now React-owned with CSS storyboard artwork, current shot, hold lengths, editable shot order, reset, timed preview and explanatory activities.
+- React's `useEffect` owns and cancels the playback timer on unmount, step changes, edits and user stop. The legacy engine has no control over React Cut markup or slider input; durations stay attached to shots when reordered.
+- [GitHub Actions run 40460565715](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40460565715) **SUCCESS**: full lesson/lab/offline/backup smoke and native Cut tests; desktop and both phone screenshots inspected. [Complete report](QA_CUT_V09D.md).
+- **5/7 migrated and browser-accepted.** Make and Sound remain in the old runtime. Next: **Make**—preserve all existing local `frameone-scene-v07` drafts and existing backup/restore validation. Sound remains final due to live WebAudio and timer cleanup.
