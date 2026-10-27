@@ -94,6 +94,36 @@ async function verify() {
   const download = await downloadEvent;
   assert.match(download.suggestedFilename(), /\.json$/);
   console.log('PASS: browser generates a downloadable learning backup');
+
+  const onDialog = page.waitForEvent('dialog');
+  await backup.locator('input[type="file"]').setInputFiles({
+    name: 'demo-backup.json', mimeType: 'application/json', buffer: Buffer.from('{}')
+  });
+  const confirmation = await onDialog;
+  assert.equal(confirmation.type(), 'confirm');
+  await confirmation.dismiss();
+  await page.getByText('Restore cancelled. Your current learning data is unchanged.').waitFor();
+  assert.equal(await page.evaluate(() => {
+    try { return JSON.parse(localStorage.getItem('frameone-progress-v01') || '[]').includes('why'); } catch { return false; }
+  }), true);
+  console.log('PASS: cancelling backup restore leaves previously saved progress unchanged');
+
+  // Offline claim must be tested with the built service worker, not assumed from the manifest.
+  try {
+    await page.evaluate(() => navigator.serviceWorker.ready);
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => Boolean(window.frameOneLegacy));
+    await context.setOffline(true);
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await page.waitForFunction(() => Boolean(window.frameOneLegacy));
+    await page.locator('#content .page').waitFor({ timeout: 12000 });
+    await photo(page, '07-offline-home.png');
+    console.log('PASS: application reloads using cached assets while offline');
+  } catch (error) {
+    record('Offline reload failed: ' + (error instanceof Error ? error.message : String(error)));
+  } finally {
+    await context.setOffline(false);
+  }
   await context.close();
 
   for (const width of [390, 320]) {
