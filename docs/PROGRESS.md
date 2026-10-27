@@ -98,3 +98,12 @@
 - Eleventh source regression suite plus actual compiled Chromium smoke tests count AudioContexts created and closed, confirm no sound resource allocation in silent mode, and cover original data/backups, 33 lessons, seven labs and offline reload.
 - **Verified green:** [run 40464897808](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40464897808) for full audio behavior and [final run 40465373226](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40465373226) for clean desktop/mobile artwork after removing inherited Frame HUD labels. Visually reviewed desktop, 320px and 390px Sound screenshots.
 - **React Creative Lab migration 7/7 = complete for automated web QA.** Next work is release engineering and manual quality gates; web hosting, real Android APK and iOS app not built in this milestone. [Full Sound QA](QA_SOUND_V09D.md).
+
+
+## v0.9E — first Android debug APK successfully built (27 October 2026)
+
+- **Verified** independent Android debug pipeline from GitHub source in [run 40474122825](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40474122825): Node 22, Java 21, Android SDK 36, npm source regressions, TypeScript/Vite and offline output, Capacitor 8 native generation, Gradle `:app:assembleDebug`, and APK bundle verification all passed.
+- Uploaded `frame-one-android-debug-apk` (artifact ID `12719818584`; ZIP size 4,017,400 bytes; contains `app-debug.apk`) for installation by an Android tester.
+- The Android workflow and QA handoff were reviewed in [PR #1](https://github.com/rayadinaveen98-ship-it/frame-one/pull/1) and squash-merged into `main` as `72928713f6bfcc843ec36fc2f6ad4d4a1ed45a49`. Web verification on the PR head also passed [40474122772](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40474122772).
+- **Still open:** verify the new main-branch Android run independently, physical-device install/render/audio/offline/backup/TalkBack tests, permanent application ID and icons, verified production Cloudflare Worker URL and iOS build. This is **debug packaging**, not public-release acceptance.
+- Details: [Android debug QA guide](ANDROID_DEBUG_CI.md).
