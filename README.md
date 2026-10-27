@@ -1,6 +1,6 @@
 # Frame One — Learn the art of filmmaking
 
-**Engineering checkpoint v0.9K — native Android offline note persistence and system Back accepted; latest app build remains v0.9I · 27 October 2026 · not app-store released.**
+**Engineering checkpoint v0.9L — native Android lesson, storyboard and practice recovery accepted · latest app build still v0.9I · 27 October 2026 · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
 
@@ -45,6 +45,12 @@ Our bundled Capacitor Android app was installed and exercised in a real **Androi
 Native Android API 35 testing now proves that a learner can type a private practice note in the real WebView, force-stop Frame One, enable airplane mode, reopen it and find the **same note still saved**. The native Back/navigation suite still passes alongside it. Independent [emulator passes 40494188012](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40494188012), [40494209385](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40494209385) and [final run 40494253148](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40494253148); full [v0.9K QA report](docs/QA_V09K.md).
 
 No app code, curriculum or saved-data keys changed. **v0.9K is a testing milestone, not a separate APK.** The latest publicly distributed application build continues to use temporary debug signing; physical Android, backup-file recovery, in-place upgrades and the live Cloudflare site remain unverified.
+
+## v0.9L — progress and storyboards also survive offline restart
+
+The [Android API 35 emulator suite 40498806973](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40498806973) now demonstrates a learner answering the real first lesson quiz and marking it complete, creating a **Decision** storyboard with **Close-up** first-shot framing and a private written idea, then force-stopping Frame One and reopening in airplane mode. The saved 1/33 lesson progress, story question, shot framing and note all remained. The original private practice note and native Back tests also passed.
+
+[v0.9L full QA evidence](docs/QA_V09L.md). **No application implementation changed and no v0.9L APK was created**; latest public test APK still contains v0.9I implementation with temporary debug signing. Native file-backup recovery, two-version upgrades, physical devices and verified Cloudflare live hosting remain pending.
 
 ## Android debug APK — first build verified
 
