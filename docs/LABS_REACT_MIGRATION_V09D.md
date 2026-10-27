@@ -83,3 +83,12 @@
 - React's `useEffect` owns and cancels the playback timer on unmount, step changes, edits and user stop. The legacy engine has no control over React Cut markup or slider input; durations stay attached to shots when reordered.
 - [GitHub Actions run 40460565715](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40460565715) **SUCCESS**: full lesson/lab/offline/backup smoke and native Cut tests; desktop and both phone screenshots inspected. [Complete report](QA_CUT_V09D.md).
 - **5/7 migrated and browser-accepted.** Make and Sound remain in the old runtime. Next: **Make**—preserve all existing local `frameone-scene-v07` drafts and existing backup/restore validation. Sound remains final due to live WebAudio and timer cleanup.
+
+## Sixth React Lab — Make implementation checkpoint (27 October 2026)
+
+- **6/7 Creative Labs implemented in React**: Continuity, Colour, Frame, Lighting, Cut and Make. **Sound alone remains legacy-owned.** Make is still awaiting complete browser acceptance.
+- Original three-beat storyboard editor migrated with story question, framing controls, notes, Save, text export and full original vector illustration. The original `frameone-scene-v07` JSON structure and backup format are unchanged.
+- A typed React-to-legacy storyboard bridge keeps the original backup engine synchronized. A restoration event notifies React after a successful backup import, so visible text updates without a page reload.
+- A tenth source regression suite and Chromium tests cover saved work, export, imported backup changes, route reopening and 320px/390px screenshots.
+- Earlier test-only failures exposed stale assumptions about legacy markup and mock browser events; corrected. The **latest completed browser run is the acceptance gate**. [Make QA report](QA_MAKE_V09D.md).
+- Next once accepted: Sound Lab, followed by deployment and real-device checks.
