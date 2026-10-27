@@ -76,6 +76,14 @@ export function LessonView({ lessonId }: { lessonId: string }) {
   const [showTelugu, setShowTelugu] = useState(readTelugu);
   const [practice, setPractice] = useState(() => readPractice(lesson.id));
   const [saveStatus, setSaveStatus] = useState('');
+  // Notes are tiny and private. Persist each edit synchronously so browser
+  // back, Android app switching, or an unexpected WebView reload cannot
+  // silently discard a learner's idea before they press Save.
+  function persistPractice(next: string): boolean {
+    const stored = window.frameOneLegacy?.savePractice(lesson.id,next) ?? savePractice(lesson.id,next);
+    setSaveStatus(stored ? 'Saved automatically on this device.' : 'Could not save here. Copy your note before leaving.');
+    return stored;
+  }
   const completed = useMemo(() => safeProgress(allIds).has(lesson.id), [lesson.id]);
   const [quizStatus, setQuizStatus] = useState('');
   useEffect(() => {
@@ -110,8 +118,8 @@ export function LessonView({ lessonId }: { lessonId: string }) {
       <aside className="exercise"><strong>✦ TRY THIS YOURSELF</strong><p>{String(lesson.try)}</p>{link ? <button className="btn-secondary lab-deep-link" type="button" onClick={()=>('lab' in link ? openLab(link.lab) : navigate('crafts'))}>{link.label} →</button>:null}</aside>
       <section className="practice-notes">
         <label htmlFor="lessonPractice">My own filmmaking idea · optional</label>
-        <textarea id="lessonPractice" maxLength={240} value={practice} onChange={e=>{setPractice(e.target.value);setSaveStatus('Unsaved changes');}} placeholder="Write one simple example from your life or a film you imagine..." />
-        <button className="btn-secondary" type="button" onClick={()=>setSaveStatus((window.frameOneLegacy?.savePractice(lesson.id,practice) ?? savePractice(lesson.id,practice))?'Saved on this device.':'Could not save here. Copy your note before leaving.')}>Save idea on this device</button>
+        <textarea id="lessonPractice" maxLength={240} value={practice} onChange={e=>{const next=e.target.value;setPractice(next);persistPractice(next);}} placeholder="Write one simple example from your life or a film you imagine..." />
+        <button className="btn-secondary" type="button" onClick={()=>setSaveStatus(persistPractice(practice)?'Saved on this device.':'Could not save here. Copy your note before leaving.')}>Save idea on this device</button>
         <span className="note-status" role="status">{saveStatus}</span>
         <p className="story-help">Private in this browser’s local storage. No account or cloud upload. Completing the lesson does not require notes.</p>
       </section>
