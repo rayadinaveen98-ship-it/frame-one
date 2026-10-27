@@ -167,6 +167,9 @@ def verify_after_restart():
 def main():
     if not ui.APK.is_file():raise FileNotFoundError(ui.APK)
     ui.adb("install","-r","-t",str(ui.APK),timeout=90)
+    # v0.9K ran before us and may have left the first lesson visible.
+    # Force-stop here so this test starts at the normal cold-launch Home.
+    ui.adb("shell","am","force-stop",ui.PACKAGE)
     launch()
     complete_first_lesson()
     make_storyboard()
