@@ -321,9 +321,52 @@ async function verify() {
   console.log('PASS: Continuity Lab is React-owned, updates its illustrated prop, and preserves choice across lab navigation');
 
   await page.locator('.lab-tabs:visible [data-lab="sound"]').click();
-  await page.locator('#ambience').uncheck();
-  assert.equal(await page.locator('#ambience').isChecked(), false);
-  console.log('PASS: all seven labs mount and controls respond; timed edit, story save and lab state verified');
+  const sound=page.locator('.react-sound-lab');
+  await sound.waitFor();
+  assert.equal(await page.locator('#content').innerHTML(),'','React must own Sound Lab without legacy duplication');
+  assert.equal(await sound.locator('.sound-wave span').count(),31);
+  assert.equal(await sound.locator('.audio-picture svg').count(),1,'Original local bus-stop illustration preserved');
+  assert.equal(await sound.locator('[data-sound="silence"]').getAttribute('aria-pressed'),'true');
+  await page.evaluate(() => {
+    window.__f1SoundQa={created:0,closed:0};
+    const Original=window.AudioContext;
+    if(Original)window.AudioContext=class extends Original{
+      constructor(...args){super(...args);window.__f1SoundQa.created++;}
+      close(){window.__f1SoundQa.closed++;return super.close();}
+    };
+  });
+  await sound.locator('#ambience').uncheck();
+  assert.equal(await sound.locator('#ambience').isChecked(),false);
+  await sound.locator('[data-audio="play"]').click();
+  assert.match(await sound.locator('.sound-status').textContent(),/No generated sound/i);
+  assert.equal(await page.evaluate(()=>window.__f1SoundQa.created),0,'Muted No music must not initialize audio');
+  await sound.locator('[data-sound="warm"]').click();
+  await sound.locator('[data-audio="play"]').click();
+  await sound.locator('[data-audio="stop"]').waitFor();
+  assert.equal(await sound.locator('.sound-cinema.is-playing').count(),1);
+  assert.equal(await page.evaluate(()=>window.__f1SoundQa.created),1,'Audio is created only after Play click');
+  await sound.locator('[data-sound="tension"]').click();
+  assert.equal(await sound.locator('[data-audio="stop"]').count(),0,'Changing mode stops the last sound');
+  await page.waitForFunction(()=>window.__f1SoundQa.closed>=1);
+  await sound.locator('#ambience').check();
+  await sound.locator('[data-sound="silence"]').click();
+  await sound.locator('[data-audio="play"]').click();
+  await sound.locator('[data-audio="stop"]').waitFor();
+  await sound.locator('[data-audio="stop"]').click();
+  await page.waitForFunction(()=>window.__f1SoundQa.closed>=2);
+  await sound.locator('[data-sound="warm"]').click();
+  await sound.locator('[data-audio="play"]').click();
+  await sound.locator('[data-audio="stop"]').waitFor();
+  await sound.locator('.lab-tabs [data-lab="cut"]').click();
+  await sound.waitFor({state:'detached'});
+  await page.waitForFunction(()=>window.__f1SoundQa.closed===window.__f1SoundQa.created);
+  await page.locator('.lab-tabs:visible [data-lab="sound"]').click();
+  await sound.waitFor();
+  assert.equal(await sound.locator('[data-audio="stop"]').count(),0,'Sound Lab must reopen fully stopped');
+  assert.equal(await sound.locator('[data-sound="warm"]').getAttribute('aria-pressed'),'true','Sound mode persists across labs');
+  assert.equal(await sound.locator('#ambience').isChecked(),true,'Ambience choice persists across labs');
+  await photo(page,'19-react-sound-desktop.png');
+  console.log('PASS: all seven React Labs, Sound playback opt-in, no-music semantics and closed contexts after change/stop/unmount');
 
   await page.locator('.sidebar [data-page="learn"]').click();
   await page.locator('.react-learn-view').waitFor();
@@ -470,7 +513,15 @@ async function verify() {
     const storyOverflow=await phone.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
     if(storyOverflow.scroll>storyOverflow.viewport+3)record('React Make Lab overflow at '+width+'px: '+storyOverflow.scroll+'/'+storyOverflow.viewport);
     await photo(phone,'18-react-make-'+width+'px.png');
-    console.log('PASS: mobile ' + width + 'px navigates six native React Labs (Make overflow: ' + storyOverflow.scroll + '/' + storyOverflow.viewport + ')');
+    await mobileMake.locator('.lab-tabs [data-lab="sound"]').click();
+    const mobileSound=phone.locator('.react-sound-lab');
+    await mobileSound.waitFor();
+    await mobileSound.locator('[data-sound="tension"]').click();
+    assert.equal(await mobileSound.locator('[data-sound="tension"]').getAttribute('aria-pressed'),'true');
+    const soundOverflow=await phone.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
+    if(soundOverflow.scroll>soundOverflow.viewport+3)record('React Sound Lab overflow at '+width+'px: '+soundOverflow.scroll+'/'+soundOverflow.viewport);
+    await photo(phone,'20-react-sound-'+width+'px.png');
+    console.log('PASS: mobile ' + width + 'px navigates all seven native React Labs (Sound overflow: ' + soundOverflow.scroll + '/' + soundOverflow.viewport + ')');
     await mobile.close();
   }
   if (failures.length) throw Error(failures.join('\n'));
