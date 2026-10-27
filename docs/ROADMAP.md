@@ -69,3 +69,9 @@ Help complete beginners understand filmmaking through accurate, simple explanati
 - **Verified green full browser run:** [40457618029](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40457618029), including complete lessons, seven labs, backup/offline and phone screenshots.
 - Initial screenshot inspection found excessive desktop preview whitespace; refined panel sizing and added explicit measured geometry assertions in a later commit. **That latest refinement requires its own passing CI run and visual review.**
 - Next: **Cut Lab** after final Lighting screenshot acceptance. Real-device, screen-reader, subject-expert and Telugu review, hosting and Android/iOS builds remain separate release gates. [Detailed QA](QA_LIGHTING_V09D.md).
+
+### Lighting final QA — verified (27 October 2026)
+
+- **Full production/build/browser success:** [run 40458020383](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40458020383) on commit `2d74a86a3bb4b1e66ff1e354db59d42faf749d26`; includes a measurable desktop preview-size/alignment check and desktop/320px/390px screenshot captures.
+- Reviewed the refined desktop image: the illustration is beside the controls without an exaggerated bordered blank preview panel. The 320px Lighting illustration and controls were also inspected.
+- **v0.9D React migrations accepted so far: 4/7** — Continuity, Colour, Frame, Lighting. **Legacy labs remaining: Cut, Make, Sound**. Next migrate **Cut Lab** with special attention to timers, playback cancellation and saved lesson compatibility. Separate web hosting, Android APK, iOS, accessibility and expert-content gates remain open. [Detailed Lighting QA](QA_LIGHTING_V09D.md).
