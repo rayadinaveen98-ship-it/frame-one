@@ -112,6 +112,9 @@ def main():
     type_and_verify()
     restart_offline()
     verify_persisted_note()
+    # Return network settings for the subsequent native Back regression.
+    ui.adb("shell","cmd","connectivity","airplane-mode","disable")
+    ui.adb("shell","svc","wifi","enable")
     print("FRAME ONE ANDROID PERSISTENCE OFFLINE: PASS",flush=True)
 
 if __name__=="__main__":
