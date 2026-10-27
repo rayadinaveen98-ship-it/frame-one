@@ -31,3 +31,11 @@ GitHub push to `main` → Cloudflare Git integration builds `npm run build` → 
 - [GitHub Actions run 40468172467](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40468172467): **SUCCESS** for the in-app user-controlled refresh notice after a new service worker takes control, alongside the full desktop/mobile browser smoke test.
 - **Result:** repository is ready to connect to Cloudflare Pages. This is proof of the source/build pipeline, **not** a Cloudflare dashboard deployment or public link.
 
+
+## New account evidence: Cloudflare Workers project, not Pages (27 October 2026)
+
+The screenshot from Cloudflare shows **Workers & Pages → frame-one → Production → Deployments**, connected to `rayadinaveen98-ship-it/frame-one` with build command `npm run build` and deploy command `npx wrangler deploy`. This is a **Workers Builds** project; it was **Deploying**, not yet verified successful at screenshot time.
+
+To reuse the existing setup, `wrangler.jsonc` now defines the same Worker `frame-one`, serves `./dist` as static assets and enables SPA routing. Cloudflare Workers Builds supports automatic GitHub deploys, and Workers static assets reads our existing `_headers`. A new [Workers setup guide](CLOUDFLARE_WORKERS_SETUP.md) supersedes the earlier [Pages-only instructions](CLOUDFLARE_PAGES_SETUP.md) for this already-created Cloudflare service.
+
+**Current blocker:** we cannot directly query this Cloudflare account. The actual `workers.dev` URL and whether the latest Cloudflare deploy succeeded are still unverified. Confirm both in Cloudflare's **Overview/Deployments** after the new GitHub commit.
