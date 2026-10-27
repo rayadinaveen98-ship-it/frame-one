@@ -375,7 +375,7 @@ async function verify() {
   await page.locator('.sidebar [data-page="learn"]').click();
   await page.locator('.react-learn-view').waitFor();
   const backup = page.locator('.backup-panel');
-  await backup.locator('summary').click();
+  await backup.locator('summary').first().click();
   const downloadEvent = page.waitForEvent('download');
   await backup.getByRole('button', { name: /download learning backup/i }).click();
   const download = await downloadEvent;
