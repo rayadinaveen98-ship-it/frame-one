@@ -26,3 +26,11 @@
 - Confirmed [40447171261](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40447171261) exercising and completing all 33 rendered lessons with saved progress.
 - **Next:** v0.9D convert seven legacy Creative Labs into typed React components, maintaining animation and audio behavior. Before public release: manual accessibility/device checks, expert factual and Telugu review, actual HTTPS/PWA install and native Android/iOS builds.
 - Full QA receipts and screenshot evidence: [QA_V09C.md](QA_V09C.md), [QA_LATEST_RUN.md](QA_LATEST_RUN.md).
+
+## v0.9D development update — 27 October 2026
+
+- React Continuity Lab (`src/components/labs/ContinuityLab.tsx`) committed with original teaching visuals and React-managed mismatch state.
+- Explicit legacy-to-React lab routing, exclusive DOM ownership, fifth source test and new Chromium QA assertions committed.
+- Six creative labs remain implemented in legacy JavaScript; they are **not yet migrated**.
+- Browser QA in progress at the latest source commit; green acceptance **not yet confirmed** at this writing. Intermediate logs revealed and helped fix DOM duplicate tabs, outdated assertions and navigation settling.
+- Detailed evidence and remaining gates: [QA_V09D.md](QA_V09D.md).
