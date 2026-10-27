@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import re
 import subprocess
 import sys
@@ -96,6 +97,15 @@ def export_to_external_download(raw:bytes):
     print("PASS: actual app-exported JSON preserved outside Frame One app data",flush=True)
 
 def confirm_picker_restore():
+    # AOSP ATD can omit DocumentsUI entirely; full AOSP should contain an
+    # ACTION_OPEN_DOCUMENT or GET_CONTENT provider. Record capabilities so a
+    # missing system app is not mislabeled as a learner-data regression.
+    providers=[]
+    for action in ("android.intent.action.OPEN_DOCUMENT","android.intent.action.GET_CONTENT"):
+        providers.append(action+": "+ui.adb("shell","cmd","package","resolve-activity","--brief",
+                    "-a",action,"-t","application/json",check=False))
+    (ui.OUTPUT/"backup-picker-capabilities.txt").write_text("\n".join(providers)+"\n",encoding="utf-8")
+    print("Android document providers: "+" | ".join(providers),flush=True)
     # Select from Android's system document picker, not JS injection.
     tap_text("Restore a backup JSON file",tries=10,scroll=True)
     time.sleep(1.5)
@@ -141,6 +151,10 @@ def main():
     # Dismiss Android sharesheet if displayed.
     ui.adb("shell","input","keyevent","KEYCODE_BACK")
     time.sleep(1)
+    if os.environ.get("FRAMEONE_BACKUP_EXPORT_ONLY")=="1":
+        print("FRAME ONE ANDROID NATIVE BACKUP EXPORT: PASS",flush=True)
+        print("File picker restore is deliberately tested on a full Android image, not the lean ATD.",flush=True)
+        return
     ui.adb("shell","am","force-stop",ui.PACKAGE)
     ui.adb("shell","pm","clear",ui.PACKAGE)
     print("Android app-private storage cleared; external Downloads JSON retained",flush=True)
