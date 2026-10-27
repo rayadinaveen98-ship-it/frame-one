@@ -1,6 +1,6 @@
 # Frame One release readiness checklist — 27 October 2026
 
-This page separates *automated test evidence* from *real-person/device acceptance*. v0.9I is the latest installable engineering test build; v0.9J adds the emulator acceptance pipeline, not a public store release.
+This page separates *automated test evidence* from *real-person/device acceptance*. v0.9I remains the latest installable engineering test build; v0.9J–L are emulator QA-only checkpoints, not public store releases.
 
 ## Source and continuous integration
 
@@ -17,6 +17,9 @@ This page separates *automated test evidence* from *real-person/device acceptanc
 
 - [x] Android-only native system Back handler is compiled and auto-linked through the official Capacitor App plugin, verified by [main Android build 40486968418](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486968418).\n- [x] Native Back mock regression runs in npm tests; [full compiled Chromium run 40486968447](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486968447) passed.\n- [x] Public GitHub debug APK has visible signing-certificate receipt (persistent QA signer is NOT provisioned): [release publisher 40487176493](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40487176493).\n\n- [x] **Actual Android WebView note persistence across force-stop and airplane-mode cold launch**, with independent [PASS 40494188012](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40494188012), [PASS 40494209385](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40494209385), and [final PASS 40494253148](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40494253148). [v0.9K QA report](QA_V09K.md).
 - [x] **Android API 35 emulator system Back flow** (actual native Capacitor APK; Home → Learn → Lesson → Back; Lab → Back; Home minimize): independent [PASS run 40490569350](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40490569350) and [PASS run 40491292091](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40491292091). [Full report](QA_V09J.md).
+
+- [x] Android API 35 offline recovery now covers first quiz **completion (1/33)** and a saved Make Lab **Decision + Close-up + written first shot**, preserved across force-stop and airplane-mode relaunch. [Android v0.9L run 40498806973](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40498806973) **SUCCESS**; [report](QA_V09L.md).
+- [ ] Native Android **JSON backup export/import**, local file picker, sharing and cross-install restoration; emulator lesson/note/storyboard persistence alone does not establish these paths.
 
 ## Browser and cloud acceptance
 
