@@ -28,3 +28,12 @@ The old runtime emits the selected lab explicitly in each route event and leaves
 ## Next
 
 After a green Continuity run and screenshot review, migrate **Colour Lab** with the same single-owner contract. No APK or iOS build should be produced until web rendering and offline behavior meet the agreed quality gates.
+
+## Verified automated acceptance
+
+- [GitHub run 40449195578](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40449195578) **SUCCESS** for the final React lab ownership integration and browser test after waiting for React component unmount during navigation.
+- Passed all five Node migration tests, TypeScript/Vite build, desktop & mobile Chromium smoke, all 33 lesson completions, six legacy labs, React Continuity match/mismatch actions, backup cancellation and offline reload.
+- [Screenshot artifact 12709795745](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40449195578) downloaded. Manually inspected the Continuity desktop screenshot: correct matching pair, seven-tab navigation, existing visual style, readable explanation and no duplicate legacy interface.
+- Follow-up **mobile React Continuity** screenshots/assertions added in browser smoke at 390px/320px and committed, with passing run and visual inspection to be recorded separately.
+
+**Automated acceptance for first migrated lab achieved.** Manual device, sound output, screen reader, expert content and native builds are separate uncompleted release gates.
