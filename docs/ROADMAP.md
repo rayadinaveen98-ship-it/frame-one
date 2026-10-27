@@ -44,5 +44,5 @@ Help complete beginners understand filmmaking through accurate, simple explanati
 - **1/7 Creative Labs migrated into React:** Continuity Lab component, original desk artwork, interactive choice, accessible state and lesson link committed; source test coverage added.
 - **6/7 Creative Labs remain on proven legacy runtime:** Colour, Frame, Lighting, Cut, Make and Sound. Original saved progress/storyboards and 33-lesson course preserved.
 - Exclusive DOM ownership and explicit lab route event implemented; tests now cover migration boundary.
-- **Acceptance gate open:** latest browser QA success and screenshot review for this exact migration required. Earlier failed runs exposed test navigation and integration transitions, which were corrected.
+- **Automated acceptance PASSED:** [GitHub Actions run 40449195578](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40449195578) passed after fixing navigation and exclusive DOM ownership; desktop Continuity screenshot inspected. Mobile Continuity-specific screenshots were added as a follow-up test; real-device and manual accessibility reviews remain open.
 - Next after green: Colour Lab migration, then the remaining five per [v0.9D plan](LABS_REACT_MIGRATION_V09D.md). Full acceptance evidence: [QA_V09D.md](QA_V09D.md).
