@@ -135,3 +135,29 @@
 @media(prefers-reduced-motion:reduce){
   .react-make-lab .story-film-frame svg{transition:none;}
 }
+
+/* Final React Sound Lab: the same original cinema artwork, animated wave
+   and five-second progress bar, with safe phone-width controls. */
+.react-sound-lab .react-cinema-scene,.react-sound-lab .react-cinema-scene .scene-stage{min-width:0;width:100%;}
+.react-sound-lab .sound-cinema{min-width:0;}
+.react-sound-lab .sound-action-row{min-width:0;}
+.react-sound-lab .sound-status{overflow-wrap:anywhere;}
+.react-sound-lab .sound-wave span{min-width:2px;}
+.react-sound-lab :is(.lab-tab,.lab-choice,.cta,.btn-secondary,input[type="checkbox"]):focus-visible{
+  outline:3px solid #edb88e;outline-offset:3px;
+}
+@media(min-width:761px){
+  .react-sound-lab .cinematic-lab-shell{background:transparent;border:0;overflow:visible;align-items:start;gap:16px;}
+  .react-sound-lab .cinematic-preview{height:max-content;min-height:0;align-self:start;}
+  .react-sound-lab .film-controls{background:#1b202b;border:1px solid #3d4553;border-radius:18px;}
+}
+@media(max-width:760px){
+  .react-sound-lab .lab-shell{grid-template-columns:minmax(0,1fr);}
+  .react-sound-lab .sound-wave{padding:8px;gap:2px;height:62px;}
+  .react-sound-lab .audio-picture-label{font-size:8px;left:7px;bottom:7px;letter-spacing:0;padding:5px 7px;}
+  .react-sound-lab .sound-action-row .cta{min-height:46px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .react-sound-lab .sound-ripple span,.react-sound-lab .sound-wave span,.react-sound-lab .sound-progress span{animation:none!important;}
+  .react-sound-lab .sound-wave span{transform:scaleY(.65);}
+}
