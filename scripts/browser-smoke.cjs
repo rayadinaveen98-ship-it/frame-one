@@ -120,6 +120,13 @@ async function verify() {
   assert.equal(await colour.locator('#colourStrengthValue').textContent(), '100%');
   await colour.locator('[data-colour="cool"]').click();
   assert.equal(await colour.locator('[data-colour="cool"]').getAttribute('aria-pressed'), 'true');
+  const gradeDiagnostics = await colour.locator('.colour-grade').evaluate(el => ({
+    inline: el.style.opacity, computed: getComputedStyle(el).opacity,
+    mode: document.querySelector('.react-colour-lab [data-colour="cool"]')?.getAttribute('aria-pressed'),
+    strength: document.querySelector('.react-colour-lab #colourStrengthValue')?.textContent
+  }));
+  console.log('Colour Lab overlay QA diagnostics:', JSON.stringify(gradeDiagnostics));
+  await photo(page, '09-react-colour-precheck.png');
   await page.waitForFunction(() => {
     const element = document.querySelector('.react-colour-lab .colour-grade');
     return element && Number(getComputedStyle(element).opacity) > 0.4;
