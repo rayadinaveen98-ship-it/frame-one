@@ -18,6 +18,8 @@ for(const f of ['src/App.tsx','src/components/LessonView.tsx','src/components/Le
  assert.strictEqual((transpiled.diagnostics||[]).filter(x=>x.category===ts.DiagnosticCategory.Error).length,0,`TS source transpile: ${f}`);
 }
 for(const needle of ['setFilter','setQuery','setGlossaryQuery','safeProgress','chapters.map','filter===','glossary.filter','aria-valuenow','LearningBackup','importBackup','exportBackup'])assert(tsx.includes(needle),'React chapter feature: '+needle);
+assert(tsx.includes("window.confirm('Restore this backup?"),'restoring local learning data requires explicit consent');
+assert(tsx.includes("if(!window.frameOneLegacy) throw new Error('Learning engine not ready')"),'backup download must not claim success when engine is unavailable');
 assert(app.includes("route.page==='learn' ? <LearnView />"));
 assert(app.includes("route.page==='lesson'||route.page==='learn'"));
 assert(runtime.includes("state.page==='learn'?'':"),'legacy does not own React chapter DOM');
