@@ -5,16 +5,33 @@ on:
     paths:
       - '.github/workflows/android-emulator-qa.yml'
       - 'src/android-back.ts'
+      - 'src/App.tsx'
+      - 'src/main.tsx'
+      - 'src/native-safe-area.css'
       - 'src/legacy/**'
+      - 'src/components/LearnView.tsx'
+      - 'src/components/LessonView.tsx'
+      - 'src/components/labs/**'
       - 'scripts/android-emulator-smoke.py'
       - 'package.json'
       - 'package-lock.json'
       - 'capacitor.config.ts'
   push:
-    branches: [feature/frame-one-v09j-android-emulator-qa]
+    branches: [main]
     paths:
       - '.github/workflows/android-emulator-qa.yml'
+      - 'src/android-back.ts'
+      - 'src/App.tsx'
+      - 'src/main.tsx'
+      - 'src/native-safe-area.css'
+      - 'src/legacy/**'
+      - 'src/components/LearnView.tsx'
+      - 'src/components/LessonView.tsx'
+      - 'src/components/labs/**'
       - 'scripts/android-emulator-smoke.py'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'capacitor.config.ts'
   workflow_dispatch:
 
 permissions:
