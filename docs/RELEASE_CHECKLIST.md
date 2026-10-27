@@ -1,6 +1,6 @@
 # Frame One release readiness checklist — 27 October 2026
 
-This page separates *automated test evidence* from *real-person/device acceptance*. v0.9I remains the latest installable engineering test build; v0.9J–L are emulator QA-only checkpoints, not public store releases.
+This page separates *automated test evidence* from *real-person/device acceptance*. v0.9M is the latest public **debug test APK**; v0.9J–L were emulator QA-only checkpoints. This is not a store release.
 
 ## Source and continuous integration
 
@@ -20,6 +20,11 @@ This page separates *automated test evidence* from *real-person/device acceptanc
 
 - [x] Android API 35 offline recovery now covers first quiz **completion (1/33)** and a saved Make Lab **Decision + Close-up + written first shot**, preserved across force-stop and airplane-mode relaunch. [Android v0.9L run 40498806973](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40498806973) **SUCCESS**; [report](QA_V09L.md).
 - [ ] Native Android **JSON backup export/import**, local file picker, sharing and cross-install restoration; emulator lesson/note/storyboard persistence alone does not establish these paths.
+
+- [x] v0.9M **real Android backup JSON export → app data clear → Android DocumentsUI file selection → restore** with completed lesson, note and storyboard recovered: [full API35 run 40521036808](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40521036808) **SUCCESS**. The test copied the exact app-exported JSON to Downloads through ADB as the external save simulation, not a real share destination choice. [Detailed QA](QA_V09M.md).
+- [x] v0.9M native Filesystem and Share plugins packaged; [main Android APK build 40533677449](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40533677449) and [public debug release 40534067096](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40534067096) **SUCCESS**.
+- [ ] **Physical phone** external save/share chooser and JSON import verification; the emulator's ADB copy is not evidence that a person saved a backup to Files/Drive.
+- [ ] **Stable QA signing**: persistent secret-managed keystore, two successive same-certificate builds and Android in-place upgrade retention; current public debug APK reports `Persistent QA signer: NO`.
 
 ## Browser and cloud acceptance
 
