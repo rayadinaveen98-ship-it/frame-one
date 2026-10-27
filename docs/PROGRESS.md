@@ -9,3 +9,11 @@
 **Source expansion: COMPLETE.** GitHub Actions produced commit [053d3fd](https://github.com/rayadinaveen98-ship-it/frame-one/commit/053d3fde0e1b77833fd080dc4fd687b6589f1261) with the extracted React/Capacitor source tree; important paths were independently fetched. The exact v0.9B ZIP is also retained. **Historical source recovery: COMPLETE.** All 12 older source snapshots are stored in the compressed development-history archive. The web build passed on 27 October 2026 in [GitHub Actions](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40440890519) including `npm install`, four `npm test` suites, TypeScript, Vite build and uploaded `frame-one-web-dist` artifact. This does not verify actual device rendering or a hosted release.
 
 **Next:** run real browser/device visual and offline/audio/backup QA; commit a reproducible dependency lockfile; review all lessons with film/Telugu experts; deploy the web PWA; generate and test Android APK; build iOS through Xcode.
+
+## 27 October 2026 — v0.9C QA hardening
+
+- **Committed:** Playwright desktop/mobile browser smoke test with CI screenshot artifacts, coverage of 33 lessons, seven labs, quiz progress, JSON backup export/cancelled restore, offline reload and 390px/320px viewport checks.
+- **Committed:** explicit consent before overwriting local data with a backup, and accurate export availability messaging; additional regression assertions.
+- **Committed:** generated `package-lock.json`, with web and browser workflows switched to `npm ci` for reproducible installs.
+- **Verification boundary:** These QA tools are committed, but a passing browser QA run and human inspection of screenshots are **not yet verified**. Prior web build passed; a green current build, real-device checks and an Android APK/IPA are still separate gates.
+- Detailed matrix: [QA_V09C.md](QA_V09C.md).
