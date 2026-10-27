@@ -29,3 +29,7 @@ This is **3 of 7 labs implemented** with initial automation green. Do not confla
 - Inspected images from [run 40452464003](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452464003): desktop artwork sharp and correct; 320px stacked crop comparison with no visible overflow, unlike the earlier cramped two-column screenshots.
 - **Final desktop-only layout polish:** commit `013e14978dcae52f5ae74231aa3cd71be5eca0ef` removes the oversized bordered empty preview panel and keeps the original illustration available while scrolling. This final CSS adjustment should be verified by its own browser run and screenshot.
 - Automated first-pass acceptance is successful; real Android/iOS/assistive-technology tests and filmmaking educator review are independent release gates.
+
+## Final visual QA acceptance
+
+- GitHub run [40452722135](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452722135) **SUCCESS** on the final desktop CSS commit `013e14978dcae52f5ae74231aa3cd71be5eca0ef`; reviewed its screenshot (separate uncluttered illustration panel and controls). Final screenshot artifact: `12711206162`. **Frame Lab's automated web acceptance is complete**; manual device, screen reader and educator checks remain.
