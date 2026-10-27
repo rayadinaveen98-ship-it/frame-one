@@ -300,6 +300,13 @@ async function verify() {
     await mobileFrame.locator('[data-frame="close"]').click();
     await mobileFrame.locator('[data-compare]').click();
     assert.equal(await mobileFrame.locator('.frame-comparison svg').count(), 2);
+    const comparisonPlacement = await mobileFrame.locator('.frame-comparison > div').evaluateAll(elements => elements.map(el => {
+      const r = el.getBoundingClientRect();
+      return { x: r.x, y: r.y, width: r.width };
+    }));
+    assert.equal(comparisonPlacement.length, 2);
+    assert.ok(comparisonPlacement[1].y > comparisonPlacement[0].y + 20, 'Frame comparisons must stack vertically on narrow phones');
+    assert.equal(await mobileFrame.locator('.frame-comparison .monitor-hud:visible').count(), 0, 'Compact comparison hides crowded illustration HUD');
     const framingOverflow = await phone.evaluate(() => ({ scroll: document.documentElement.scrollWidth, viewport: document.documentElement.clientWidth }));
     if (framingOverflow.scroll > framingOverflow.viewport + 3) record('React Frame Lab overflow at ' + width + 'px: ' + framingOverflow.scroll + ' vs ' + framingOverflow.viewport);
     await photo(phone, '12-react-frame-' + width + 'px.png');
