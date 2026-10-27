@@ -65,3 +65,11 @@
 - **Full production/build/browser success:** [run 40458020383](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40458020383) on commit `2d74a86a3bb4b1e66ff1e354db59d42faf749d26`; includes a measurable desktop preview-size/alignment check and desktop/320px/390px screenshot captures.
 - Reviewed the refined desktop image: the illustration is beside the controls without an exaggerated bordered blank preview panel. The 320px Lighting illustration and controls were also inspected.
 - **v0.9D React migrations accepted so far: 4/7** — Continuity, Colour, Frame, Lighting. **Legacy labs remaining: Cut, Make, Sound**. Next migrate **Cut Lab** with special attention to timers, playback cancellation and saved lesson compatibility. Separate web hosting, Android APK, iOS, accessibility and expert-content gates remain open. [Detailed Lighting QA](QA_LIGHTING_V09D.md).
+
+## Fifth React Creative Lab accepted — Cut (27 October 2026)
+
+- Cut Lab converted to native React with three illustrated shot cards, drag-free move-left/right timeline buttons, each shot's individual hold length (1–5 seconds), preview playback, stop/reset, connected film editing lesson and original interpretive explanations.
+- Timed previews now have an effect-owned timer that is cancelled when playing stops, a shot changes, or the user leaves the lab. No timer or sound work is left running behind an unmounted Cut Lab.
+- Nine Node source suites and compiled Chromium QA passed in [GitHub Actions run 40460565715](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40460565715). Viewed mobile (320px, 390px) and desktop screenshots; no material horizontal overflow.
+- **5/7 React labs browser-accepted:** Continuity, Colour, Frame, Lighting, Cut. **Remaining two original-engine labs:** Make and Sound. Learner progress, practice notes, storyboard key and backup schema remain intact.
+- Next: migrate **Make**, then **Sound**. Separate native packaging, HTTPS hosting, real-device audio/accessibility and educational/editorial checks remain open. [Cut QA](QA_CUT_V09D.md).
