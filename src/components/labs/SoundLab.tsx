@@ -1,4 +1,4 @@
-import {useEffect,useRef,useState,type CSSProperties,type Dispatch,type MouseEvent,type SetStateAction} from 'react';
+import {useEffect,useRef,useState,type ChangeEvent,type CSSProperties,type Dispatch,type MouseEvent,type SetStateAction} from 'react';
 import type {LabName} from '../../legacy/bridge';
 import {CinemaScene} from './CinemaScene';
 import {createSoundSession,soundOptions,SOUND_SECONDS,type SoundMode,type SoundSession} from './sound-audio';
@@ -47,7 +47,7 @@ export function SoundLab({mode,setMode,ambience,setAmbience}:Props){
     }
     session.current=next;setPlaying(true);setStatus('Audio playing · approximately five seconds');
   }
-  function setQuiet(event:React.ChangeEvent<HTMLInputElement>){
+  function setQuiet(event:ChangeEvent<HTMLInputElement>){
     event.stopPropagation();stop();setAmbience(event.currentTarget.checked);
     setStatus('Press Play to compare');
   }
