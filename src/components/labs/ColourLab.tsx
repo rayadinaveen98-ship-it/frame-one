@@ -66,8 +66,8 @@ export function ColourLab({mode,setMode,strength,setStrength}:Props) {
         <label htmlFor="colourStrength">Overlay strength <output id="colourStrengthValue">{strength}%</output></label>
         <input id="colourStrength" type="range" min="0" max="100" step="5" value={strength}
           aria-label="Illustration colour overlay strength"
-          onChange={event=>updateStrength(event.currentTarget.value)}
-          onInput={event=>updateStrength(event.currentTarget.value)}/>
+          onChange={event=>{event.stopPropagation();updateStrength(event.currentTarget.value);}}
+          onInput={event=>{event.stopPropagation();updateStrength(event.currentTarget.value);}}/>
         <div className="result-box" aria-live="polite">
           <strong>WHAT CHANGED?</strong><p>{selected.desc}</p>
         </div>
