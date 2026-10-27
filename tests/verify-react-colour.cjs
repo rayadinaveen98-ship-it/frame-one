@@ -14,7 +14,7 @@ assert(app.includes("import { ColourLab, type ColourMode }"), 'App imports React
 assert(app.includes("const [colourMode,setColourMode]"), 'Colour mode state persists in React App');
 assert(app.includes("const [colourStrength,setColourStrength]"), 'Colour strength state persists in React App');
 assert(app.includes("route.lab==='colour' ? <ColourLab"), 'App renders colour only for its route');
-assert(legacy.includes("['continuity','colour','frame','light'].includes(state.lab)?'':"), 'legacy yields exclusive rendering of two migrated labs');
+assert(legacy.includes("['continuity','colour','frame','light','cut'].includes(state.lab)?'':"), 'legacy yields exclusive rendering of two migrated labs');
 assert(legacy.includes("lab:state.page==='lab'?state.lab:undefined"), 'legacy bridge emits active lab');
 assert(colour.includes("event.stopPropagation()"), 'mode choices do not double-dispatch legacy events');
 for (const mode of ["neutral","warm","cool"]) assert(colour.includes("data-colour={id}") && colour.includes(mode+":"), 'all colour modes preserved');
@@ -22,7 +22,7 @@ assert(colour.includes("mode === 'neutral' ? 0"), 'neutral mode cannot apply tin
 assert(colour.includes("100*.42"), 'overlay alpha formula maintains 42% max');
 assert(colour.includes("onInput=") && colour.includes("onChange="), 'slider supports drag and keyboard input');
 assert(colour.includes("onInput={event=>{event.stopPropagation()") && colour.includes("onChange={event=>{event.stopPropagation()"), 'React slider events cannot reach obsolete legacy input handler');
-assert(legacy.includes("e.target.closest?.('.react-colour-lab,.react-continuity-lab,.react-frame-lab,.react-lighting-lab')"), 'legacy delegated input handler skips React-owned lab inputs');
+assert(legacy.includes("e.target.closest?.('.react-colour-lab,.react-continuity-lab,.react-frame-lab,.react-lighting-lab,.react-cut-lab')"), 'legacy delegated input handler skips React-owned lab inputs');
 assert(colour.includes("aria-pressed={id===mode}"), 'colour options have accessible selection state');
 assert(colour.includes('Read the colour lesson'), 'lesson deep link retained');
 assert(colour.includes('a coloured overlay is not colour grading'), 'accuracy caveat retained');
