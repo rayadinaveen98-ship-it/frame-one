@@ -8,8 +8,8 @@ const app=read('src/App.tsx'),lab=read('src/components/labs/MakeLab.tsx'),
       css=read('src/legacy/legacy.css'),qa=read('scripts/browser-smoke.cjs');
 assert(app.includes("import { MakeLab }"),'React App imports Make Lab');
 assert(app.includes("route.lab==='story' ? <MakeLab"),'React owns Make screen');
-assert(legacy.includes("['continuity','colour','frame','light','cut','story'].includes(state.lab)?'':"),'legacy yields Make DOM');
-assert(legacy.includes('.react-cut-lab,.react-make-lab') ,'legacy delegated inputs cannot mutate React notes');
+assert(legacy.includes("['continuity','colour','frame','light','cut','story','sound'].includes(state.lab)?'':"),'legacy yields Make DOM');
+assert(legacy.includes('.react-cut-lab,.react-make-lab,.react-sound-lab') ,'legacy delegated inputs cannot mutate React notes');
 assert(bridge.includes('getStoryboard: () => StoryPlan')&&bridge.includes('saveStoryboard: (plan: StoryPlan) => boolean'),'typed old backup bridge');
 assert(legacy.includes('getStoryboard:()=>JSON.parse(JSON.stringify(state.story))'),'old engine provides an independent story snapshot');
 assert(legacy.includes('saveStoryboard:(plan)=>{'),'old engine accepts React storyboard saves');
