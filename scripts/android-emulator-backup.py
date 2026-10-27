@@ -24,6 +24,10 @@ assert spec and spec.loader
 state=importlib.util.module_from_spec(spec)
 spec.loader.exec_module(state)
 ui=state.ui
+practice_spec=importlib.util.spec_from_file_location("frameone_practice_ui",Path(__file__).with_name("android-emulator-persistence.py"))
+assert practice_spec and practice_spec.loader
+practice=importlib.util.module_from_spec(practice_spec)
+practice_spec.loader.exec_module(practice)
 FILE_NAME="frame-one-learning-backup.json"
 
 def tap_text(label,tries=24,scroll=True,exact=False):
@@ -138,7 +142,20 @@ def confirm_picker_restore():
 
 def main():
     assert ui.APK.is_file()
-    # v0.9L already authored the completed lesson and full story on emulator.
+    # This complete recovery test must be independent of the prior Android
+    # smoke tests: full AOSP WebView can preserve a different scroll offset.
+    # Use a truly fresh app and create all three original learning records
+    # through user-visible Android interactions before exporting anything.
+    ui.adb("install","-r","-t",str(ui.APK),timeout=90)
+    ui.adb("shell","am","force-stop",ui.PACKAGE)
+    ui.adb("shell","pm","clear",ui.PACKAGE)
+    state.launch()
+    practice.open_first_lesson()
+    practice.type_and_verify()
+    ui.adb("shell","input","keyevent","KEYCODE_BACK")
+    ui.tap_label("Home")
+    state.complete_first_lesson()
+    state.make_storyboard()
     ui.adb("shell","am","force-stop",ui.PACKAGE)
     state.launch()
     ui.tap_label("Learn")
