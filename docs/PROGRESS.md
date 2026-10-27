@@ -131,3 +131,12 @@
 - The same stable [latest Android APK release](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/android-preview-latest) now contains the v0.9G debug APK, 4,382,199 bytes.
 - **Still blocked:** No independently verified Cloudflare Worker production URL in available user records or connected tools. Real-device Android WebView clipboard/files, screen bars, speaker/headphones, signing update identity, accessibility and iOS are not yet accepted.
 - Full details: [v0.9G QA](QA_V09G.md), [Cloudflare status](DEPLOYMENT_STATUS.md).
+
+
+## v0.9H — safe in-app Back navigation (27 October 2026)
+
+- [PR #4](https://github.com/rayadinaveen98-ship-it/frame-one/pull/4) merged as `ef8d4bc3e141f274307cac929510ab4173411209`.
+- Phone header now offers an accessible **Back within Frame One** control outside Home; original legacy router stores app-local depth markers and safely handles direct lesson/lab links. No learning-data or curriculum schema changes.
+- **Main checks all passed:** [web 40482599685](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482599685), [desktop/mobile Chromium 40482599661](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482599661), [Android debug 40482599668](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482599668), [public APK publisher 40482775098](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482775098): **all SUCCESS**.
+- The stable [public Android test APK](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/android-preview-latest) now includes v0.9H (4,382,543 bytes).
+- **Still pending:** native hardware/gesture Back integration and real-device acceptance, fixed test signing for upgrades, exact Cloudflare Worker production URL, Safari/iOS and editorial review. Read [v0.9H QA](QA_V09H.md).
