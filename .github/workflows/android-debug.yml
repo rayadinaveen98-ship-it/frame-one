@@ -43,10 +43,13 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-      - name: Install Android platform 36
-        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'platform-tools'
+      - name: Verify preinstalled Android SDK and install API 36
+        shell: bash
+        run: |
+          test -n "${ANDROID_HOME:-}"
+          command -v sdkmanager
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'platform-tools'
       - name: Install locked JavaScript dependencies
         run: npm ci --no-audit --no-fund
       - name: Verify source regressions
