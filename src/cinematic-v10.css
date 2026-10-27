@@ -100,3 +100,19 @@
 @media(prefers-reduced-motion:reduce){
   .thought-controls button{transition:none}
 }
+
+/* The plus control is in the same first row as the greeting, not on photos. */
+.home-add-frames{
+  display:grid;place-items:center;flex-shrink:0;
+  width:44px;height:44px;padding:0;border:1px solid #806249;
+  border-radius:13px;background:linear-gradient(140deg,#594030,#302b2b);
+  color:#ffe5c4;font-size:29px;font-weight:350;line-height:1;cursor:pointer;
+}
+.home-add-frames:focus-visible{outline:3px solid #edb88e;outline-offset:3px}
+.home-add-frames:hover{border-color:#eab78a;background:#624633}
+@media(max-width:760px){
+  .home-topbar .topbar-leading{min-width:0;flex:1}
+  .home-topbar .top-right{flex-shrink:0}
+  .home-add-frames{width:44px;height:44px;border-radius:12px}
+  .home-topbar .progress-pill{display:none}
+}
