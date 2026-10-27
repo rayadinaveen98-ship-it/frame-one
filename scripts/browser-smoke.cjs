@@ -208,11 +208,53 @@ async function verify() {
 
   await page.locator('.lab-tabs:visible [data-lab="cut"]').click();
   await lighting.waitFor({ state:'detached' });
-  await page.locator('[data-move="0:right"]').click();
-  assert.equal(await page.locator('.timeline-clip').count(), 3);
-  await page.locator('[data-cut-play="play"]').click();
-  await page.locator('[data-cut-play="stop"]').waitFor();
-  await page.locator('[data-cut-play="stop"]').click();
+  const cut = page.locator('.react-cut-lab');
+  await cut.waitFor();
+  assert.equal(await page.locator('#content').innerHTML(), '', 'React must own Cut Lab without hidden legacy markup');
+  assert.equal(await cut.locator('.timeline-clip').count(), 3);
+  assert.equal(await cut.locator('.cut-illustration.place').count(), 1, 'Original drawn establishing shot retained');
+  // Give the first shot its own duration, then move it. The 4-second hold
+  // belongs to that shot, not to an arbitrary timeline position.
+  await cut.locator('#shotDuration').focus();
+  await cut.locator('#shotDuration').press('End');
+  assert.match(await cut.locator('.duration-control label').textContent(), /5 seconds/);
+  await cut.locator('[data-move="0:right"]').click();
+  assert.match(await cut.locator('.timeline-clip').nth(1).textContent(), /5s/);
+  assert.match(await cut.locator('.timeline-clip').first().textContent(), /Clock/i);
+  assert.equal(await cut.locator('.cut-illustration.place').count(), 1, 'Selected shot follows moved clip');
+  await cut.locator('[data-cut-step="0"]').click();
+  assert.equal(await cut.locator('.cut-illustration.detail').count(), 1);
+  assert.match(await cut.locator('.result-box p').textContent(), /beginning with the clock/i);
+  await cut.locator('[data-cut-play="play"]').click();
+  assert.equal(await cut.locator('[data-cut-play="stop"]').count(), 1);
+  assert.equal(await cut.locator('.timeline-clip.clip-playing').count(), 1);
+  await cut.locator('[data-cut-play="stop"]').click();
+  assert.equal(await cut.locator('.timeline-clip.clip-playing').count(), 0);
+  // Three one-second holds should advance to all three shots and stop.
+  await cut.locator('[data-cut-reset]').click();
+  for(let i=0;i<3;i++){
+    await cut.locator(`[data-cut-step="${i}"]`).click();
+    await cut.locator('#shotDuration').focus();
+    await cut.locator('#shotDuration').press('Home');
+  }
+  await cut.locator('[data-cut-play="play"]').click();
+  await page.waitForFunction(() => {
+    const root=document.querySelector('.react-cut-lab');
+    return root?.querySelector('.cut-illustration.person') && root.querySelector('[data-cut-play="play"]');
+  },null,{timeout:7000});
+  assert.equal(await cut.locator('[data-cut-play="stop"]').count(),0,'Playback stops automatically after the third shot');
+  await photo(page,'15-react-cut-desktop.png');
+  // Navigating away must unmount and cancel the timer (no hidden playback).
+  await cut.locator('[data-cut-play="play"]').click();
+  await cut.locator('[data-lab="story"]').click();
+  await cut.waitFor({state:'detached'});
+  await page.waitForTimeout(1250);
+  assert.equal(await page.locator('.react-cut-lab').count(),0,'Playback stops when leaving Cut Lab');
+  await page.locator('.lab-tabs:visible [data-lab="cut"]').click();
+  await cut.waitFor();
+  assert.equal(await cut.locator('[data-cut-play="stop"]').count(),0,'Reopening starts with playback stopped');
+  assert.equal(await cut.locator('.timeline-clip').count(),3,'Edit persists during navigation');
+  console.log('PASS: React Cut Lab timeline, duration rebinding, complete playback and unmount cleanup');
 
   await page.locator('.lab-tabs:visible [data-lab="story"]').click();
   await page.locator('[data-story-shot="close"]').click();
@@ -372,7 +414,15 @@ async function verify() {
     const lightOverflow=await phone.evaluate(() => ({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
     if(lightOverflow.scroll>lightOverflow.viewport+3)record('React Lighting Lab overflow at '+width+'px: '+lightOverflow.scroll+'/'+lightOverflow.viewport);
     await photo(phone,'14-react-lighting-'+width+'px.png');
-    console.log('PASS: mobile ' + width + 'px navigates React chapters and all four migrated Labs (lighting overflow: ' + lightOverflow.scroll + '/' + lightOverflow.viewport + ')');
+    await mobileLighting.locator('[data-lab="cut"]').click();
+    const mobileCut=phone.locator('.react-cut-lab');
+    await mobileCut.waitFor();
+    await mobileCut.locator('[data-move="0:right"]').click();
+    assert.equal(await mobileCut.locator('.timeline-clip').count(),3);
+    const cutOverflow=await phone.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
+    if(cutOverflow.scroll>cutOverflow.viewport+3)record('React Cut Lab overflow at '+width+'px: '+cutOverflow.scroll+'/'+cutOverflow.viewport);
+    await photo(phone,'16-react-cut-'+width+'px.png');
+    console.log('PASS: mobile ' + width + 'px navigates five native React Labs (Cut overflow: ' + cutOverflow.scroll + '/' + cutOverflow.viewport + ')');
     await mobile.close();
   }
   if (failures.length) throw Error(failures.join('\n'));
