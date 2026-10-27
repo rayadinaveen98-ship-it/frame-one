@@ -30,4 +30,22 @@ The previous v0.9I native Android Back implementation passed TypeScript, browser
 
 ## Verification results
 
-Pending real emulator completion. Do not claim native runtime acceptance until verified from GitHub Actions logs.
+The first **complete emulator acceptance pass** is [GitHub Actions run 40490569350](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40490569350), using the AOSP Android Test Device, Android API 35, and a normal launcher intent.
+
+The actual native runtime log confirms:
+
+- Frame One APK installed and Home's WebView became accessible.
+- Learn and the first React lesson opened via UIAutomator input.
+- Android KEYCODE_BACK from lesson returned to Learn; from Learn returned Home.
+- Creative Lab opened; system Back returned Home.
+- Back at Home moved Frame One behind the Android Test Device's fake launcher activity (`com.android.fakesystemapp/.launcher.EmptyHomeActivity`), while `pidof com.frameone.learncinema` remained live.
+- The script ended with **`FRAME ONE ANDROID EMULATOR SMOKE: PASS`**. Real emulator screenshots, accessible UI hierarchy and foreground-activity receipt were uploaded by GitHub Actions.
+
+### Important negative controls
+
+- An initial Google APIs Pixel image intermittently showed a **Pixel Launcher not responding** system dialog over the working Frame One home, causing false negatives. The runner now uses the lighter `aosp_atd` Android Test Device instead.
+- [Run 40490601869](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40490601869) intentionally used direct `adb am start`; lesson/Lab Back worked, but Home minimize did not. This demonstrates that the **launch method affects Android root-task behavior**. Reverted to the user's actual launcher-intent launch method, which passed the full suite.
+- The final branch uses the passing launcher-intent method. A repeat job must be checked separately rather than inferred from the above green run.
+
+**Scope:** This passes emulator **system-key** Back and native activity minimization. It is not a physical Samsung/Pixel device acceptance, predictive edge-gesture animation review, audio or keyboard/backup test, signing continuity test, or Cloudflare deployment.
+
