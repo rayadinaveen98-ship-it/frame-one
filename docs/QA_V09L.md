@@ -36,3 +36,18 @@ The first Android test selected Decision correctly but Android's UIAutomator rep
 With the Android keyboard shown, the WebView's visible height shrinks and Save scene is below the keyboard. QA dismisses the input method through native Back, confirms the Make Lab remains open, then taps **Save scene**. These are test harness and Android accessibility discoveries, not application data migrations.
 
 **Limit:** This establishes on-device-emulator practice/progress/storyboard persistence after a force-stop while offline, not backup export/import across devices or an in-place APK version upgrade. Native physical phones and Cloudflare live site remain unaccepted.
+
+## Independent merged-main confirmation — PASS
+
+[Android API 35 main-branch run 40499596959](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40499596959) **SUCCESS** after PR #8 merged. Actual UIAutomator/emulator logs confirm:
+
+- `FRAME ONE ANDROID PERSISTENCE OFFLINE: PASS`: private practice note survived force-stop and offline cold restart.
+- `PASS: first lesson completed by answering its real quiz in Android`.
+- `PASS: native Make Lab saved Decision/Close-up and authored first shot note`.
+- `PASS: app cold-launched with Android airplane mode enabled`.
+- `PASS: completed first lesson still counts after offline force-stop`.
+- `PASS: story question, framing and written first shot persisted offline`.
+- `FRAME ONE ANDROID LEARNING STORYBOARD RESTART: PASS`.
+- `FRAME ONE ANDROID EMULATOR SMOKE: PASS`: native Back and Home activity minimize remain functional.
+
+The matching [main source build 40499597037](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40499597037) also passed. The passing compiled-browser PR run was [40498806967](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40498806967). **QA-only milestone; no new APK and no native file backup restoration claims.**
