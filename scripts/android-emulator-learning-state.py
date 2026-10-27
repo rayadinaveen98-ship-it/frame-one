@@ -22,10 +22,10 @@ spec.loader.exec_module(ui)
 SHOT_NOTE="FrameOneNativeShotQA20261027"
 BUTTON_CLASSES=("Button","ToggleButton","CheckBox")
 TOP=145
-# The fixed mobile tab bar begins near y=1990 on 1080×2340.
-# A button at y=2028 can be accessible but a tap hits the tab bar.
-# Require the entire control above y=1900; scroll content otherwise.
-BOTTOM=1900
+# Android emulators can have different navigation heights and WebView insets.
+# Determine the actual fixed mobile tab-bar top from UIAutomator rather than
+# assuming a constant y=1900 on every Android system image.
+BOTTOM=2125
 
 def nodes():
     ui.hierarchy()
@@ -53,7 +53,14 @@ def control(label,exact=True,tries=19):
     """
     for attempt in range(tries):
         choices=[]
-        for n in nodes():
+        tree=nodes()
+        tab_tops=[]
+        for node in tree:
+            if "Mobile navigation" in node.attrib.get("content-desc","") or "Mobile navigation" in node.attrib.get("text",""):
+                bounds=bounds_of(node)
+                if bounds and bounds[1]>0:tab_tops.append(bounds[1])
+        bottom=min(BOTTOM, min(tab_tops)-55) if tab_tops else BOTTOM
+        for n in tree:
             kind=n.attrib.get("class","").split(".")[-1]
             if kind not in BUTTON_CLASSES or n.attrib.get("enabled","true")=="false":
                 continue
@@ -61,7 +68,7 @@ def control(label,exact=True,tries=19):
             if not (value==label if exact else label.lower() in value.lower()):
                 continue
             b=bounds_of(n)
-            if b and b[1]>=TOP and b[3]<=BOTTOM and (b[2]-b[0])>20 and (b[3]-b[1])>20:
+            if b and b[1]>=TOP and b[3]<=bottom and (b[2]-b[0])>20 and (b[3]-b[1])>20:
                 choices.append((n,b,value))
         if choices:
             n,b,value=choices[0]
