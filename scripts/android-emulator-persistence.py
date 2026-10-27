@@ -40,7 +40,10 @@ def editable_node():
                 match=re.fullmatch(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]",bounds)
                 if match and ("EditText" in kind or n.attrib.get("editable")=="true"):
                     x1,y1,x2,y2=map(int,match.groups())
-                    if (x2-x1)>60 and (y2-y1)>24 and y1>=0 and y2>=0:
+                    # A virtual EditText can be technically visible but
+                    # still covered by Android's bottom navigation. Only
+                    # accept an editor wholly inside the clear reading area.
+                    if (x2-x1)>60 and (y2-y1)>24 and y1>=165 and y2<=1810:
                         visible.append((x1,y1,x2,y2,n.attrib.get("text",""),kind))
             if visible:
                 # Use lowest valid textarea; first lesson has one writable textarea.
@@ -68,9 +71,18 @@ def type_and_verify():
     bounds=editable_node()
     x1,y1,x2,y2,_,_=bounds
     ui.adb("shell","input","tap",str((x1+x2)//2),str((y1+y2)//2))
+    time.sleep(0.5)
+    focused=[]
+    for n in ET.fromstring(ui.hierarchy() and ui.LAST_XML).iter("node"):
+        if ("EditText" in n.attrib.get("class","") and
+                n.attrib.get("focused")=="true"):
+            focused.append(n)
+    if not focused:
+        ui.capture("lesson-editor-not-focused")
+        raise AssertionError("Android did not focus the actual lesson note editor before typing")
     ui.adb("shell","input","text",NOTE)
     # Let React onChange synchronously persist using frameone-practice-v07.
-    ui.find(NOTE,tries=7)
+    ui.find(NOTE,tries=10)
     ui.capture("persistence-02-note-entered")
     print("PASS: real Android WebView received and displays typed private note",flush=True)
 
