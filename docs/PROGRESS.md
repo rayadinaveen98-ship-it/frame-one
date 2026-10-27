@@ -82,3 +82,11 @@
 - A tenth source regression suite and Chromium tests cover saved work, export, imported backup changes, route reopening and 320px/390px screenshots.
 - Earlier test-only failures exposed stale assumptions about legacy markup and mock browser events; corrected. The **latest completed browser run is the acceptance gate**. [Make QA report](QA_MAKE_V09D.md).
 - Next once accepted: Sound Lab, followed by deployment and real-device checks.
+
+## Sixth Creative Lab accepted — Make (27 October 2026)
+
+- Moved Make's three-shot creative storytelling activity to React without breaking its original illustration, 240-character notes, selection controls, Save, shot-list text export or lesson link.
+- Added a typed bridge that saves Make through the v0.7 legacy storyboard engine and broadcasts a React update after an old backup is restored, maintaining `frameone-scene-v07` and backup schema compatibility.
+- Tenth source regression and production browser journey passed [GitHub Actions 40462953360](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40462953360), covering all 33 lessons, seven labs, save/export/backup restore, offline reload and 320px/390px screen layouts.
+- Reviewed the final Make desktop and narrow-phone QA screenshots; the original visual teaching activity and editing controls remain usable. Real device/accessibility/expert review remains open.
+- **6/7 React lab migrations accepted. Only Sound remains legacy.** Next: Sound migration, then HTTPS/PWA deployment, Android APK testing and iOS build. [Evidence](QA_MAKE_V09D.md).
