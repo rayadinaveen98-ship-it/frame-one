@@ -81,6 +81,16 @@ def tap_label(text: str, *, exact: bool = True) -> None:
     matches = find(text, exact=exact)
     visible = [n for n in matches if int(n["bottom"]) > 0
                and int(n["x"]) > 0 and int(n["y"]) > 0]
+    if not visible and not exact:
+        # Android returns [0,0][0,0] for offscreen WebView lesson cards.
+        # Scroll the course in small steps rather than tapping screen origin.
+        for _ in range(5):
+            adb("shell","input","swipe","540","1700","540","850","360")
+            matches = find(text, exact=False, tries=3)
+            visible = [n for n in matches if int(n["bottom"]) > 0
+                       and int(n["x"]) > 0 and int(n["y"]) > 0]
+            if visible:
+                break
     if not visible:
         capture("invisible-" + re.sub(r"[^a-z0-9]+","-",text.lower())[:35])
         raise AssertionError(f"Could not tap visible Android accessibility target: {text!r}")
