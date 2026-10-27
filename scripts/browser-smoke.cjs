@@ -103,7 +103,35 @@ async function verify() {
   await page.locator('.lab-tabs [data-lab="colour"]').click();
   await page.locator('#colourStrength').evaluate(el => { el.value = '75'; el.dispatchEvent(new Event('input', { bubbles: true })); });
   assert.match(await page.locator('#colourStrengthValue').textContent(), /75/);
-  console.log('PASS: all seven labs mount; Frame and Colour controls respond');
+  // Exercise the primary learning interaction in the remaining five labs.
+  await page.locator('.lab-tabs [data-lab="light"]').click();
+  await page.locator('[data-light="side"]').click();
+  assert.equal(await page.locator('[data-light="side"]').getAttribute('aria-pressed'), 'true');
+  await page.locator('#lightPower').evaluate(el => { el.value = '70'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  assert.match(await page.locator('#lightPowerValue').textContent(), /70/);
+
+  await page.locator('.lab-tabs [data-lab="cut"]').click();
+  await page.locator('[data-move="0:right"]').click();
+  assert.equal(await page.locator('.timeline-clip').count(), 3);
+  await page.locator('[data-cut-play="play"]').click();
+  await page.locator('[data-cut-play="stop"]').waitFor();
+  await page.locator('[data-cut-play="stop"]').click();
+
+  await page.locator('.lab-tabs [data-lab="story"]').click();
+  await page.locator('[data-story-shot="close"]').click();
+  assert.equal(await page.locator('[data-story-shot="close"]').getAttribute('aria-pressed'), 'true');
+  await page.locator('#storyNote').fill('The character spots a clue.');
+  await page.locator('[data-story-save]').click();
+  assert.ok(await page.evaluate(() => localStorage.getItem('frameone-scene-v07')?.includes('The character spots a clue.')));
+
+  await page.locator('.lab-tabs [data-lab="continuity"]').click();
+  await page.locator('[data-continuity="changed"]').click();
+  assert.equal(await page.locator('[data-continuity="changed"]').getAttribute('aria-pressed'), 'true');
+
+  await page.locator('.lab-tabs [data-lab="sound"]').click();
+  await page.locator('#ambience').uncheck();
+  assert.equal(await page.locator('#ambience').isChecked(), false);
+  console.log('PASS: all seven labs mount and controls respond; timed edit, story save and lab state verified');
 
   await page.locator('.sidebar [data-page="learn"]').click();
   await page.locator('.react-learn-view').waitFor();
