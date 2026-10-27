@@ -38,6 +38,26 @@ async function photo(page, name) {
 async function verify() {
   await ready();
   browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
+  // Premium 4-second boot is measured on a real compiled, non-reduced viewport.
+  // Existing learning-flow contexts intentionally prefer reduced motion.
+  const launchContext=await browser.newContext({
+    viewport:{width:390,height:844},deviceScaleFactor:2,reducedMotion:'no-preference'
+  });
+  const launchPage=await launchContext.newPage();
+  launchPage.on('pageerror',error=>record('Cinematic launch error: '+error.message));
+  await launchPage.goto(base,{waitUntil:'domcontentloaded'});
+  const launchScreen=launchPage.locator('[data-launch-sequence="cold"]');
+  await launchScreen.waitFor({timeout:10000});
+  assert.equal(await launchScreen.getAttribute('data-launch-duration'),'4000');
+  assert.equal(await launchScreen.locator('.launch-logo').count(),1);
+  assert.equal(await launchScreen.locator('.launch-wordmark').textContent(),'FRAME ONE');
+  await launchPage.waitForFunction(()=>Boolean(window.frameOneLegacy),null,{timeout:12000});
+  await launchPage.waitForTimeout(1950);
+  await launchPage.screenshot({path:path.join(shots,'00-cinematic-launch-390.png'),fullPage:false,animations:'allow'});
+  await launchScreen.waitFor({state:'detached',timeout:7000});
+  assert.equal(await launchPage.locator('.home-greeting').count(),1);
+  console.log('PASS: branded mobile title displays, uses exactly four seconds and yields to Home');
+  await launchContext.close();
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, acceptDownloads: true, reducedMotion: 'reduce' });
   const page = await context.newPage();
   page.on('pageerror', error => record('Uncaught browser exception: ' + error.message));

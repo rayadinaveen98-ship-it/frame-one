@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { LessonView } from './components/LessonView';
 import { LearnView } from './components/LearnView';
 import { PersonalFrames } from './components/PersonalFrames';
+import { LaunchExperience } from './components/LaunchExperience';
 import { ContinuityLab, type ContinuityMode } from './components/labs/ContinuityLab';
 import { ColourLab, type ColourMode } from './components/labs/ColourLab';
 import { FrameLab, type FrameMode } from './components/labs/FrameLab';
@@ -165,9 +166,10 @@ export default function App() {
   }, []);
 
   return <div className="app">
+    <LaunchExperience />
     <aside className="sidebar" aria-label="Main navigation">
       <a className="logo" href="#home" id="brand" aria-label="Frame One home">
-        <span className="logo-mark" aria-hidden="true">▧</span>
+        <img className="logo-mark" src="./frame-one-icon.svg" alt="" aria-hidden="true" />
         <span className="logo-type">FRAME ONE<span>THE ART OF FILM</span></span>
       </a>
       <Navigation />

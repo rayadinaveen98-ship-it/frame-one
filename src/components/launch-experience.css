@@ -1,0 +1,105 @@
+/* Four-second original cinema title. CSS-only and fully offline; no audio. */
+.launch-experience{
+  --sequence-time:4s;
+  position:fixed;inset:0;z-index:999;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  background:#090d13;color:#f4d9bc;pointer-events:none;
+  transform:translateZ(0);isolation:isolate;
+  animation:launch-exit var(--sequence-time) ease-in-out both;
+}
+.launch-return{--sequence-time:1.2s}
+.launch-halo{
+  position:absolute;width:min(110vw,760px);aspect-ratio:1;border-radius:50%;
+  left:50%;top:50%;transform:translate(-50%,-50%);
+  background:radial-gradient(circle, #9e60304d 0%,#5936203b 24%,#1c1c2200 63%);
+  filter:blur(24px);
+  animation:launch-halo-in var(--sequence-time) ease-out both;
+}
+.launch-beam{
+  position:absolute;top:49.5%;left:50%;height:1px;width:135vw;
+  background:linear-gradient(90deg,transparent 2%,#f9c995 48%,#fff1ce 50%,#d18d5b 53%,transparent 99%);
+  transform:translateX(-50%);opacity:0;
+  box-shadow:0 0 21px 5px #f3a5645e;
+  animation:launch-beam-wipe var(--sequence-time) ease-in-out both;
+}
+.launch-grain{
+  position:absolute;inset:-30%;opacity:.075;pointer-events:none;
+  background-image:repeating-linear-gradient(90deg,transparent 0 32px,#ebba8a22 33px,transparent 34px),
+    repeating-linear-gradient(0deg,transparent 0 27px,#d8a57a16 28px,transparent 29px);
+  animation:launch-grain-shift var(--sequence-time) steps(7,end) both;
+}
+.launch-frame{
+  position:relative;z-index:2;width:clamp(130px,35vw,186px);
+  aspect-ratio:1;display:grid;place-items:center;
+  transform:scale(.68);opacity:0;filter:blur(11px);
+  animation:launch-logo-arrive var(--sequence-time) cubic-bezier(.19,1,.22,1) both;
+}
+.launch-logo{display:block;width:100%;height:100%;filter:drop-shadow(0 0 14px #e99d5250)}
+.launch-wordmark{
+  position:relative;z-index:2;margin-top:12px;
+  font:600 clamp(27px,6.6vw,40px)/1.12 "Trebuchet MS",ui-sans-serif,system-ui,sans-serif;
+  letter-spacing:.25em;transform:translateX(.12em);
+  color:#f6e5d1;opacity:0;
+  animation:launch-type-arrive var(--sequence-time) ease-out both;
+}
+.launch-subtitle{
+  z-index:2;position:relative;margin-top:11px;
+  font:600 10px/1.1 ui-sans-serif,system-ui,sans-serif;
+  letter-spacing:.42em;transform:translateX(.20em);
+  color:#e4ae7c;opacity:0;
+  animation:launch-subtitle-arrive var(--sequence-time) ease-out both;
+}
+.launch-reveal-line{
+  position:absolute;bottom:16%;left:50%;width:min(180px,45vw);
+  height:1px;transform:translateX(-50%) scaleX(0);
+  background:linear-gradient(90deg,transparent,#dcb185,transparent);
+  animation:launch-line-in var(--sequence-time) ease-out both;
+}
+@keyframes launch-exit{
+  0%,84%{opacity:1;visibility:visible}
+  99%{opacity:.02;visibility:visible}
+  100%{opacity:0;visibility:hidden}
+}
+@keyframes launch-halo-in{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.65)}
+  35%{opacity:.44}72%{opacity:.9}
+  100%{opacity:.8;transform:translate(-50%,-50%) scale(1.16)}
+}
+@keyframes launch-beam-wipe{
+  0%,7%{opacity:0;clip-path:inset(0 100% 0 0)}
+  21%{opacity:.9;clip-path:inset(0 32% 0 0)}
+  34%{opacity:.2;clip-path:inset(0 0 0 0)}
+  47%,100%{opacity:0;clip-path:inset(0 0 0 0)}
+}
+@keyframes launch-logo-arrive{
+  0%,12%{opacity:0;transform:scale(.68);filter:blur(11px)}
+  35%{opacity:.65;transform:scale(.92);filter:blur(2px)}
+  66%,100%{opacity:1;transform:scale(1);filter:blur(0)}
+}
+@keyframes launch-type-arrive{
+  0%,42%{opacity:0;transform:translate(.12em,10px)}
+  74%,100%{opacity:1;transform:translate(.12em,0)}
+}
+@keyframes launch-subtitle-arrive{
+  0%,56%{opacity:0;transform:translate(.2em,8px)}
+  82%,100%{opacity:1;transform:translate(.2em,0)}
+}
+@keyframes launch-line-in{
+  0%,65%{opacity:0;transform:translateX(-50%) scaleX(0)}
+  88%,100%{opacity:1;transform:translateX(-50%) scaleX(1)}
+}
+@keyframes launch-grain-shift{
+  from{transform:translate3d(-.8%,-.8%,0)}
+  to{transform:translate3d(.8%,.8%,0)}
+}
+.launch-return .launch-beam,.launch-return .launch-grain,
+.launch-return .launch-subtitle,.launch-return .launch-reveal-line{display:none}
+.launch-return .launch-frame{animation:launch-return-logo var(--sequence-time) ease-out both}
+.launch-return .launch-wordmark{animation:launch-return-logo var(--sequence-time) ease-out both}
+@keyframes launch-return-logo{
+  0%{opacity:0;transform:scale(.94)} 35%,75%{opacity:1;transform:scale(1)}
+  100%{opacity:1;transform:scale(1)}
+}
+@media(prefers-reduced-motion:reduce){
+  .launch-experience{display:none!important;animation:none!important}
+}
