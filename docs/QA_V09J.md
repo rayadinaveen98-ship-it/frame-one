@@ -66,3 +66,10 @@ The working and representative launch method is the app launcher intent. Do not 
 The workflow has subsequently been configured to run on relevant main-branch app changes and corresponding pull requests, and can be started manually. It is a **native Android runtime QA gate**, separate from the existing web/Chromium tests and the public Android APK release workflow. The last publicly published application build remains **v0.9I**, because v0.9J adds CI/testing rather than app code.
 
 Any new main-branch emulator run must be checked independently rather than inferred from the two green branch results.
+
+## Independent main-branch acceptance — PASS
+
+- [GitHub Actions run 40492047719](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40492047719) **SUCCESS** on main (emulator workflow commit `5c2a1181229ddaaf34cb3a7d02c9ffa0b81703c5`).
+- The main log verifies native WebView Home, Learn, first lesson, Android system Back from lesson → Learn → Home, Creative Lab → Home, and Home Back minimizing while leaving the Frame One process alive. It ends with `FRAME ONE ANDROID EMULATOR SMOKE: PASS`.
+- With the two green feature-branch runs, this gives **three independent complete successful native emulator suites**. It is still not a physical device acceptance.
+- The old Android APK publication workflow had been overbroad: test-script changes triggered a fresh debug APK, using a different ephemeral signing key despite identical app source. The [debug workflow trigger](../.github/workflows/android-debug.yml) was narrowed to app/build-related paths. The release APK may have been refreshed by that transition. **Keep a verified learning backup and do not assume in-place upgrades between debug certificates.**
