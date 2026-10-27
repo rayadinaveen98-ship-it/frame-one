@@ -114,8 +114,11 @@ def main() -> None:
     print("FRAME ONE EMULATOR: installing actual Capacitor Android APK", flush=True)
     print(adb("devices"), flush=True)
     adb("install", "-r", "-t", str(APK), timeout=90)
-    adb("shell", "monkey", "-p", PACKAGE, "-c",
-        "android.intent.category.LAUNCHER", "1", timeout=40)
+    # Start Frame One's actual Capacitor MainActivity directly. On
+    # resource-limited CI, sending a Monkey launcher intent can trigger an
+    # unrelated Pixel Launcher ANR over an otherwise healthy WebView.
+    adb("shell", "am", "start", "-W", "-n",
+        PACKAGE + "/.MainActivity", timeout=40)
     find("WELCOME TO THE WORLD OF CINEMA", tries=20)
     capture("01-home")
     print("PASS: real Android WebView renders bundled Frame One Home", flush=True)
