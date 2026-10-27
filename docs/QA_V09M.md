@@ -22,6 +22,17 @@ The original browser's `Blob` object-URL download works in desktop Chrome but ma
 - `scripts/android-emulator-backup.py` exercises actual user-created notes, completed lesson and Make Lab storyboard on Android. It taps **Save / share backup JSON**, extracts the *actual plugin-written cache file* in a disposable debug emulator (via `adb run-as`), checks all saved fields, copies those same bytes to Downloads as the simulated external destination, clears the entire app's private data, uses Android's actual file picker to restore, consents to overwrite, and checks the completed lesson and Make scene returned. **This is not an injected or fabricated backup.**
 - Screenshots and accessibility hierarchies are collected for any failure. If Android Test Device has no working SAF document picker or compatible share destinations, report that explicitly and keep the gate open. Do not claim the user's external saving action itself was performed by CI.
 
+## Why there are now two emulator types
+
+The original `aosp_atd` Automated Test Device is intentionally stripped of system applications. Its Android WebView installed and **wrote a real v1 JSON backup** containing a completed lesson, private practice note and authored Make Lab storyboard. An external host copy of that exact file survived `pm clear` as intended. But when the native Android file-restore button was tapped, the captured UI hierarchy remained inside Frame One: the ATD did not expose a DocumentsUI Downloads destination. Do not claim native file picker restore failed in the app or passed in the test; the headless system is not a representative phone.
+
+We have split the acceptance:
+
+- **Lightweight ATD native acceptance** (`android-emulator-qa.yml`): verifies the installed Android app, lesson/storyboard/private-note preservation, bytes of the exact Capacitor Filesystem cache backup and Back navigation. Runs `FRAMEONE_BACKUP_EXPORT_ONLY=1`.
+- **Full AOSP Android 35 acceptance** (`android-backup-picker-qa.yml`): runs the whole export → copy original bytes externally → `pm clear` → Android DocumentsUI picker → restore → verify progress/storyboard flow, with a complete Android image rather than the stripped ATD. The test logs available `OPEN_DOCUMENT` / `GET_CONTENT` resolvers and captures picker screenshots/hierarchy for a precise diagnosis if the chooser is unavailable.
+
+The *share/save destination itself* is not simulated by a real user in CI; the test copies only the original plugin-exported bytes to the public Download directory, rather than inventing a payload. Real phone acceptance must confirm which external destination apps receive shared JSON files, and whether the user can find that file afterward.
+
 ## Remaining release gates
 
 - Physical phone Share sheet + Save to Files/Drive, Android DocumentsUI import from Downloads/Drive, TalkBack/focus management, offline sharing, storage and permissions across Android OEM versions.
