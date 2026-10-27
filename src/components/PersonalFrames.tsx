@@ -28,6 +28,7 @@ export function PersonalFrames(_props:FramesProps){
   const [error,setError]=useState('');
   const pickerRef=useRef<HTMLInputElement>(null);
   const touchStart=useRef<number|null>(null);
+  const swiped=useRef(false);
   const media=useMemo(()=>frames.map(frame=>({id:frame.id,url:URL.createObjectURL(frame.image)})),[frames]);
   useEffect(()=>()=>{media.forEach(photo=>URL.revokeObjectURL(photo.url));},[media]);
   const urlFor=(id:string)=>media.find(photo=>photo.id===id)?.url;
@@ -55,6 +56,7 @@ export function PersonalFrames(_props:FramesProps){
   },[frames,index]);
   useEffect(()=>{
     if(frames.length<2||busy||menuOpen||controlsVisible||editing)return;
+    if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;
     const clock=window.setInterval(()=>{
       if(document.visibilityState!=='visible')return;
       next();
@@ -129,18 +131,21 @@ export function PersonalFrames(_props:FramesProps){
     catch(err){setError(err instanceof Error?err.message:'Could not reorder the photos.');}
     finally{setBusy(false);}
   }
-  function activatePhoto(){setControlsVisible(value=>!value);setMenuOpen(false);}
+  function activatePhoto(){
+    if(swiped.current){swiped.current=false;return;}
+    setControlsVisible(value=>!value);setMenuOpen(false);
+  }
   function handleKeys(event:KeyboardEvent<HTMLButtonElement>){
     if(event.key==='ArrowRight'){event.preventDefault();next(1);}
     if(event.key==='ArrowLeft'){event.preventDefault();next(-1);}
   }
-  function touchBegin(event:TouchEvent<HTMLButtonElement>){touchStart.current=event.changedTouches[0]?.clientX??null;}
+  function touchBegin(event:TouchEvent<HTMLButtonElement>){touchStart.current=event.changedTouches[0]?.clientX??null;swiped.current=false;}
   function touchFinish(event:TouchEvent<HTMLButtonElement>){
     const start=touchStart.current;
     touchStart.current=null;
     if(start===null)return;
     const amount=(event.changedTouches[0]?.clientX??start)-start;
-    if(Math.abs(amount)>52){next(amount<0?1:-1);setControlsVisible(false);}
+    if(Math.abs(amount)>52){swiped.current=true;next(amount<0?1:-1);setControlsVisible(false);}
   }
   return <section className="personal-frames" aria-label="Your cinematic frames" data-gallery-ready={ready}>
     <input ref={pickerRef} type="file" className="sr-only" accept="image/*" multiple
