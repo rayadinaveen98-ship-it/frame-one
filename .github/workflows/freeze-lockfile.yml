@@ -1,0 +1,39 @@
+name: Frame One dependency lockfile checkpoint
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/freeze-lockfile.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  create-lockfile:
+    if: github.repository == 'rayadinaveen98-ship-it/frame-one' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Resolve and freeze existing app dependencies
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Commit lockfile if needed
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add package-lock.json
+          if git diff --cached --quiet; then
+            echo "Dependency lockfile already tracked and current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "build: pin Frame One web dependencies"
+          git push origin HEAD:main
