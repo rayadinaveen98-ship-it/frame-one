@@ -159,3 +159,8 @@
 - Android emulator acceptance now guards relevant application/native changes. Evidence includes screenshots, Android UI hierarchies and foreground-activity logs.
 - This is a QA improvement only; the latest installable public Android debug build is **v0.9I**. Learner content and local data formats remain unchanged.
 - Remaining acceptance: **physical phone** swipe/gesture Back, audio/file backup, update signing identity and in-place upgrade, Cloudflare live HTTPS deployment, Safari/iOS and educational/Telugu accuracy review. [v0.9J report](QA_V09J.md).
+
+
+### v0.9J main-branch confirmation
+
+The independent [main Android emulator run 40492047719](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40492047719) **PASSED** the same native lesson/Lab/system Back/Home minimize acceptance. Native Back has now passed **three complete emulator runs** in total. To avoid needlessly re-signing and re-publishing the public test APK for QA-only changes, `.github/workflows/android-debug.yml` was restricted to app/build-source paths. Real phone gestures/audio/backup and stable signing remain pending.
