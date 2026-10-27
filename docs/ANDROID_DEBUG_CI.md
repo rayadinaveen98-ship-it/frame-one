@@ -1,6 +1,6 @@
 # Frame One — Android debug APK build and device test (v0.9E)
 
-Status: **first Android debug APK build VERIFIED in GitHub Actions** on 27 October 2026; not an installed/device-tested or app-store release. [Successful run 40474122825](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40474122825) on commit `d395c0434c022b368465ee9aaadbf6bda7f2e951` uploaded artifact `frame-one-android-debug-apk` (ID `12719818584`, 4,017,400-byte ZIP).
+Status: **Android debug APK build verified on both the PR and main** on 27 October 2026; not yet installed/device-tested or store-ready. [PR run 40474122825](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40474122825) passed and uploaded `frame-one-android-debug-apk` (ID `12719818584`). After merge, [main run 40474407084](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40474407084) also passed and uploaded the same artifact name (ID `12719424344`).
 
 ## Reproducible build
 
