@@ -75,12 +75,9 @@ export default function App() {
     const onRoute = (event: Event) => {
       const custom = event as CustomEvent<LegacyRoute>;
       if (!custom.detail?.page) return;
-      // Legacy renders before emitting a route event. Read its active lab
-      // before clearing the transitional, React-owned continuity markup.
-      const lab = custom.detail.page === 'lab'
-        ? (document.querySelector<HTMLButtonElement>('#content .lab-tab[data-lab][aria-pressed="true"]')?.dataset.lab as LabName | undefined)
-        : undefined;
-      if (lab === 'continuity') document.getElementById('content')?.replaceChildren();
+      // Legacy engine explicitly provides the selected lab in its route event.
+      // It leaves #content empty when the React Continuity Lab owns the screen.
+      const lab = custom.detail.page === 'lab' ? custom.detail.lab : undefined;
       setRoute({ ...custom.detail, lab });
     };
     window.addEventListener('frameone:route',onRoute);
