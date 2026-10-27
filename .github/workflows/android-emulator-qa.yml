@@ -95,7 +95,7 @@ jobs:
           emulator-boot-timeout: 600
           emulator-options: -no-window -no-snapshot -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: python3 scripts/android-emulator-persistence.py && python3 scripts/android-emulator-learning-state.py && python3 scripts/android-emulator-backup.py && python3 scripts/android-emulator-smoke.py
+          script: python3 scripts/android-emulator-persistence.py && python3 scripts/android-emulator-learning-state.py && FRAMEONE_BACKUP_EXPORT_ONLY=1 python3 scripts/android-emulator-backup.py && python3 scripts/android-emulator-smoke.py
       - name: Upload Android device hierarchy and screenshots (including failures)
         if: always()
         uses: actions/upload-artifact@v4
