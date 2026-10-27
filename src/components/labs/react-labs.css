@@ -60,3 +60,20 @@
     border-radius:18px;
   }
 }
+
+/* Native React Lighting Lab keeps the v0.8B hand-drawn lighting scene. */
+.react-lighting-lab .react-light-scene {width:100%;min-width:0;}
+.react-lighting-lab .react-light-scene .lighting-stage {width:100%;max-width:100%;box-sizing:border-box;}
+.react-lighting-lab .lighting-badge {max-width:55%;text-align:center;line-height:1.5;}
+.react-lighting-lab :is(.lab-tab,.lab-choice,.btn-secondary,input[type="range"]):focus-visible {
+  outline:3px solid #edb88e;outline-offset:3px;
+}
+@media (min-width:761px){
+  .react-lighting-lab .cinematic-lab-shell{background:transparent;border:0;overflow:visible;gap:16px;align-items:start;}
+  .react-lighting-lab .lab-preview{align-self:start;position:sticky;top:16px;}
+  .react-lighting-lab .film-controls{background:#1b202b;border:1px solid #3d4553;border-radius:18px;}
+}
+@media (max-width:350px){
+  .react-lighting-lab .lighting-badge{font-size:8px;right:8px;top:8px;padding:4px 7px;max-width:58%;}
+  .react-lighting-lab .lab-preview{min-width:0;}
+}
