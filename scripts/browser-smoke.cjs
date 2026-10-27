@@ -120,11 +120,19 @@ async function verify() {
   assert.equal(await colour.locator('#colourStrengthValue').textContent(), '100%');
   await colour.locator('[data-colour="cool"]').click();
   assert.equal(await colour.locator('[data-colour="cool"]').getAttribute('aria-pressed'), 'true');
+  await page.waitForFunction(() => {
+    const element = document.querySelector('.react-colour-lab .colour-grade');
+    return element && Number(getComputedStyle(element).opacity) > 0.4;
+  }, null, { timeout: 4000 });
   const fullOpacity = await colour.locator('.colour-grade').evaluate(el => Number(getComputedStyle(el).opacity));
-  assert.ok(fullOpacity > 0.35 && fullOpacity <= 0.42, 'Overlay alpha retains existing 42% cap');
+  assert.ok(fullOpacity > 0.4 && fullOpacity <= 0.42, 'Overlay alpha retains existing 42% cap');
   await photo(page, '09-react-colour-desktop.png');
   await colour.locator('[data-colour="neutral"]').click();
-  assert.equal(await colour.locator('.colour-grade').evaluate(el => Number(getComputedStyle(el).opacity)), 0, 'Neutral ignores overlay strength');
+  await page.waitForFunction(() => {
+    const element = document.querySelector('.react-colour-lab .colour-grade');
+    return element && Number(getComputedStyle(element).opacity) < 0.01;
+  }, null, { timeout: 4000 });
+  assert.ok((await colour.locator('.colour-grade').evaluate(el => Number(getComputedStyle(el).opacity))) < 0.01, 'Neutral ignores overlay strength');
   // Exercise the primary learning interaction in the remaining five labs.
   await page.locator('.lab-tabs:visible [data-lab="light"]').click();
   await colour.waitFor({ state: 'detached' });
