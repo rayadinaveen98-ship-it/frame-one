@@ -15,7 +15,10 @@ const css = read('src/legacy/legacy.css');
 
 assert(app.includes("import { ContinuityLab, type ContinuityMode }"), 'React Continuity Lab is part of App');
 assert(app.includes("setRoute({ ...custom.detail, lab })"), 'route bridge observes lab selections');
-assert(app.includes("lab === 'continuity'") && app.includes("replaceChildren()"), 'legacy markup is removed when React owns continuity');
+assert(app.includes("custom.detail.lab"), 'bridge reads explicit lab route field');
+assert(runtime.includes("state.page==='lab'&&state.lab==='continuity'?'':"), 'legacy never renders React-owned continuity markup');
+assert(runtime.includes("lab:state.page==='lab'?state.lab:undefined"), 'route event carries current lab explicitly');
+assert(app.includes("route.lab==='continuity'"), 'React renders only when Continuity Lab is selected');
 assert(app.includes("<ContinuityLab mode={continuityMode} setMode={setContinuityMode} />"), 'React lab receives state');
 assert(app.includes("const [continuityMode, setContinuityMode]"), 'continuity choice persists between lab visits');
 assert(continuity.includes('event.stopPropagation()'), 'React lab state never double-mutated by legacy handler');
