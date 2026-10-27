@@ -1,6 +1,6 @@
 # Frame One — Learn the art of filmmaking
 
-**Engineering checkpoint v0.9I — Android native Back integration, signing receipts and verified public debug APK · 27 October 2026 · not app-store released.**
+**Engineering checkpoint v0.9J — Android API 35 native-emulator QA passed twice; latest installable debug APK remains v0.9I · 27 October 2026 · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
 
@@ -33,6 +33,12 @@ The stable public address is updated automatically after successful main-branch 
 **v0.9H** adds a 44px accessible mobile Back button and app-local browser history markers, including safe fallback for direct links. [Web 40482599685](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482599685), [Chromium mobile QA 40482599661](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482599661), [Android 40482599668](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482599668) and [public APK 40482775098](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482775098) all **passed**. See [QA and important native Back limitations](docs/QA_V09H.md). Native hardware/gesture Back remains unverified.
 
 **v0.9I (latest)** adds the official Capacitor App 8.1.2 native Android Back handler. Lessons/labs use the app-local navigation policy; on Home, system Back minimizes the app instead of closing it. GitHub also publishes APK signing fingerprints and allows a persistent QA signer through a protected repository secret (not currently configured). [Web source checks 40486968443](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486968443), [full Chromium QA 40486968447](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486968447), [Android APK 40486968418](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486968418) and [public APK publishing 40487176493](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40487176493) all **passed**. [v0.9I QA and limitations](docs/QA_V09I.md). **Hardware/gesture Back and in-place APK upgrades have not been tested on a physical phone.**\n\nThis remains a **test-only debug build**, not a Play Store or iOS release. Practice ideas now auto-save, interrupted backup imports attempt rollback, and mobile content respects safe-area insets. Real-device listening, clipboard, storage/export, status bars and accessibility still need structured testing. [v0.9F QA report](docs/QA_V09F.md).
+
+## v0.9J — first real Android runtime acceptance
+
+Our bundled Capacitor Android app was installed and exercised in a real **Android API 35 emulator**. Both [run 40490569350](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40490569350) and [run 40491292091](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40491292091) passed Home → Learn → first lesson, Android system Back to Learn/Home, Lab → Home, and Home Back minimizing the activity while the app process remained alive. [Full acceptance report and artifacts](docs/QA_V09J.md). [Emulator QA pipeline](.github/workflows/android-emulator-qa.yml) now runs on relevant native/UI code changes and by manual dispatch.
+
+**This is QA-only; there is no v0.9J APK.** The latest public debug APK is still **v0.9I**, and its signing identity is temporary. The emulator does not replace testing on a physical phone, iOS, or the real Cloudflare Worker URL.
 
 ## Android debug APK — first build verified
 
