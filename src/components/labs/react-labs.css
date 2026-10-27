@@ -38,3 +38,25 @@
   .react-frame-lab .frame-comparison .compare-tag{min-height:0;margin-bottom:8px;}
   .react-frame-lab .studio-next {min-width:0;}
 }
+
+/* A contained left preview beside a taller reading panel avoids a huge
+   blank bordered box on desktop, without changing the illustration. */
+@media (min-width:761px) {
+  .react-frame-lab .cinematic-lab-shell {
+    background:transparent;
+    border:0;
+    overflow:visible;
+    gap:16px;
+    align-items:start;
+  }
+  .react-frame-lab .cinematic-preview {
+    position:sticky;
+    top:16px;
+    align-self:start;
+  }
+  .react-frame-lab .film-controls {
+    background:#1b202b;
+    border:1px solid #3d4553;
+    border-radius:18px;
+  }
+}
