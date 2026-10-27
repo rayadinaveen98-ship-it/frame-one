@@ -82,7 +82,9 @@ def exported_private_json():
     payload=json.loads(p.stdout.decode("utf-8"))
     assert payload["format"]=="frameone-learning-backup" and payload["version"]==1
     assert "why" in payload["completed"],"Export lost completed first lesson"
-    assert payload["notes"].get("why")=="FrameOneNativeNoteQA20261027","Export lost original practice note"
+    stored_note=payload["notes"].get("why","")
+    assert "FrameOneNativeNoteQA20261027" in stored_note,"Export lost original practice note"
+    assert len(stored_note)<=240,"Practice note overflowed the original 240-character limit"
     scene=payload["scene"]
     assert scene["question"]=="decision" and scene["shots"][0]=="close","Export lost real Make Lab choices"
     # Android input text appended to the default shot description rather than
@@ -157,6 +159,9 @@ def main():
     practice.open_first_lesson()
     practice.type_and_verify()
     ui.adb("shell","input","keyevent","KEYCODE_BACK")
+    state.control("Save idea on this device")
+    state.find_text("Saved on this device.",tries=6)
+    print("PASS: Android explicitly confirmed saving the lesson practice note",flush=True)
     ui.tap_label("Home")
     state.complete_first_lesson()
     state.make_storyboard()
