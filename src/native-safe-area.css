@@ -1,0 +1,18 @@
+/* Web/PWA and Capacitor shell: respect device cutouts and system bars.
+ * Android WebView inset values depend on the installed OS and edge-to-edge mode;
+ * these conservative fallbacks keep existing desktop/phone layouts unchanged.
+ */
+@media (max-width: 760px) {
+  .main {
+    padding-top: calc(20px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(108px + env(safe-area-inset-bottom, 0px));
+  }
+  html {
+    scroll-padding-top: calc(16px + env(safe-area-inset-top, 0px));
+    scroll-padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  }
+  .mobile-nav {
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    min-height: calc(66px + env(safe-area-inset-bottom, 0px));
+  }
+}
