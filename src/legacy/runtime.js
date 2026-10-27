@@ -1615,6 +1615,7 @@
       savePractice:(id,note)=>{if(!lessons.some(l=>l.id===id)||typeof note!=='string')return false;state.notes[id]=note.slice(0,240);return saveNotes()},
       setTelugu:(enabled)=>{state.telugu=Boolean(enabled);saveTelugu()},
       exportBackup:()=>downloadBackup(),
+      getBackupJSON:()=>JSON.stringify(makeBackup(),null,2),
       importBackup:(payload)=>{restoreBackup(payload);window.dispatchEvent(new Event('frameone:story-restored'));render()},
       getStoryboard:()=>JSON.parse(JSON.stringify(state.story)),
       saveStoryboard:(plan)=>{
