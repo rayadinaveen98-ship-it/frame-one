@@ -47,3 +47,13 @@ Do not call a stable **update identity** verified until a persistent signer has 
 - Full Chromium browser QA runs [40486102916](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486102916) and [40486487223](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486487223) are **not verified** as of this check because the Playwright Chromium installation step remains in progress. The native feature is guarded to Android only and the previous v0.9H full-browser tests passed, but this is **not a substitute** for completing the v0.9I run.
 
 Android hardware Back is installed in the compiled APK, but its actual behavior on a phone remains **untested**.
+
+## Verified after merge into main
+
+- [PR #5](https://github.com/rayadinaveen98-ship-it/frame-one/pull/5) merged as `82bcf861afb2355158d48036d524f8bf7d7a50fc`.
+- [Web source tests, TypeScript/Vite compilation 40486968443](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486968443) — **SUCCESS**.
+- [Full compiled Chromium desktop/mobile QA 40486968447](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486968447) — **SUCCESS**. This resolves the earlier browser-installation delay in branch runs.
+- [Capacitor/App Android debug APK build 40486968418](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486968418) — **SUCCESS**.
+- [Stable public GitHub release publisher 40487176493](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40487176493) — **SUCCESS**, verified public asset `FrameOne-android-debug.apk` (**4,391,455 bytes**) plus `SHA256SUMS.txt` and `android-qa-signature.txt` at [latest test release](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/android-preview-latest).
+
+**Native runtime caveats:** No physical Android hardware/gesture test has been performed. The build uses a temporary debug signing certificate (`Persistent QA signer: NO`), so updating over an older debug APK may not be possible without reinstalling and restoring a verified backup. The secret-managed persistent QA signer is prepared but not configured.
