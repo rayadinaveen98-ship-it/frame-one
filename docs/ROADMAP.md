@@ -61,3 +61,11 @@ Help complete beginners understand filmmaking through accurate, simple explanati
 - [GitHub Actions 40452506346](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452506346) **PASSED** after adding a test that 320px/390px comparison images stack and omit crowded monitor labels. Desktop and phone screenshots inspected.
 - The desktop sticky-preview polish also passed [GitHub Actions 40452722135](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452722135) and its screenshot was reviewed.; manual real-device, screen-reader and filmmaking-content signoff still pending. Full details: [Frame QA report](QA_FRAME_V09D.md).
 - **Next migrated lab: Lighting.** Protect original illustration and direction/intensity controls; complete one React lab at a time.
+
+## Fourth React lab — Lighting implementation (27 October 2026)
+
+- **4 of 7 Creative Labs now implemented in React:** Continuity, Colour, Frame and Lighting; **3 of 7 still legacy-owned:** Cut, Make and Sound.
+- React Lighting reuses the actual original v0.8B authored vector, with front/side/back modes, illustrated brightness, shadow softness and the safe real-world practice text. Legacy event delegation excludes native React lighting controls; saved progress, notes and storyboard identifiers remain untouched.
+- **Verified green full browser run:** [40457618029](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40457618029), including complete lessons, seven labs, backup/offline and phone screenshots.
+- Initial screenshot inspection found excessive desktop preview whitespace; refined panel sizing and added explicit measured geometry assertions in a later commit. **That latest refinement requires its own passing CI run and visual review.**
+- Next: **Cut Lab** after final Lighting screenshot acceptance. Real-device, screen-reader, subject-expert and Telugu review, hosting and Android/iOS builds remain separate release gates. [Detailed QA](QA_LIGHTING_V09D.md).
