@@ -10,3 +10,22 @@
 .react-learn-view .backup-panel summary, .react-learn-view .glossary-block summary {min-height:44px;}
 .react-learn-view button {touch-action:manipulation;}
 @media(max-width:760px){.react-learn-view .search-row {flex-wrap:wrap}.react-learn-view .journey-summary {gap:12px;}.react-learn-view .glossary-search {padding:12px}}
+
+/* Progressive disclosure: the complete course remains visible on desktop.
+   On small screens, one chapter opens at a time. */
+.react-learn-view .chapter-mobile-toggle { display:none; }
+@media (max-width:760px) {
+  .react-learn-view .chapter-head { margin-bottom:10px; }
+  .react-learn-view .chapter-mobile-toggle {
+    display:flex; width:100%; align-items:center; justify-content:space-between;
+    border:1px solid #474b58; border-radius:12px; background:#242a34;
+    color:#f6d3b6; padding:12px 14px; margin-top:12px;
+    font-size:14px; font-weight:600; min-height:48px; cursor:pointer;
+  }
+  .react-learn-view .chapter-mobile-toggle:focus-visible {
+    outline:3px solid #edb88e; outline-offset:3px;
+  }
+  .react-learn-view .chapter-body { margin-top:10px; }
+  .react-learn-view .chapter-body:not(.is-expanded) { display:none; }
+  .react-learn-view .chapter-panel { contain:layout style; }
+}
