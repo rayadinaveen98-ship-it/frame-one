@@ -98,6 +98,8 @@ async function verify() {
   }
   await photo(page, '04-continuity-desktop.png');
   await page.locator('.lab-tabs [data-lab="frame"]').click();
+  await page.locator('.react-continuity-lab').waitFor({ state: 'detached' });
+  await page.locator('#content').waitFor({ state: 'visible' });
   await page.locator('#frameZoom').evaluate(el => { el.value = '2.5'; el.dispatchEvent(new Event('input', { bubbles: true })); });
   assert.match(await page.locator('#frameZoomValue').textContent(), /2.5/);
   await page.locator('.lab-tabs [data-lab="colour"]').click();
@@ -133,6 +135,7 @@ async function verify() {
   assert.equal(await continuity.locator('.continuity-cup.moved').count(), 1);
   assert.match(await continuity.locator('.result-box p').textContent(), /continuity mismatch/i);
   await continuity.locator('[data-lab="frame"]').click();
+  await continuity.waitFor({ state: 'detached' });
   await page.locator('#frameZoom').waitFor();
   await page.locator('.lab-tabs [data-lab="continuity"]').click();
   await continuity.waitFor();
