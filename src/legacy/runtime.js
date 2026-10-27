@@ -1600,7 +1600,22 @@
       savePractice:(id,note)=>{if(!lessons.some(l=>l.id===id)||typeof note!=='string')return false;state.notes[id]=note.slice(0,240);return saveNotes()},
       setTelugu:(enabled)=>{state.telugu=Boolean(enabled);saveTelugu()},
       exportBackup:()=>downloadBackup(),
-      importBackup:(payload)=>{restoreBackup(payload);render()},
+      importBackup:(payload)=>{restoreBackup(payload);window.dispatchEvent(new Event('frameone:story-restored'));render()},
+      getStoryboard:()=>JSON.parse(JSON.stringify(state.story)),
+      saveStoryboard:(plan)=>{
+        if(!plan||typeof plan!=='object'||!Object.hasOwn(sceneQuestions,plan.question)||!Array.isArray(plan.shots)||!Array.isArray(plan.notes)||plan.shots.length!==3||plan.notes.length!==3)return false;
+        state.story={question:plan.question,
+          shots:[0,1,2].map(i=>['wide','medium','close'].includes(plan.shots[i])?plan.shots[i]:'wide'),
+          notes:[0,1,2].map(i=>typeof plan.notes[i]==='string'?plan.notes[i].slice(0,240):'')};
+        return saveStory();
+      },
+      exportShotList:()=>{
+        const blob=new Blob([storyPlanText()],{type:'text/plain;charset=utf-8'});
+        const url=URL.createObjectURL(blob),a=document.createElement('a');
+        a.href=url;a.download='frame-one-my-first-scene.txt';
+        document.body.appendChild(a);a.click();a.remove();
+        setTimeout(()=>URL.revokeObjectURL(url),1000);
+      },
       illustration:(shape)=>['place','person','detail'].includes(shape)?cutIllustration(shape):''
     };
     window.addEventListener('popstate',routeHash);routeHash();
