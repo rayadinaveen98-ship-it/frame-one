@@ -24,3 +24,10 @@
 GitHub push to `main` → Cloudflare Git integration builds `npm run build` → publishes `dist` to the same HTTPS Pages URL → user opens/reloads that link. Production deploy after successful build, not instantly while code is being written. For risky experiments, use GitHub feature branches and Cloudflare preview URLs.
 
 **Next action:** connect [Workers & Pages](https://dash.cloudflare.com/?to=/:account/workers-and-pages) to the existing GitHub repository using the exact values in [setup](CLOUDFLARE_PAGES_SETUP.md). Once the first successful deployment exists, add its actual dashboard URL here and conduct the live-update/offline/backup QA.
+
+## Verified GitHub preparation gate
+
+- [GitHub Actions run 40468085250](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40468085250): **SUCCESS** after adding the built-`dist` verification; the production Vite output contains the Cloudflare-ready PWA, offline worker, icons and `_headers`.
+- [GitHub Actions run 40468172467](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40468172467): **SUCCESS** for the in-app user-controlled refresh notice after a new service worker takes control, alongside the full desktop/mobile browser smoke test.
+- **Result:** repository is ready to connect to Cloudflare Pages. This is proof of the source/build pipeline, **not** a Cloudflare dashboard deployment or public link.
+
