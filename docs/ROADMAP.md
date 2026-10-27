@@ -92,3 +92,11 @@ Help complete beginners understand filmmaking through accurate, simple explanati
 - A tenth source regression suite and Chromium tests cover saved work, export, imported backup changes, route reopening and 320px/390px screenshots.
 - Earlier test-only failures exposed stale assumptions about legacy markup and mock browser events; corrected. The **latest completed browser run is the acceptance gate**. [Make QA report](QA_MAKE_V09D.md).
 - Next once accepted: Sound Lab, followed by deployment and real-device checks.
+
+## Sixth React Lab — Make accepted (27 October 2026)
+
+- **6 of 7 Creative Labs are now React-owned and browser-accepted:** Continuity, Colour, Frame, Lighting, Cut and Make. **Sound remains the sole legacy-owned lab.**
+- Make Lab retains original three-beat bus-stop storyboard artwork and questions, editable 240-character notes, shot framing, Save and shot-list export. It uses the original `frameone-scene-v07` format through a typed adapter, so existing progress, notes, backups and restores remain compatible.
+- **Verified green GitHub Actions [40462953360](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40462953360)** after running ten source suites, TypeScript/Vite compilation, all 33 lesson completions and seven lab interactions including real old-format backup restore and offline reload.
+- Inspected desktop/320px/390px screenshots; 320px story beats stack while 390px displays them together, with no material horizontal overflow. Mobile full-page bottom-bar stitching remains a screenshot concern, not proven device failure.
+- **Next migration:** Sound, with careful WebAudio user-gesture activation, source/AudioContext cleanup, navigation cancellation and silent/ambience options. Afterwards web deployment and native Android/iOS tests are separate release gates. [Make QA](QA_MAKE_V09D.md).
