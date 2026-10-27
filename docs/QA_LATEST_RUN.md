@@ -1,18 +1,18 @@
 # Frame One real-browser QA — latest recorded result
 
 **Workflow:** Frame One real-browser QA
-**Run ID:** 40457976903
+**Run ID:** 40458020383
 **Result:** SUCCESS
-**Commit tested:** `00550608d68052139bc4a5dfe67d4fa22b01f13f`
-**Updated:** 2026-10-27T05:55:33Z
-**GitHub run:** https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40457976903
+**Commit tested:** `2d74a86a3bb4b1e66ff1e354db59d42faf749d26`
+**Updated:** 2026-10-27T05:56:08Z
+**GitHub run:** https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40458020383
 
 ## Jobs
 
-- **browser-smoke:** success — https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40457976903/job/122035644791
+- **browser-smoke:** success — https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40458020383/job/122035788973
 
 ## Available QA artifacts
 
-- frame-one-browser-qa-screenshots (ID 12712833541, expired: False)
+- frame-one-browser-qa-screenshots (ID 12713242256, expired: False)
 
 Passing these automated checks is not a substitute for manual visual and content review.
