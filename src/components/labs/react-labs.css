@@ -70,7 +70,7 @@
 }
 @media (min-width:761px){
   .react-lighting-lab .cinematic-lab-shell{background:transparent;border:0;overflow:visible;gap:16px;align-items:start;}
-  .react-lighting-lab .lab-preview{align-self:start;position:sticky;top:16px;}
+  .react-lighting-lab .lab-preview{align-self:start;position:relative;top:auto;height:max-content;min-height:0;}
   .react-lighting-lab .film-controls{background:#1b202b;border:1px solid #3d4553;border-radius:18px;}
 }
 @media (max-width:350px){
