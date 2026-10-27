@@ -78,10 +78,10 @@ async function verify() {
   }
   await photo(page, '04-continuity-desktop.png');
   await page.locator('.lab-tabs [data-lab="frame"]').click();
-  await page.locator('#frameZoom').fill('2.5');
+  await page.locator('#frameZoom').evaluate(el => { el.value = '2.5'; el.dispatchEvent(new Event('input', { bubbles: true })); });
   assert.match(await page.locator('#frameZoomValue').textContent(), /2.5/);
   await page.locator('.lab-tabs [data-lab="colour"]').click();
-  await page.locator('#colourStrength').fill('75');
+  await page.locator('#colourStrength').evaluate(el => { el.value = '75'; el.dispatchEvent(new Event('input', { bubbles: true })); });
   assert.match(await page.locator('#colourStrengthValue').textContent(), /75/);
   console.log('PASS: all seven labs mount; Frame and Colour controls respond');
 
