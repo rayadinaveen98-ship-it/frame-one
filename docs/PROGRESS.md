@@ -51,3 +51,11 @@
 - **Verified:** production + browser tests green in [run 40452193907](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452193907), layout refinement checks green in [40452506346](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452506346).
 - QA screenshot review led to larger, vertically stacked mobile comparisons, removal of redundant small-image labels, and desktop preview spacing adjustment (last desktop CSS modification subsequently passed [run 40452722135](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452722135) and its screenshot was inspected).
 - **React migration 3/7:** Continuity, Colour, Frame. **Legacy remaining 4/7:** Lighting, Cut, Make, Sound. Web hosting, Android APK and iOS builds not yet performed. [Details](QA_FRAME_V09D.md).
+
+## Fourth Creative Lab migrated to React — Lighting (27 October 2026)
+
+- Added typed `LightingLab.tsx` and `LightingScene.tsx` with the original light-direction, brightness and shadow-softness teaching illustration (not real physics).
+- React holds lighting state; original legacy content/render and global input handlers yield to the React-owned lab, protecting earlier 33 lessons and saved data. Eight Node regression suites and Chromium tests cover artwork, controls, navigation and small-screen layouts.
+- [GitHub Action 40457618029](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40457618029) **SUCCESS** on the first complete Lightning source/browser flow. Desktop/320px screenshots inspected; mobile image is readable.
+- Screenshot review identified excessive desktop empty preview area. CSS and a measurable browser QA assertion have been added; final run/screenshot still requires separate verification.
+- **React implementation 4/7**, legacy labs **3/7: Cut, Make, Sound**. Latest plans and open QA gates: [Lighting QA](QA_LIGHTING_V09D.md). Web hosting, Android APK and iOS not started.
