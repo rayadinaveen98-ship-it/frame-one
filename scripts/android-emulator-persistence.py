@@ -27,13 +27,20 @@ LABEL = "My own filmmaking idea"
 
 def editable_node():
     """Find Android's actual WebView textarea, not a page-sized WebView root."""
-    for attempt in range(8):
+    for attempt in range(12):
         xml = ui.adb("shell","cat","/sdcard/frameone-qa.xml",check=False)
         # Refresh the UI hierarchy each time; hide no missing input failures.
         try:
             nodes = ui.hierarchy()
             tree = ET.fromstring(ui.LAST_XML)
             visible=[]
+            nav_top=2260
+            for n in tree.iter("node"):
+                if ("Mobile navigation" in n.attrib.get("content-desc","")
+                    or "Mobile navigation" in n.attrib.get("text","")):
+                    bb=re.fullmatch(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]",n.attrib.get("bounds",""))
+                    if bb: nav_top=min(nav_top,int(bb.group(2)))
+            clear_bottom=min(2125,nav_top-65)
             for n in tree.iter("node"):
                 kind=n.attrib.get("class","")
                 bounds=n.attrib.get("bounds","")
@@ -43,7 +50,7 @@ def editable_node():
                     # A virtual EditText can be technically visible but
                     # still covered by Android's bottom navigation. Only
                     # accept an editor wholly inside the clear reading area.
-                    if (x2-x1)>60 and (y2-y1)>24 and y1>=165 and y2<=1810:
+                    if (x2-x1)>60 and (y2-y1)>24 and y1>=165 and y2<=clear_bottom:
                         visible.append((x1,y1,x2,y2,n.attrib.get("text",""),kind))
             if visible:
                 # Use lowest valid textarea; first lesson has one writable textarea.
