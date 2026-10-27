@@ -20,7 +20,7 @@ The debug APK uses the currently **provisional** ID `com.frameone.learncinema`. 
 - Export a learning-data backup and successfully restore it into a fresh test installation/browser, with explicit overwrite consent.
 - Enable airplane mode, relaunch and test lesson/lab navigation and locally bundled images.
 - Verify portrait/landscape, keyboard focus, TalkBack labels and reduced-motion handling.
-- Reinstall/update a newer debug APK over an older one and confirm stored progress is retained. **Back up learner data before attempting uninstall** because uninstall normally removes local app storage.
+- **Do not assume two GitHub Actions debug APKs can update in place.** Ephemeral CI runners may generate a different Android debug signing certificate, causing an install/update conflict. First confirm a complete, usable backup export (including notes and storyboard) and verify restoration before uninstalling anything. **Uninstalling normally erases locally stored progress.** A persistent, securely managed QA signing identity is required before we can promise seamless test-version updates.
 
 ## Release work not included
 
