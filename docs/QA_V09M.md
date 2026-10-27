@@ -41,13 +41,13 @@ The full-system restore job now runs `android-emulator-backup.py` **as an indepe
 
 Only report complete export + import recovery when the full-system GitHub job passes. A passed lightweight `aosp_atd` export test does **not** establish document-picker recovery.
 
-## Additional Android keyboard Back regression found during QA
+## Corrected Android emulator root-cause analysis and Back safety
 
-On the full Android emulator, pressing system Back while the lesson practice textarea had focus navigated away from the lesson instead of simply dismissing editing. The resulting screen could even route subsequent typed test input into the Learn search field. This is a **native Android usability defect**, not a backup schema problem.
+A captured full-emulator screenshot from run [40511507458](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40511507458) shows that the test **never opened the lesson**: it had tapped an off-screen virtual accessibility node and then typed the alleged practice note into the **Learn search field**. That made the exported backup correctly omit a lesson practice note, despite the test misleadingly printing that it had opened a lesson.
 
-The app's official Capacitor `backButton` handler now detects focused `INPUT`, `TEXTAREA`, `SELECT` and editable content. The first Back blurs that editor and stays on the current Frame One route; subsequent Back follows normal in-app history. New mocked platform-contract regressions cover lesson and lab focused editors as well as existing Home minimization.
+The native navigation handler also now defensively blurs any focused INPUT/TEXTAREA/SELECT/contenteditable element before following a Back event. The handler has source-level regression tests, but the screenshot **does not prove** that Android's Back handler caused the original test failure. Treat the native safeguard as a separate precaution pending device validation, not as the demonstrated root cause.
 
-**Acceptance:** independent source and browser suites must pass; the full Android emulator must show that keyboard Back does not abandon the typed practice idea, that the explicit save confirmation appears and that the real exported backup still contains it. Until then, the PR remains unmerged.
+The correct test fix (commit `c25e6783`) is to tap the visible, exact **Continue learning →** button and assert that the **My own filmmaking idea** lesson-only field is present *before typing*. The lesson should then be saved normally, including a user-facing Save action, and the actual exported JSON must contain that practice marker along with completed progress and Make Lab scene. Only passing real Android evidence establishes restoration.
 
 ## Remaining release gates
 
