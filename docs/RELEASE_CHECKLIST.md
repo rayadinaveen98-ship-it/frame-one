@@ -1,6 +1,6 @@
 # Frame One release readiness checklist — 27 October 2026
 
-This page separates *automated test evidence* from *real-person/device acceptance*. v0.9F is an engineering test build, not a public store release.
+This page separates *automated test evidence* from *real-person/device acceptance*. v0.9G is the latest engineering test build, not a public store release.
 
 ## Source and continuous integration
 
@@ -8,8 +8,9 @@ This page separates *automated test evidence* from *real-person/device acceptanc
 - [x] Locked npm dependencies and reproducible TypeScript/Vite production build: [web run 40478349107](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478349107).
 - [x] Automated Chromium desktop/phone smoke, all 33 lessons, seven labs, audio lifecycle, backups, offline and autosaved ideas: [browser run 40478349333](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478349333).
 - [x] Backup import storage-error rollback source regression; versioned storage keys unchanged.
-- [x] Android debug APK produced on main: [run 40478349105](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478349105).
-- [x] Automatic publish of successful Android build to a stable [public prerelease APK URL](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/android-preview-latest): [run 40478579858](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478579858).
+- [x] Same-schema learning backup copy/paste fallback for Android, with consented restore and Chromium acceptance: [v0.9G browser run 40480555273](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480555273).
+- [x] Latest v0.9G Android debug APK produced on main: [run 40480555401](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480555401).
+- [x] Automatic publish of latest successful Android build to a stable [public prerelease APK URL](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/android-preview-latest): [run 40480801867](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480801867).
 
 ## Browser and cloud acceptance
 
