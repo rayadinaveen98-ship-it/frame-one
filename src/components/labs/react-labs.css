@@ -1,0 +1,13 @@
+/* Native React Creative Lab additions, layered above legacy design CSS. */
+.react-colour-lab .react-cinema-scene {width:100%;min-width:0;}
+.react-colour-lab .react-cinema-scene > .scene-stage {width:100%;max-width:100%;box-sizing:border-box;}
+.react-colour-lab .colour-compare > div {min-width:0;}
+.react-colour-lab .colour-picture {isolation:isolate;}
+.react-colour-lab .colour-grade {transition:opacity .22s ease;}
+.react-colour-lab :is(.lab-tab,.lab-choice,.btn-secondary,input[type="range"]):focus-visible,
+.react-continuity-lab :is(.lab-tab,.lab-choice,.btn-secondary):focus-visible {
+  outline:3px solid #edb88e;outline-offset:3px;
+}
+@media (prefers-reduced-motion:reduce) {
+  .react-colour-lab .colour-grade {transition:none;}
+}
