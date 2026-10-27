@@ -41,6 +41,14 @@ The full-system restore job now runs `android-emulator-backup.py` **as an indepe
 
 Only report complete export + import recovery when the full-system GitHub job passes. A passed lightweight `aosp_atd` export test does **not** establish document-picker recovery.
 
+## Additional Android keyboard Back regression found during QA
+
+On the full Android emulator, pressing system Back while the lesson practice textarea had focus navigated away from the lesson instead of simply dismissing editing. The resulting screen could even route subsequent typed test input into the Learn search field. This is a **native Android usability defect**, not a backup schema problem.
+
+The app's official Capacitor `backButton` handler now detects focused `INPUT`, `TEXTAREA`, `SELECT` and editable content. The first Back blurs that editor and stays on the current Frame One route; subsequent Back follows normal in-app history. New mocked platform-contract regressions cover lesson and lab focused editors as well as existing Home minimization.
+
+**Acceptance:** independent source and browser suites must pass; the full Android emulator must show that keyboard Back does not abandon the typed practice idea, that the explicit save confirmation appears and that the real exported backup still contains it. Until then, the PR remains unmerged.
+
 ## Remaining release gates
 
 - Physical phone Share sheet + Save to Files/Drive, Android DocumentsUI import from Downloads/Drive, TalkBack/focus management, offline sharing, storage and permissions across Android OEM versions.
