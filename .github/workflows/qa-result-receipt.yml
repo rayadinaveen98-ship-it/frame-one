@@ -1,0 +1,85 @@
+name: Record Frame One browser QA results
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/qa-result-receipt.yml'
+  workflow_run:
+    workflows: ['Frame One real-browser QA']
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  record:
+    if: github.repository == 'rayadinaveen98-ship-it/frame-one' && (github.event_name == 'push' || (github.event.workflow_run.head_repository.full_name == github.repository && github.event.workflow_run.head_branch == 'main'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - name: Fetch latest completed real-browser QA result
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          EVENT: ${{ github.event_name }}
+          FINISHED_RUN: ${{ github.event.workflow_run.id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p docs
+          if [ "$EVENT" = "workflow_run" ]; then
+            RUN_ID="$FINISHED_RUN"
+          else
+            RUN_ID=$(gh api "repos/$REPO/actions/workflows/browser-qa.yml/runs?branch=main&per_page=10" --jq '[.workflow_runs[] | select(.status=="completed")][0].id // empty')
+          fi
+          if [ -z "$RUN_ID" ]; then
+            printf '%s\n' '# Frame One browser QA — no completed run found' '' 'Browser QA is pending.' > docs/QA_LATEST_RUN.md
+          else
+            gh api "repos/$REPO/actions/runs/$RUN_ID" > /tmp/qa-run.json
+            gh api "repos/$REPO/actions/runs/$RUN_ID/jobs?per_page=100" > /tmp/qa-jobs.json
+            gh api "repos/$REPO/actions/runs/$RUN_ID/artifacts?per_page=100" > /tmp/qa-artifacts.json
+            python3 - <<'PY'
+          import json
+          from pathlib import Path
+          run=json.load(open('/tmp/qa-run.json'))
+          jobs=json.load(open('/tmp/qa-jobs.json')).get('jobs',[])
+          artifacts=json.load(open('/tmp/qa-artifacts.json')).get('artifacts',[])
+          status=run.get('conclusion') or run.get('status') or 'unknown'
+          out=[
+              '# Frame One real-browser QA — latest recorded result',
+              '',
+              f'**Workflow:** {run.get("name")}',
+              f'**Run ID:** {run.get("id")}',
+              f'**Result:** {status.upper()}',
+              f'**Commit tested:** `{run.get("head_sha")}`',
+              f'**Updated:** {run.get("updated_at")}',
+              f'**GitHub run:** {run.get("html_url")}',
+              '', '## Jobs', ''
+          ]
+          for job in jobs:
+              out.append(f'- **{job.get("name")}:** {job.get("conclusion") or job.get("status")} — {job.get("html_url")}')
+              for step in job.get('steps',[]):
+                  if step.get('conclusion')=='failure':
+                      out.append(f'  - Failed step: {step.get("name")}')
+          if not jobs:out.append('- No job details returned.')
+          out.extend(['','## Available QA artifacts',''])
+          out.extend([f'- {a.get("name")} (ID {a.get("id")}, expired: {a.get("expired")})' for a in artifacts] or ['- None.'])
+          out.extend(['','Passing these automated checks is not a substitute for manual visual and content review.',''])
+          Path('docs/QA_LATEST_RUN.md').write_text('\n'.join(out), encoding='utf-8')
+          PY
+          fi
+      - name: Commit QA receipt to main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add docs/QA_LATEST_RUN.md
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "ci: record actual browser QA workflow verdict"
+          git pull --rebase origin main
+          git push origin HEAD:main
