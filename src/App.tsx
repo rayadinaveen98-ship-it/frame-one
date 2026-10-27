@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { LessonView } from './components/LessonView';
 import { LearnView } from './components/LearnView';
-import type { LegacyRoute } from './legacy/bridge';
+import { ContinuityLab, type ContinuityMode } from './components/labs/ContinuityLab';
+import type { LegacyRoute, LabName } from './legacy/bridge';
 import type { CSSProperties } from 'react';
 import './legacy/legacy.css';
 
@@ -9,6 +10,7 @@ import './legacy/legacy.css';
 // The v0.8B learning runtime owns only the lesson/lab content region during
 // this first migration. This makes zero curriculum rewrites necessary.
 type Destination = 'home' | 'learn' | 'lab' | 'crafts';
+type AppRoute = LegacyRoute & {lab?: LabName};
 const nav: { id: Destination; title: string; glyph: string }[] = [
   { id: 'home', title: 'Home', glyph: '⌂' },
   { id: 'learn', title: 'Learn Cinema', glyph: '▤' },
@@ -52,12 +54,13 @@ function ProgressTopbar() {
 
 export default function App() {
   const [bootError, setBootError] = useState<string | null>(null);
-  const [route, setRoute] = useState<LegacyRoute>({page:'home',lesson:null});
+  const [route, setRoute] = useState<AppRoute>({page:'home',lesson:null});
+  const [continuityMode, setContinuityMode] = useState<ContinuityMode>('match');
   const previousRoute = useRef('home:');
   // On SPA navigation, return keyboard/screen-reader focus to the page heading.
   // Skip the initial home mount to avoid stealing focus when booting.
   useEffect(() => {
-    const key = route.page + ':' + (route.lesson ?? '');
+    const key = route.page + ':' + (route.lesson ?? route.lab ?? '');
     if (previousRoute.current === key) return;
     previousRoute.current = key;
     const frame = requestAnimationFrame(() => {
@@ -67,11 +70,18 @@ export default function App() {
       heading.focus({ preventScroll: true });
     });
     return () => cancelAnimationFrame(frame);
-  }, [route.page, route.lesson]);
+  }, [route.page, route.lesson, route.lab]);
   useEffect(() => {
     const onRoute = (event: Event) => {
       const custom = event as CustomEvent<LegacyRoute>;
-      if (custom.detail?.page) setRoute(custom.detail);
+      if (!custom.detail?.page) return;
+      // Legacy renders before emitting a route event. Read its active lab
+      // before clearing the transitional, React-owned continuity markup.
+      const lab = custom.detail.page === 'lab'
+        ? (document.querySelector<HTMLButtonElement>('#content .lab-tab[data-lab][aria-pressed="true"]')?.dataset.lab as LabName | undefined)
+        : undefined;
+      if (lab === 'continuity') document.getElementById('content')?.replaceChildren();
+      setRoute({ ...custom.detail, lab });
     };
     window.addEventListener('frameone:route',onRoute);
     // Run after React mounts all DOM targets. The legacy engine never edits
@@ -95,10 +105,11 @@ export default function App() {
     <main className="main" id="main-content">
       <ProgressTopbar />
       {bootError ? <p role="alert">{bootError}</p> : null}
-      <div id="content" aria-live="off" hidden={route.page==='lesson'||route.page==='learn'} />
+      <div id="content" aria-live="off" hidden={route.page==='lesson'||route.page==='learn'||(route.page==='lab'&&route.lab==='continuity')} />
+      {route.page==='lab' && route.lab==='continuity' ? <ContinuityLab mode={continuityMode} setMode={setContinuityMode} /> : null}
       {route.page==='learn' ? <LearnView /> : null}
       {route.page==='lesson' && route.lesson ? <LessonView key={route.lesson} lessonId={route.lesson} /> : null}
-      <footer className="footer"><span>FRAME ONE · React lessons + chapters v0.9B</span><span>Made for curious minds <span className="heart">♥</span></span></footer>
+      <footer className="footer"><span>FRAME ONE · React lessons + chapters + Continuity Lab v0.9D</span><span>Made for curious minds <span className="heart">♥</span></span></footer>
     </main>
     <Navigation mobile />
   </div>;
