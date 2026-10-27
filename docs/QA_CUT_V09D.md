@@ -1,7 +1,7 @@
 # Frame One v0.9D — React Cut Lab QA
 
 **Date:** 27 October 2026  
-**Status:** Implemented and committed; passing current production browser QA and screenshot review still required.
+**Status:** **ACCEPTED for automated web-browser QA**; manual real-device, accessibility, expert and hosted-release gates remain open.
 
 ## What changed
 
@@ -17,7 +17,7 @@
 - Ninth `npm test` regression suite `tests/verify-react-cut.cjs`; previous migrated labs' compatibility checks also updated.
 - Full Chromium browser smoke now asserts: one React-owned page, preserved illustration and three clips; slider duration follows a moved shot; changed opening changes explanation; user stop and automatic three-shot completion; navigating away cancels playback and reopening starts stopped.
 - Screenshots and horizontal overflow checks added at desktop, 390px and 320px with compact timeline CSS and accessible keyboard focus.
-- Initial CI [40460458046](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40460458046) **failed before a browser run** because a Lighting source-test assertion hadn't been updated for the expanded delegated-input filter. That stale assertion has been corrected. **A green full run on the later commit is still needed before accepting Cut Lab.**
+- Initial CI [40460458046](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40460458046) **failed before a browser run** because a Lighting source-test assertion hadn't been updated for the expanded delegated-input filter. That stale assertion has been corrected. **The stale assertion was corrected; the complete integration passed [GitHub Actions run 40460565715](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40460565715) on commit `72c849329f95818e9a844ed20a696dc235b205cc`.**
 
 ## Outstanding release gates
 
@@ -26,3 +26,10 @@
 3. Real Android/iOS devices, audio, screen-reader, factual/Telugu review and actual hosted PWA remain separately unverified.
 
 **Migration after this implementation:** 5/7 written in React (Continuity, Colour, Frame, Lighting, Cut); **2/7 legacy remain** (Make, Sound). Do not label 5/7 *accepted* until Cut's QA passes.
+
+## Verified final automated acceptance — 27 October 2026
+
+- **SUCCESS** [GitHub Actions 40460565715](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40460565715): all nine source suites, React/TypeScript production build and compiled Chromium smoke. It exercised 33/33 lesson completions, all seven labs, edited shot order and hold timing, automatic playback termination, manual stop, route/unmount cancellation, backup export/cancel and offline reload.
+- Screenshot artifact `12713699901` downloaded and inspected: `15-react-cut-desktop.png`, `16-react-cut-320px.png`, `16-react-cut-390px.png`. Original scene drawings, active timeline states, duration and action controls, reading panel and lesson link are legible; no material horizontal overflow observed. A thin straight horizontal line in captures appears to be screenshot stitching, not a verified application rendering defect.
+- React Cut Lab is **5th of 7 accepted labs**. **Still legacy-owned:** Make (storyboard) and Sound; no change to either engine yet.
+- This is an **automated web acceptance**, not native release. Manual Android/iOS/Safari testing, actual screen-reader/touch/audio checks, filmed content review and HTTPS deployment remain open.
