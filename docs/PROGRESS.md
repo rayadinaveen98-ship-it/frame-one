@@ -164,3 +164,13 @@
 ### v0.9J main-branch confirmation
 
 The independent [main Android emulator run 40492047719](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40492047719) **PASSED** the same native lesson/Lab/system Back/Home minimize acceptance. Native Back has now passed **three complete emulator runs** in total. To avoid needlessly re-signing and re-publishing the public test APK for QA-only changes, `.github/workflows/android-debug.yml` was restricted to app/build-source paths. Real phone gestures/audio/backup and stable signing remain pending.
+
+
+## v0.9K — Android lesson notes survive force-stop + offline cold-start (27 October 2026)
+
+- [PR #7](https://github.com/rayadinaveen98-ship-it/frame-one/pull/7) squash-merged test-only CI and native UIAutomator helper as `a6b585ab2d0e44df017b32a812fc11bc04e916cb`.
+- `scripts/android-emulator-persistence.py` uses a real Android API 35 WebView, types a unique learner practice note, force-stops Frame One, enables airplane mode, relaunches it and verifies the same note remains available. Restores emulator network settings before the existing native Back test.
+- Native emulator suites passed on **three independent branch runs**: [40494188012](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40494188012), [40494209385](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40494209385), and [final 40494253148](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40494253148). The full compiled browser suite [40494253063](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40494253063) and source/web build [40494252907](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40494252907) also passed.
+- The existing Home minimize test proved sensitive to native activity transition timing; it now checks the actual foreground activity with bounded polling. This preserves, rather than removes, the strict minimize assertion.
+- **No application or storage-key changes** and no separate v0.9K APK. Latest app code is still v0.9I. Full [v0.9K QA report](QA_V09K.md).
+- **Pending acceptance:** JSON backup download/restore, completed-progress and storyboard persistence, physical phone audio and gestures, two-version signed Android upgrade, actual Cloudflare production site and iOS testing.
