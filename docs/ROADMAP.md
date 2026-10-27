@@ -38,3 +38,11 @@ Help complete beginners understand filmmaking through accurate, simple explanati
 - Completed: screenshot-driven mobile chapter disclosure reducing long scrolling; verified in GitHub Actions.
 - Still open: dedicated real-device Android/iOS/Safari checks, comprehensive keyboard/screen-reader audit, actual sound output, successful cross-origin backup migration, expert content review and production HTTPS deployment.
 - Next implementation phase: **v0.9D React Creative Lab migration**, incrementally replacing the legacy lab runtime, one lab at a time, without changing saved progress or storyboards.
+
+## v0.9D implementation checkpoint — 27 October 2026
+
+- **1/7 Creative Labs migrated into React:** Continuity Lab component, original desk artwork, interactive choice, accessible state and lesson link committed; source test coverage added.
+- **6/7 Creative Labs remain on proven legacy runtime:** Colour, Frame, Lighting, Cut, Make and Sound. Original saved progress/storyboards and 33-lesson course preserved.
+- Exclusive DOM ownership and explicit lab route event implemented; tests now cover migration boundary.
+- **Acceptance gate open:** latest browser QA success and screenshot review for this exact migration required. Earlier failed runs exposed test navigation and integration transitions, which were corrected.
+- Next after green: Colour Lab migration, then the remaining five per [v0.9D plan](LABS_REACT_MIGRATION_V09D.md). Full acceptance evidence: [QA_V09D.md](QA_V09D.md).
