@@ -14,6 +14,7 @@ import type { LegacyRoute, LabName } from './legacy/bridge';
 import type { CSSProperties } from 'react';
 import './legacy/legacy.css';
 import './components/labs/react-labs.css';
+import './pwa-update.css';
 
 // v0.9 migration bridge: React owns the persistent application shell.
 // The v0.8B learning runtime owns only the lesson/lab content region during
@@ -63,6 +64,7 @@ function ProgressTopbar() {
 
 export default function App() {
   const [bootError, setBootError] = useState<string | null>(null);
+  const [updateReady, setUpdateReady] = useState(false);
   const [route, setRoute] = useState<AppRoute>({page:'home',lesson:null});
   const [continuityMode, setContinuityMode] = useState<ContinuityMode>('match');
   const [colourMode,setColourMode] = useState<ColourMode>('neutral');
@@ -80,6 +82,11 @@ export default function App() {
   const [soundMode,setSoundMode] = useState<SoundMode>('silence');
   const [soundAmbience,setSoundAmbience] = useState(true);
   const previousRoute = useRef('home:');
+  useEffect(() => {
+    const ready = () => setUpdateReady(true);
+    window.addEventListener('frameone:pwa-update-ready', ready);
+    return () => window.removeEventListener('frameone:pwa-update-ready', ready);
+  }, []);
   // On SPA navigation, return keyboard/screen-reader focus to the page heading.
   // Skip the initial home mount to avoid stealing focus when booting.
   useEffect(() => {
@@ -124,6 +131,10 @@ export default function App() {
     </aside>
     <main className="main" id="main-content">
       <ProgressTopbar />
+      {updateReady ? <div className="pwa-update-notice" role="status">
+        <span><strong>New version available.</strong> Finish what you're doing, then refresh to see the latest changes.</span>
+        <button type="button" onClick={() => window.location.reload()}>Refresh now</button>
+      </div> : null}
       {bootError ? <p role="alert">{bootError}</p> : null}
       <div id="content" aria-live="off" hidden={route.page==='lesson'||route.page==='learn'||(route.page==='lab'&&(route.lab==='continuity'||route.lab==='colour'||route.lab==='frame'||route.lab==='light'||route.lab==='cut'||route.lab==='story'||route.lab==='sound'))} />
       {route.page==='lab' && route.lab==='continuity' ? <ContinuityLab mode={continuityMode} setMode={setContinuityMode} /> : null}
