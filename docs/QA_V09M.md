@@ -33,6 +33,14 @@ We have split the acceptance:
 
 The *share/save destination itself* is not simulated by a real user in CI; the test copies only the original plugin-exported bytes to the public Download directory, rather than inventing a payload. Real phone acceptance must confirm which external destination apps receive shared JSON files, and whether the user can find that file afterward.
 
+## Full Android test isolation correction
+
+An initial full AOSP run failed before it reached the backup file picker because the previously used practice-note restart test could select an offscreen virtual lesson node after WebView preserved its scroll position. An attempted scroll reset did not reliably solve that unrelated UIAutomator dependency.
+
+The full-system restore job now runs `android-emulator-backup.py` **as an independent test**. It clears its disposable app at the start and creates the lesson practice note, completed lesson and authored Make storyboard through Android's actual screens. It then obtains the actual Capacitor-generated JSON, preserves those bytes externally, clears app data and tests DocumentsUI restore. This avoids confusing a prior script's navigation failure with a backup defect.
+
+Only report complete export + import recovery when the full-system GitHub job passes. A passed lightweight `aosp_atd` export test does **not** establish document-picker recovery.
+
 ## Remaining release gates
 
 - Physical phone Share sheet + Save to Files/Drive, Android DocumentsUI import from Downloads/Drive, TalkBack/focus management, offline sharing, storage and permissions across Android OEM versions.
