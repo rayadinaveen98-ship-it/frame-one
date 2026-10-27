@@ -34,3 +34,11 @@
 - Six creative labs remain implemented in legacy JavaScript; they are **not yet migrated**.
 - **React Continuity Lab automated QA passed** in [GitHub Actions 40449195578](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40449195578); inspected desktop screenshot and verified a single React-owned Continuity page without duplicated legacy content. Manual mobile-device and accessibility review remain open.
 - Detailed evidence and remaining gates: [QA_V09D.md](QA_V09D.md).
+
+## v0.9D second lab accepted — 27 October 2026
+
+- **Colour Lab migrated into React:** original local SVG drawing, three colour overlays, a controlled intensity slider, accurate illustration-only educational caveat and responsive layout.
+- Found and fixed an actual integration defect where the old document-level input listener overwrote the new React overlay opacity with zero. Guarded both React events and the legacy delegated handler; added the sixth source regression.
+- **Verified GitHub Actions SUCCESS:** [run 40451210219](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40451210219), with full 33-lesson sweep, seven labs, offline and backup checks, and Colour screenshots reviewed at desktop/390px/320px.
+- **2 of 7 labs now migrated into React:** Continuity, Colour. **5 legacy labs remain:** Frame, Light, Cut, Make, Sound. Next migration: Frame Lab. No hosted web app or native Android/iOS builds yet.
+- Detailed [Colour Lab acceptance report](QA_COLOUR_V09D.md).
