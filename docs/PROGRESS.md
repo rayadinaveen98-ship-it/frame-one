@@ -49,5 +49,5 @@
 - Shared `CinemaScene.tsx` now derives a bounded crop viewBox without changing the original artwork. Cropping does not simulate lens or perspective physics.
 - Added seventh source test and Chromium tests for lab ownership, keyboard slider, SVG cropping, comparison and narrow-phone readability.
 - **Verified:** production + browser tests green in [run 40452193907](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452193907), layout refinement checks green in [40452506346](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452506346).
-- QA screenshot review led to larger, vertically stacked mobile comparisons, removal of redundant small-image labels, and desktop preview spacing adjustment (last CSS modification awaiting an independent run).
+- QA screenshot review led to larger, vertically stacked mobile comparisons, removal of redundant small-image labels, and desktop preview spacing adjustment (last desktop CSS modification subsequently passed [run 40452722135](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40452722135) and its screenshot was inspected).
 - **React migration 3/7:** Continuity, Colour, Frame. **Legacy remaining 4/7:** Lighting, Cut, Make, Sound. Web hosting, Android APK and iOS builds not yet performed. [Details](QA_FRAME_V09D.md).
