@@ -2,6 +2,7 @@ import { useMemo, useRef, useState, type ChangeEvent } from 'react';
 import curriculum from '../data/curriculum.v08b.json';
 import type { Lesson } from '../data/schema';
 import { navigate } from '../legacy/bridge';
+import { isAndroidBackupAvailable, shareAndroidLearningBackup } from '../native-backup';
 import { safeProgress } from '../state/learning';
 import './learn-react.css';
 
@@ -24,6 +25,7 @@ function LessonRow({lesson, completed}: {lesson: Lesson;completed: boolean}) {
 
 function LearningBackup({onRestored}: {onRestored:()=>void}) {
   const [message,setMessage] = useState('');
+  const [nativeSharing,setNativeSharing] = useState(false);
   const [backupText,setBackupText] = useState('');
   const [restoreText,setRestoreText] = useState('');
   const fileRef=useRef<HTMLInputElement>(null);
@@ -60,6 +62,18 @@ function LearningBackup({onRestored}: {onRestored:()=>void}) {
       setMessage(`Could not restore: ${err instanceof Error ? err.message : 'Invalid backup'}`);
     }
   };
+  const shareNativeBackup=async () => {
+    if(nativeSharing)return;
+    setNativeSharing(true);
+    setMessage('Preparing your private Android backup file...');
+    try {
+      if(!window.frameOneLegacy)throw new Error('Learning engine is not ready yet.');
+      await shareAndroidLearningBackup(window.frameOneLegacy.getBackupJSON());
+      setMessage('Share chooser finished. Check that the JSON file was saved outside Frame One before uninstalling or changing devices.');
+    } catch(err) {
+      setMessage(`Could not share backup: ${err instanceof Error ? err.message : 'Android share unavailable'}. Use the text copy/paste option below.`);
+    } finally { setNativeSharing(false); }
+  };
   const showAndCopyBackup=async () => {
     try {
       const bridge=window.frameOneLegacy;
@@ -81,8 +95,13 @@ function LearningBackup({onRestored}: {onRestored:()=>void}) {
   return <details className="backup-panel">
     <summary>Keep a copy of your learning <span>Save / restore locally</span></summary>
     <p>A different browser or app address can have separate saved data. Export your progress and storyboard before switching devices or versions.</p>
+    {isAndroidBackupAvailable() ? <p>The Android save/share chooser opens a temporary JSON backup. Choose an external destination and verify the file is there. A file left inside this app may disappear on uninstall.</p> : null}
     <div className="backup-actions">
-      <button className="btn-secondary" type="button" onClick={()=>{ try{if(!window.frameOneLegacy) throw new Error('Learning engine not ready');window.frameOneLegacy.exportBackup();setMessage('Backup download prepared.');}catch{setMessage('Backup download is unavailable here.');}}}>Download learning backup</button>
+      {isAndroidBackupAvailable()
+        ? <button className="btn-secondary" type="button" disabled={nativeSharing} onClick={()=>void shareNativeBackup()}>
+            {nativeSharing?'Preparing Android backup...':'Save / share backup JSON'}
+          </button>
+        : <button className="btn-secondary" type="button" onClick={()=>{ try{if(!window.frameOneLegacy) throw new Error('Learning engine not ready');window.frameOneLegacy.exportBackup();setMessage('Backup download prepared.');}catch{setMessage('Backup download is unavailable here.');}}}>Download learning backup</button>}
       <button className="btn-secondary" type="button" onClick={()=>fileRef.current?.click()}>Restore a backup JSON file</button>
       <input ref={fileRef} className="sr-only" type="file" accept=".json,application/json" onChange={onFile} aria-label="Choose a Frame One backup JSON" />
     </div>
