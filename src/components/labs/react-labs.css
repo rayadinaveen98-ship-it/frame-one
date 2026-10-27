@@ -108,3 +108,30 @@
 @media (prefers-reduced-motion:reduce){
   .react-cut-lab .timeline-clip,.react-cut-lab .clip-playhead{animation:none;transition:none;}
 }
+
+/* The Make Lab keeps the original three-panel storyboard layout and artworks.
+   Text and note buttons must stay readable on compact Android/iPhone screens. */
+.react-make-lab .react-storyboard-art,
+.react-make-lab .react-storyboard-art svg{width:100%;height:100%;display:block;}
+.react-make-lab .story-workspace,
+.react-make-lab .story-inspector{min-width:0;}
+.react-make-lab .story-panel-steps small{overflow-wrap:anywhere;white-space:normal;}
+.react-make-lab :is(.lab-tab,.scene-prompt-grid button,.story-panel-steps button,.story-shot-buttons button,.story-actions button,textarea):focus-visible{
+  outline:3px solid #edb88e;outline-offset:2px;
+}
+@media(max-width:760px){
+  .react-make-lab .story-lead{grid-template-columns:minmax(0,1fr);}
+}
+@media(max-width:350px){
+  .react-make-lab .story-panel-steps{gap:5px;}
+  .react-make-lab .story-panel-steps button{min-width:0;padding:8px 5px;min-height:112px;}
+  .react-make-lab .story-panel-steps small{font-size:10px;line-height:1.3;}
+  .react-make-lab .story-panel-steps strong{font-size:11px;}
+  .react-make-lab .story-workspace,
+  .react-make-lab .story-inspector{padding:12px;}
+  .react-make-lab .story-frame-hud{font-size:8px;left:6px;top:6px;letter-spacing:0;}
+  .react-make-lab .story-actions button{min-width:0;flex:1 1 45%;}
+}
+@media(prefers-reduced-motion:reduce){
+  .react-make-lab .story-film-frame svg{transition:none;}
+}
