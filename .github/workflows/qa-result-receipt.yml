@@ -31,11 +31,9 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p docs
-          if [ "$EVENT" = "workflow_run" ]; then
-            RUN_ID="$FINISHED_RUN"
-          else
-            RUN_ID=$(gh api "repos/$REPO/actions/workflows/browser-qa.yml/runs?branch=main&per_page=10" --jq '[.workflow_runs[] | select(.status=="completed")][0].id // empty')
-          fi
+          # More than one QA run may finish out of order. Always report the
+          # highest-numbered completed run, never the triggering older run.
+          RUN_ID=$(gh api "repos/$REPO/actions/workflows/browser-qa.yml/runs?branch=main&per_page=50" --jq '[.workflow_runs[] | select(.status=="completed")] | max_by(.id).id // empty')
           if [ -z "$RUN_ID" ]; then
             printf '%s\n' '# Frame One browser QA — no completed run found' '' 'Browser QA is pending.' > docs/QA_LATEST_RUN.md
           else
