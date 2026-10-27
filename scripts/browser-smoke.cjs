@@ -195,6 +195,14 @@ async function verify() {
   await lighting.locator('[data-light="front"]').click();
   assert.match(await lighting.locator('.lighting-badge').textContent(), /LIGHT NEAR THE CAMERA SIDE/);
   await lighting.locator('[data-light="side"]').click();
+  const lightingGeometry = await lighting.evaluate(root => {
+    const preview = root.querySelector('.lab-preview')?.getBoundingClientRect();
+    const panel = root.querySelector('.film-controls')?.getBoundingClientRect();
+    return { previewHeight: preview?.height ?? 0, previewTop: preview?.top ?? 0, panelTop: panel?.top ?? 0 };
+  });
+  console.log('Lighting desktop geometry:', JSON.stringify(lightingGeometry));
+  assert.ok(lightingGeometry.previewHeight > 180 && lightingGeometry.previewHeight < 480, 'Lighting desktop preview must wrap the illustration instead of stretching');
+  assert.ok(Math.abs(lightingGeometry.previewTop-lightingGeometry.panelTop) < 40, 'Lighting preview aligns with the top of the control panel');
   await photo(page, '13-react-lighting-desktop.png');
   console.log('PASS: React Lighting Lab owns markup and responds to all directions, brightness and shadow softness');
 
