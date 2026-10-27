@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   browser-smoke:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # Playwright 1.55.1 supports Ubuntu 24.04, not Ubuntu 26.04 runners
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
@@ -28,6 +28,8 @@ jobs:
         run: |
           npm ci --no-audit --no-fund
           npm install --no-save --no-audit --no-fund playwright@1.55.1
+      - name: Run four regression suites
+        run: npm test
       - name: Compile actual production site
         run: npm run build
       - name: Install test browser
