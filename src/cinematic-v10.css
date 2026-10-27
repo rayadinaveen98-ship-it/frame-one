@@ -29,6 +29,7 @@
   /* Previously 485px with a 45px headline; preserve the original art layers. */
   .main{padding-inline:clamp(14px,4.5vw,22px)}
   .home-topbar{gap:10px;padding-bottom:15px}
+  .home-topbar .avatar{display:none}
   .home-greeting{font-size:clamp(23px,6.3vw,29px)}
   .hero{
     min-height:252px; padding:18px 19px; align-items:center;
