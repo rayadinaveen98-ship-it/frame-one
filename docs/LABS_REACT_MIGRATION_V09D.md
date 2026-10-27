@@ -40,3 +40,12 @@
 - Expert filmmaking and Telugu review; manual screen-reader and real-device testing.
 - HTTPS PWA deployment, install/offline upgrades and restore across origins.
 - Capacitor Android debug APK and Android device tests, then iOS build with macOS/Xcode and TestFlight.
+
+## v0.9D first implementation checkpoint — 27 October 2026
+
+- **React Continuity Lab implemented:** `src/components/labs/ContinuityLab.tsx`, preserving the original stylized desk/cup illustration, explanations, two prop position controls, connected lesson, and seven-lab tabs.
+- **Explicit routing:** The old runtime emits `{page,lesson,lab}`, and the app shell shows Continuity only when `lab==='continuity'`. The legacy runtime leaves `#content` empty for the React-owned lab, preventing duplicated hidden tab bars. Other six labs remain legacy-owned without behavior changes.
+- **State management:** Continuity choice is React state held in App (retained during tab-to-tab navigation), uses accessible `aria-pressed`, and does not touch progress, practice notes or storyboard storage.
+- **Checks added:** `tests/verify-react-continuity.cjs` in `npm test`, updated legacy runtime contract, and compiled-browser test asserting React ownership, changed/matched cup and return navigation.
+- **Acceptance pending until latest CI runs:** The initial integration test caught the expected old selector and the duplicated legacy DOM; both were corrected. An older subsequent regression test still expected legacy Continuity output, and was updated. Only a successful run on the final source commit can close this step.
+- **Next once green:** Inspect fresh desktop/mobile screenshots, then begin **Colour Lab** as the next independently migrated React component. Do not mark all seven labs migrated.
