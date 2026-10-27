@@ -24,25 +24,58 @@ function LessonRow({lesson, completed}: {lesson: Lesson;completed: boolean}) {
 
 function LearningBackup({onRestored}: {onRestored:()=>void}) {
   const [message,setMessage] = useState('');
+  const [backupText,setBackupText] = useState('');
+  const [restoreText,setRestoreText] = useState('');
   const fileRef=useRef<HTMLInputElement>(null);
+
+  // One validation/confirmation route for both JSON files and pasted JSON.
+  // The legacy engine owns exact schema validation and saved-data keys.
+  const restoreJSON = (raw:string): boolean => {
+    try {
+      if(raw.length > 2_000_000) throw new Error('Backup is larger than 2 MB.');
+      const payload:unknown=JSON.parse(raw);
+      const bridge=window.frameOneLegacy;
+      if(!bridge) throw new Error('Learning engine is not ready yet.');
+      if (!window.confirm('Restore this backup? It will replace the learning progress, practice notes and storyboard currently saved in this browser.')) {
+        setMessage('Restore cancelled. Your current learning data is unchanged.');
+        return false;
+      }
+      bridge.importBackup(payload);
+      setMessage('Learning backup restored in this browser.');
+      onRestored();
+      return true;
+    } catch(err) {
+      setMessage(`Could not restore: ${err instanceof Error ? err.message : 'Invalid backup'}`);
+      return false;
+    }
+  };
   const onFile = async (e:ChangeEvent<HTMLInputElement>) => {
     const file=e.target.files?.[0];
     e.target.value='';
     if(!file) return;
     try {
       if(file.size>2_000_000) throw new Error('Backup is larger than 2 MB.');
-      const json:unknown=JSON.parse(await file.text());
-      const bridge=window.frameOneLegacy;
-      if(!bridge) throw new Error('Learning engine is not ready yet.');
-      if (!window.confirm('Restore this backup? It will replace the learning progress, practice notes and storyboard currently saved in this browser.')) {
-        setMessage('Restore cancelled. Your current learning data is unchanged.');
-        return;
-      }
-      bridge.importBackup(json); // strict original v0.8B validation
-      setMessage('Learning backup restored in this browser.');
-      onRestored();
+      restoreJSON(await file.text());
     } catch(err) {
       setMessage(`Could not restore: ${err instanceof Error ? err.message : 'Invalid backup'}`);
+    }
+  };
+  const showAndCopyBackup=async () => {
+    try {
+      const bridge=window.frameOneLegacy;
+      if(!bridge) throw new Error('Learning engine is not ready yet.');
+      const json=bridge.getBackupJSON();
+      setBackupText(json);
+      if(navigator.clipboard?.writeText) {
+        try {
+          await navigator.clipboard.writeText(json);
+          setMessage('Backup copied. Save it privately before replacing your device or app.');
+          return;
+        } catch { /* Some Android WebViews deny clipboard permission. */ }
+      }
+      setMessage('Backup shown below. Select all, copy it and save it privately.');
+    } catch {
+      setMessage('Backup text is unavailable. Please try again from the Learn screen.');
     }
   };
   return <details className="backup-panel">
@@ -53,6 +86,20 @@ function LearningBackup({onRestored}: {onRestored:()=>void}) {
       <button className="btn-secondary" type="button" onClick={()=>fileRef.current?.click()}>Restore a backup JSON file</button>
       <input ref={fileRef} className="sr-only" type="file" accept=".json,application/json" onChange={onFile} aria-label="Choose a Frame One backup JSON" />
     </div>
+    <details className="backup-text-fallback">
+      <summary>Download not working? Copy or paste a backup</summary>
+      <p>Use this alternative if Android does not save a JSON download. Your backup contains private practice ideas and storyboard notes; don't post it publicly.</p>
+      <button className="btn-secondary" type="button" onClick={()=>void showAndCopyBackup()}>Show and copy backup text</button>
+      {backupText ? <div className="backup-text-field">
+        <label htmlFor="backupCopyText">Your complete learning backup · select all if copying was blocked</label>
+        <textarea id="backupCopyText" value={backupText} readOnly rows={5} onFocus={e=>e.currentTarget.select()} />
+      </div> : null}
+      <div className="backup-text-field">
+        <label htmlFor="backupPasteText">Restore a backup from pasted JSON</label>
+        <textarea id="backupPasteText" value={restoreText} onChange={e=>setRestoreText(e.target.value)} maxLength={2_000_000} rows={5} placeholder="Paste a Frame One learning backup JSON here..." />
+        <button className="btn-secondary" type="button" disabled={!restoreText.trim()} onClick={()=>{if(restoreJSON(restoreText))setRestoreText('');}}>Restore pasted backup</button>
+      </div>
+    </details>
     <p className="backup-status" role="status">{message}</p>
     <small>Includes private practice notes and storyboard. Restoring replaces currently saved work. No upload or online account is involved.</small>
   </details>;
