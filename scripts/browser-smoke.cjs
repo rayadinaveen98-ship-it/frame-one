@@ -237,7 +237,15 @@ async function verify() {
     await phone.locator('.mobile-nav [data-page="lab"]').click();
     await phone.locator('.lab-tabs').waitFor();
     await photo(phone, '06-lab-' + width + 'px.png');
-    console.log('PASS: mobile ' + width + 'px navigates React chapters and legacy lab (overflow diagnostic: ' + horizontal.scroll + '/' + horizontal.viewport + ')');
+    await phone.locator('.lab-tabs [data-lab="continuity"]').click();
+    const mobileContinuity = phone.locator('.react-continuity-lab');
+    await mobileContinuity.waitFor();
+    await mobileContinuity.locator('[data-continuity="changed"]').click();
+    assert.equal(await mobileContinuity.locator('.continuity-cup.moved').count(), 1);
+    const continuityOverflow = await phone.evaluate(() => ({ scroll: document.documentElement.scrollWidth, viewport: document.documentElement.clientWidth }));
+    if (continuityOverflow.scroll > continuityOverflow.viewport + 3) record('Continuity Lab overflow at ' + width + 'px: ' + continuityOverflow.scroll + ' vs ' + continuityOverflow.viewport);
+    await photo(phone, '08-continuity-' + width + 'px.png');
+    console.log('PASS: mobile ' + width + 'px navigates React chapters, legacy and React lab (overflow diagnostic: ' + horizontal.scroll + '/' + horizontal.viewport + ')');
     await mobile.close();
   }
   if (failures.length) throw Error(failures.join('\n'));
