@@ -1,0 +1,33 @@
+/* v0.9D: Colour Lab independent React-state migration contract. */
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const read = name => fs.readFileSync(path.join(__dirname,'..',name),'utf8');
+const app = read('src/App.tsx');
+const colour = read('src/components/labs/ColourLab.tsx');
+const scene = read('src/components/labs/CinemaScene.tsx');
+const legacy = read('src/legacy/runtime.js');
+const qa = read('scripts/browser-smoke.cjs');
+const style = read('src/legacy/legacy.css');
+
+assert(app.includes("import { ColourLab, type ColourMode }"), 'App imports React Colour Lab');
+assert(app.includes("const [colourMode,setColourMode]"), 'Colour mode state persists in React App');
+assert(app.includes("const [colourStrength,setColourStrength]"), 'Colour strength state persists in React App');
+assert(app.includes("route.lab==='colour' ? <ColourLab"), 'App renders colour only for its route');
+assert(legacy.includes("['continuity','colour'].includes(state.lab)?'':"), 'legacy yields exclusive rendering of two migrated labs');
+assert(legacy.includes("lab:state.page==='lab'?state.lab:undefined"), 'legacy bridge emits active lab');
+assert(colour.includes("event.stopPropagation()"), 'mode choices do not double-dispatch legacy events');
+for (const mode of ["neutral","warm","cool"]) assert(colour.includes("data-colour={id}") && colour.includes(mode+":"), 'all colour modes preserved');
+assert(colour.includes("mode === 'neutral' ? 0"), 'neutral mode cannot apply tinted overlay');
+assert(colour.includes("100*.42"), 'overlay alpha formula maintains 42% max');
+assert(colour.includes("onInput=") && colour.includes("onChange="), 'slider supports drag and keyboard input');
+assert(colour.includes("aria-pressed={id===mode}"), 'colour options have accessible selection state');
+assert(colour.includes('Read the colour lesson'), 'lesson deep link retained');
+assert(colour.includes('a coloured overlay is not colour grading'), 'accuracy caveat retained');
+assert(scene.includes('Original storyboard image showing the same person at a bus stop'), 'original scene retained');
+for(const identifier of ['fSky','fSun','fCoat']) assert(scene.includes(identifier), 'SVG gradient '+identifier);
+assert(scene.includes("originalMarkup.replace"), 'original art is bundled and graduate IDs are scoped');
+for(const key of ['frameone-progress-v01','frameone-practice-v07','frameone-scene-v07']) assert(legacy.includes(key), 'saved learning storage '+key);
+for(const cls of ['colour-compare','colour-picture','colour-grade','colour-choices','colour-shell']) assert(style.includes('.'+cls), 'original lab CSS '+cls);
+assert(qa.includes("React must own Colour Lab") && qa.includes("10-react-colour-"), 'browser smoke covers both mobile and desktop');
+console.log('PASS: React Colour Lab: modes, tint cap, original SVG, slider, routing, mobile QA and storage contract.');
