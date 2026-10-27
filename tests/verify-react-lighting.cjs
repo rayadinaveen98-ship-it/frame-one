@@ -10,7 +10,7 @@ assert(app.includes("import { LightingLab }"),'App imports Lighting Lab');
 assert(app.includes("route.lab==='light' ? <LightingLab"),'React renders selected Lighting Lab');
 assert(app.includes('setLightingMode')&&app.includes('setLightPower')&&app.includes('setLightSoft'),'lighting state lives in App');
 assert(old.includes("['continuity','colour','frame','light','cut'].includes(state.lab)?'':"),'legacy yields the fourth lab DOM');
-assert(old.includes(".react-frame-lab,.react-lighting-lab')"),'global legacy input avoids React lab sliders');
+assert(old.includes(".react-frame-lab,.react-lighting-lab,.react-cut-lab')"),'global legacy input avoids React lab sliders');
 assert(lab.includes('event.stopPropagation()'),'direction choice avoids legacy click handler');
 assert(lab.includes('onInput={event=>{event.stopPropagation()')&&lab.includes('onChange={event=>{event.stopPropagation()'),'slider gestures avoid legacy input handler');
 for(const name of ['front','side','back']){
