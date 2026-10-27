@@ -28,4 +28,12 @@ The app remains a **debug APK** with potentially inconsistent CI signing; do not
 - GitHub Android debug APK packaging and stable release automation after merge
 - Physical Android gesture Back, edge-to-edge insets and update-signature continuity remain unverified release gates
 
-**GitHub Actions run links should be recorded only after passing.**
+## Verified feature branch acceptance
+
+- [PR #4](https://github.com/rayadinaveen98-ship-it/frame-one/pull/4) squash-merged to `main` at `ef8d4bc3e141f274307cac929510ab4173411209`.
+- [Web regression/TypeScript build 40482346820](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482346820) — **SUCCESS**.
+- [Full Chromium desktop/mobile QA 40482346779](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482346779) — **SUCCESS**; includes in-app Back and mobile touch-target validation.
+- [Android debug APK 40482347169](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40482347169) — **SUCCESS**.
+- These are pre-merge/PR checks. The independent main-branch checks and stable release update are tracked separately.
+
+**Hardware/gesture Back remains pending; this is only a visible in-app Back UI with verified browser navigation.**
