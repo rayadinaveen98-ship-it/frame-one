@@ -1,6 +1,6 @@
 # Frame One — Learn the art of filmmaking
 
-**Engineering checkpoint v0.9L — native Android lesson, storyboard and practice recovery accepted · latest app build still v0.9I · 27 October 2026 · not app-store released.**
+**Engineering checkpoint v0.9M — native Android backup export and verified JSON restore · Android test APK published · 27 October 2026 · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
 
@@ -52,8 +52,16 @@ The [Android API 35 emulator suite 40498806973](https://github.com/rayadinaveen9
 
 [v0.9L full QA evidence](docs/QA_V09L.md). **No application implementation changed and no v0.9L APK was created**; latest public test APK still contains v0.9I implementation with temporary debug signing. Native file-backup recovery, two-version upgrades, physical devices and verified Cloudflare live hosting remain pending.
 
+## v0.9M — verified Android backup export and recovery
+
+Frame One's **Learn → Keep a copy of your learning** panel now supports **Save / share backup JSON** on Android. The app uses the official Capacitor Filesystem and Share plugins to create and verify the original v1 JSON backup, then opens the Android share/save chooser. **The learner must choose an external destination and verify the saved file** before relying on it; a file inside app cache will not survive uninstall. Desktop/web download, JSON file import and manual copy/paste remain available.
+
+The [full Android emulator backup test](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40521036808) **PASSED**: app-generated JSON containing a completed lesson, private note and Make storyboard was copied unchanged to Android Downloads, the app's private data was wiped, and the original work was restored through the real Android file picker. The [native regression suite](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40521036608), source/web, Chromium and Gradle checks passed. [Full v0.9M QA report](docs/QA_V09M.md).
+
+The [public Android test APK](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/android-preview-latest) now includes v0.9M. **This APK is debug-signed with a temporary certificate, not update-safe**: protect saved learning data before replacing a previous build. Physical Android share destinations and multi-build signing continuity still need real-device acceptance.
+
 ## Android debug APK — first build verified
 
 GitHub Actions [Android debug run 40474122825](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40474122825) **PASSED** on 27 October 2026 after installing Android SDK 36, running source tests, compiling the offline web build, generating Capacitor 8's Android project, assembling Gradle debug and checking that the APK embeds the actual web app. Run artifact **frame-one-android-debug-apk** (GitHub artifact ID `12719818584`) contains `app-debug.apk`. [Download and real-device QA instructions](docs/ANDROID_DEBUG_CI.md). This is a **debug build only**: not installed on a physical device, release-signed, tested on iOS or approved for stores.
 
-**Next gate:** Verify the connected [Cloudflare Worker](docs/CLOUDFLARE_WORKERS_SETUP.md) has actually deployed to a working HTTPS URL, then test fresh PWA updates and offline data. In parallel, install/test the debug APK on a real Android phone and complete audio, TalkBack, backup and landscape QA. **No verified live Frame One URL or public release** yet. See [deployment status](docs/DEPLOYMENT_STATUS.md).
+**Next gate:** Verify the connected [Cloudflare Worker](docs/CLOUDFLARE_WORKERS_SETUP.md) has actually deployed to a working HTTPS URL, then test fresh PWA updates and offline data. In parallel, install/test the debug APK on a real Android phone and complete audio, TalkBack, backup and landscape QA. **No verified live Cloudflare Frame One URL or app-store release** yet. A public *debug test APK* does exist. See [deployment status](docs/DEPLOYMENT_STATUS.md).
