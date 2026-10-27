@@ -150,3 +150,12 @@
 - **Main-branch acceptance:** [web 40486968443](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486968443), [Chromium desktop/mobile 40486968447](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486968447), [Android build 40486968418](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40486968418), [stable release 40487176493](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40487176493): **all SUCCESS**.
 - The [latest public test APK](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/android-preview-latest) is v0.9I, 4,391,455 bytes, with SHA-256 and signing-certificate receipts.
 - **Next release gates:** secret-backed QA identity and two-build in-place Android installation; actual native system Back and edge gesture tests; Android offline/audio/backup acceptance; Cloudflare Worker exact production URL verification; iOS and editorial signoff. [Full v0.9I QA report](QA_V09I.md).
+
+
+## v0.9J — Android native emulator acceptance (27 October 2026)
+
+- [PR #6](https://github.com/rayadinaveen98-ship-it/frame-one/pull/6) merged as `ac7df213fc5a62efaa3aad0d5f87c3904462a18f`, adding `scripts/android-emulator-smoke.py` and the maintained Android API 35 emulator CI workflow.
+- Two complete [first PASS 40490569350](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40490569350) and [repeat PASS 40491292091](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40491292091) runs installed Frame One in a real Android emulator, navigated Home → Learn → Lesson and Creative Lab, pressed Android system Back, and verified Home minimize without process exit.
+- Android emulator acceptance now guards relevant application/native changes. Evidence includes screenshots, Android UI hierarchies and foreground-activity logs.
+- This is a QA improvement only; the latest installable public Android debug build is **v0.9I**. Learner content and local data formats remain unchanged.
+- Remaining acceptance: **physical phone** swipe/gesture Back, audio/file backup, update signing identity and in-place upgrade, Cloudflare live HTTPS deployment, Safari/iOS and educational/Telugu accuracy review. [v0.9J report](QA_V09J.md).
