@@ -1,21 +1,11 @@
-# Current progress report
+# Frame One progress — 27 October 2026
 
-**As of 27 October 2026.** Source work is ahead of verified deployment. The version numbers refer to prototype and migration milestones, not store releases.
+**Verified now:** public Git repository, roadmap/accuracy/architecture documentation, nine previous browser prototype snapshots, v0.9 static preview, and the **byte-exact v0.9B React source ZIP** at [releases/frame-one-v09b-source.zip](../releases/frame-one-v09b-source.zip). Original ZIP SHA-256: `ee9ab5e2a9f5448ddad559241b5b0fa1dbdadc6b2f7e6efa737d137ba86a561f`; Git blob SHA-1: `1d6b345f0a56ee8e21980fd517eb15812e250c00`.
 
-| Area | What is implemented | What is not verified |
-|---|---|---|
-| Curriculum | 33 English beginner lessons, 6 chapters, quizzes and creative choices | Expert/editor review |
-| Labs | 7 original interactive visual/audio/storyboard labs | Real migrated React/device QA |
-| Film language | 47 glossary terms, 9 roles, Telugu helpers | Full Telugu translations and native review |
-| Learner data | Local progress, practice notes, storyboard saves and JSON backup | Cross-origin/mobile WebView import/export |
-| Modern frontend | React lessons, chapter browser, glossary, hybrid legacy bridge in v0.9B source ZIP | npm production build, rendered React QA |
-| PWA | Static fallback and a compiled-asset cache generator | Actual production offline reload |
-| Mobile | Capacitor config, provisional ID `com.frameone.learncinema` | Android/iOS projects, APK/IPA |
-| GitHub | Public repo initialized; historical browser snapshots and roadmap checkpoint committed | Full latest React source ZIP upload pending |
-| Release | None | Hosting, Android install, iOS/TestFlight |
+**Current implementation:** 33 drafted lessons in 6 chapters, 7 interactive labs, 47 film terms, 9 roles, optional Telugu helpers, private local progress/notes/storyboards and manual learning backup. React lesson/chapter/glossary views were migrated in v0.9A/B; labs/home/crew map continue via original legacy bridge.
 
-## Automation/tests
-Four Node source/contract suites passed locally on 27 Oct 2026 (migration, React lessons, chapters, offline generator). These **are not** a substitute for an actual Vite/TypeScript production build. npm registry access and visual Chromium testing were blocked in the prior development environment.
+**Build and release facts:** four local Node source checks passed on 27 October 2026, but npm registry was unavailable then. This **does not verify** the React/Vite production build, native Capacitor shells, browser/device layouts, real offline caching, expert English/Telugu review or public hosting. **No APK/IPA or production URL exists.**
 
-## Important safeguards
-No user credentials or private notes should go into this public repository. Original illustrations instead of unlicensed film clips; do not teach aesthetic choices as universal rules. Device/origin moves require manual learning backup until reliable migration is proven.
+**Source expansion:** [GitHub Actions import workflow](../.github/workflows/import-v09b-source.yml) is designed to unpack the archived v0.9B project into the root and run the actual web build. The workflow's commit/build success must be inspected separately. Until then the ZIP—not normal top-level source files—is the verified backup.
+
+**Next:** verify source import and build; fix any errors; test all seven labs and mobile/offline flow; expert content review; deploy web; produce Android test APK; iOS build through Xcode.

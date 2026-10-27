@@ -1,0 +1,57 @@
+name: Import Frame One v0.9B source into repository
+on:
+  push:
+    paths:
+      - 'releases/frame-one-v09b-source.zip'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unpack:
+    if: github.repository == 'rayadinaveen98-ship-it/frame-one'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Unpack the stored source archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          work="$(mktemp -d)"
+          unzip -q releases/frame-one-v09b-source.zip -d "$work"
+          test -f "$work/package.json"
+          test -f "$work/src/legacy/runtime.js"
+          test -f "$work/src/components/LessonView.tsx"
+          test -f "$work/src/components/LearnView.tsx"
+          test -f "$work/src/data/curriculum.v08b.json"
+          for d in src public preview scripts tests; do
+            mkdir -p "$d"
+            cp -a "$work/$d/." "$d/"
+          done
+          for f in .gitignore index.html package.json capacitor.config.ts tsconfig.json vite.config.ts; do
+            cp "$work/$f" "$f"
+          done
+          git add .gitignore index.html package.json capacitor.config.ts tsconfig.json vite.config.ts src/ public/ preview/ scripts/ tests/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(source): unpack verified v0.9B React project snapshot"
+            git push origin HEAD:main
+          fi
+      - name: Test migrated source (only after extraction)
+        run: |
+          npm install --no-audit --no-fund
+          npm test
+          npm run build
+      - name: Upload web build when successful
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frame-one-web-v09b-dist
+          path: dist/
+          if-no-files-found: error
