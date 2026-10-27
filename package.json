@@ -7,7 +7,7 @@
     "dev": "vite --host 0.0.0.0",
     "build": "tsc --noEmit && vite build && node scripts/generate-offline.cjs",
     "preview": "vite preview --host 0.0.0.0",
-    "test": "node tests/verify-migration.cjs && node tests/verify-react-lessons.cjs && node tests/verify-react-chapters.cjs && node tests/verify-react-continuity.cjs && node tests/verify-react-colour.cjs && node tests/verify-offline.cjs"
+    "test": "node tests/verify-migration.cjs && node tests/verify-react-lessons.cjs && node tests/verify-react-chapters.cjs && node tests/verify-react-continuity.cjs && node tests/verify-react-colour.cjs && node tests/verify-react-frame.cjs && node tests/verify-offline.cjs"
   },
   "dependencies": {
     "react": "^19.2.0",
