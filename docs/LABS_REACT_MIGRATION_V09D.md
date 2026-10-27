@@ -92,3 +92,10 @@
 - A tenth source regression suite and Chromium tests cover saved work, export, imported backup changes, route reopening and 320px/390px screenshots.
 - Earlier test-only failures exposed stale assumptions about legacy markup and mock browser events; corrected. The **latest completed browser run is the acceptance gate**. [Make QA report](QA_MAKE_V09D.md).
 - Next once accepted: Sound Lab, followed by deployment and real-device checks.
+
+## Sixth implementation checkpoint — Make Lab (accepted)
+
+- React Make editor uses the old legacy learning engine only as a storage and backup bridge. All original story question IDs, framing presets, three-shot notes, local data keys and export text template are preserved. Original SVG is locally bundled, with a scoped gradient ID.
+- The legacy runtime now renders empty markup for six React labs and ignores their delegated inputs. Backup import dispatches `frameone:story-restored`; React refreshes its view from the original validated story. Existing drafts reopen intact.
+- **Automated browser QA PASSED:** [GitHub 40462953360](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40462953360), ten Node source suites, all lessons/labs, storyboard save/export, old-format import, offline reload, responsive screenshots. Reviewed the desktop/320px/390px Make screenshots. [Full QA](QA_MAKE_V09D.md).
+- **6/7 accepted; only Sound remains.** Next phase: native React Sound with WebAudio permission/user gesture controls, timers/sources/AudioContext closure on stop/unmount, offline fallback and real-device audio testing. All release gates remain independent. 
