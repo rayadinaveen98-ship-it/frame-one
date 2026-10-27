@@ -118,3 +118,9 @@ Help complete beginners understand filmmaking through accurate, simple explanati
 - **Verified:** [GitHub Actions 40468085250](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40468085250) passed TypeScript/Vite production build, `dist` suitability and the existing lesson/lab QA; [40468172467](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40468172467) passed the PWA update notice assertion.
 - **Remaining blocker for a real live URL:** authorize Cloudflare's GitHub integration and create a Pages project in the Cloudflare account dashboard. No direct Cloudflare account action is available from this conversation, so **no project or URL has been claimed as deployed**.
 - [One-time connection instructions](CLOUDFLARE_PAGES_SETUP.md) · [Current deployment status](DEPLOYMENT_STATUS.md). After connection, verify live output, offline refresh/install, backup and device behavior. Android/iOS builds remain later phases.
+
+## Existing Cloudflare Workers integration (screenshot verified, 27 October 2026)
+
+The connected Cloudflare service `frame-one` is **Workers Builds**, not Pages. It uses GitHub `main`, `npm run build` and `npx wrangler deploy`. A root `wrangler.jsonc` now matches this existing project and serves `dist/` as SPA static assets. This provides the same automatic GitHub → live Cloudflare update workflow once the account's **automatic Builds** setting is enabled. [Worker deployment setup](docs/CLOUDFLARE_WORKERS_SETUP.md) · [Live deployment status](docs/DEPLOYMENT_STATUS.md).
+
+The initial recommendation was Pages; **do not create a second Pages project just to use Frame One**. We are reusing the Cloudflare Worker already created. Its real live URL and first successful deployment must be checked in the account dashboard before being claimed as live.
