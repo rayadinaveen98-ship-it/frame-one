@@ -1,15 +1,15 @@
 # Frame One real-browser QA — latest recorded result
 
 **Workflow:** Frame One real-browser QA
-**Run ID:** 40460396546
+**Run ID:** 40460458046
 **Result:** FAILURE
-**Commit tested:** `c49c916999b6330cf5358abc76963ba856f98020`
-**Updated:** 2026-10-27T06:19:29Z
-**GitHub run:** https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40460396546
+**Commit tested:** `8eadd42d7e2d6ec6fc50a51a1e5c81ca30d3b187`
+**Updated:** 2026-10-27T06:20:09Z
+**GitHub run:** https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40460458046
 
 ## Jobs
 
-- **browser-smoke:** failure — https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40460396546/job/122043347530
+- **browser-smoke:** failure — https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40460458046/job/122043543666
   - Failed step: Run all regression suites
 
 ## Available QA artifacts
