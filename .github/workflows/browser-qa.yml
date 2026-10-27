@@ -10,6 +10,9 @@ on:
       - 'scripts/generate-offline.cjs'
       - 'package.json'
       - 'package-lock.json'
+      - '.node-version'
+      - 'vite.config.ts'
+      - 'scripts/verify-pages-dist.cjs'
       - '.github/workflows/browser-qa.yml'
   workflow_dispatch:
 
@@ -33,6 +36,8 @@ jobs:
         run: npm test
       - name: Compile actual production site
         run: npm run build
+      - name: Verify Cloudflare Pages publish directory
+        run: node scripts/verify-pages-dist.cjs
       - name: Install test browser
         run: npx playwright install --with-deps chromium
       - name: Run desktop and mobile smoke checks
