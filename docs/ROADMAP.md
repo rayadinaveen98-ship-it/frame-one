@@ -100,3 +100,13 @@ Help complete beginners understand filmmaking through accurate, simple explanati
 - **Verified green GitHub Actions [40462953360](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40462953360)** after running ten source suites, TypeScript/Vite compilation, all 33 lesson completions and seven lab interactions including real old-format backup restore and offline reload.
 - Inspected desktop/320px/390px screenshots; 320px story beats stack while 390px displays them together, with no material horizontal overflow. Mobile full-page bottom-bar stitching remains a screenshot concern, not proven device failure.
 - **Next migration:** Sound, with careful WebAudio user-gesture activation, source/AudioContext cleanup, navigation cancellation and silent/ambience options. Afterwards web deployment and native Android/iOS tests are separate release gates. [Make QA](QA_MAKE_V09D.md).
+
+## v0.9D completed — all seven React Creative Labs (27 October 2026)
+
+**Status: 7/7 React lab migrations implemented and automated browser-accepted.** Frame, Sound, Cut, Lighting, Make, Colour and Continuity are now React-owned. The legacy JavaScript runtime remains a compatibility bridge for home, film roles, learner progress, storyboard storage and backup; it does not render lab UI.
+
+- Final Sound Lab locally synthesizes three listening conditions (No music, Gentle tones, Uneasy tones) with an independent optional ambience control. It never autoplays or downloads tracks. AudioContexts and sources stop/close when switching a mode, stopping or leaving Sound.
+- The last visual fix removes inherited framing labels from the Sound illustration without changing other labs.
+- **Verified full CI:** [GitHub Actions 40465373226](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40465373226) **SUCCESS**, after the original [full audio lifecycle run 40464897808](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40464897808) **SUCCESS**. The latest compiled browser QA covers all 33 lessons, seven labs, v0.7 storyboard backup/restore and offline reload, with responsive layouts checked at 320/390px. [Sound QA](QA_SOUND_V09D.md).
+- **Next release phase (not yet complete):** production HTTPS preview/PWA installation and update/restore test, then an Android debug APK built from this exact repository and tested on a physical phone, followed by iOS/Xcode builds and device testing. Comprehensive screen-reader/keyboard, Web Audio listening and filmmaking/Telugu content review remain independent gates.
+- **No claim of production hosting, APK or iOS release at this checkpoint.**
