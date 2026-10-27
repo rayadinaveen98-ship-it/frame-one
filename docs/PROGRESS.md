@@ -32,5 +32,5 @@
 - React Continuity Lab (`src/components/labs/ContinuityLab.tsx`) committed with original teaching visuals and React-managed mismatch state.
 - Explicit legacy-to-React lab routing, exclusive DOM ownership, fifth source test and new Chromium QA assertions committed.
 - Six creative labs remain implemented in legacy JavaScript; they are **not yet migrated**.
-- Browser QA in progress at the latest source commit; green acceptance **not yet confirmed** at this writing. Intermediate logs revealed and helped fix DOM duplicate tabs, outdated assertions and navigation settling.
+- **React Continuity Lab automated QA passed** in [GitHub Actions 40449195578](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40449195578); inspected desktop screenshot and verified a single React-owned Continuity page without duplicated legacy content. Manual mobile-device and accessibility review remain open.
 - Detailed evidence and remaining gates: [QA_V09D.md](QA_V09D.md).
