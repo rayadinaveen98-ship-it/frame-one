@@ -1,7 +1,7 @@
 /** Narrow integration boundary while the seven labs continue using the original runtime. */
 export type LegacyPage = 'home' | 'learn' | 'lesson' | 'lab' | 'crafts';
 export type LabName = 'frame' | 'sound' | 'light' | 'cut' | 'story' | 'colour' | 'continuity';
-export interface LegacyRoute { page: LegacyPage; lesson: string | null }
+export interface LegacyRoute { page: LegacyPage; lesson: string | null; lab?: LabName }
 export interface LegacyBridge {
   navigate: (page: LegacyPage, lesson?: string) => void;
   openLab: (lab: LabName) => void;
