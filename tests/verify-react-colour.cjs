@@ -21,6 +21,8 @@ for (const mode of ["neutral","warm","cool"]) assert(colour.includes("data-colou
 assert(colour.includes("mode === 'neutral' ? 0"), 'neutral mode cannot apply tinted overlay');
 assert(colour.includes("100*.42"), 'overlay alpha formula maintains 42% max');
 assert(colour.includes("onInput=") && colour.includes("onChange="), 'slider supports drag and keyboard input');
+assert(colour.includes("onInput={event=>{event.stopPropagation()") && colour.includes("onChange={event=>{event.stopPropagation()"), 'React slider events cannot reach obsolete legacy input handler');
+assert(legacy.includes("e.target.closest?.('.react-colour-lab,.react-continuity-lab')"), 'legacy delegated input handler skips React-owned lab inputs');
 assert(colour.includes("aria-pressed={id===mode}"), 'colour options have accessible selection state');
 assert(colour.includes('Read the colour lesson'), 'lesson deep link retained');
 assert(colour.includes('a coloured overlay is not colour grading'), 'accuracy caveat retained');
