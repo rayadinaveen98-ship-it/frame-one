@@ -39,3 +39,10 @@ The screenshot from Cloudflare shows **Workers & Pages → frame-one → Product
 To reuse the existing setup, `wrangler.jsonc` now defines the same Worker `frame-one`, serves `./dist` as static assets and enables SPA routing. Cloudflare Workers Builds supports automatic GitHub deploys, and Workers static assets reads our existing `_headers`. A new [Workers setup guide](CLOUDFLARE_WORKERS_SETUP.md) supersedes the earlier [Pages-only instructions](CLOUDFLARE_PAGES_SETUP.md) for this already-created Cloudflare service.
 
 **Current blocker:** we cannot directly query this Cloudflare account. The actual `workers.dev` URL and whether the latest Cloudflare deploy succeeded are still unverified. Confirm both in Cloudflare's **Overview/Deployments** after the new GitHub commit.
+
+
+## Workers-specific source/build check — passed
+
+[GitHub Actions run 40470087931](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40470087931) **SUCCESS** on commit `5ba3de97ff7de3c7525a908b3b26aa062a250c65`. It verified all regression suites, TypeScript/Vite build, the published `dist/` files, full browser QA and **`npx wrangler@4 deploy --dry-run`**. Wrangler 4.153.0 successfully found **13 files** in the static asset directory and exited without uploading. This confirms the Worker configuration is deployable from source.
+
+**Still not a verified live deployment:** this was a dry run in GitHub CI, not the account's production Cloudflare deployment. Open the Cloudflare dashboard deployment and check that its production deploy completed successfully, then copy the exact site URL.
