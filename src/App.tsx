@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { LessonView } from './components/LessonView';
 import { LearnView } from './components/LearnView';
 import { ContinuityLab, type ContinuityMode } from './components/labs/ContinuityLab';
+import { ColourLab, type ColourMode } from './components/labs/ColourLab';
 import type { LegacyRoute, LabName } from './legacy/bridge';
 import type { CSSProperties } from 'react';
 import './legacy/legacy.css';
@@ -56,6 +57,8 @@ export default function App() {
   const [bootError, setBootError] = useState<string | null>(null);
   const [route, setRoute] = useState<AppRoute>({page:'home',lesson:null});
   const [continuityMode, setContinuityMode] = useState<ContinuityMode>('match');
+  const [colourMode,setColourMode] = useState<ColourMode>('neutral');
+  const [colourStrength,setColourStrength] = useState(65);
   const previousRoute = useRef('home:');
   // On SPA navigation, return keyboard/screen-reader focus to the page heading.
   // Skip the initial home mount to avoid stealing focus when booting.
@@ -76,7 +79,7 @@ export default function App() {
       const custom = event as CustomEvent<LegacyRoute>;
       if (!custom.detail?.page) return;
       // Legacy engine explicitly provides the selected lab in its route event.
-      // It leaves #content empty when the React Continuity Lab owns the screen.
+      // It leaves #content empty when either React-owned lab owns the screen.
       const lab = custom.detail.page === 'lab' ? custom.detail.lab : undefined;
       setRoute({ ...custom.detail, lab });
     };
@@ -102,11 +105,12 @@ export default function App() {
     <main className="main" id="main-content">
       <ProgressTopbar />
       {bootError ? <p role="alert">{bootError}</p> : null}
-      <div id="content" aria-live="off" hidden={route.page==='lesson'||route.page==='learn'||(route.page==='lab'&&route.lab==='continuity')} />
+      <div id="content" aria-live="off" hidden={route.page==='lesson'||route.page==='learn'||(route.page==='lab'&&(route.lab==='continuity'||route.lab==='colour'))} />
       {route.page==='lab' && route.lab==='continuity' ? <ContinuityLab mode={continuityMode} setMode={setContinuityMode} /> : null}
+      {route.page==='lab' && route.lab==='colour' ? <ColourLab mode={colourMode} setMode={setColourMode} strength={colourStrength} setStrength={setColourStrength} /> : null}
       {route.page==='learn' ? <LearnView /> : null}
       {route.page==='lesson' && route.lesson ? <LessonView key={route.lesson} lessonId={route.lesson} /> : null}
-      <footer className="footer"><span>FRAME ONE · React lessons + chapters + Continuity Lab v0.9D</span><span>Made for curious minds <span className="heart">♥</span></span></footer>
+      <footer className="footer"><span>FRAME ONE · React lessons + chapters + 2 Creative Labs v0.9D</span><span>Made for curious minds <span className="heart">♥</span></span></footer>
     </main>
     <Navigation mobile />
   </div>;
