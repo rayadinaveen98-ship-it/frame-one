@@ -76,7 +76,10 @@ def exported_private_json():
     assert payload["notes"].get("why")=="FrameOneNativeNoteQA20261027","Export lost original practice note"
     scene=payload["scene"]
     assert scene["question"]=="decision" and scene["shots"][0]=="close","Export lost real Make Lab choices"
-    assert scene["notes"][0]=="FrameOneNativeShotQA20261027","Export lost authored first shot"
+    # Android input text appended to the default shot description rather than
+    # replacing it. Preserve both; require the authored marker inside it.
+    assert "FrameOneNativeShotQA20261027" in scene["notes"][0],"Export lost authored first-shot marker"
+    assert len(scene["notes"][0])<=240,"Export bypassed existing storyboard note limit"
     print("PASS: native Filesystem wrote exact learner practice/progress/storyboard backup bytes",flush=True)
     return p.stdout
 
