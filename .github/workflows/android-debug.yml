@@ -98,13 +98,18 @@ jobs:
         run: |
           test -s android/app/build/outputs/apk/debug/app-debug.apk
           unzip -Z1 android/app/build/outputs/apk/debug/app-debug.apk | grep -Fx 'assets/public/index.html'
+      - name: Stage flat APK and certificate receipt for GitHub Releases
+        if: success()
+        run: |
+          set -euo pipefail
+          mkdir -p release-dist
+          cp android/app/build/outputs/apk/debug/app-debug.apk release-dist/app-debug.apk
+          cp android-qa-signature.txt release-dist/android-qa-signature.txt
       - name: Upload installable debug APK for device testing
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: frame-one-android-debug-apk
-          path: |
-            android/app/build/outputs/apk/debug/app-debug.apk
-            android-qa-signature.txt
+          path: release-dist/
           if-no-files-found: error
           retention-days: 14
