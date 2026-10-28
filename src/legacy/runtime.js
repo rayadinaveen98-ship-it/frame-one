@@ -1401,7 +1401,7 @@
     function loadNotes(){const data=safeGet(NOTES_KEY,{});return data&&typeof data==='object'&&!Array.isArray(data)?data:{}}
     function saveNotes(){try{localStorage.setItem(NOTES_KEY,JSON.stringify(state.notes));return true}catch{return false}}
     function storyPlanText(){const q=sceneQuestions[state.story.question];return ['FRAME ONE · FIRST SCENE SHOT PLAN','Story question: '+q.question,'Setting: A fictional bus stop.','',...scenePhases.flatMap((p,i)=>['SHOT '+(i+1)+' · '+p.name+' · '+state.story.shots[i].toUpperCase(), 'Action idea: '+(state.story.notes[i].trim()||'(not written yet)'), 'Purpose: '+q.hints[i],'']), 'A shot plan is an idea for filming, not a finished film.','Created locally in Frame One.'].join('\n')}
-    const state={page:'home',collection:null,thoughtIndex:0,story:loadStory(),storyStep:0,notes:loadNotes(),crewPhase:'idea',miniStep:0,lesson:null,craft:null,lab:'frame',frame:'wide',sound:'silence',light:'front',filter:'All',query:'',quiz:null,quizAnswered:false,audio:null,cutOpening:'place',cutStep:0,cutOrder:['place','detail','person'],cutDuration:[2,2,2],cutPlaying:false,cutTimer:null,activity:null,frameGuide:true,compare:false,frameZoom:1,lightPower:90,lightSoft:35,ambience:true,soundPlaying:false,soundTimer:null,colourMode:'neutral',colourStrength:65,continuityMode:'match',telugu:loadTelugu()};
+    const state={page:'home',collection:null,journey:null,thoughtIndex:0,story:loadStory(),storyStep:0,notes:loadNotes(),crewPhase:'idea',miniStep:0,lesson:null,craft:null,lab:'frame',frame:'wide',sound:'silence',light:'front',filter:'All',query:'',quiz:null,quizAnswered:false,audio:null,cutOpening:'place',cutStep:0,cutOrder:['place','detail','person'],cutDuration:[2,2,2],cutPlaying:false,cutTimer:null,activity:null,frameGuide:true,compare:false,frameZoom:1,lightPower:90,lightSoft:35,ambience:true,soundPlaying:false,soundTimer:null,colourMode:'neutral',colourStrength:65,continuityMode:'match',telugu:loadTelugu()};
     let finished=loadProgress();
     function loadTelugu(){try{return localStorage.getItem(LANGUAGE_KEY)==='yes'}catch{return false}}
     function saveTelugu(){try{localStorage.setItem(LANGUAGE_KEY,state.telugu?'yes':'no')}catch{}}
@@ -1548,7 +1548,29 @@
     // safely tell us whether Back should remain inside the learning app.
     function frameOneDepth(){const d=history.state?.frameOneDepth;return Number.isInteger(d)&&d>=0?d:0}
     const collectionIds=['beginnings','storytelling','visual','sound-cut','studio','film-team'];
-    function navigate(page,sub=null,fromHistory=false){stopAudio();stopCut();state.activity=null;if(page==='lesson'){state.page='lesson';state.lesson=sub;state.collection=null;state.quiz=null;state.quizAnswered=false;state.miniStep=0}else if(page==='collection'&&collectionIds.includes(sub)){state.page='collection';state.collection=sub;state.lesson=null}else{state.page=page;state.lesson=null;state.collection=null}if(page!=='crafts')state.craft=null;render();window.scrollTo({top:0,behavior:'instant'});try{const marker={frameOneRoute:true,frameOneDepth:frameOneDepth()+(fromHistory?0:1)};(fromHistory?history.replaceState:history.pushState).call(history,marker,'','#'+(page==='lesson'?'lesson/'+sub:page==='collection'?'collection/'+state.collection:page))}catch{}}
+    function navigate(page,sub=null,fromHistory=false){
+      stopAudio();stopCut();state.activity=null;
+      // Keep collection context only while following its real lessons.
+      // A popstate restores the context from that exact history entry.
+      const priorJourney=state.page==='collection'?state.collection:state.page==='lesson'?state.journey:null;
+      const restoredJourney=fromHistory?history.state?.frameOneJourney:null;
+      if(page==='lesson'){
+        state.page='lesson';state.lesson=sub;state.collection=null;
+        const selected=fromHistory?restoredJourney:priorJourney;
+        state.journey=collectionIds.includes(selected)?selected:null;
+        state.quiz=null;state.quizAnswered=false;state.miniStep=0;
+      }else if(page==='collection'&&collectionIds.includes(sub)){
+        state.page='collection';state.collection=sub;state.lesson=null;state.journey=null;
+      }else{state.page=page;state.lesson=null;state.collection=null;state.journey=null}
+      if(page!=='crafts')state.craft=null;
+      render();window.scrollTo({top:0,behavior:'instant'});
+      try{
+        const marker={frameOneRoute:true,frameOneDepth:frameOneDepth()+(fromHistory?0:1),
+          frameOneJourney:state.page==='lesson'?state.journey:null};
+        (fromHistory?history.replaceState:history.pushState).call(history,marker,'',
+          '#'+(page==='lesson'?'lesson/'+sub:page==='collection'?'collection/'+state.collection:page));
+      }catch{}
+    }
     function goBackWithinFrameOne(){
       if(frameOneDepth()>0){history.back();return}
       // Direct links and cold-started Android activities have no in-app
@@ -1556,7 +1578,7 @@
       if(state.page==='lesson')navigate('learn');
       else if(state.page!=='home')navigate('home');
     }
-    function render(){const root=document.getElementById('content');const focused=document.activeElement;const focusData=focused?.dataset?Object.entries(focused.dataset).find(([k])=>['lab','frame','light','sound','cutStep','cutOpening'].includes(k)):null;root.innerHTML=state.page==='lab'&&['continuity','colour','frame','light','cut','story','sound'].includes(state.lab)?'':state.page==='home'?home():state.page==='learn'?'':state.page==='lesson'?'':state.page==='collection'?'':state.page==='lab'?lab():craftsPage();document.querySelectorAll('[data-page]').forEach(el=>{if(el.closest('.sidebar')||el.closest('.mobile-nav')){if(el.dataset.page===state.page||(state.page==='lesson'&&el.dataset.page==='learn')||(state.page==='collection'&&el.dataset.page==='home'))el.setAttribute('aria-current','page');else el.removeAttribute('aria-current')}});updateProgress();window.dispatchEvent(new CustomEvent('frameone:route',{detail:{page:state.page,lesson:state.lesson,lab:state.page==='lab'?state.lab:undefined,collection:state.page==='collection'?state.collection:undefined}}));if(focusData){const [k,v]=focusData;for(const b of root.querySelectorAll('button')){if(b.dataset[k]===v){b.focus({preventScroll:true});break}}}}
+    function render(){const root=document.getElementById('content');const focused=document.activeElement;const focusData=focused?.dataset?Object.entries(focused.dataset).find(([k])=>['lab','frame','light','sound','cutStep','cutOpening'].includes(k)):null;root.innerHTML=state.page==='lab'&&['continuity','colour','frame','light','cut','story','sound'].includes(state.lab)?'':state.page==='home'?home():state.page==='learn'?'':state.page==='lesson'?'':state.page==='collection'?'':state.page==='lab'?lab():craftsPage();document.querySelectorAll('[data-page]').forEach(el=>{if(el.closest('.sidebar')||el.closest('.mobile-nav')){if(el.dataset.page===state.page||(state.page==='lesson'&&el.dataset.page==='learn')||(state.page==='collection'&&el.dataset.page==='home'))el.setAttribute('aria-current','page');else el.removeAttribute('aria-current')}});updateProgress();window.dispatchEvent(new CustomEvent('frameone:route',{detail:{page:state.page,lesson:state.lesson,lab:state.page==='lab'?state.lab:undefined,collection:state.page==='collection'?state.collection:undefined,journey:state.page==='lesson'?state.journey:undefined}}));if(focusData){const [k,v]=focusData;for(const b of root.querySelectorAll('button')){if(b.dataset[k]===v){b.focus({preventScroll:true});break}}}}
     function nextLesson(id){const i=lessons.findIndex(l=>l.id===id);return lessons[i+1]||null}
     function answerQuiz(n){if(state.page!=='lesson'||state.quizAnswered)return;state.quiz=n;state.quizAnswered=true;render();document.querySelector('.quiz')?.scrollIntoView({block:'nearest'})}
     function markComplete(){const l=lessons.find(x=>x.id===state.lesson);if(!l||!state.quizAnswered||state.quiz!==l.answer)return;finished.add(l.id);persist();updateProgress();const next=nextLesson(l.id);if(next)navigate('lesson',next.id);else navigate('learn')}
@@ -1636,7 +1658,18 @@
       goBack:()=>goBackWithinFrameOne(),
       openLab:(lab)=>{if(['frame','sound','light','cut','story','colour','continuity'].includes(lab)){state.lab=lab;navigate('lab')}},
       openCollection:(id)=>{if(collectionIds.includes(id))navigate('collection',id)},
-      completeLesson:(id)=>{if(state.page!=='lesson'||state.lesson!==id)return;finished.add(id);persist();const next=nextLesson(id);navigate(next?'lesson':'learn',next?.id||null)},
+      completeLesson:(id,continuation)=>{
+        if(state.page!=='lesson'||state.lesson!==id)return;
+        finished.add(id);persist();
+        // The guided series controls its next part without changing progress schema.
+        if(state.journey&&continuation?.nextLessonId&&lessons.some(l=>l.id===continuation.nextLessonId)){
+          navigate('lesson',continuation.nextLessonId);return;
+        }
+        if(state.journey&&continuation?.returnCollectionId===state.journey){
+          navigate('collection',state.journey);return;
+        }
+        const next=nextLesson(id);navigate(next?'lesson':'learn',next?.id||null);
+      },
       savePractice:(id,note)=>{if(!lessons.some(l=>l.id===id)||typeof note!=='string')return false;state.notes[id]=note.slice(0,240);return saveNotes()},
       setTelugu:(enabled)=>{state.telugu=Boolean(enabled);saveTelugu()},
       exportBackup:()=>downloadBackup(),
