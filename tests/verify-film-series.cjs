@@ -101,6 +101,8 @@ assert(lesson.includes('completeLesson(lesson.id,seriesPosition.next?'),
 assert(runtime.includes('frameOneJourney:state.page===\'lesson\'?state.journey:null'),'history context persists');
 assert(runtime.includes("continuation?.returnCollectionId===state.journey"),'return-to-series completion restricted to current context');
 assert(runtime.includes('finished.add(id);persist()'),'original progress key remains sole source');
+assert(view.includes('className="collection-back" type="button" onClick={()=>navigate(\'home\')}'),
+  'Collection Cinema Library return goes Home instead of reopening prior lesson history');
 assert(app.includes('journeyId={route.journey}'),'React receives exact legacy series route');
 assert(art.includes('artId=art'),'cover variants are deterministic across refreshes');
 assert(art.includes('cinema-poster-signature'),'poster variants have original decorative signatures');
