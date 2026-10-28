@@ -32,6 +32,15 @@ An initial browser run failed because returning from the final lesson added a co
 
 This is an Android **preview**, not app-store ready. Durable QA debug signing `FRAMEONE_QA_DEBUG_KEYSTORE_B64` has not been securely provisioned; the last public preview was temporarily signed. A new temporarily signed APK can have a different certificate, so a device may require an externally verified local-backup / uninstall / reinstall / restore sequence. A same-certificate, two-version physical-phone upgrade test, manual TalkBack and production release signing remain pending.
 
-## Independent main-branch verification
+## Independent main-branch verification and release
 
-The final main build and public release should be linked after independent checks complete.
+The independent main build of merged source `7c5156467200443137f877aeb82fe31c7e196c05` passed:
+
+- [Web verification 40731071455](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40731071455)
+- [Real desktop/mobile Chromium 40731071587](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40731071587)
+- [Actual Android debug APK build 40731071443](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40731071443)
+- [Public Android APK publisher 40731396092](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40731396092)
+
+The public [`android-preview-latest` release](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/android-preview-latest) metadata and exact source commit were verified. The refreshed APK is 4,666,865 bytes, source `7c515646`. Certificate SHA-256: `669aaccf68142c0db7b90b3ff1407a39db40c7131717dc5533a195214e278ea8`. The certificate **differs from the previous public test APK**, and the release notes explicitly warn an in-place upgrade from that older APK will be rejected.
+
+The two independent merged-main emulator runs are [native Back/offline 40731071683](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40731071683) and [full Android DocumentsUI restore 40731071496](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40731071496). They were **in progress when this report was updated**; both corresponding checks passed on the exact PR head. Their final conclusions must be verified before claiming the repeat native checks passed.
