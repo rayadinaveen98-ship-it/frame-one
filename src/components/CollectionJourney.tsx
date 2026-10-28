@@ -1,7 +1,8 @@
+import {useState} from 'react';
 import curriculum from '../data/curriculum.v08b.json';
 import type {Lesson} from '../data/schema';
 import {cinemaShelves,type CinemaEntry} from '../data/cinema-library';
-import {seriesById,type FilmAct} from '../data/cinema-series';
+import {actAtIndex,seriesById,type FilmAct} from '../data/cinema-series';
 import {navigate,openLab} from '../legacy/bridge';
 import {safeProgress} from '../state/learning';
 import {CinemaArtwork} from './CinemaArtwork';
@@ -44,14 +45,14 @@ function JourneyEntry({entry,index,finished,isNext}:{
   </button>;
 }
 
-function SeriesAct({act,actIndex,entries,startIndex,completed,next}:{
+function SeriesAct({act,actIndex,entries,startIndex,completed,next,isFeatured}:{
   act:FilmAct;actIndex:number;entries:readonly CinemaEntry[];
-  startIndex:number;completed:ReadonlySet<string>;next:CinemaEntry;
+  startIndex:number;completed:ReadonlySet<string>;next:CinemaEntry;isFeatured:boolean;
 }){
   const actLessons=entries.filter(entry=>entry.kind==='lesson');
   const done=actLessons.filter(entry=>completed.has(entry.id)).length;
   const hasTracked=actLessons.length>0;
-  return <section className="collection-act" data-collection-act={actIndex+1}
+  return <section className={'collection-act'+(isFeatured?' is-featured':'')} data-collection-act={actIndex+1}
     aria-labelledby={'collectionAct'+actIndex}>
     <div className="collection-act-intro">
       <span className="collection-act-index" aria-hidden="true">{String(actIndex+1).padStart(2,'0')}</span>
@@ -74,6 +75,8 @@ function SeriesAct({act,actIndex,entries,startIndex,completed,next}:{
 
 /** Guided editorial series: existing progress and lessons only; no new storage. */
 export function CollectionJourney({collectionId}:{collectionId:string}){
+  // Ephemeral film-preview choice: progression still comes only from lesson completions.
+  const [previewAct,setPreviewAct]=useState<number|null>(null);
   const shelf=cinemaShelves.find(item=>item.id===collectionId);
   const series=seriesById(collectionId);
   const completed=safeProgress(allIds);
@@ -89,6 +92,17 @@ export function CollectionJourney({collectionId}:{collectionId:string}){
   const hasActivities=shelf.entries.some(entry=>entry.kind!=='lesson');
   const next=lessonEntries.find(entry=>!completed.has(entry.id))??shelf.entries[0];
   const primary=next?detail(next):null;
+  // Reopen on the act containing the next unfinished lesson; Labs have no score.
+  const pendingIndex=shelf.entries.findIndex(entry=>entry.kind==='lesson'&&!completed.has(entry.id));
+  const upcomingAct=actAtIndex(series,pendingIndex>=0?pendingIndex:0);
+  const featuredIndex=previewAct??upcomingAct;
+  const featured=series.acts[featuredIndex];
+  const featuredStart=series.acts.slice(0,featuredIndex).reduce((sum,act)=>sum+act.count,0);
+  const featuredEntries=shelf.entries.slice(featuredStart,featuredStart+featured.count);
+  const featuredNext=featuredEntries.find(entry=>entry.kind==='lesson'&&!completed.has(entry.id))??featuredEntries[0];
+  const featuredInfo=detail(featuredNext);
+  const featuredTotal=featuredEntries.filter(entry=>entry.kind==='lesson').length;
+  const featuredDone=featuredEntries.filter(entry=>entry.kind==='lesson'&&completed.has(entry.id)).length;
   let actOffset=0;
   return <div className="page collection-view" data-collection-view={shelf.id}>
     <button className="collection-back" type="button" onClick={()=>window.frameOneLegacy?.goBack()}>
@@ -117,6 +131,40 @@ export function CollectionJourney({collectionId}:{collectionId:string}){
       <span className="cinema-overline">BEFORE THE FIRST FRAME</span>
       <p>{series.invitation}</p>
     </section>
+    <section className="collection-filmstrip" aria-label="Choose an act of this film journey">
+      <div className="collection-filmstrip-heading">
+        <span className="cinema-overline">YOUR FILM · THREE ACTS</span>
+        <span>Choose a chapter to preview</span>
+      </div>
+      <div className="collection-act-selector">
+        {series.acts.map((act,index)=><button type="button" key={index}
+          className="collection-act-tab" data-act-select={index+1}
+          aria-pressed={featuredIndex===index} onClick={()=>setPreviewAct(index)}>
+          <span>ACT {String(index+1).padStart(2,'0')}</span>
+          <strong>{act.title}</strong>
+          <span className="collection-act-tab-line" aria-hidden="true"/>
+        </button>)}
+      </div>
+      <div className="collection-act-spotlight" data-featured-act={featuredIndex+1}>
+        <div className="collection-act-spotlight-copy" aria-live="polite" aria-atomic="true">
+          <span className="cinema-overline">NOW SHOWING · ACT {String(featuredIndex+1).padStart(2,'0')} OF 03</span>
+          <h2>{featured.title}</h2>
+          <p>{featured.cue}</p>
+          <span className="collection-spotlight-next">{featuredTotal>0
+            ?featuredDone===featuredTotal?'REVISIT THE ACT':'UP NEXT'
+            :'EXPLORE THIS ACT'} · {featuredInfo.title}</span>
+          <button type="button" className="collection-act-play" data-spotlight-start
+            onClick={()=>enter(featuredNext)}>
+            {featuredTotal>0?(featuredDone===featuredTotal?'Revisit act':'Enter this act'):'Try this act'}
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+        <div className="collection-act-spotlight-art" aria-hidden="true">
+          <CinemaArtwork art={featuredNext.art} artId={featuredNext.id}/>
+          <span>FRAME ONE · ACT {String(featuredIndex+1).padStart(2,'0')}</span>
+        </div>
+      </div>
+    </section>
     {percent!==null?<section className="collection-progress" aria-label="Collection learning progress">
       <div className="collection-progress-line">
         <span>{allDone?'You completed these lessons':'YOUR PROGRESS'}</span>
@@ -141,7 +189,8 @@ export function CollectionJourney({collectionId}:{collectionId:string}){
         const from=actOffset;actOffset+=act.count;
         const items=shelf.entries.slice(from,actOffset);
         return <SeriesAct key={index} act={act} actIndex={index}
-          entries={items} startIndex={from} completed={completed} next={next}/>;
+          entries={items} startIndex={from} completed={completed} next={next}
+          isFeatured={featuredIndex===index}/>;
       })}
     </section>
     <section className="collection-finale" aria-label="After the last act">
