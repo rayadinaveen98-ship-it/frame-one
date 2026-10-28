@@ -167,17 +167,23 @@ def main():
     state.make_storyboard()
     ui.adb("shell","am","force-stop",ui.PACKAGE)
     state.launch()
-    ui.tap_label("Home")
-    # Previous storyboard tests may leave Home's long library scrolled near
-    # its final shelf. Move upward as a real tester would before searching
-    # down for the compact backup shortcut; offscreen nodes report [0,0].
-    state.scroll_top()
-    state.find_text("YOUR WORK STAYS ON THIS DEVICE",tries=12)
-    state.control("Back up",exact=False)
-    state.find_text("YOUR LEARNING JOURNEY",tries=10)
-    state.find_text("Save / share backup JSON",tries=10,scroll=True)
-    print("PASS: Home backup shortcut opened native Learn backup tools without searching through 33 lessons",flush=True)
-    ui.capture("backup-00-home-shortcut-opened")
+    if os.environ.get("FRAMEONE_BACKUP_EXPORT_ONLY")=="1":
+        # ATD already tests many other screens sequentially and may retain
+        # a deep Home scroll; its offscreen WebView nodes report [0,0].
+        # Keep ATD focused on the exact real native backup export bytes.
+        # The fresh full AOSP emulator below proves the Home shortcut.
+        ui.tap_label("Learn")
+        open_backup_panel()
+    else:
+        # Fresh full Android AOSP: prove the actual Home safety shortcut and
+        # Android DocumentsUI restore after deleting all app-private data.
+        ui.tap_label("Home")
+        state.find_text("YOUR WORK STAYS ON THIS DEVICE",tries=12,scroll=True)
+        state.control("Back up",exact=False)
+        state.find_text("YOUR LEARNING JOURNEY",tries=10)
+        state.find_text("Save / share backup JSON",tries=10,scroll=True)
+        print("PASS: Home backup shortcut opened native Learn backup tools without searching through 33 lessons",flush=True)
+        ui.capture("backup-00-home-shortcut-opened")
     state.control("Save / share backup JSON",tries=10)
     time.sleep(1.5)
     ui.capture("backup-01-native-share")
