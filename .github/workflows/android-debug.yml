@@ -19,6 +19,9 @@ on:
   pull_request:
     paths:
       - '.github/workflows/android-debug.yml'
+      # UI and collection changes also need an installable Android APK gate.
+      - 'src/**'
+      - 'public/**'
       - 'capacitor.config.ts'
       - 'package.json'
       - 'package-lock.json'

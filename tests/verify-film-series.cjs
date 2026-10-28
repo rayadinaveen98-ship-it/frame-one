@@ -59,9 +59,20 @@ for(const s of ['data-collection-act','series.acts.map','collection-act-reflecti
                  'collection-next-label','safeProgress(allIds)','progress not tracked']){
  assert(view.includes(s),'series layout exposes '+s);
 }
+// v0.11A4 previews a real act, then enters its real first unfinished scene.
+for(const required of ['data-act-select={index+1}','aria-pressed={featuredIndex===index}',
+  'data-featured-act={featuredIndex+1}','data-spotlight-start','onClick={()=>enter(featuredNext)}',
+  'const [previewAct,setPreviewAct]=useState<number|null>(null)',
+  'const upcomingAct=actAtIndex(series,pendingIndex>=0?pendingIndex:0)',
+  "featuredEntries.find(entry=>entry.kind==='lesson'&&!completed.has(entry.id))",
+  "const featuredTotal=featuredEntries.filter(entry=>entry.kind==='lesson').length"]){
+  assert(view.includes(required),'real act selector contract: '+required);
+}
 assert(lesson.includes('data-series-lesson={journeyId}'));
 assert(lesson.includes("seriesPosition.next?")&&lesson.includes("{nextLessonId:seriesPosition.next}:{returnCollectionId:journeyId}"));
 assert(lesson.includes('Previous in series')&&lesson.includes('Next in series'));
+assert(lesson.includes('series-intermission')&&lesson.includes('followingPosition.actIndex!==seriesPosition?.actIndex'),
+  'Intermission occurs only when the next lesson actually crosses an act');
 assert(lesson.includes('Next lesson →'),'non-series syllabus controls unchanged');
 assert(runtime.includes('frameOneJourney:state.page===\'lesson\'?state.journey:null'),'history context persists');
 assert(runtime.includes("continuation?.returnCollectionId===state.journey"),'return-to-series completion restricted to current context');
@@ -70,5 +81,6 @@ assert(app.includes('journeyId={route.journey}'),'React receives exact legacy se
 assert(art.includes('artId=art'),'cover variants are deterministic across refreshes');
 assert(art.includes('cinema-poster-signature'),'poster variants have original decorative signatures');
 assert(!view.includes('localStorage.setItem')&&!lesson.includes('sessionStorage.setItem'),'no new content-progress store');
+assert(view.includes(":'Try this act'")&&view.includes("'EXPLORE THIS ACT'"),'studio previews remain unscored');
 assert(!view.includes('fetch(')&&!art.includes('fetch('),'all series content and art bundled offline');
 console.log('PASS: six original three-act film series, native history-aware lesson progression, offline posters and legacy progress compatibility.');

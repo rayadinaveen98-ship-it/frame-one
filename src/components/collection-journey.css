@@ -266,3 +266,126 @@
   .collection-act-story h3{font-size:18px}
   .collection-act-reflection{margin-left:37px}
 }
+
+
+/* v0.11A4 — scene-first act preview. Three compact chapter tabs and one
+   cinematic image are more legible than treating every lesson as a poster. */
+.collection-filmstrip{margin:20px 0 24px}
+.collection-filmstrip-heading{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;margin-bottom:10px;
+}
+.collection-filmstrip-heading>span:last-child{
+  color:#afa7a6;font-size:11px;
+}
+.collection-act-selector{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.collection-act-tab{
+  min-width:0;display:flex;flex-direction:column;align-items:flex-start;
+  text-align:left;gap:6px;min-height:86px;
+  padding:13px 15px 10px;border-radius:11px 11px 0 0;
+  border:1px solid #35363b;background:#171a20;
+  color:#dfd8d2;cursor:pointer;
+  transition:border-color .16s ease,background .16s ease;
+}
+.collection-act-tab>span:first-child{
+  font-size:9px;letter-spacing:.14em;font-weight:700;color:#a89184;
+}
+.collection-act-tab strong{
+  font:550 14px/1.33 var(--cinema-type,system-ui);
+  letter-spacing:-.018em;
+}
+.collection-act-tab-line{
+  height:2px;min-height:2px;align-self:stretch;
+  margin-top:auto;border-radius:9px;background:#514644;
+}
+.collection-act-tab[aria-pressed='true']{
+  color:#fff4ec;border-color:#9e7358;
+  background:linear-gradient(135deg,#352829,#211f24);
+}
+.collection-act-tab[aria-pressed='true'] .collection-act-tab-line{
+  background:linear-gradient(90deg,#e0b18d,#795543);
+}
+.collection-act-tab:hover{border-color:#a9846b}
+.collection-act-tab:focus-visible,.collection-act-play:focus-visible{
+  outline:3px solid #dfba9a;outline-offset:3px;
+}
+.collection-act-spotlight{
+  display:grid;grid-template-columns:minmax(0,1.12fr) minmax(180px,.88fr);
+  min-height:252px;position:relative;overflow:hidden;
+  border:1px solid #685247;border-top:0;
+  border-radius:0 0 17px 17px;
+  background:linear-gradient(115deg,#292329,#191b22);
+}
+.collection-act-spotlight-copy{
+  z-index:1;min-width:0;display:flex;flex-direction:column;
+  align-items:flex-start;padding:25px 27px;
+}
+.collection-act-spotlight-copy h2{
+  font:540 clamp(25px,3vw,34px)/1.14 var(--cinema-type,system-ui);
+  color:#f4eae0;letter-spacing:-.037em;margin:11px 0 9px;
+}
+.collection-act-spotlight-copy>p{
+  color:#c5b9b2;font-size:13px;line-height:1.6;margin:0;
+  max-width:490px;
+}
+.collection-spotlight-next{
+  display:block;color:#d3aa8e;font-size:10px;line-height:1.4;
+  letter-spacing:.06em;font-weight:650;margin:18px 0 8px;
+}
+.collection-act-play{
+  display:inline-flex;align-items:center;justify-content:space-between;
+  gap:22px;padding:11px 15px;min-height:44px;
+  border:1px solid #d1a484;border-radius:9px;
+  color:#242025;background:#d8af91;font-size:12px;
+  font-weight:700;cursor:pointer;
+}
+.collection-act-spotlight-art{position:relative;overflow:hidden;min-height:240px}
+.collection-act-spotlight-art .cinema-poster-scene{inset:0}
+.collection-act-spotlight-art .cinema-poster-drawing{inset:0;width:100%;height:100%;object-fit:cover}
+.collection-act-spotlight-art::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,#292329cb,transparent 65%);
+}
+.collection-act-spotlight-art>span{
+  position:absolute;bottom:13px;right:16px;z-index:1;
+  color:#efe0d4;font-size:9px;font-weight:700;letter-spacing:.13em;
+}
+.collection-act.is-featured>.collection-act-intro .collection-act-index{
+  color:#dfae8e;
+}
+@media(max-width:760px){
+  .collection-filmstrip{margin:16px 0 20px}
+  .collection-filmstrip-heading>span:last-child{font-size:10px}
+  .collection-act-selector{gap:6px}
+  .collection-act-tab{
+    min-height:82px;padding:11px 9px 8px;gap:5px;border-radius:9px 9px 0 0;
+  }
+  .collection-act-tab strong{font-size:11px;line-height:1.28}
+  .collection-act-tab>span:first-child{font-size:8px}
+  .collection-act-spotlight{
+    grid-template-columns:minmax(0,1fr);
+    min-height:228px;border-radius:0 0 13px 13px;
+  }
+  .collection-act-spotlight-copy{
+    padding:21px 18px;min-height:220px;
+    background:linear-gradient(90deg,#211f26f2 47%,#211f26ad);
+  }
+  .collection-act-spotlight-copy h2{font-size:25px;max-width:92%}
+  .collection-act-spotlight-copy>p{font-size:12px;max-width:90%}
+  .collection-spotlight-next{font-size:9px;margin:13px 0 7px}
+  .collection-act-spotlight-art{
+    position:absolute;inset:0 0 0 auto;width:55%;
+    min-height:0;opacity:.42;pointer-events:none;z-index:0;
+  }
+  .collection-act-spotlight-art>span{display:none}
+}
+@media(max-width:350px){
+  .collection-filmstrip-heading>span:last-child{font-size:9px}
+  .collection-act-tab{min-height:89px;padding:9px 7px}
+  .collection-act-tab strong{font-size:10px}
+  .collection-act-spotlight-copy{padding:19px 14px;min-height:230px}
+  .collection-act-spotlight-copy h2{font-size:23px}
+}
+@media(prefers-reduced-motion:reduce){
+  .collection-act-tab{transition:none}
+}

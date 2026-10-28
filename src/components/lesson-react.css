@@ -44,3 +44,22 @@
   .series-lesson-copy p{font-size:11px}
   .series-lesson-context button{margin-top:10px}
 }
+
+
+/* v0.11A4: an act break marks the transition without blocking progression. */
+.series-intermission{
+  margin:23px 0 19px;padding:24px 25px;
+  border-left:3px solid #d0a17c;
+  border-radius:0 13px 13px 0;
+  background:radial-gradient(ellipse at 100% 0%,#81574338,transparent 62%),#201e24;
+}
+.series-intermission h3{
+  font:550 clamp(21px,2.4vw,27px)/1.2 var(--cinema-type,system-ui);
+  letter-spacing:-.03em;color:#f3e7dc;margin:9px 0 5px;
+}
+.series-intermission p{max-width:650px;font-size:13px;line-height:1.6;color:#c8b8ae;margin:0}
+@media(max-width:760px){
+  .series-intermission{padding:19px;margin:19px 0 15px}
+  .series-intermission h3{font-size:21px}
+  .series-intermission p{font-size:12px}
+}
