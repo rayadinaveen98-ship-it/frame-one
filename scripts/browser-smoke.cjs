@@ -124,7 +124,7 @@ async function verify() {
   assert.equal(await page.getByRole('progressbar',{name:'Current scene in film journey'}).getAttribute('aria-valuenow'),'1');
   assert.equal(await page.locator('.lesson-navline').count(),0,'Series uses one clear View journey return control');
   assert.equal(await page.locator('[data-scene-transition="scene"]').count(),1,'Ordinary scene handoff shows no false act break');
-  assert.match(await page.locator('.series-up-next').textContent(),/History of cinema/i,'Outro names the real following lesson');
+  assert.match(await page.locator('.series-up-next').textContent(),/How did cinema begin\?/,'Outro names the real following lesson');
   assert.equal(await page.getByRole('button',{name:'Next in series →'}).count(),1);
   await photo(page,'01c-beginnings-series-lesson-desktop.png');
   await page.getByRole('button',{name:'Next in series →'}).click();
@@ -133,7 +133,7 @@ async function verify() {
   assert.match(await page.locator('.series-intermission').textContent(),/A shared language/,
     'Boundary after the first act previews the actual next act');
   assert.equal(await page.locator('[data-scene-transition="act"]').count(),1);
-  assert.match(await page.locator('.series-up-next').textContent(),/What is a shot/i,'Real next scene follows next-act editorial cue');
+  assert.match(await page.locator('.series-up-next').textContent(),/Frame, shot, scene/,'Real next scene follows next-act editorial cue');
   // Desktop history must still unwind both lessons to the collection.
   await page.goBack();
   await page.locator('.series-lesson-context').getByText(/PART 1 OF 5/).waitFor();
