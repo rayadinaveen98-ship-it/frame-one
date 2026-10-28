@@ -389,3 +389,77 @@
 @media(prefers-reduced-motion:reduce){
   .collection-act-tab{transition:none}
 }
+
+
+/* v0.12A1 — an optional, focused way through the film.
+   Existing complete three-act catalogue stays available with one tap. */
+.collection-chapters{scroll-margin-top:20px}
+.collection-act-focus-link{
+  display:inline-flex;align-items:center;gap:10px;
+  margin-top:11px;padding:9px 0;min-height:44px;
+  border:0;background:transparent;color:#e4c2a9;
+  font-size:12px;font-weight:610;line-height:1.5;
+  text-align:left;cursor:pointer;
+}
+.collection-act-focus-link:hover{color:#fff0de}
+.collection-focus-toggle{
+  flex-shrink:0;display:inline-flex;justify-content:center;align-items:center;
+  gap:9px;min-height:44px;
+  padding:9px 13px;border:1px solid #725b4d;border-radius:9px;
+  color:#ead5c5;background:#29252a;
+  font:620 12px/1.4 var(--cinema-type,system-ui);
+  cursor:pointer;
+}
+.collection-focus-toggle[aria-pressed="true"]{
+  background:#322928;border-color:#ba8b68;
+}
+.collection-act-stepper{
+  display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+  align-items:center;gap:9px;
+  margin:6px 0 20px;padding:10px;
+  border:1px solid #494046;border-radius:11px;
+  background:linear-gradient(100deg,#211f26,#1a1d22);
+}
+.collection-act-stepper>span{
+  font-size:10px;font-weight:720;letter-spacing:.11em;
+  color:#e3baa1;white-space:nowrap;text-align:center;
+}
+.collection-act-stepper button{
+  display:inline-flex;align-items:center;justify-content:center;
+  gap:8px;min-height:44px;padding:9px;
+  border:1px solid #554950;border-radius:8px;background:#28252c;
+  color:#eee1d5;font-size:12px;font-weight:640;cursor:pointer;
+}
+.collection-act-stepper button:last-child{justify-self:stretch}
+.collection-act-stepper button:disabled{
+  opacity:.4;cursor:default;
+}
+.collection-act-stepper button:not(:disabled):hover{border-color:#b78a70}
+.collection-act-focus-link:focus-visible,.collection-focus-toggle:focus-visible,
+.collection-act-stepper button:focus-visible{
+  outline:3px solid #dfba9a;outline-offset:3px;
+}
+.collection-chapters[data-collection-view-mode="focus"] .collection-act{
+  animation:collection-focus-in .28s ease-out both;
+}
+@keyframes collection-focus-in{
+  from{opacity:.55;transform:translateY(6px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@media(max-width:760px){
+  .collection-list-intro{align-items:start}
+  .collection-focus-toggle{font-size:11px;padding:9px 10px}
+  .collection-act-stepper{gap:5px;padding:7px;margin:5px 0 17px}
+  .collection-act-stepper button{font-size:10px;gap:4px;padding:6px}
+  .collection-act-stepper>span{font-size:9px;letter-spacing:.06em}
+}
+@media(max-width:350px){
+  .collection-list-intro{flex-direction:column;align-items:flex-start;gap:9px}
+  .collection-focus-toggle{min-height:42px}
+  .collection-act-stepper{grid-template-columns:1fr 1fr}
+  .collection-act-stepper>span{grid-row:1;grid-column:1/-1;padding:4px}
+  .collection-act-stepper button{grid-row:2;font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+  .collection-chapters[data-collection-view-mode="focus"] .collection-act{animation:none}
+}
