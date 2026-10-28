@@ -40,7 +40,7 @@ for(const required of [
   'role="progressbar"', 'aria-valuenow={lessonDone}', 'progress not tracked',
   'data-collection-entry=', 'onClick={()=>enter(entry)}',
   "navigate('lesson',entry.id)", 'openLab(entry.id)', "navigate('crafts')",
-  "window.frameOneLegacy?.goBack()", 'lessonDone>0', "completed.size"
+  "className=\"collection-back\" type=\"button\" onClick={()=>navigate('home')}", 'lessonDone>0', "completed.size"
 ].filter(x=>x!=='completed.size')){
  assert(journey.includes(required),'collection page must preserve '+required);
 }
