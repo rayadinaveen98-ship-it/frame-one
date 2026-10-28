@@ -7,7 +7,7 @@ import {safeProgress} from '../state/learning';
 import {CinemaArtwork} from './CinemaArtwork';
 import './cinema-library.css';
 
-const lessons=curriculum.lessons as Lesson[];
+const lessons=curriculum.lessons as unknown as Lesson[];
 const byId=new Map(lessons.map(lesson=>[lesson.id,lesson]));
 const lessonIds=lessons.map(lesson=>lesson.id);
 
