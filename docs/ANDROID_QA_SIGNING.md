@@ -2,7 +2,7 @@
 
 ## Current status (28 October 2026)
 
-The public `android-preview-latest` APK is **debug-signed**, and the latest v0.11A4 build reported `Persistent QA signer: NO`. The temporary certificate SHA-256 was `1c2571585f4ceafce6d89eb41cbdc49130fd8b6326a01dbccd060134a3efdf1d`. Its debug key was generated on a disposable GitHub Actions runner.
+The public `android-preview-latest` APK is **v0.11A6 debug-signed** and its verified receipt reports `Persistent QA signer: NO` (temporary runner signer). Public SHA-256 certificate fingerprint: `7bf4a1fb60b88307042cb3236fe34957caa9d761485ec1797d0a3b1a32b411c5`. The current signer is **different** from the previous preview's certificate; Android will reject an in-place update from that build. The APK still uses a disposable signing key, not a long-lived QA key.
 
 **Do not tell testers to install a later APK over an earlier debug APK.** Android only accepts package updates signed with a matching key. Changing key usually requires uninstalling the existing app, which can remove locally saved learner notes, progress and storyboards.
 
@@ -27,6 +27,18 @@ The repository already supports the protected GitHub Actions secret `FRAMEONE_QA
 - Do not print, upload, email or commit a keystore/password/encoded private key in source, CI logs or a release artifact.
 - Preserve the certificate fingerprint and expected signing identity in restricted release records. The fingerprint alone is public-safe; the private key is not.
 - Until both a persistent signer **and** a two-version phone test are confirmed, every public preview must warn that in-place upgrades are not guaranteed.
+
+## v0.11A7 automatic release continuity guard
+
+The release publisher now executes [check-android-signing-continuity.sh](../scripts/check-android-signing-continuity.sh) before it overwrites the stable public APK URL. Its behavior is covered by eight runnable `npm test` scenarios:
+
+- **Temporary → temporary:** permitted with an explicit upgrade-unsafe warning while the permanent signing secret has not yet been provisioned.
+- **Temporary → first permanent:** permitted once, but the publisher tells testers that their older temporary-signed install is not upgrade compatible; make an external learning backup first.
+- **Permanent → same permanent certificate:** permitted (subject to actual package/version/device update checks).
+- **Permanent → temporary** or **permanent → different permanent certificate:** **blocked**, even if a GitHub Actions signing secret is accidentally removed or rotated.
+- Missing or malformed certificate fingerprints and conflicting/missing signer modes fail closed.
+
+The previous source-commit ancestry rollback check remains in force. These release checks protect the public download channel against a signer regression; **they cannot create or provision a permanent key**, and cannot substitute for a genuine Android in-place upgrade test. The secret itself is never inspected or included in the release artifacts.
 
 ## Release-critical unresolved work
 
