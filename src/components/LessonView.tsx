@@ -100,6 +100,11 @@ export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyI
     ?seriesLessonPosition(journeyId,seriesPosition.next):null;
   const intermission=series&&followingPosition&&followingPosition.actIndex!==seriesPosition?.actIndex
     ?series.acts[followingPosition.actIndex]:null;
+  // All film-scene labels derive from existing editorial acts and real lessons.
+  // This is presentation only: no new tracking state or completion shortcuts.
+  const nextScene=seriesPosition?.next?lessons.find(item=>item.id===seriesPosition.next):null;
+  const activeActNumber=seriesPosition?seriesPosition.actIndex+1:null;
+  const nextActNumber=followingPosition?followingPosition.actIndex+1:null;
   const link = labLinks[lesson.id];
   const correct = quiz === lesson.answer;
   function finishLesson(){
@@ -113,22 +118,29 @@ export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyI
   }
   return <div className="page lesson-view react-lesson">
     {series&&seriesPosition&&journeyId?<section className="series-lesson-context" aria-label="Your cinema series" data-series-lesson={journeyId}>
-      <div className="series-lesson-copy">
-        <span className="cinema-overline">NOW IN YOUR FILM SERIES · PART {seriesPosition.index+1} OF {seriesPosition.count}</span>
-        <strong>{seriesPosition.shelf.heading}</strong>
-        <p>{activeAct?.title} · {activeAct?.cue}</p>
+      <div className="series-scene-heading">
+        <div className="series-lesson-copy">
+          <span className="cinema-overline">PART {seriesPosition.index+1} OF {seriesPosition.count} · ACT {String(activeActNumber).padStart(2,'0')} / 03</span>
+          <span className="series-collection-name">{seriesPosition.shelf.heading}</span>
+          <strong>{activeAct?.title}</strong>
+        </div>
+        <button type="button" onClick={()=>navigate('collection',journeyId)}
+          aria-label={'Return to collection: '+seriesPosition.shelf.heading}>View journey <span aria-hidden="true">↗</span></button>
       </div>
-      <button type="button" onClick={()=>navigate('collection',journeyId)}
-        aria-label={'Return to collection: '+seriesPosition.shelf.heading}>View journey <span aria-hidden="true">↗</span></button>
+      <div className="series-scene-progress" role="progressbar"
+        aria-label="Current scene in film journey" aria-valuemin={0}
+        aria-valuemax={seriesPosition.count} aria-valuenow={seriesPosition.index+1}>
+        <span style={{width:((seriesPosition.index+1)/seriesPosition.count*100)+'%'}}/>
+      </div>
     </section>:null}
     <div className="lesson-navline">
       <button className="back-btn" type="button" onClick={()=>seriesPosition&&journeyId?navigate('collection',journeyId):navigate('learn')}>
         {seriesPosition?'← Collection journey':'← All lessons'}
       </button>
-      <span>{seriesPosition?'Part '+(seriesPosition.index+1)+' / '+seriesPosition.count:'Lesson '+lesson.num+' / '+lessons.length}</span>
+      {!seriesPosition?<span>Lesson {lesson.num} / {lessons.length}</span>:null}
     </div>
     <div className="lesson-top">
-      <div className="eyebrow">LESSON {lesson.num} · {lesson.unit.toUpperCase()} · {lesson.minutes} MIN READ</div>
+      <div className="eyebrow">{seriesPosition?'SCENE '+String(seriesPosition.index+1).padStart(2,'0')+' · '+lesson.minutes+' MIN READ':'LESSON '+lesson.num+' · '+lesson.unit.toUpperCase()+' · '+lesson.minutes+' MIN READ'}</div>
       <h1>{lesson.title}</h1><p>{lesson.subtitle}</p>
     </div>
     <article className="lesson-body">
@@ -161,24 +173,34 @@ export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyI
           <button className="cta" type="button" disabled={!correct} onClick={finishLesson}>{completed?'✓ Completed — continue':'Mark lesson complete'} →</button>
         </div>
       </section>
-      {intermission&&followingPosition?<aside className="series-intermission" aria-label="Coming up in your cinema series">
-        <span className="cinema-overline">AFTER THIS SCENE · ACT {String(followingPosition.actIndex+1).padStart(2,'0')} OF 03</span>
-        <h3>{intermission.title}</h3>
-        <p>{intermission.cue}</p>
-      </aside>:null}
-      <nav className="lesson-pagination" aria-label="Lesson navigation">
-        {seriesPosition&&journeyId ? <>
+      {series&&seriesPosition&&journeyId?<section className="series-scene-outro" aria-label="Continue your film journey"
+        data-scene-transition={intermission?'act':nextScene?'scene':'finale'}>
+        <div className="series-scene-reflection">
+          <span className="cinema-overline">AFTER THIS SCENE · ACT {String(activeActNumber).padStart(2,'0')}</span>
+          <p>{activeAct?.reflection}</p>
+        </div>
+        {intermission&&followingPosition?<div className="series-intermission" aria-label="Coming up in your cinema series">
+          <span className="cinema-overline">THE NEXT ACT · {String(nextActNumber).padStart(2,'0')} OF 03</span>
+          <h3>{intermission.title}</h3>
+          <p>{intermission.cue}</p>
+        </div>:null}
+        <div className="series-up-next">
+          <span className="cinema-overline">{nextScene?'YOUR NEXT SCENE':'THE FINAL FRAME'}</span>
+          <h3>{nextScene?nextScene.title:series.closing}</h3>
+          {nextScene?<p>{nextScene.subtitle}</p>:<p>Your completed lessons stay in your journey. Explore the next collection whenever you wish.</p>}
+        </div>
+        <nav className="lesson-pagination series-scene-pagination" aria-label="Lesson navigation">
           <button className="btn-secondary" type="button" disabled={!seriesPosition.prev}
             onClick={()=>{if(seriesPosition.prev)navigate('lesson',seriesPosition.prev)}}>← Previous in series</button>
           <button className="btn-secondary" type="button"
             onClick={()=>seriesPosition.next?navigate('lesson',seriesPosition.next):navigate('collection',journeyId)}>
             {seriesPosition.next?'Next in series →':'Return to collection →'}
           </button>
-        </> : <>
-          <button className="btn-secondary" type="button" disabled={index<=0} onClick={()=>navigate('lesson',lessons[index-1].id)}>← Previous lesson</button>
-          <button className="btn-secondary" type="button" disabled={index>=lessons.length-1} onClick={()=>navigate('lesson',lessons[index+1].id)}>Next lesson →</button>
-        </>}
-      </nav>
+        </nav>
+      </section>:<nav className="lesson-pagination" aria-label="Lesson navigation">
+        <button className="btn-secondary" type="button" disabled={index<=0} onClick={()=>navigate('lesson',lessons[index-1].id)}>← Previous lesson</button>
+        <button className="btn-secondary" type="button" disabled={index>=lessons.length-1} onClick={()=>navigate('lesson',lessons[index+1].id)}>Next lesson →</button>
+      </nav>}
     </article>
   </div>;
 }
