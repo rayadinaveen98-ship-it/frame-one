@@ -447,7 +447,7 @@
   to{opacity:1;transform:translateY(0)}
 }
 @media(max-width:760px){
-  .collection-list-intro{align-items:start}
+  .collection-list-intro{flex-direction:column;align-items:flex-start;gap:9px}
   .collection-focus-toggle{font-size:11px;padding:9px 10px}
   .collection-act-stepper{gap:5px;padding:7px;margin:5px 0 17px}
   .collection-act-stepper button{font-size:10px;gap:4px;padding:6px}
