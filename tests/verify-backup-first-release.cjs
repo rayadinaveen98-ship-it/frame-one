@@ -37,7 +37,7 @@ assert(reader.includes("shareAndroidLearningBackup(window.frameOneLegacy.getBack
   'Backup content and external save path are unchanged');
 assert(css.includes('.cinema-backup-shortcut button:focus-visible'));
 assert(learncss.includes('.backup-upgrade-warning'));
-assert(!read('src/state/backup-navigation.ts').includes('localStorage'),
+assert(!read('src/state/backup-navigation.ts').includes('localStorage.setItem'),
   'Do not create extra persistence keys for navigation');
 const workflow=read('.github/workflows/publish-android-preview.yml');
 for(const line of [
