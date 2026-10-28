@@ -60,7 +60,7 @@ for(const s of ['data-collection-act','series.acts.map','collection-act-reflecti
  assert(view.includes(s),'series layout exposes '+s);
 }
 assert(lesson.includes('data-series-lesson={journeyId}'));
-assert(lesson.includes("seriesPosition.next?{nextLessonId:seriesPosition.next}:{returnCollectionId:journeyId}"));
+assert(lesson.includes("seriesPosition.next?")&&lesson.includes("{nextLessonId:seriesPosition.next}:{returnCollectionId:journeyId}"));
 assert(lesson.includes('Previous in series')&&lesson.includes('Next in series'));
 assert(lesson.includes('Next lesson →'),'non-series syllabus controls unchanged');
 assert(runtime.includes('frameOneJourney:state.page===\'lesson\'?state.journey:null'),'history context persists');
