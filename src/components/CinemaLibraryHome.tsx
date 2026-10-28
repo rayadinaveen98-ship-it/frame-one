@@ -30,7 +30,7 @@ function CinemaTile({entry,completed}:{entry:CinemaEntry;completed:ReadonlySet<s
     aria-label={title+(isDone?', completed':'')+', '+category.toLowerCase()}
     onClick={()=>openEntry(entry)}>
     <span className="cinema-tile-art">
-      <CinemaArtwork art={entry.art}/>
+      <CinemaArtwork art={entry.art} artId={entry.id}/>
       {isDone?<span className="cinema-tile-check" aria-hidden="true">✓</span>:null}
     </span>
     <span className="cinema-tile-type">{category}{duration?' · '+duration:''}</span>
