@@ -1,8 +1,12 @@
 import type {PosterArt} from '../data/cinema-library';
 
 /** Original CSS/SVG cinema-cover illustrations: bundled offline, never remote thumbnails. */
-export function CinemaArtwork({art}:{art:PosterArt}) {
-  return <span className={'cinema-poster-scene cinema-poster-'+art} aria-hidden="true">
+export function CinemaArtwork({art,artId=art}:{art:PosterArt;artId?:string}) {
+  // Each lesson receives a stable original art treatment without new image downloads.
+  const seed=[...artId].reduce((number,char)=>((number*33)+char.charCodeAt(0))>>>0,17);
+  const variant=seed%8;
+  return <span className={'cinema-poster-scene cinema-poster-'+art+' cinema-art-variant-'+variant}
+    data-art-variant={variant} aria-hidden="true">
     <svg className="cinema-poster-drawing" viewBox="0 0 300 360" preserveAspectRatio="xMidYMid meet" focusable="false">
       <path d="M18 284H282" stroke="currentColor" strokeOpacity=".13" strokeWidth="1"/>
       {art==='projector' && <>
@@ -90,6 +94,16 @@ export function CinemaArtwork({art}:{art:PosterArt}) {
         </g>)}
         <path d="M32 311H267" stroke="#e5b494" strokeWidth="3" strokeOpacity=".37"/>
       </>}
+      <g className="cinema-poster-signature" stroke="#f0bd93" strokeOpacity=".32" strokeWidth="1.7" fill="none">
+        {variant===0&&<><circle cx="253" cy="59" r="24"/><path d="M229 59h48M253 35v48"/></>}
+        {variant===1&&<><rect x="18" y="40" width="36" height="36"/><path d="M29 47v21M40 47v21"/></>}
+        {variant===2&&<><path d="M220 30h54v54M229 41h36M260 50v24"/></>}
+        {variant===3&&<><circle cx="47" cy="64" r="18"/><circle cx="47" cy="64" r="9"/><path d="M47 37v9M47 82v9"/></>}
+        {variant===4&&<><path d="M23 60L51 36L79 60L51 84Z"/><path d="M27 60h48M51 39v42"/></>}
+        {variant===5&&<><path d="M230 48h42v27h-42zM230 57h42M244 48v27M258 48v27"/></>}
+        {variant===6&&<><path d="M17 47h54M17 58h37M17 69h45M17 80h25"/></>}
+        {variant===7&&<><circle cx="252" cy="61" r="26"/><path d="M232 44L272 78M275 43L230 79"/></>}
+      </g>
     </svg>
     <span className="cinema-poster-grain"/>
   </span>;

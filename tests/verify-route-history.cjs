@@ -101,6 +101,30 @@ assert.equal(collectionDirect.location.hash,'#home','direct collection Back neve
 const unknownCollection=boot('#collection/invented');
 assert.equal(unknownCollection.location.hash,'#home','invalid deep links fail safely');
 
+// Collection-originating lessons retain series context across genuine history entries.
+app.bridge.openCollection('visual');
+app.bridge.navigate('lesson','shot');
+assert.equal(app.location.hash,'#lesson/shot');
+assert.equal(app.history.state.frameOneJourney,'visual');
+assert.equal(app.events.at(-1).detail.journey,'visual');
+app.bridge.completeLesson('shot',{nextLessonId:'lighting'});
+assert.equal(app.location.hash,'#lesson/lighting','series completion chooses its own valid next lesson');
+assert.equal(app.history.state.frameOneJourney,'visual','next part keeps series context');
+assert.equal(JSON.parse(app.storage.getItem('frameone-progress-v01')).includes('shot'),true);
+app.bridge.goBack();
+assert.equal(app.location.hash,'#lesson/shot');
+assert.equal(app.history.state.frameOneJourney,'visual','Back restores prior series context');
+app.bridge.goBack();
+assert.equal(app.location.hash,'#collection/visual','Back returns to real collection');
+app.bridge.navigate('lesson','colour');
+app.bridge.completeLesson('colour',{returnCollectionId:'visual'});
+assert.equal(app.location.hash,'#collection/visual','completing final part returns to collection');
+assert.equal(JSON.parse(app.storage.getItem('frameone-progress-v01')).includes('colour'),true);
+app.bridge.navigate('home');
+app.bridge.navigate('lesson','why');
+assert.equal(app.history.state.frameOneJourney,null,'ordinary lessons do not inherit stale collection context');
+app.bridge.completeLesson('why');
+assert.equal(app.location.hash,'#lesson/history','ordinary syllabus completion keeps original next lesson behavior');
 // Deep-linked users must never need an external browser entry to navigate Back.
 const direct=boot('#lesson/why');
 assert.equal(direct.location.hash,'#lesson/why');

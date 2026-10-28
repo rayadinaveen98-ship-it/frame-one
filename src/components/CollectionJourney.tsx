@@ -1,6 +1,7 @@
 import curriculum from '../data/curriculum.v08b.json';
 import type {Lesson} from '../data/schema';
-import {cinemaShelves,type CinemaEntry,type CinemaShelf} from '../data/cinema-library';
+import {cinemaShelves,type CinemaEntry} from '../data/cinema-library';
+import {seriesById,type FilmAct} from '../data/cinema-series';
 import {navigate,openLab} from '../legacy/bridge';
 import {safeProgress} from '../state/learning';
 import {CinemaArtwork} from './CinemaArtwork';
@@ -15,7 +16,6 @@ function enter(entry:CinemaEntry):void{
   if(entry.kind==='lab')openLab(entry.id);
   if(entry.kind==='roles')navigate('crafts');
 }
-
 function detail(entry:CinemaEntry){
   const lesson=entry.kind==='lesson'?byId.get(entry.id):undefined;
   const title=lesson?.title??(entry.kind==='lesson'?'':entry.title);
@@ -23,12 +23,61 @@ function detail(entry:CinemaEntry){
   const label=entry.kind==='lesson'?'LESSON':entry.kind==='lab'?'INTERACTIVE LAB':'FILM ROLES';
   return {title,subtitle,label,minutes:lesson?.minutes};
 }
+function JourneyEntry({entry,index,finished,isNext}:{
+  entry:CinemaEntry;index:number;finished:boolean;isNext:boolean
+}){
+  const info=detail(entry);
+  return <button type="button"
+    className={'collection-entry'+(finished?' is-completed':'')+(isNext?' is-next':'')}
+    key={entry.kind+':'+entry.id} data-collection-entry={entry.kind+':'+entry.id}
+    onClick={()=>enter(entry)}>
+    <span className="collection-entry-number">{String(index+1).padStart(2,'0')}</span>
+    <span className="collection-entry-art"><CinemaArtwork art={entry.art} artId={entry.id}/></span>
+    <span className="collection-entry-copy">
+      <span className="cinema-overline">{info.label}{info.minutes?' · '+info.minutes+' MIN':''}</span>
+      <strong>{info.title}</strong>
+      <span className="collection-entry-description">{info.subtitle}</span>
+      {finished?<span className="collection-complete">✓ Lesson completed</span>:
+        isNext?<span className="collection-next-label">UP NEXT</span>:null}
+    </span>
+    <span className="collection-entry-arrow" aria-hidden="true">↗</span>
+  </button>;
+}
 
-/** One learnable path per real shelf; non-lesson activities never pretend to be completed. */
+function SeriesAct({act,actIndex,entries,startIndex,completed,next}:{
+  act:FilmAct;actIndex:number;entries:readonly CinemaEntry[];
+  startIndex:number;completed:ReadonlySet<string>;next:CinemaEntry;
+}){
+  const actLessons=entries.filter(entry=>entry.kind==='lesson');
+  const done=actLessons.filter(entry=>completed.has(entry.id)).length;
+  const hasTracked=actLessons.length>0;
+  return <section className="collection-act" data-collection-act={actIndex+1}
+    aria-labelledby={'collectionAct'+actIndex}>
+    <div className="collection-act-intro">
+      <span className="collection-act-index" aria-hidden="true">{String(actIndex+1).padStart(2,'0')}</span>
+      <div className="collection-act-story">
+        <span className="cinema-overline">ACT {String(actIndex+1).padStart(2,'0')} OF 03</span>
+        <h3 id={'collectionAct'+actIndex}>{act.title}</h3>
+        <p>{act.cue}</p>
+      </div>
+      <span className="collection-act-state">{hasTracked?done+'/'+actLessons.length+' LESSONS':'EXPLORE'}</span>
+    </div>
+    <div className="collection-entries">
+      {entries.map((entry,i)=><JourneyEntry key={entry.kind+':'+entry.id}
+        entry={entry} index={startIndex+i}
+        finished={entry.kind==='lesson'&&completed.has(entry.id)}
+        isNext={next.kind===entry.kind&&next.id===entry.id}/>)}
+    </div>
+    <p className="collection-act-reflection"><span>AFTER THE ACT</span> {act.reflection}</p>
+  </section>;
+}
+
+/** Guided editorial series: existing progress and lessons only; no new storage. */
 export function CollectionJourney({collectionId}:{collectionId:string}){
   const shelf=cinemaShelves.find(item=>item.id===collectionId);
+  const series=seriesById(collectionId);
   const completed=safeProgress(allIds);
-  if(!shelf)return <div className="page collection-view">
+  if(!shelf||!series)return <div className="page collection-view">
     <h1>Collection unavailable</h1>
     <button className="collection-back" type="button" onClick={()=>navigate('home')}>Return to cinema library</button>
   </div>;
@@ -40,13 +89,14 @@ export function CollectionJourney({collectionId}:{collectionId:string}){
   const hasActivities=shelf.entries.some(entry=>entry.kind!=='lesson');
   const next=lessonEntries.find(entry=>!completed.has(entry.id))??shelf.entries[0];
   const primary=next?detail(next):null;
+  let actOffset=0;
   return <div className="page collection-view" data-collection-view={shelf.id}>
     <button className="collection-back" type="button" onClick={()=>window.frameOneLegacy?.goBack()}>
       <span aria-hidden="true">←</span> Cinema Library
     </button>
     <section className="collection-feature" aria-labelledby="collectionTitle">
       <div className="collection-feature-copy">
-        <span className="cinema-overline">FRAME ONE ORIGINAL COLLECTION · {String(cinemaShelves.indexOf(shelf)+1).padStart(2,'0')}</span>
+        <span className="cinema-overline">FRAME ONE ORIGINAL SERIES · {String(cinemaShelves.indexOf(shelf)+1).padStart(2,'0')}</span>
         <h1 id="collectionTitle">{shelf.heading}</h1>
         <p>{shelf.introduction}</p>
         <div className="collection-summary">
@@ -60,8 +110,12 @@ export function CollectionJourney({collectionId}:{collectionId:string}){
         </button>:null}
       </div>
       <div className="collection-feature-art">
-        <CinemaArtwork art={shelf.entries[0].art}/>
+        <CinemaArtwork art={shelf.entries[0].art} artId={shelf.id}/>
       </div>
+    </section>
+    <section className="collection-invitation" aria-label="A note before this journey">
+      <span className="cinema-overline">BEFORE THE FIRST FRAME</span>
+      <p>{series.invitation}</p>
     </section>
     {percent!==null?<section className="collection-progress" aria-label="Collection learning progress">
       <div className="collection-progress-line">
@@ -78,29 +132,21 @@ export function CollectionJourney({collectionId}:{collectionId:string}){
     <section className="collection-chapters" aria-label={'Explore '+shelf.heading}>
       <div className="collection-list-intro">
         <div>
-          <span className="cinema-overline">YOUR JOURNEY</span>
-          <h2>Explore the collection</h2>
+          <span className="cinema-overline">THREE ACTS · ONE JOURNEY</span>
+          <h2>Watch how the ideas connect.</h2>
         </div>
         <span>{shelf.entries.length} parts</span>
       </div>
-      <div className="collection-entries">
-        {shelf.entries.map((entry,index)=>{
-          const info=detail(entry),finished=entry.kind==='lesson'&&completed.has(entry.id);
-          return <button className={'collection-entry'+(finished?' is-completed':'')}
-            type="button" key={entry.kind+':'+entry.id}
-            data-collection-entry={entry.kind+':'+entry.id} onClick={()=>enter(entry)}>
-            <span className="collection-entry-number">{String(index+1).padStart(2,'0')}</span>
-            <span className="collection-entry-art"><CinemaArtwork art={entry.art}/></span>
-            <span className="collection-entry-copy">
-              <span className="cinema-overline">{info.label}{info.minutes?' · '+info.minutes+' MIN':''}</span>
-              <strong>{info.title}</strong>
-              <span className="collection-entry-description">{info.subtitle}</span>
-              {finished?<span className="collection-complete">✓ Lesson completed</span>:null}
-            </span>
-            <span className="collection-entry-arrow" aria-hidden="true">↗</span>
-          </button>;
-        })}
-      </div>
+      {series.acts.map((act,index)=>{
+        const from=actOffset;actOffset+=act.count;
+        const items=shelf.entries.slice(from,actOffset);
+        return <SeriesAct key={index} act={act} actIndex={index}
+          entries={items} startIndex={from} completed={completed} next={next}/>;
+      })}
+    </section>
+    <section className="collection-finale" aria-label="After the last act">
+      <span className="cinema-overline">THE FINAL FRAME</span>
+      <p>{series.closing}</p>
     </section>
     <section className="collection-end">
       <span className="cinema-overline">EXPLORE BEYOND THIS COLLECTION</span>

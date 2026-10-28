@@ -64,6 +64,17 @@ def find(text: str, exact: bool = False, tries: int = 16) -> list[dict[str, obje
     for attempt in range(tries):
         try:
             nodes = hierarchy()
+            # Some API-36 CI emulators show an unrelated Quickstep launcher ANR
+            # on top of a fully rendered Frame One WebView. Dismiss ONLY that
+            # exact system launcher dialog; never hide a Frame One app ANR.
+            if any("Quickstep isn't responding" in str(n["label"]) for n in nodes):
+                close = next((n for n in nodes if n["label"] == "Close app"
+                              and int(n["x"]) > 0 and int(n["y"]) > 0), None)
+                if close:
+                    print("RECOVER: dismiss emulator Quickstep launcher ANR (app Home already rendered)", flush=True)
+                    adb("shell", "input", "tap", str(close["x"]), str(close["y"]))
+                    time.sleep(2)
+                    continue
             matches = [n for n in nodes if n["label"] == text] if exact else [
                 n for n in nodes if text.lower() in str(n["label"]).lower()]
             if matches:

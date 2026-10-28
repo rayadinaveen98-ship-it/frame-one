@@ -3,6 +3,7 @@ import curriculum from '../data/curriculum.v08b.json';
 import storyboards from '../data/storyboards.json';
 import type { Lesson } from '../data/schema';
 import { completeLesson, navigate, openLab, type LabName } from '../legacy/bridge';
+import {seriesById,seriesLessonPosition} from '../data/cinema-series';
 import { readPractice, readTelugu, safeProgress, savePractice, saveTelugu } from '../state/learning';
 import './lesson-react.css';
 
@@ -66,7 +67,7 @@ function Storyboard({ board }: { board: Board }) {
 }
 
 /** Only plain lesson data becomes text nodes; no editorial content is interpreted as HTML. */
-export function LessonView({ lessonId }: { lessonId: string }) {
+export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyId?: string }) {
   const index = lessons.findIndex(l => l.id===lessonId);
   const lesson = lessons[index] ?? lessons[0];
   const decision = choices[lesson.id];
@@ -91,12 +92,35 @@ export function LessonView({ lessonId }: { lessonId: string }) {
     document.title = `${lesson.title} · Frame One`;
     return () => { document.title = 'Frame One · Learn filmmaking'; };
   }, [lesson.title]);
+  const seriesPosition=journeyId?seriesLessonPosition(journeyId,lesson.id):null;
+  const series=seriesPosition&&journeyId?seriesById(journeyId):null;
+  const activeAct=series&&seriesPosition?series.acts[seriesPosition.actIndex]:null;
   const link = labLinks[lesson.id];
   const correct = quiz === lesson.answer;
+  function finishLesson(){
+    if(seriesPosition&&journeyId){
+      completeLesson(lesson.id,seriesPosition.next?
+        {nextLessonId:seriesPosition.next}:{returnCollectionId:journeyId});
+    }else{
+      // Keep the untouched Learn syllabus completion path.
+      completeLesson(lesson.id);
+    }
+  }
   return <div className="page lesson-view react-lesson">
+    {series&&seriesPosition&&journeyId?<section className="series-lesson-context" aria-label="Your cinema series" data-series-lesson={journeyId}>
+      <div className="series-lesson-copy">
+        <span className="cinema-overline">NOW IN YOUR FILM SERIES · PART {seriesPosition.index+1} OF {seriesPosition.count}</span>
+        <strong>{seriesPosition.shelf.heading}</strong>
+        <p>{activeAct?.title} · {activeAct?.cue}</p>
+      </div>
+      <button type="button" onClick={()=>navigate('collection',journeyId)}
+        aria-label={'Return to collection: '+seriesPosition.shelf.heading}>View journey <span aria-hidden="true">↗</span></button>
+    </section>:null}
     <div className="lesson-navline">
-      <button className="back-btn" type="button" onClick={()=>navigate('learn')}>← All lessons</button>
-      <span>Lesson {lesson.num} / {lessons.length}</span>
+      <button className="back-btn" type="button" onClick={()=>seriesPosition&&journeyId?navigate('collection',journeyId):navigate('learn')}>
+        {seriesPosition?'← Collection journey':'← All lessons'}
+      </button>
+      <span>{seriesPosition?'Part '+(seriesPosition.index+1)+' / '+seriesPosition.count:'Lesson '+lesson.num+' / '+lessons.length}</span>
     </div>
     <div className="lesson-top">
       <div className="eyebrow">LESSON {lesson.num} · {lesson.unit.toUpperCase()} · {lesson.minutes} MIN READ</div>
@@ -129,12 +153,21 @@ export function LessonView({ lessonId }: { lessonId: string }) {
         <div className={`quiz-feedback ${quiz!==null&&!correct?'error':''}`} role="status" aria-live="polite">{quiz===null?quizStatus:<>{correct?'✓ Exactly. ':'Not quite. '}{lesson.feedback}</>}</div>
         <div className="lesson-actions">
           {quiz!==null&&!correct?<button className="btn-secondary" type="button" onClick={()=>{setQuiz(null);setQuizStatus('Choose another answer.');}}>Try again</button>:null}
-          <button className="cta" type="button" disabled={!correct} onClick={()=>completeLesson(lesson.id)}>{completed?'✓ Completed — continue':'Mark lesson complete'} →</button>
+          <button className="cta" type="button" disabled={!correct} onClick={finishLesson}>{completed?'✓ Completed — continue':'Mark lesson complete'} →</button>
         </div>
       </section>
       <nav className="lesson-pagination" aria-label="Lesson navigation">
-        <button className="btn-secondary" type="button" disabled={index<=0} onClick={()=>navigate('lesson',lessons[index-1].id)}>← Previous lesson</button>
-        <button className="btn-secondary" type="button" disabled={index>=lessons.length-1} onClick={()=>navigate('lesson',lessons[index+1].id)}>Next lesson →</button>
+        {seriesPosition&&journeyId ? <>
+          <button className="btn-secondary" type="button" disabled={!seriesPosition.prev}
+            onClick={()=>{if(seriesPosition.prev)navigate('lesson',seriesPosition.prev)}}>← Previous in series</button>
+          <button className="btn-secondary" type="button"
+            onClick={()=>seriesPosition.next?navigate('lesson',seriesPosition.next):navigate('collection',journeyId)}>
+            {seriesPosition.next?'Next in series →':'Return to collection →'}
+          </button>
+        </> : <>
+          <button className="btn-secondary" type="button" disabled={index<=0} onClick={()=>navigate('lesson',lessons[index-1].id)}>← Previous lesson</button>
+          <button className="btn-secondary" type="button" disabled={index>=lessons.length-1} onClick={()=>navigate('lesson',lessons[index+1].id)}>Next lesson →</button>
+        </>}
       </nav>
     </article>
   </div>;
