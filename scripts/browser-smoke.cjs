@@ -582,7 +582,11 @@ async function verify() {
     // immediate intermediate React render while the control is busy.
     await phone.waitForFunction(()=>document.querySelector(
       '.frames-focus-controls button[aria-pressed="true"]')?.textContent?.trim()==='Top');
-    await phone.getByRole('button',{name:'Move later'}).click();
+    // Autoplay may have moved us to the final photo while verifying progression.
+    // Reorder in whichever direction is enabled; don't freeze the slide to test editing.
+    const moveLater=phone.getByRole('button',{name:'Move later'});
+    if(await moveLater.isEnabled())await moveLater.click();
+    else await phone.getByRole('button',{name:'Move earlier'}).click();
     await phone.getByRole('button',{name:'Done',exact:true}).click();
     await phone.reload({waitUntil:'domcontentloaded'});
     await phone.waitForFunction(()=>Boolean(window.frameOneLegacy),{timeout:15000});
