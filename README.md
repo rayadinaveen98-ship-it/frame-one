@@ -1,8 +1,16 @@
 # Frame One — Learn the art of filmmaking
 
-**Engineering checkpoint v0.9M — native Android backup export and verified JSON restore · Android test APK published · 27 October 2026 · not app-store released.**
+**Latest development checkpoint: v0.11A4 · immersive cinematic act journeys · verified Android preview published 28 October 2026 · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.11A4 (28 October 2026)
+
+Six original offline film journeys now have three-act preview tabs, a featured cinematic scene and truthful next-lesson navigation, plus story intermissions when a guided lesson enters the next act. The existing **33 lessons, 7 Creative Labs, all learner progress, notes and backups** are preserved; Labs are still unscored.
+
+[PR #20](https://github.com/rayadinaveen98-ship-it/frame-one/pull/20) merged as [`b31033bc`](https://github.com/rayadinaveen98-ship-it/frame-one/commit/b31033bca83f452d3b1891489c09f4f029ca5a58). All five pre-merge CI jobs passed: web, real Chromium browser, Android APK, native emulator and full Android backup/restore. The merged `main` Android package [passed](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40674672795), and the [public publisher](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40674962336) succeeded. The [latest APK](https://github.com/rayadinaveen98-ship-it/frame-one/releases/download/android-preview-latest/FrameOne-android-debug.apk) release metadata verifies source commit `b31033bc`; a repeat of some Android tests on `main` was still running when this note was first recorded.
+
+**Caution:** the release uses a temporary debug signing certificate, not a persistent signer; it may not install in-place over a previously installed debug APK. Back up learning data before uninstalling. Physical Android, screen-reader/audio, specialist education/Telugu review and independent live Cloudflare deployment verification remain open. [Release QA criteria](docs/QA_V11A4.md).
 
 ## Current source and archived checkpoints
 
