@@ -37,6 +37,7 @@ export function CollectionJourney({collectionId}:{collectionId:string}){
   const allDone=lessonEntries.length>0 && lessonDone===lessonEntries.length;
   const percent=lessonEntries.length?Math.round(100*lessonDone/lessonEntries.length):null;
   const totalTime=lessonEntries.reduce((sum,entry)=>sum+(byId.get(entry.id)?.minutes??0),0);
+  const hasActivities=shelf.entries.some(entry=>entry.kind!=='lesson');
   const next=lessonEntries.find(entry=>!completed.has(entry.id))??shelf.entries[0];
   const primary=next?detail(next):null;
   return <div className="page collection-view" data-collection-view={shelf.id}>
@@ -72,7 +73,7 @@ export function CollectionJourney({collectionId}:{collectionId:string}){
         aria-valuemax={lessonEntries.length} aria-valuenow={lessonDone}>
         <span style={{width:percent+'%'}}/>
       </div>
-      <p>Only finished lessons count toward progress. Explore the experiments at your own pace.</p>
+      <p>{hasActivities?'Only finished lessons count. Experiments and roles are for exploration, not scores.':'Lesson completion stays in sync with your existing learning progress.'}</p>
     </section>:<div className="collection-no-progress">An open creative studio. Experiments are for discovery, not scores.</div>}
     <section className="collection-chapters" aria-label={'Explore '+shelf.heading}>
       <div className="collection-list-intro">
