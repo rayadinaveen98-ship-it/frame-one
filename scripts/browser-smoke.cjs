@@ -140,6 +140,13 @@ async function verify() {
   await page.goBack();
   await page.locator('[data-collection-view="beginnings"]').waitFor();
   assert.equal(new URL(page.url()).hash,'#collection/beginnings','Back returns to actual collection');
+  await page.locator('[data-collection-entry="lesson:india"]').click();
+  await page.locator('[data-series-lesson="beginnings"]').waitFor();
+  assert.equal(await page.locator('[data-scene-transition="finale"]').count(),1,'Last genuine scene has closing, not a fabricated fourth act');
+  assert.equal(await page.locator('.series-intermission').count(),0,'Finale does not preview an imaginary act');
+  assert.equal(await page.getByRole('button',{name:'Return to collection →'}).count(),1);
+  await page.getByRole('button',{name:'Return to collection →'}).click();
+  await page.locator('[data-collection-view="beginnings"]').waitFor();
   await page.locator('.collection-back').click();
   await page.locator('.cinema-discovery').waitFor();
   assert.equal(new URL(page.url()).hash,'#home','collection back returns Home');
