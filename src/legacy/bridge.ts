@@ -2,14 +2,14 @@ import type { StoryPlan } from '../components/labs/story-data';
 /** Narrow integration boundary while the seven labs continue using the original runtime. */
 export type LegacyPage = 'home' | 'learn' | 'lesson' | 'lab' | 'crafts' | 'collection';
 export type LabName = 'frame' | 'sound' | 'light' | 'cut' | 'story' | 'colour' | 'continuity';
-export interface LegacyRoute { page: LegacyPage; lesson: string | null; lab?: LabName; collection?: string }
+export interface LegacyRoute { page: LegacyPage; lesson: string | null; lab?: LabName; collection?: string; journey?: string }
 export interface LegacyBridge {
   navigate: (page: LegacyPage, lesson?: string) => void;
   /** Navigate only within Frame One; never fall through to an external URL. */
   goBack: () => void;
   openLab: (lab: LabName) => void;
   openCollection: (collectionId: string) => void;
-  completeLesson: (id: string) => void;
+  completeLesson: (id: string, continuation?: {nextLessonId?:string;returnCollectionId?:string}) => void;
   savePractice: (id: string, note: string) => boolean;
   setTelugu: (enabled: boolean) => void;
   exportBackup: () => void;
@@ -30,4 +30,4 @@ export function navigate(page: LegacyPage, lesson?: string): void {
 }
 export function openLab(lab: LabName): void { window.frameOneLegacy?.openLab(lab); }
 export function openCollection(collectionId: string): void { window.frameOneLegacy?.openCollection(collectionId); }
-export function completeLesson(id: string): void { window.frameOneLegacy?.completeLesson(id); }
+export function completeLesson(id: string, continuation?: {nextLessonId?:string;returnCollectionId?:string}): void { window.frameOneLegacy?.completeLesson(id,continuation); }
