@@ -80,6 +80,24 @@ assert(runtime.includes('finished.add(id);persist()'),'original progress key rem
 assert(app.includes('journeyId={route.journey}'),'React receives exact legacy series route');
 assert(art.includes('artId=art'),'cover variants are deterministic across refreshes');
 assert(art.includes('cinema-poster-signature'),'poster variants have original decorative signatures');
+// v0.12A1 adds optional one-act cinema focus without changing progress or routes.
+for(const required of [
+  'const [focusAct,setFocusAct]=useState(false)',
+  'const chaptersRef=useRef<HTMLElement>(null)',
+  'data-act-focus-entry',
+  'data-collection-focus-toggle',
+  "data-collection-view-mode={focusAct?'focus':'all'}",
+  'data-focus-previous',
+  'data-focus-next',
+  'if(focusAct&&index!==featuredIndex)return null',
+  'setPreviewAct(index)',
+  'setFocusAct(true)',
+  'disabled={featuredIndex===0}',
+  'disabled={featuredIndex===series.acts.length-1}'
+])assert(view.includes(required),'cinematic act focus contract missing: '+required);
+const collectionCss=read('src/components/collection-journey.css');
+assert(collectionCss.includes('@media(max-width:350px)'),'focus controls fit smallest supported Android width');
+assert(collectionCss.includes('prefers-reduced-motion:reduce'),'focus animation honors reduced motion');
 assert(!view.includes('localStorage.setItem')&&!lesson.includes('sessionStorage.setItem'),'no new content-progress store');
 assert(view.includes(":'Try this act'")&&view.includes("'EXPLORE THIS ACT'"),'studio previews remain unscored');
 assert(!view.includes('fetch(')&&!art.includes('fetch('),'all series content and art bundled offline');
