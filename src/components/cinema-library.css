@@ -234,3 +234,15 @@
   .cinema-shelf-open{min-height:44px;align-items:center}
   .cinema-shelf-open span{font-size:15px}
 }
+
+
+/* Per-title authored artwork signature: muted variations, all bundled offline. */
+.cinema-poster-scene .cinema-poster-signature{pointer-events:none}
+.cinema-art-variant-0{filter:saturate(.92)}
+.cinema-art-variant-1{background-image:radial-gradient(circle at 23% 23%,#89715a65,transparent 49%),linear-gradient(160deg,#323036,#141d24 83%)}
+.cinema-art-variant-2{background-image:radial-gradient(circle at 83% 14%,#ac6b604e,transparent 45%),linear-gradient(145deg,#262b35,#171b22 83%)}
+.cinema-art-variant-3{background-image:radial-gradient(circle at 14% 70%,#678b9066,transparent 55%),linear-gradient(145deg,#293238,#181921 84%)}
+.cinema-art-variant-4{background-image:radial-gradient(circle at 88% 69%,#bc93654f,transparent 52%),linear-gradient(145deg,#373035,#101923 80%)}
+.cinema-art-variant-5{background-image:radial-gradient(circle at 53% 12%,#a9846966,transparent 49%),linear-gradient(155deg,#313b41,#121820 80%)}
+.cinema-art-variant-6{background-image:radial-gradient(circle at 24% 35%,#8f76735e,transparent 53%),linear-gradient(135deg,#32313a,#151b24 86%)}
+.cinema-art-variant-7{background-image:radial-gradient(circle at 70% 55%,#a98d7b45,transparent 50%),linear-gradient(145deg,#2b343a,#161820 84%)}
