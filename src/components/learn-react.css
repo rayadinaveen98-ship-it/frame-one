@@ -61,3 +61,17 @@
   .react-learn-view .backup-text-fallback > button,
   .react-learn-view .backup-text-field button {width:100%;}
 }
+
+/* v0.11A6 — explicit upgrade risk adjacent to native backup actions. */
+.react-learn-view .backup-upgrade-warning{
+  border-left:3px solid #cf9876;padding:12px 13px;margin:12px 0;
+  background:#282129;color:#e0cec0;border-radius:0 10px 10px 0;
+  font-size:12px;line-height:1.65;
+}
+.react-learn-view .backup-upgrade-warning strong{
+  font-weight:710;color:#f3ddca;
+}
+.react-learn-view #learningBackupPanel{scroll-margin-top:20px}
+.react-learn-view #learningBackupPanel>summary:focus-visible{
+  outline:3px solid #e5b791;outline-offset:3px;
+}
