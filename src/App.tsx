@@ -141,7 +141,7 @@ export default function App() {
   // On SPA navigation, return keyboard/screen-reader focus to the page heading.
   // Skip the initial home mount to avoid stealing focus when booting.
   useEffect(() => {
-    const key = route.page + ':' + (route.lesson ?? route.collection ?? route.lab ?? '');
+    const key = route.page + ':' + (route.lesson ?? route.collection ?? route.lab ?? '') + ':' + (route.journey ?? '');
     if (previousRoute.current === key) return;
     previousRoute.current = key;
     const frame = requestAnimationFrame(() => {
@@ -151,7 +151,7 @@ export default function App() {
       heading.focus({ preventScroll: true });
     });
     return () => cancelAnimationFrame(frame);
-  }, [route.page, route.lesson, route.lab]);
+  }, [route.page, route.lesson, route.lab, route.collection, route.journey]);
   useEffect(() => {
     const onRoute = (event: Event) => {
       const custom = event as CustomEvent<LegacyRoute>;
@@ -200,7 +200,7 @@ export default function App() {
       {route.page==='lab' && route.lab==='story' ? <MakeLab /> : null}
       {route.page==='lab' && route.lab==='sound' ? <SoundLab mode={soundMode} setMode={setSoundMode} ambience={soundAmbience} setAmbience={setSoundAmbience} /> : null}
       {route.page==='learn' ? <LearnView /> : null}
-      {route.page==='lesson' && route.lesson ? <LessonView key={route.lesson} lessonId={route.lesson} /> : null}
+      {route.page==='lesson' && route.lesson ? <LessonView key={route.lesson} lessonId={route.lesson} journeyId={route.journey} /> : null}
       <footer className="footer"><span>FRAME ONE · React lessons + chapters + 7 Creative Labs v0.9D</span><span>Made for curious minds <span className="heart">♥</span></span></footer>
     </main>
     <Navigation mobile />
