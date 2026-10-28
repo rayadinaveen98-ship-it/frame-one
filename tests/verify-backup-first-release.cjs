@@ -54,4 +54,43 @@ for(const line of [
 ]) assert(workflow.includes(line),'Publisher safety contract missing: '+line);
 assert(!workflow.includes('FRAMEONE_QA_DEBUG_KEYSTORE_B64'),
   'Public release publisher never reads or outputs the private signing secret');
-console.log('PASS: one-tap Android backup focus, no new saved data, and rollback/signing warning publisher gates.');
+assert(workflow.includes('bash scripts/check-android-signing-continuity.sh release/android-qa-signature.txt previous/android-qa-signature.txt'),
+  'Publisher must enforce permanent signer continuity before changing public release');
+
+const os=require('node:os'),child=require('node:child_process');
+const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'frameone-release-signing-'));
+const gate=path.join(root,'scripts/check-android-signing-continuity.sh');
+const certA='a'.repeat(64),certB='b'.repeat(64);
+const modeYes='Persistent QA signer: YES (managed by GitHub Secret)';
+const modeNo='Persistent QA signer: NO (temporary runner signer; not upgrade-safe)';
+function receipt(name,cert,mode){
+  const file=path.join(tmp,name);
+  fs.writeFileSync(file,'Signer #1 certificate SHA-256 digest: '+cert+'\\n'+mode+'\\n');
+  return file;
+}
+function verify(label,next,previous,shouldPass,contains){
+  const res=child.spawnSync('bash',[gate,next,previous],{encoding:'utf8'});
+  const output=(res.stdout||'')+(res.stderr||'');
+  assert.equal(res.status===0,shouldPass,label+' exit '+res.status+': '+output);
+  if(contains) assert(output.includes(contains),label+' missing '+contains+': '+output);
+}
+try{
+  const oldTemp=receipt('old-temp.txt',certA,modeNo);
+  const newTemp=receipt('new-temp.txt',certB,modeNo);
+  const oldStable=receipt('old-stable.txt',certA,modeYes);
+  const sameStable=receipt('same-stable.txt',certA,modeYes);
+  const newStable=receipt('new-stable.txt',certB,modeYes);
+  const malformed=receipt('malformed.txt','NOT_SHA256',modeYes);
+  const conflicting=receipt('conflicting.txt',certA,modeYes+'\\n'+modeNo);
+  verify('Initial preview',newTemp,path.join(tmp,'no-existing-release'),true,'accepted');
+  verify('Temporary to temporary still supported',newTemp,oldTemp,true,'temporary');
+  verify('One-time temporary to persistent migration',newStable,oldTemp,true,'First permanent QA signer');
+  verify('Matching permanent identity',sameStable,oldStable,true,'accepted');
+  verify('Permanent to temporary is blocked',newTemp,oldStable,false,'BLOCKED:');
+  verify('Permanent identity rotation is blocked',newStable,oldStable,false,'BLOCKED:');
+  verify('Malformed certificate fails closed',malformed,oldTemp,false,'Invalid Android signing certificate');
+  verify('Conflicting signing status fails closed',conflicting,oldStable,false,'Missing or conflicting');
+} finally {
+  fs.rmSync(tmp,{recursive:true,force:true});
+}
+console.log('PASS: one-tap backup, rollback protection, and eight executable public signing-continuity policy scenarios.');
