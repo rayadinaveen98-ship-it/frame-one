@@ -168,7 +168,11 @@ def main():
     ui.adb("shell","am","force-stop",ui.PACKAGE)
     state.launch()
     ui.tap_label("Home")
-    state.find_text("YOUR WORK STAYS ON THIS DEVICE",tries=12,scroll=True)
+    # Previous storyboard tests may leave Home's long library scrolled near
+    # its final shelf. Move upward as a real tester would before searching
+    # down for the compact backup shortcut; offscreen nodes report [0,0].
+    state.scroll_top()
+    state.find_text("YOUR WORK STAYS ON THIS DEVICE",tries=12)
     state.control("Back up",exact=False)
     state.find_text("YOUR LEARNING JOURNEY",tries=10)
     state.find_text("Save / share backup JSON",tries=10,scroll=True)
