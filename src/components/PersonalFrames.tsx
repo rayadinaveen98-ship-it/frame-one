@@ -78,6 +78,7 @@ export function PersonalFrames(_props:FramesProps){
     const selected=Array.from(event.currentTarget.files??[]);
     event.currentTarget.value='';
     if(!selected.length)return;
+    const previousCount=frames.length;
     setBusy(true);setError('');setMenuOpen(false);
     try{
       const available=Math.max(0,MAX_FRAMES-frames.length);
@@ -94,7 +95,7 @@ export function PersonalFrames(_props:FramesProps){
     }finally{
       try{
         const saved=await listFrames();
-        setFrames(saved);setIndex(Math.max(0,saved.length-selected.length));setPreviousId(null);
+        setFrames(saved);setIndex(Math.max(0,Math.min(previousCount,saved.length-1)));setPreviousId(null);
       }catch(err){setError(err instanceof Error?err.message:'Could not reload your gallery.');}
       setBusy(false);
     }
@@ -147,17 +148,14 @@ export function PersonalFrames(_props:FramesProps){
     const amount=(event.changedTouches[0]?.clientX??start)-start;
     if(Math.abs(amount)>52){swiped.current=true;next(amount<0?1:-1);setControlsVisible(false);}
   }
-  return <section className="personal-frames" aria-label="Your cinematic frames" data-gallery-ready={ready}>
+  // With no selected photos there is NO wall, placeholder or layout gap.
+  // Keep the file picker mounted so the greeting's + works even while hidden.
+  const hasPhotos=ready && frames.length>0;
+  return <section className="personal-frames" aria-label="Your cinematic frames"
+    hidden={!hasPhotos && !error} data-gallery-ready={ready} data-gallery-count={frames.length}>
     <input ref={pickerRef} type="file" className="sr-only" accept="image/*" multiple
       aria-label="Choose your favourite photos" onChange={event=>void addPhotos(event)}/>
-    {!ready?<div className="frames-loading" aria-label="Loading your personal frames"/>:
-      !frames.length?<button className="frames-empty" type="button" onClick={()=>pickerRef.current?.click()} disabled={busy}>
-        <span className="frames-empty-symbol" aria-hidden="true">▣</span>
-        <span>YOUR PERSONAL CINEMA WALL</span>
-        <strong>Add the frames that inspire you.</strong>
-        <small>Choose photos from your gallery. They'll stay private and available offline.</small>
-        <span className="frames-empty-cta">+ Add frames</span>
-      </button>:
+    {hasPhotos &&
       <div className="frames-stage" data-frame-count={frames.length}>
         {earlier&&urlFor(earlier.id)?<img className="frames-image frames-outgoing" alt="" aria-hidden="true"
           style={{objectPosition:earlier.focus}} src={urlFor(earlier.id)}/>:null}

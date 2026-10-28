@@ -530,20 +530,47 @@ async function verify() {
       /Good (morning|afternoon|evening|night)\./);
     assert.equal(await phone.locator('.fact-panel #filmThoughtTitle').count(),1);
     await photo(phone, 'v10-home-' + width + '.png');
-    // Personal cinematic gallery: use generated, original test images only.
-    await phone.locator('[data-gallery-ready="true"]').waitFor();
+    // Zero-photo Home MUST render no wall or reserved space. The top + still works.
+    await phone.waitForFunction(()=>document.querySelector('.personal-frames')?.getAttribute('data-gallery-ready')==='true');
+    assert.equal(await phone.locator('.personal-frames').isVisible(),false,
+      'No image means zero-height, hidden gallery without placeholder');
+    assert.equal(await phone.locator('.frames-empty,.frames-loading').count(),0,
+      'No empty state or loading skeleton is rendered');
+    assert.equal(await phone.locator('.frames-stage').count(),0);
     assert.equal(await phone.getByRole('button',{name:'Add your favourite cinema frames'}).count(),1);
+    const homeType=await phone.locator('.home-greeting').evaluate(el=>getComputedStyle(el).fontFamily);
+    assert(!/Georgia|Times New Roman/i.test(homeType),'Minimal cinematic font must not revert to oversized serif Home typography');
+    const heroType=await phone.locator('.hero h1').evaluate(el=>getComputedStyle(el).fontFamily);
+    assert(!/Georgia|Times New Roman/i.test(heroType),'Welcome title follows the same restrained type system');
+    assert.ok((await phone.locator('.hero h1').boundingBox()).height<90,'Welcome headline compact enough for real mobile');
     const png=await phone.evaluate(()=>{
       const canvas=document.createElement('canvas');canvas.width=320;canvas.height=180;
       const ctx=canvas.getContext('2d');ctx.fillStyle='#aa683c';ctx.fillRect(0,0,320,180);
       return canvas.toDataURL('image/png').split(',')[1];
     });
     const testImage=Buffer.from(png,'base64');
-    await phone.locator('input[type="file"][accept="image/*"]').setInputFiles([
+    const photoPicker=phone.waitForEvent('filechooser');
+    await phone.getByRole('button',{name:'Add your favourite cinema frames'}).click();
+    const chosen=await photoPicker;
+    await chosen.setFiles([
       {name:'original-frame-1.png',mimeType:'image/png',buffer:testImage},
       {name:'original-frame-2.png',mimeType:'image/png',buffer:testImage}
     ]);
     await phone.locator('.frames-stage[data-frame-count="2"]').waitFor({timeout:15000});
+    assert.equal(await phone.locator('.personal-frames').isVisible(),true,
+      'Chosen photos appear ABOVE Home welcome art');
+    const stage=await phone.locator('.frames-stage').boundingBox();
+    const welcome=await phone.locator('#content .hero').boundingBox();
+    assert.ok(stage&&welcome&&stage.y+stage.height <= welcome.y+3,
+      'Gallery participates in normal layout and pushes welcome/lesson cards down');
+    if(width===390){
+      const firstPhoto=await phone.locator('.frames-active').getAttribute('src');
+      await phone.waitForFunction(original=>{
+        const active=document.querySelector('.frames-active');
+        return Boolean(active&&active.getAttribute('src')!==original);
+      },firstPhoto,{timeout:10500});
+      console.log('PASS: automatically advances personal slideshow without tapping at 390px');
+    }
     assert.equal(await phone.locator('.frames-stage h1,.frames-stage h2,.frames-stage p,.frames-stage span').count(),0,
       'Slideshow must have no text overlay');
     await phone.locator('.frames-touch').click();
@@ -555,7 +582,11 @@ async function verify() {
     // immediate intermediate React render while the control is busy.
     await phone.waitForFunction(()=>document.querySelector(
       '.frames-focus-controls button[aria-pressed="true"]')?.textContent?.trim()==='Top');
-    await phone.getByRole('button',{name:'Move later'}).click();
+    // Autoplay may have moved us to the final photo while verifying progression.
+    // Reorder in whichever direction is enabled; don't freeze the slide to test editing.
+    const moveLater=phone.getByRole('button',{name:'Move later'});
+    if(await moveLater.isEnabled())await moveLater.click();
+    else await phone.getByRole('button',{name:'Move earlier'}).click();
     await phone.getByRole('button',{name:'Done',exact:true}).click();
     await phone.reload({waitUntil:'domcontentloaded'});
     await phone.waitForFunction(()=>Boolean(window.frameOneLegacy),{timeout:15000});
@@ -566,7 +597,16 @@ async function verify() {
     phone.once('dialog',dialog=>void dialog.accept());
     await phone.getByRole('button',{name:'Remove image'}).click();
     await phone.locator('.frames-stage[data-frame-count="1"]').waitFor({timeout:15000});
-    console.log('PASS: offline personal gallery import, text-free image, focus edit, reorder, reload and safe removal at '+width+'px');
+    await phone.locator('.frames-touch').click();
+    await phone.getByRole('button',{name:'Frame options',exact:true}).click();
+    phone.once('dialog',dialog=>void dialog.accept());
+    await phone.getByRole('button',{name:'Remove image'}).click();
+    await phone.waitForFunction(()=>document.querySelector('.personal-frames')?.getAttribute('data-gallery-count')==='0');
+    assert.equal(await phone.locator('.frames-stage').count(),0);
+    assert.equal(await phone.locator('.personal-frames').isVisible(),false,
+      'Removing the last photo collapses the wall again');
+    assert.equal(await phone.getByRole('button',{name:'Add your favourite cinema frames'}).isVisible(),true);
+    console.log('PASS: photo wall absent until chosen, appears above welcome, persists, and collapses after last removal at '+width+'px');
 
     await phone.locator('.mobile-nav [data-page="learn"]').click();
     await phone.locator('.react-learn-view h1').waitFor();
