@@ -1,0 +1,112 @@
+/* v0.10A4 — cinema-inspired course compass. Doesn't alter existing learner storage. */
+.react-learn-view .journey-dashboard{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:13px;margin:20px 0 23px;
+}
+.react-learn-view .journey-progress-panel,
+.react-learn-view .journey-next-panel{
+  min-width:0;position:relative;overflow:hidden;
+  padding:23px;border-radius:19px;border:1px solid #454149;
+  background:linear-gradient(145deg,#25252d,#171c25 72%);
+}
+.react-learn-view .journey-next-panel{
+  display:flex;flex-direction:column;align-items:flex-start;
+  background:radial-gradient(circle at 96% 8%,#9e5a3448,transparent 47%),
+    linear-gradient(140deg,#332821,#222128 60%,#171d25);
+  border-color:#69513e;
+}
+.react-learn-view .journey-heading-row,
+.react-learn-view .journey-chapter-label,
+.react-learn-view .journey-next-topline{
+  display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+}
+.react-learn-view .journey-percent{
+  font-size:19px;line-height:1.2;color:#f3bd89;font-weight:750;
+  font-variant-numeric:tabular-nums;
+}
+.react-learn-view .journey-count{display:flex;align-items:baseline;gap:12px;margin:8px 0 16px}
+.react-learn-view .journey-count strong{
+  font:500 clamp(44px,4.5vw,60px)/1 Georgia,serif;
+  letter-spacing:-.06em;color:#f7e2d0;font-variant-numeric:tabular-nums;
+}
+.react-learn-view .journey-count span{font-size:13px;line-height:1.5;color:#c5beb9}
+.react-learn-view .journey-dashboard .journey-meter{
+  display:block;height:6px;max-width:none;margin:0 0 22px;
+  border:0;border-radius:30px;background:#3e404a;overflow:hidden;
+}
+.react-learn-view .journey-dashboard .journey-meter>div{
+  height:100%;background:linear-gradient(90deg,#d08a5e,#f8c58f);border-radius:30px;
+}
+.react-learn-view .journey-chapter-label{
+  font-size:10px;font-weight:750;letter-spacing:.08em;color:#d1bfad;
+  margin-bottom:10px;
+}
+.react-learn-view .journey-chapter-label span:last-child{
+  text-align:right;color:#aeb4be;letter-spacing:0;
+  font-variant-numeric:tabular-nums;
+}
+.react-learn-view .journey-chapter-segments{
+  display:flex;gap:6px;overflow-x:auto;overscroll-behavior-x:contain;
+  padding:3px 1px 7px;scrollbar-width:thin;
+}
+.react-learn-view .journey-chapter-segment{
+  flex:1 0 44px;min-width:44px;height:49px;
+  border:1px solid #52505b;border-radius:10px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  gap:7px;padding:8px 6px 6px;background:#21252d;color:#b4adb0;
+  cursor:pointer;scroll-snap-align:start;
+}
+.react-learn-view .journey-chapter-segment:hover{background:#33303a}
+.react-learn-view .journey-chapter-segment.is-current{
+  border-color:#c88c61;background:#433127;color:#f6d6b6;
+}
+.react-learn-view .journey-segment-track{
+  display:block;width:100%;height:4px;border-radius:3px;
+  background:linear-gradient(90deg,#f0b986 var(--chapter-fill),#55525b var(--chapter-fill));
+}
+.react-learn-view .journey-segment-number{
+  font-size:11px;font-weight:750;line-height:1;font-variant-numeric:tabular-nums;
+}
+.react-learn-view .journey-caption{
+  font-size:11.5px;line-height:1.5;color:#b0aaa9;margin:6px 0 0;
+}
+.react-learn-view .journey-next-topline{width:100%;align-items:center}
+.react-learn-view .journey-next-chapter{
+  font-size:10px;font-weight:750;white-space:nowrap;letter-spacing:.07em;color:#d4aa85;
+}
+.react-learn-view .journey-next-index{
+  margin-top:29px;color:#e8bb91;font-size:11px;font-weight:800;letter-spacing:.08em;
+}
+.react-learn-view .journey-next-title{
+  font:500 clamp(23px,2.7vw,29px)/1.16 Georgia,serif;
+  margin:10px 0 9px;max-width:430px;letter-spacing:-.024em;color:#fff0de;
+}
+.react-learn-view .journey-next-description{
+  margin:0 0 21px;font-size:13px;color:#d2c7be;line-height:1.6;
+  max-width:440px;
+}
+.react-learn-view .journey-next-cta{
+  margin-top:auto;min-height:44px;max-width:100%;font-size:13px;
+}
+.react-learn-view .journey-chapter-segment:focus-visible,
+.react-learn-view .journey-next-cta:focus-visible{
+  outline:3px solid #f1b980;outline-offset:3px;
+}
+.react-learn-view .chapter-panel:focus-within{scroll-margin-top:28px}
+@media(max-width:760px){
+  .react-learn-view .journey-dashboard{
+    grid-template-columns:minmax(0,1fr);gap:11px;margin:15px 0 20px;
+  }
+  .react-learn-view .journey-progress-panel,
+  .react-learn-view .journey-next-panel{padding:16px 17px;border-radius:16px}
+  .react-learn-view .journey-count{margin:4px 0 13px}
+  .react-learn-view .journey-count strong{font-size:44px}
+  .react-learn-view .journey-dashboard .journey-meter{margin-bottom:16px}
+  .react-learn-view .journey-next-index{margin-top:16px}
+  .react-learn-view .journey-next-title{font-size:24px;line-height:1.17}
+  .react-learn-view .journey-next-description{margin-bottom:17px}
+  .react-learn-view .journey-next-cta{min-width:0}
+}
+@media(prefers-reduced-motion:reduce){
+  .react-learn-view .journey-dashboard *{scroll-behavior:auto;transition:none}
+}
