@@ -1,8 +1,16 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.11A4 · immersive cinematic act journeys · verified Android preview published 28 October 2026 · not app-store released.**
+**Latest development checkpoint: v0.11A5 · genuine film-journey continuation on Home · verified Android preview published 28 October 2026 · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.11A5 (28 October 2026)
+
+The Cinema Library now shows **Your Film Journeys** when a learner actually finishes lessons in a collection. Each compact, offline Home card shows the real collection, next act and existing lesson progress, reopening the existing three-act experience. A new learner has no fake Continue row; interactive Labs remain unscored. No learning progress key, backup format, account, tracking timestamp or external image request was added.
+
+[PR #21](https://github.com/rayadinaveen98-ship-it/frame-one/pull/21) merged as [`3b51ef92`](https://github.com/rayadinaveen98-ship-it/frame-one/commit/3b51ef929a8cf8ad9dbc4f97d1a10a7b2a83b4c3). Five exact-commit pre-merge checks passed (web, Chromium 320px/390px/desktop, Android build, emulator, backup restore). Independent main [Android build 40685111578](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40685111578) and [public APK publisher 40685374034](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40685374034) passed, with release metadata verifying source commit `3b51ef92`. [Direct APK download](https://github.com/rayadinaveen98-ship-it/frame-one/releases/download/android-preview-latest/FrameOne-android-debug.apk). Remaining repeat main CI results are tracked in [v0.11A5 QA](docs/QA_V11A5.md).
+
+**Signing remains non-persistent:** the new APK build reports a temporary debug signer, so in-place upgrade compatibility is **not guaranteed**. Export a learning backup before uninstalling. [Secure signing handoff](docs/ANDROID_QA_SIGNING.md) · [v0.11A5 QA notes](docs/QA_V11A5.md).
 
 ## Latest — v0.11A4 (28 October 2026)
 
