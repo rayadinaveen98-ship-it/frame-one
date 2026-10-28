@@ -1,5 +1,6 @@
 import type {CSSProperties} from 'react';
 import type {Lesson} from '../data/schema';
+import './learning-journey.css';
 
 type Chapter = {name:string;strap:string;ids:string[]};
 type JourneyProps = {
