@@ -1,0 +1,220 @@
+/* Frame One v0.11: a cinematic catalogue, not a generic streaming clone.
+   Each shelf uses the original offline curriculum and native overflow scrolling. */
+.cinema-library-active #content > .page > .section-head,
+.cinema-library-active #content > .page > .card-grid,
+.cinema-library-active #content > .page > .mid-grid {
+  display:none!important;
+}
+.cinema-library-active #content > .page{animation:none}
+.cinema-library-active .hero{border-color:#504038;background:
+  radial-gradient(circle at 78% 45%,#83513f40,transparent 53%),
+  linear-gradient(120deg,#181a21,#232125 72%,#14181f)}
+.cinema-discovery{
+  --cover-gold:#dec0a0;
+  color:#efede9;
+  margin-top:29px;
+  padding-bottom:10px;
+  min-width:0;
+}
+.cinema-library-intro{
+  display:grid;gap:4px;
+  margin:0 0 26px;
+}
+.cinema-overline{
+  display:block;font-size:10px;line-height:1.5;letter-spacing:.125em;
+  font-weight:650;color:#bfa187;
+}
+.cinema-library-intro h2{
+  font:520 clamp(23px,3vw,29px)/1.16 var(--cinema-type,system-ui);
+  letter-spacing:-.035em;
+  margin:2px 0 1px;
+}
+.cinema-library-intro p{
+  margin:0;max-width:500px;
+  color:#a8a6a9;font-size:13px;line-height:1.5;
+}
+.cinema-shelf{min-width:0;margin:0 0 29px}
+.cinema-shelf-header{
+  display:flex;align-items:end;justify-content:space-between;gap:14px;
+  margin-bottom:13px;
+}
+.cinema-shelf-title{min-width:0}
+.cinema-shelf-title h2{
+  font:560 clamp(19px,2.2vw,24px)/1.22 var(--cinema-type,system-ui);
+  color:#f0ede8;letter-spacing:-.027em;
+  margin:0 0 3px;
+}
+.cinema-shelf-title p{
+  font-size:12.5px;line-height:1.5;margin:0;color:#aaa7a8;
+}
+.cinema-rail-controls{display:flex;gap:6px;flex-shrink:0}
+.cinema-rail-controls button{
+  display:grid;place-items:center;
+  width:42px;height:42px;border:1px solid #444247;border-radius:50%;
+  background:#191b21;color:#d3b296;font-size:19px;
+}
+.cinema-rail-controls button:hover{border-color:#aa876d;background:#292429}
+.cinema-rail-controls button:focus-visible,
+.cinema-tile:focus-visible,
+.cinema-continue-button:focus-visible,
+.cinema-more-actions button:focus-visible{outline:3px solid #d6ae8c;outline-offset:3px}
+.cinema-rail{
+  display:flex;gap:12px;min-width:0;
+  overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x proximity;
+  scroll-padding-inline:1px;
+  scrollbar-width:thin;scrollbar-color:#595158 transparent;
+  overscroll-behavior-inline:contain;
+  padding:2px 2px 9px;
+  -webkit-overflow-scrolling:touch;
+}
+.cinema-rail:focus-visible{outline:2px solid #866951;outline-offset:-2px;border-radius:8px}
+.cinema-tile{
+  display:flex;flex-direction:column;
+  min-width:0;flex:0 0 clamp(150px,16.5vw,184px);
+  text-align:left;color:inherit;background:transparent;
+  border:0;border-radius:12px;padding:0 0 7px;
+  scroll-snap-align:start;cursor:pointer;
+  transition:transform .16s ease;
+}
+.cinema-tile:hover{transform:translateY(-2px)}
+.cinema-tile-art{
+  display:block;width:100%;aspect-ratio:3/3.75;
+  border-radius:12px;overflow:hidden;position:relative;
+  border:1px solid #484249;box-shadow:0 7px 15px #0004;
+  background:#1a2027;
+}
+.cinema-tile:hover .cinema-tile-art{border-color:#ab876d}
+.cinema-tile-check{
+  position:absolute;top:8px;right:8px;z-index:3;
+  width:26px;height:26px;border-radius:50%;
+  display:grid;place-items:center;
+  font-weight:750;font-size:13px;
+  background:#201c20e8;color:#ebc7a6;
+  border:1px solid #d9a98090;
+}
+.cinema-poster-scene{
+  display:block;position:absolute;inset:0;overflow:hidden;
+  background:
+    radial-gradient(circle at 68% 29%,#a5745b55,transparent 47%),
+    linear-gradient(145deg,#303139,#101921 83%);
+  color:#f2cba9;
+  isolation:isolate;
+}
+.cinema-poster-scene:before{
+  content:"";position:absolute;width:145%;aspect-ratio:1;
+  top:-50%;left:25%;border-radius:50%;
+  background:radial-gradient(circle,#f5b5833d,transparent 70%);
+  filter:blur(14px);
+}
+.cinema-poster-scene:after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,#ffffff09,transparent 26%,#090b1370 100%);
+  pointer-events:none;
+}
+.cinema-poster-grain{
+  display:block;position:absolute;inset:0;pointer-events:none;opacity:.28;
+  background-image:repeating-linear-gradient(90deg,transparent 0 27px,#fff1 28px,transparent 29px);
+}
+.cinema-poster-drawing{
+  display:block;position:absolute;inset:6% -1% 0;
+  width:102%;height:94%;
+  filter:drop-shadow(0 7px 18px #0009);
+}
+.cinema-poster-projector{background:radial-gradient(circle at 80% 24%,#865e504f,transparent 47%),linear-gradient(150deg,#36444a,#141821 79%)}
+.cinema-poster-story{background:radial-gradient(circle at 62% 24%,#94745869,transparent 55%),linear-gradient(150deg,#433733,#181a25 79%)}
+.cinema-poster-frame{background:radial-gradient(circle at 83% 44%,#c88f6c48,transparent 45%),linear-gradient(150deg,#243d45,#121a24 80%)}
+.cinema-poster-light{background:radial-gradient(circle at 52% 24%,#bf977065,transparent 48%),linear-gradient(160deg,#3e3434,#111824 83%)}
+.cinema-poster-sound{background:radial-gradient(circle at 50% 49%,#715f8460,transparent 51%),linear-gradient(150deg,#302d45,#151927 79%)}
+.cinema-poster-cut{background:radial-gradient(circle at 68% 43%,#c07a6760,transparent 58%),linear-gradient(140deg,#463738,#131822 78%)}
+.cinema-poster-studio{background:radial-gradient(circle at 60% 33%,#ac785870,transparent 54%),linear-gradient(145deg,#372c32,#14191f 78%)}
+.cinema-poster-crew{background:radial-gradient(circle at 68% 35%,#997b6654,transparent 49%),linear-gradient(140deg,#313640,#131b24 80%)}
+.cinema-tile-type{
+  display:block;margin-top:10px;
+  font-size:9px;line-height:1.4;letter-spacing:.08em;
+  font-weight:650;color:#b79a83;
+}
+.cinema-tile-name{
+  display:-webkit-box;-webkit-box-orient:vertical;
+  -webkit-line-clamp:2;line-clamp:2;
+  overflow:hidden;margin-top:3px;
+  min-height:38px;
+  font-size:14px;line-height:1.34;letter-spacing:-.014em;
+  font-weight:570;color:#efede8;
+}
+.cinema-tile-action{
+  margin-top:6px;
+  font-size:11px;font-weight:540;color:#a7a4a6;
+}
+.cinema-tile-action span{color:#c1a187}
+.cinema-continue{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:18px;padding:17px 19px;margin:0 0 27px;
+  border-radius:15px;border:1px solid #464047;
+  background:linear-gradient(114deg,#232227,#1a1c22);
+}
+.cinema-continue-copy{min-width:0}
+.cinema-continue h2{
+  margin:5px 0;font:560 clamp(18px,2vw,22px)/1.22 var(--cinema-type,system-ui);
+  letter-spacing:-.027em;color:#f1e8df;
+}
+.cinema-continue p{margin:0;color:#b4aeb0;font-size:12px;line-height:1.5}
+.cinema-continue-button{
+  flex:0 0 auto;min-height:44px;
+  padding:10px 13px;border:1px solid #9b7962;
+  border-radius:10px;background:#ac896e;color:#141416;
+  font-weight:650;font-size:12px;
+}
+.cinema-continue-button span{margin-left:8px}
+.cinema-explore-more{
+  display:flex;gap:18px;align-items:center;justify-content:space-between;
+  margin:30px 0 16px;padding:24px;
+  border:1px solid #3c3a42;border-radius:17px;background:#191c22;
+}
+.cinema-explore-more h2{
+  margin:6px 0;font:550 22px/1.24 var(--cinema-type,system-ui);
+  letter-spacing:-.028em;
+}
+.cinema-explore-more p{font-size:12px;max-width:440px;margin:0;color:#aca9ad}
+.cinema-more-actions{display:flex;gap:9px;flex-shrink:0}
+.cinema-more-actions button{
+  min-height:44px;padding:10px 12px;
+  border-radius:10px;border:1px solid #51474a;
+  background:#29252a;color:#e9c9ae;
+  font-size:12px;font-weight:600;
+}
+.cinema-more-actions button span{margin-left:5px}
+@media(max-width:760px){
+  .cinema-discovery{margin-top:23px;padding-bottom:8px}
+  .cinema-library-intro{margin-bottom:24px}
+  .cinema-library-intro h2{font-size:24px}
+  .cinema-library-intro p{font-size:12px}
+  .cinema-shelf{margin-bottom:26px}
+  .cinema-shelf-header{margin-bottom:11px}
+  .cinema-shelf-title h2{font-size:19px}
+  .cinema-shelf-title p{font-size:11px;max-width:260px}
+  .cinema-rail-controls{display:none}
+  .cinema-rail{
+    margin-right:-18px;
+    padding-right:18px;
+    gap:11px;
+    scrollbar-width:none;
+  }
+  .cinema-rail::-webkit-scrollbar{display:none}
+  .cinema-tile{flex-basis:clamp(140px,40vw,165px)}
+  .cinema-tile-name{font-size:13.5px}
+  .cinema-continue{display:block;padding:16px;margin-bottom:24px}
+  .cinema-continue-button{margin-top:12px}
+  .cinema-explore-more{display:block;padding:18px}
+  .cinema-more-actions{flex-wrap:wrap;margin-top:16px}
+}
+@media(max-width:350px){
+  .cinema-rail{margin-right:-14px;padding-right:14px;gap:10px}
+  .cinema-tile{flex-basis:135px}
+  .cinema-shelf-title h2{font-size:18px}
+  .cinema-shelf-title p{font-size:10.5px}
+}
+@media(prefers-reduced-motion:reduce){
+  .cinema-tile{transition:none}
+  .cinema-rail{scroll-behavior:auto}
+}

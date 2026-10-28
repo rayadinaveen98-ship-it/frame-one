@@ -65,8 +65,18 @@ async function verify() {
   assert.equal(response.status(), 200);
   await page.waitForFunction(() => Boolean(window.frameOneLegacy), { timeout: 15000 });
   await page.locator('#content .page').waitFor({ timeout: 15000 });
+  await page.locator('.cinema-discovery').waitFor();
+  assert.equal(await page.locator('[data-cinema-shelf]').count(),6);
+  assert.equal(await page.locator('[data-cinema-entry^="lab:"]').count(),7);
+  assert.equal(await page.locator('[data-cinema-entry="roles:crafts"]').count(),1);
+  assert.equal(await page.locator('#content .hero').isVisible(),true,
+    'Keep original featured cinematic opening');
+  assert.equal(await page.locator('#content .card-grid').isVisible(),false,
+    'Old three-card Home grid must not duplicate new shelf content');
+  assert.equal(await page.locator('.cinema-continue').count(),0,
+    'Do not invent a Continue row for a new learner with zero progress');
   await photo(page, '01-home-desktop.png');
-  console.log('PASS: compiled app mounts and original home screen appears');
+  console.log('PASS: real cinema library mounts six editorial shelves with working content and keeps the original featured hero');
 
   await page.locator('.sidebar [data-page="learn"]').click();
   await page.locator('.react-learn-view h1').waitFor();
@@ -529,6 +539,31 @@ async function verify() {
     assert.match(await phone.locator('.home-greeting').textContent(),
       /Good (morning|afternoon|evening|night)\./);
     assert.equal(await phone.locator('.fact-panel #filmThoughtTitle').count(),1);
+    await phone.locator('.cinema-discovery').waitFor();
+    assert.equal(await phone.locator('[data-cinema-shelf]').count(),6);
+    assert.equal(await phone.locator('[data-cinema-entry^="lab:"]').count(),7);
+    assert.equal(await phone.locator('#content .card-grid').isVisible(),false);
+    const libraryRailMetrics=await phone.locator('.cinema-rail').first().evaluate(el=>{
+      const before=el.scrollLeft;el.scrollLeft=140;
+      return {before,after:el.scrollLeft,max:el.scrollWidth-el.clientWidth};
+    });
+    assert.ok(libraryRailMetrics.max>90&&libraryRailMetrics.after>0,
+      'Cinema rails really swipe horizontally on '+width+'px screens');
+    await photo(phone, 'v11-discovery-home-'+width+'.png');
+    // Every poster has a real destination: lesson, interactive Lab and Film Roles.
+    await phone.locator('[data-cinema-entry="lesson:lighting"]').click();
+    await phone.locator('.react-lesson h1').waitFor();
+    assert.match(await phone.locator('.react-lesson h1').textContent(),/lighting do/i);
+    await phone.locator('.mobile-nav [data-page="home"]').click();
+    await phone.locator('.cinema-discovery').waitFor();
+    await phone.locator('[data-cinema-entry="lab:light"]').click();
+    await phone.locator('.react-lighting-lab h1').waitFor();
+    await phone.locator('.mobile-nav [data-page="home"]').click();
+    await phone.locator('[data-cinema-entry="roles:crafts"]').click();
+    await phone.locator('#content .page-intro h1').waitFor();
+    await phone.locator('.mobile-nav [data-page="home"]').click();
+    await phone.locator('.cinema-discovery').waitFor();
+    console.log('PASS: cinematic discovery shelves scroll, open lessons, Labs and Roles at '+width+'px');
     await photo(phone, 'v10-home-' + width + '.png');
     // Zero-photo Home MUST render no wall or reserved space. The top + still works.
     await phone.waitForFunction(()=>document.querySelector('.personal-frames')?.getAttribute('data-gallery-ready')==='true');
