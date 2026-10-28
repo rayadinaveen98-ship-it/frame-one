@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { LessonView } from './components/LessonView';
 import { LearnView } from './components/LearnView';
 import { PersonalFrames } from './components/PersonalFrames';
+import { CinemaLibraryHome } from './components/CinemaLibraryHome';
 import { LaunchExperience } from './components/LaunchExperience';
 import { ContinuityLab, type ContinuityMode } from './components/labs/ContinuityLab';
 import { ColourLab, type ColourMode } from './components/labs/ColourLab';
@@ -179,7 +180,7 @@ export default function App() {
         <button className="ghost-reset" id="resetProgress" type="button">Reset learning progress</button>
       </div>
     </aside>
-    <main className="main" id="main-content">
+    <main className={route.page==='home'?'main cinema-library-active':'main'} id="main-content">
       <ProgressTopbar page={route.page} />
       {updateReady ? <div className="pwa-update-notice" role="status">
         <span><strong>New version available.</strong> Finish what you're doing, then refresh to see the latest changes.</span>
@@ -188,6 +189,7 @@ export default function App() {
       {bootError ? <p role="alert">{bootError}</p> : null}
       {route.page==='home' ? <PersonalFrames /> : null}
       <div id="content" aria-live="off" hidden={route.page==='lesson'||route.page==='learn'||(route.page==='lab'&&(route.lab==='continuity'||route.lab==='colour'||route.lab==='frame'||route.lab==='light'||route.lab==='cut'||route.lab==='story'||route.lab==='sound'))} />
+      {route.page==='home' ? <CinemaLibraryHome /> : null}
       {route.page==='lab' && route.lab==='continuity' ? <ContinuityLab mode={continuityMode} setMode={setContinuityMode} /> : null}
       {route.page==='lab' && route.lab==='colour' ? <ColourLab mode={colourMode} setMode={setColourMode} strength={colourStrength} setStrength={setColourStrength} /> : null}
       {route.page==='lab' && route.lab==='frame' ? <FrameLab mode={frameMode} setMode={setFrameMode} zoom={frameZoom} setZoom={setFrameZoom} guides={frameGuides} setGuides={setFrameGuides} compare={frameCompare} setCompare={setFrameCompare} /> : null}
