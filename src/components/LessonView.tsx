@@ -133,12 +133,10 @@ export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyI
         <span style={{width:((seriesPosition.index+1)/seriesPosition.count*100)+'%'}}/>
       </div>
     </section>:null}
-    <div className="lesson-navline">
-      <button className="back-btn" type="button" onClick={()=>seriesPosition&&journeyId?navigate('collection',journeyId):navigate('learn')}>
-        {seriesPosition?'← Collection journey':'← All lessons'}
-      </button>
-      {!seriesPosition?<span>Lesson {lesson.num} / {lessons.length}</span>:null}
-    </div>
+    {!seriesPosition?<div className="lesson-navline">
+      <button className="back-btn" type="button" onClick={()=>navigate('learn')}>← All lessons</button>
+      <span>Lesson {lesson.num} / {lessons.length}</span>
+    </div>:null}
     <div className="lesson-top">
       <div className="eyebrow">{seriesPosition?'SCENE '+String(seriesPosition.index+1).padStart(2,'0')+' · '+lesson.minutes+' MIN READ':'LESSON '+lesson.num+' · '+lesson.unit.toUpperCase()+' · '+lesson.minutes+' MIN READ'}</div>
       <h1>{lesson.title}</h1><p>{lesson.subtitle}</p>
