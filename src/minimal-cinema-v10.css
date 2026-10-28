@@ -23,7 +23,7 @@ body{
 }
 h1,h2,h3{
   font-family:var(--cinema-type);
-  font-weight:600;
+  font-weight:500;
   line-height:1.19;
   letter-spacing:-.03em;
 }
@@ -65,7 +65,7 @@ button,input,textarea,select{font-family:var(--cinema-type)}
 }
 .home-greeting{
   font-family:var(--cinema-type);
-  font-weight:550;
+  font-weight:490;
   font-size:clamp(26px,3.2vw,33px);
   line-height:1.17;
   letter-spacing:-.035em;
@@ -100,14 +100,14 @@ button,input,textarea,select{font-family:var(--cinema-type)}
 .hero .eyebrow{color:#cda688;letter-spacing:.09em;font-weight:650}
 .hero h1{
   font-family:var(--cinema-type);
-  font-weight:600;
-  letter-spacing:-.044em;
+  font-weight:520;
+  letter-spacing:-.035em;
   font-size:clamp(36px,4.2vw,53px);
   line-height:1.13;
   margin:12px 0 10px;
 }
 .hero h1 em{
-  color:#dcc0a7;font-style:normal;font-weight:600;
+  color:#d7b69c;font-style:normal;font-weight:520;
 }
 .hero p{
   max-width:380px;
@@ -135,7 +135,7 @@ button,input,textarea,select{font-family:var(--cinema-type)}
 }
 .section-head h2{
   font-family:var(--cinema-type);
-  font-weight:620;
+  font-weight:520;
   font-size:clamp(22px,2.5vw,27px);
   letter-spacing:-.033em;
   line-height:1.21;
@@ -147,8 +147,8 @@ button,input,textarea,select{font-family:var(--cinema-type)}
 }
 .section-head .text-link{
   flex:0 0 auto;align-self:center;
-  text-align:right;white-space:normal;
-  max-width:112px;
+  text-align:right;white-space:nowrap;
+  max-width:none;
 }
 .lesson-card{
   border:1px solid #313138;
@@ -158,7 +158,7 @@ button,input,textarea,select{font-family:var(--cinema-type)}
 }
 .lesson-card h3{
   font-size:17px;line-height:1.28;
-  font-weight:600;letter-spacing:-.025em;
+  font-weight:520;letter-spacing:-.025em;
 }
 .card-meta{color:#aaa7aa;letter-spacing:.055em}
 .card-thumb{border-radius:10px;filter:saturate(.77)}
@@ -173,7 +173,7 @@ button,input,textarea,select{font-family:var(--cinema-type)}
 .feature-panel:after{opacity:.45}
 .feature-panel h3,.fact-panel h3{
   font-family:var(--cinema-type);
-  font-weight:600;
+  font-weight:530;
   font-size:clamp(20px,2.5vw,25px);
   letter-spacing:-.027em;
   line-height:1.24;
@@ -183,13 +183,13 @@ button,input,textarea,select{font-family:var(--cinema-type)}
 .fact-arrows button{border-color:#45464c;background:#202229;color:#d5b49a}
 .page-intro h1{
   font-size:clamp(30px,4.3vw,48px);
-  font-weight:620;letter-spacing:-.036em;
+  font-weight:530;letter-spacing:-.036em;
 }
 .page-intro p{font-size:14px;line-height:1.6}
 .react-learn-view .journey-next-title{
   font-family:var(--cinema-type);
   font-size:clamp(23px,2.8vw,28px);
-  font-weight:610;letter-spacing:-.034em;
+  font-weight:530;letter-spacing:-.034em;
 }
 .react-learn-view .journey-count strong{
   font-family:var(--cinema-type);
@@ -197,7 +197,7 @@ button,input,textarea,select{font-family:var(--cinema-type)}
 }
 .react-learn-view .chapter-head h2{
   font-family:var(--cinema-type);
-  font-weight:620;letter-spacing:-.028em;
+  font-weight:530;letter-spacing:-.028em;
 }
 .react-learn-view .journey-progress-panel,
 .react-learn-view .journey-next-panel{
@@ -206,8 +206,8 @@ button,input,textarea,select{font-family:var(--cinema-type)}
 .react-learn-view .journey-next-panel{
   background:linear-gradient(135deg,#262127,#191b21 80%);
 }
-.lesson-top h1{font-size:clamp(30px,4.2vw,42px);font-weight:620}
-.lesson-section h3{font-size:21px;font-weight:620}
+.lesson-top h1{font-size:clamp(30px,4.2vw,42px);font-weight:530}
+.lesson-section h3{font-size:21px;font-weight:530}
 .craft-card h3,.craft-detail h3{font-size:20px}
 .nav-btn[aria-current=page]{
   background:#282225;color:#e1b593;border-color:#4d3e3d;
@@ -247,7 +247,7 @@ button,input,textarea,select{font-family:var(--cinema-type)}
   .section-head{margin:26px 0 13px;gap:8px;align-items:center}
   .section-head h2{font-size:23px;line-height:1.2;max-width:250px}
   .section-head .eyebrow-secondary{letter-spacing:.075em;font-size:9px}
-  .section-head .text-link{font-size:12px;max-width:95px}
+  .section-head .text-link{font-size:12px;max-width:none;padding:8px 1px;white-space:nowrap}
   .feature-panel,.fact-panel{padding:17px}
   .feature-panel h3,.fact-panel h3{font-size:21px}
   .react-learn-view .journey-next-title{font-size:23px}
