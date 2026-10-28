@@ -127,8 +127,11 @@ def main() -> None:
     find("YOUR LEARNING JOURNEY")
     capture("02-learn")
     print("PASS: mobile Learn tab and course explorer render in Android", flush=True)
-    tap_label("Why do we watch films?", exact=False)
-    find("Why do we watch films?")
+    # The new Learn spotlight repeats the first lesson title as non-clickable
+    # text. Tap the actual CTA instead; the lesson editor proves navigation.
+    # This also avoids tapping chapter lesson rows obscured by the fixed tabs.
+    tap_label("Continue learning →")
+    find("My own filmmaking idea")
     find("Back within Frame One")
     capture("03-lesson")
     print("PASS: native WebView shows first React lesson", flush=True)
