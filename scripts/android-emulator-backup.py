@@ -178,7 +178,10 @@ def main():
         # Fresh full Android AOSP: prove the actual Home safety shortcut and
         # Android DocumentsUI restore after deleting all app-private data.
         ui.tap_label("Home")
-        state.find_text("YOUR WORK STAYS ON THIS DEVICE",tries=12,scroll=True)
+        # Earlier AOSP acceptance proved the shortcut reliably only after
+        # returning the page to its top; Android preserves scroll across tabs.
+        state.scroll_top()
+        state.find_text("YOUR WORK STAYS ON THIS DEVICE",tries=12)
         state.control("Back up",exact=False)
         state.find_text("YOUR LEARNING JOURNEY",tries=10)
         state.find_text("Save / share backup JSON",tries=10,scroll=True)
