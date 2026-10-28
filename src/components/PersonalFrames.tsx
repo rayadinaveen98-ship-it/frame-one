@@ -155,7 +155,7 @@ export function PersonalFrames(_props:FramesProps){
     hidden={!hasPhotos && !error} data-gallery-ready={ready} data-gallery-count={frames.length}>
     <input ref={pickerRef} type="file" className="sr-only" accept="image/*" multiple
       aria-label="Choose your favourite photos" onChange={event=>void addPhotos(event)}/>
-    {hasPhotos ?
+    {hasPhotos &&
       <div className="frames-stage" data-frame-count={frames.length}>
         {earlier&&urlFor(earlier.id)?<img className="frames-image frames-outgoing" alt="" aria-hidden="true"
           style={{objectPosition:earlier.focus}} src={urlFor(earlier.id)}/>:null}
