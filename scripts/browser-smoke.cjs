@@ -86,7 +86,8 @@ async function verify() {
   await page.locator('.collection-primary').click();
   await page.locator('.react-lesson h1').waitFor();
   assert.equal((await page.locator('.react-lesson h1').textContent()).trim(),curriculum.lessons[0].title);
-  await page.getByRole('button',{name:'Back within Frame One'}).click();
+  // Desktop uses browser history; its mobile-only in-app Back button is hidden.
+  await page.goBack();
   await page.locator('[data-collection-view="beginnings"]').waitFor();
   assert.equal(new URL(page.url()).hash,'#collection/beginnings','Back returns to actual collection');
   await page.locator('.collection-back').click();
