@@ -4,6 +4,10 @@ on:
   pull_request:
     paths:
       - '.github/workflows/android-backup-picker-qa.yml'
+      # Series presentation can affect Android navigation before restoring backups.
+      - 'src/components/CollectionJourney.tsx'
+      - 'src/components/LessonView.tsx'
+      - 'src/data/cinema-series.ts'
       - 'scripts/android-emulator-backup.py'
       - 'scripts/android-emulator-learning-state.py'
       - 'scripts/android-emulator-persistence.py'
@@ -16,6 +20,10 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/android-backup-picker-qa.yml'
+      # Series presentation can affect Android navigation before restoring backups.
+      - 'src/components/CollectionJourney.tsx'
+      - 'src/components/LessonView.tsx'
+      - 'src/data/cinema-series.ts'
       - 'scripts/android-emulator-backup.py'
       - 'src/native-backup.ts'
       - 'src/components/LearnView.tsx'
