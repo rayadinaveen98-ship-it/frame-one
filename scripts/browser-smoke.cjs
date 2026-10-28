@@ -84,6 +84,19 @@ async function verify() {
   assert.equal(await page.locator('[data-collection-act]').count(),3,'Every collection feels like a three-act film');
   assert.equal(await page.locator('.collection-act-reflection').count(),3);
   assert.equal(await page.getByRole('progressbar',{name:'Lessons completed in this collection'}).getAttribute('aria-valuenow'),'0');
+  assert.equal(await page.locator('[data-featured-act]').getAttribute('data-featured-act'),'1');
+  assert.equal(await page.locator('[data-act-select][aria-pressed="true"]').count(),1);
+  await page.locator('[data-act-select="2"]').click();
+  assert.equal(await page.locator('[data-featured-act]').getAttribute('data-featured-act'),'2');
+  assert.match(await page.locator('.collection-act-spotlight').textContent(),/A shared language/);
+  await photo(page,'v11a4-act-two-spotlight-desktop.png');
+  await page.locator('[data-spotlight-start]').click();
+  await page.locator('[data-series-lesson="beginnings"]').waitFor();
+  assert.equal((await page.locator('.react-lesson h1').textContent()).trim(),
+    curriculum.lessons.find(lesson=>lesson.id==='units').title,
+    'Featured act must open the real lesson that belongs to that act');
+  await page.goBack();
+  await page.locator('[data-collection-view="beginnings"]').waitFor();
   await photo(page,'01b-collection-beginnings-desktop.png');
   await page.locator('.collection-primary').click();
   await page.locator('.react-lesson h1').waitFor();
@@ -92,7 +105,14 @@ async function verify() {
   assert.match(await page.locator('.series-lesson-context').textContent(),/PART 1 OF 5/);
   assert.equal(await page.getByRole('button',{name:'Next in series →'}).count(),1);
   await photo(page,'01c-beginnings-series-lesson-desktop.png');
-  // Desktop uses browser history; its mobile-only in-app Back button is hidden.
+  await page.getByRole('button',{name:'Next in series →'}).click();
+  await page.locator('[data-series-lesson="beginnings"]').waitFor();
+  assert.match(await page.locator('.series-lesson-context').textContent(),/PART 2 OF 5/);
+  assert.match(await page.locator('.series-intermission').textContent(),/A shared language/,
+    'Boundary after the first act previews the actual next act');
+  // Desktop history must still unwind both lessons to the collection.
+  await page.goBack();
+  await page.locator('.series-lesson-context').getByText(/PART 1 OF 5/).waitFor();
   await page.goBack();
   await page.locator('[data-collection-view="beginnings"]').waitFor();
   assert.equal(new URL(page.url()).hash,'#collection/beginnings','Back returns to actual collection');
@@ -581,6 +601,11 @@ async function verify() {
     assert.equal(await phone.locator('[data-collection-entry]').count(),7);
     assert.equal(await phone.locator('[data-collection-act]').count(),3);
     assert.equal(await phone.locator('.collection-act-reflection').count(),3);
+    await phone.locator('[data-act-select="3"]').click();
+    assert.equal(await phone.locator('[data-featured-act]').getAttribute('data-featured-act'),'3');
+    assert.equal(await phone.locator('[data-act-select][aria-pressed="true"]').count(),1);
+    await photo(phone,'v11a4-visual-act-three-'+width+'.png');
+    await phone.locator('[data-act-select="1"]').click();
     assert.equal(await phone.getByRole('progressbar',{name:'Lessons completed in this collection'}).getAttribute('aria-valuemax'),'7');
     await photo(phone,'v11-collection-visual-'+width+'.png');
     await phone.locator('[data-collection-entry="lesson:lighting"]').click();
@@ -596,6 +621,9 @@ async function verify() {
     await phone.locator('[data-collection-view="studio"]').waitFor();
     assert.equal(await phone.locator('[data-collection-entry^="lab:"]').count(),7);
     assert.equal(await phone.locator('[data-collection-act]').count(),3);
+    assert.equal(await phone.locator('[data-act-select]').count(),3);
+    assert.match(await phone.locator('[data-spotlight-start]').textContent(),/Try this act/,
+      'Lab-only stage promises exploration, not tracked completion');
     assert.equal(await phone.getByRole('progressbar',{name:'Lessons completed in this collection'}).count(),0,
       'Do not claim Lab practice is completed without a tracking system');
     await photo(phone,'v11-collection-studio-'+width+'.png');
