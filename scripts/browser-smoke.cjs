@@ -81,11 +81,17 @@ async function verify() {
   await page.locator('[data-collection-view="beginnings"]').waitFor();
   assert.equal(new URL(page.url()).hash,'#collection/beginnings');
   assert.equal(await page.locator('[data-collection-entry]').count(),5);
+  assert.equal(await page.locator('[data-collection-act]').count(),3,'Every collection feels like a three-act film');
+  assert.equal(await page.locator('.collection-act-reflection').count(),3);
   assert.equal(await page.getByRole('progressbar',{name:'Lessons completed in this collection'}).getAttribute('aria-valuenow'),'0');
   await photo(page,'01b-collection-beginnings-desktop.png');
   await page.locator('.collection-primary').click();
   await page.locator('.react-lesson h1').waitFor();
   assert.equal((await page.locator('.react-lesson h1').textContent()).trim(),curriculum.lessons[0].title);
+  assert.equal(await page.locator('[data-series-lesson="beginnings"]').count(),1);
+  assert.match(await page.locator('.series-lesson-context').textContent(),/PART 1 OF 5/);
+  assert.equal(await page.getByRole('button',{name:'Next in series →'}).count(),1);
+  await photo(page,'01c-beginnings-series-lesson-desktop.png');
   // Desktop uses browser history; its mobile-only in-app Back button is hidden.
   await page.goBack();
   await page.locator('[data-collection-view="beginnings"]').waitFor();
@@ -573,10 +579,15 @@ async function verify() {
     assert.equal(await phone.locator('.collection-back').isVisible(),false,'No duplicate mobile Back controls');
     assert.equal(new URL(phone.url()).hash,'#collection/visual');
     assert.equal(await phone.locator('[data-collection-entry]').count(),7);
+    assert.equal(await phone.locator('[data-collection-act]').count(),3);
+    assert.equal(await phone.locator('.collection-act-reflection').count(),3);
     assert.equal(await phone.getByRole('progressbar',{name:'Lessons completed in this collection'}).getAttribute('aria-valuemax'),'7');
     await photo(phone,'v11-collection-visual-'+width+'.png');
     await phone.locator('[data-collection-entry="lesson:lighting"]').click();
     await phone.locator('.react-lesson h1').waitFor();
+    assert.equal(await phone.locator('[data-series-lesson="visual"]').count(),1);
+    assert.match(await phone.locator('.series-lesson-context').textContent(),/PART 3 OF 7/);
+    assert.equal(await phone.getByRole('button',{name:'Next in series →'}).count(),1);
     await phone.getByRole('button',{name:'Back within Frame One'}).click();
     await phone.locator('[data-collection-view="visual"]').waitFor();
     await phone.getByRole('button',{name:'Back within Frame One'}).click();
@@ -584,6 +595,7 @@ async function verify() {
     await phone.locator('[data-cinema-collection="studio"]').click();
     await phone.locator('[data-collection-view="studio"]').waitFor();
     assert.equal(await phone.locator('[data-collection-entry^="lab:"]').count(),7);
+    assert.equal(await phone.locator('[data-collection-act]').count(),3);
     assert.equal(await phone.getByRole('progressbar',{name:'Lessons completed in this collection'}).count(),0,
       'Do not claim Lab practice is completed without a tracking system');
     await photo(phone,'v11-collection-studio-'+width+'.png');
