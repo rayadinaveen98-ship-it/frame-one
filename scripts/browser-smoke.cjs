@@ -75,6 +75,8 @@ async function verify() {
     'Old three-card Home grid must not duplicate new shelf content');
   assert.equal(await page.locator('.cinema-continue').count(),0,
     'Do not invent a Continue row for a new learner with zero progress');
+  assert.equal(await page.locator('[data-journey-resume]').count(),0,
+    'A new learner must never be labelled as having started a film');
   await photo(page, '01-home-desktop.png');
   assert.equal(await page.locator('[data-cinema-collection]').count(),6);
   await page.locator('[data-cinema-collection="beginnings"]').click();
@@ -153,6 +155,22 @@ async function verify() {
   assert.equal(await page.getByRole('progressbar',{name:'Completed lessons'}).getAttribute('aria-valuenow'),'1');
   assert.equal((await page.locator('.journey-next-title').textContent()).trim(),curriculum.lessons[1].title);
   assert.match(await page.getByRole('button',{name:/View chapter 1:/}).getAttribute('aria-label'),/1 of 5 lessons finished/);
+  await page.locator('.sidebar [data-page="home"]').click();
+  await page.locator('[data-journey-resume="beginnings"]').waitFor();
+  assert.equal(await page.locator('[data-journey-resume]').count(),1,
+    'A saved lesson must reveal only its real source collection');
+  assert.match(await page.locator('[data-journey-resume="beginnings"]').textContent(),/1 of 5 lessons/);
+  await photo(page,'v11a5-continue-film-desktop.png');
+  await page.locator('[data-journey-resume="beginnings"]').click();
+  await page.locator('[data-collection-view="beginnings"]').waitFor();
+  assert.equal(await page.locator('[data-featured-act]').getAttribute('data-featured-act'),'1');
+  await page.locator('.collection-primary').click();
+  await page.locator('.react-lesson h1').waitFor();
+  assert.equal((await page.locator('.react-lesson h1').textContent()).trim(),
+    curriculum.lessons.find(item=>item.id==='history').title,
+    'Returning to a started film resumes its next unfinished lesson');
+  await page.locator('.sidebar [data-page="learn"]').click();
+  await page.locator('.react-learn-view').waitFor();
   await page.getByRole('button',{name:'Continue learning →'}).click();
   await page.locator('.react-lesson h1').waitFor();
   await photo(page, '03-lesson-desktop.png');
@@ -593,6 +611,34 @@ async function verify() {
     assert.ok(libraryRailMetrics.max>90&&libraryRailMetrics.after>0,
       'Cinema rails really swipe horizontally on '+width+'px screens');
     await photo(phone, 'v11-discovery-home-'+width+'.png');
+    assert.equal(await phone.locator('[data-journey-resume]').count(),0);
+    // Re-enter a previously started series with genuine progress; never track
+    // studio completion or add a new persistence key.
+    await phone.evaluate(()=>localStorage.setItem('frameone-progress-v01',
+      JSON.stringify(['why','history'])));
+    await phone.locator('.mobile-nav [data-page="learn"]').click();
+    await phone.locator('.react-learn-view').waitFor();
+    await phone.locator('.mobile-nav [data-page="home"]').click();
+    await phone.locator('[data-journey-resume="beginnings"]').waitFor();
+    assert.equal(await phone.locator('[data-journey-resume]').count(),1);
+    assert.equal(await phone.locator('.cinema-journey-return-card').count(),1);
+    assert.match(await phone.locator('[data-journey-resume="beginnings"]').textContent(),/ACT 02 OF 03/);
+    const journeyCard=await phone.locator('[data-journey-resume="beginnings"]').boundingBox();
+    assert.ok(journeyCard&&journeyCard.width<=width,
+      'Return card must fit within '+width+'px handset');
+    await photo(phone,'v11a5-started-journey-'+width+'.png');
+    await phone.locator('[data-journey-resume="beginnings"]').click();
+    await phone.locator('[data-collection-view="beginnings"]').waitFor();
+    assert.equal(await phone.locator('[data-featured-act]').getAttribute('data-featured-act'),'2');
+    await phone.locator('.mobile-nav [data-page="home"]').click();
+    await phone.locator('.cinema-discovery').waitFor();
+    await phone.evaluate(()=>localStorage.removeItem('frameone-progress-v01'));
+    await phone.locator('.mobile-nav [data-page="learn"]').click();
+    await phone.locator('.react-learn-view').waitFor();
+    await phone.locator('.mobile-nav [data-page="home"]').click();
+    await phone.locator('.cinema-discovery').waitFor();
+    assert.equal(await phone.locator('[data-journey-resume]').count(),0,
+      'Cleared original progress must immediately remove return cards');
     // Tapping a shelf title opens a real collection, not a duplicated Home carousel.
     await phone.locator('[data-cinema-collection="visual"]').click();
     await phone.locator('[data-collection-view="visual"]').waitFor();

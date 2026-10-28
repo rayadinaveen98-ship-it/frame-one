@@ -1,6 +1,7 @@
 import {useRef} from 'react';
 import curriculum from '../data/curriculum.v08b.json';
 import {cinemaShelves,type CinemaEntry,type CinemaShelf} from '../data/cinema-library';
+import {startedFilmJourneys} from '../data/journey-progress';
 import type {Lesson} from '../data/schema';
 import {navigate,openLab,openCollection} from '../legacy/bridge';
 import {safeProgress} from '../state/learning';
@@ -75,6 +76,48 @@ function CinemaShelfRow({shelf,completed}:{shelf:CinemaShelf;completed:ReadonlyS
   </section>;
 }
 
+/** Real collection re-entry, not a recent-activity tracker.
+ * Relies exclusively on pre-existing lesson completion (no new saved data).
+ */
+function JourneyResumeRail({completed}:{completed:ReadonlySet<string>}){
+  const journeys=startedFilmJourneys(completed);
+  if(journeys.length===0)return null;
+  return <section className="cinema-journey-return" aria-label="Your started film journeys">
+    <div className="cinema-journey-return-intro">
+      <div>
+        <span className="cinema-overline">YOUR FILM JOURNEYS</span>
+        <h2>Pick up the story.</h2>
+        <p>Return to a collection you've begun. Your lessons are right where you left them.</p>
+      </div>
+      <span className="cinema-journey-return-count">{journeys.length} {journeys.length===1?'journey':'journeys'}</span>
+    </div>
+    <div className="cinema-journey-return-list" role="group"
+      aria-label="Collections with completed lessons">
+      {journeys.map(journey=><button type="button"
+        key={journey.id} className="cinema-journey-return-card"
+        data-journey-resume={journey.id}
+        aria-label={(journey.allDone?'Revisit':'Continue')+' '+journey.heading+', '+journey.completed+' of '+journey.total+' lessons completed'}
+        onClick={()=>openCollection(journey.id)}>
+        <span className="cinema-journey-return-art">
+          <CinemaArtwork art={journey.nextEntry.art} artId={journey.nextEntry.id}/>
+        </span>
+        <span className="cinema-journey-return-details">
+          <span className="cinema-overline">{journey.allDone?'JOURNEY COMPLETE':'ACT '+String(journey.actIndex+1).padStart(2,'0')+' OF 03'}</span>
+          <strong>{journey.heading}</strong>
+          <span className="cinema-journey-act">{journey.allDone?'Every lesson complete':journey.actTitle}</span>
+          <span className="cinema-journey-numbers">{journey.completed} of {journey.total} lessons</span>
+          <span className="cinema-journey-meter" aria-hidden="true">
+            <span style={{width:(100*journey.completed/journey.total)+'%'}}/>
+          </span>
+          <span className="cinema-journey-return-action">
+            {journey.allDone?'Revisit journey':'Continue journey'} <span aria-hidden="true">→</span>
+          </span>
+        </span>
+      </button>)}
+    </div>
+  </section>;
+}
+
 /** First v0.11 discovery layer: fast native-scroll shelves, no remote images.
  * Original legacy hero, private photo wall, full Learn syllabus and 7 Labs remain.
  */
@@ -82,6 +125,7 @@ export function CinemaLibraryHome(){
   const completed=safeProgress(lessonIds);
   const next=lessons.find(lesson=>!completed.has(lesson.id))??lessons[0];
   return <div className="cinema-discovery" aria-label="Explore the cinema library">
+    <JourneyResumeRail completed={completed}/>
     {completed.size>0?<section className="cinema-continue" aria-label="Continue your learning">
       <div className="cinema-continue-copy">
         <span className="cinema-overline">CONTINUE YOUR JOURNEY · {completed.size}/{lessons.length}</span>
