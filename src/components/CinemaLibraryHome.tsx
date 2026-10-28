@@ -2,7 +2,7 @@ import {useRef} from 'react';
 import curriculum from '../data/curriculum.v08b.json';
 import {cinemaShelves,type CinemaEntry,type CinemaShelf} from '../data/cinema-library';
 import type {Lesson} from '../data/schema';
-import {navigate,openLab} from '../legacy/bridge';
+import {navigate,openLab,openCollection} from '../legacy/bridge';
 import {safeProgress} from '../state/learning';
 import {CinemaArtwork} from './CinemaArtwork';
 import './cinema-library.css';
@@ -50,7 +50,14 @@ function CinemaShelfRow({shelf,completed}:{shelf:CinemaShelf;completed:ReadonlyS
     data-cinema-shelf={shelf.id}>
     <header className="cinema-shelf-header">
       <div className="cinema-shelf-title">
-        <h2 id={'cinema-heading-'+shelf.id}>{shelf.heading}</h2>
+        <h2 id={'cinema-heading-'+shelf.id}>
+          <button className="cinema-shelf-open" type="button"
+            data-cinema-collection={shelf.id}
+            aria-label={'Open collection: '+shelf.heading}
+            onClick={()=>openCollection(shelf.id)}>
+            {shelf.heading} <span aria-hidden="true">↗</span>
+          </button>
+        </h2>
         <p>{shelf.introduction}</p>
       </div>
       <div className="cinema-rail-controls" aria-label={'Scroll '+shelf.heading}>
