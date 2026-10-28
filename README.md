@@ -1,8 +1,16 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.11A7 native backup QA closed + permanent QA signer continuity guarded · current installable APK v0.11A6 · 28 October 2026 · not app-store released.**
+**Latest development checkpoint: v0.12A1 cinematic Act Focus merged · updated Android preview published 28 October 2026 · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.12A1 cinematic Act Focus (28 October 2026)
+
+[PR #25](https://github.com/rayadinaveen98-ship-it/frame-one/pull/25) merged as [`05aafda5`](https://github.com/rayadinaveen98-ship-it/frame-one/commit/05aafda5781bc6d8aeeb38fca42d51fa3800177c). Users can now select **Explore this act, scene by scene** from any of the six existing film journeys, follow one real act's lessons and reflection, step forward/back across three acts, or return to **Show all three acts**. Default full-browse mode remains. On phones as narrow as 320px, the focused navigation stacks cleanly and respects reduced-motion/accessibility settings. No new completion tracking or storage schema was added.
+
+All **five exact-commit pre-merge checks** passed on PR head `87144b1ed37e358dc8dcff6873509880339371c7`: [web 40724023154](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40724023154), [Chromium/mobile 40724023170](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40724023170), [Android APK 40724023189](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40724023189), [Android Back/offline 40724023119](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40724023119) and [full Android picker/restore 40724023088](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40724023088). The independent main [web 40725767484](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40725767484), [browser 40725767368](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40725767368), and [Android APK 40725767482](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40725767482) passed. The [public APK publisher 40726270062](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40726270062) passed and verified the downloadable build source `05aafda5`.
+
+[**Download the refreshed Android APK**](https://github.com/rayadinaveen98-ship-it/frame-one/releases/download/android-preview-latest/FrameOne-android-debug.apk) · [v0.12A1 QA notes](docs/QA_V12A1.md). **Signing warning:** the published APK still uses a temporary debug key. Its certificate changed from the earlier test APK, so an in-place update from that preview will be rejected. Back up notes/progress externally and verify the backup file before uninstalling. Persistent QA signing and physical-device upgrade acceptance are not complete.
 
 ## Latest — v0.11A7 public APK signer safety (28 October 2026)
 
