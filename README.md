@@ -1,8 +1,14 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.11A7 Android QA isolation merged · current installable APK v0.11A6 · 28 October 2026 · not app-store released.**
+**Latest development checkpoint: v0.11A7 native backup QA closed + permanent QA signer continuity guarded · current installable APK v0.11A6 · 28 October 2026 · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.11A7 public APK signer safety (28 October 2026)
+
+[PR #24](https://github.com/rayadinaveen98-ship-it/frame-one/pull/24) merged as `c3236cc2`. The public Android APK publisher now uses a separately tested, fail-closed signing-continuity gate: once a long-lived QA certificate has been published, a later temporary signer or an unexpected different certificate **cannot overwrite** the public APK. It supports a documented one-time temporary→persistent migration and rejects malformed signing receipts. Eight executable signer transition cases passed in [web CI 40718724234](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40718724234); Chromium [40718724790](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40718724790) passed.
+
+This is a **release integrity improvement only**. It does **not** provision the private QA key or verify two-version physical-device upgrades. No new Android APK was released; the public test APK is still v0.11A6 and remains temporary signed. [Secure signing plan](docs/ANDROID_QA_SIGNING.md).
 
 ## Latest — v0.11A7 QA gate and v0.11A6 APK (28 October 2026)
 
