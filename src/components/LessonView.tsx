@@ -95,6 +95,11 @@ export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyI
   const seriesPosition=journeyId?seriesLessonPosition(journeyId,lesson.id):null;
   const series=seriesPosition&&journeyId?seriesById(journeyId):null;
   const activeAct=series&&seriesPosition?series.acts[seriesPosition.actIndex]:null;
+  // Give readers a small act break only at a real series boundary.
+  const followingPosition=seriesPosition?.next&&journeyId
+    ?seriesLessonPosition(journeyId,seriesPosition.next):null;
+  const intermission=series&&followingPosition&&followingPosition.actIndex!==seriesPosition?.actIndex
+    ?series.acts[followingPosition.actIndex]:null;
   const link = labLinks[lesson.id];
   const correct = quiz === lesson.answer;
   function finishLesson(){
@@ -156,6 +161,11 @@ export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyI
           <button className="cta" type="button" disabled={!correct} onClick={finishLesson}>{completed?'✓ Completed — continue':'Mark lesson complete'} →</button>
         </div>
       </section>
+      {intermission&&followingPosition?<aside className="series-intermission" aria-label="Coming up in your cinema series">
+        <span className="cinema-overline">AFTER THIS SCENE · ACT {String(followingPosition.actIndex+1).padStart(2,'0')} OF 03</span>
+        <h3>{intermission.title}</h3>
+        <p>{intermission.cue}</p>
+      </aside>:null}
       <nav className="lesson-pagination" aria-label="Lesson navigation">
         {seriesPosition&&journeyId ? <>
           <button className="btn-secondary" type="button" disabled={!seriesPosition.prev}
