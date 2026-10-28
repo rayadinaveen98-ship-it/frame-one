@@ -42,3 +42,17 @@ Independent main [web 40708748315](https://github.com/rayadinaveen98-ship-it/fra
 **The main-branch repeated native emulator [40708744714](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40708744714) and backup [40708744958](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40708744958) runs were still in progress when this record was written; the exact-code PR checks passed.**
 
 **Confirmed signing status: TEMPORARY.** The new certificate SHA-256 is `7bf4a1fb60b88307042cb3236fe34957caa9d761485ec1797d0a3b1a32b411c5`. It differs from the previously published certificate, and an in-place update from that prior preview APK will be rejected by Android. Preserve an externally verified backup before uninstalling. See [secure signing handoff](ANDROID_QA_SIGNING.md). Physical-device and TalkBack/manual usability acceptance are not complete.
+
+
+## v0.11A7 QA remediation — fully verified on main
+
+The v0.11A6 `main` repeat DocumentsUI test [40708744958](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40708744958) failed before any export, while trying to tap a Home backup shortcut from a page state inside a collection. The native emulator error was `Cannot find enabled visible Android control 'Back up'`. The failed screenshot showed collection content. This was a navigation dependency in the combined test, **not evidence of corrupted or missing backup bytes**.
+
+[PR #23](https://github.com/rayadinaveen98-ship-it/frame-one/pull/23) made the native test deterministic by separately verifying a fresh Android Home shortcut before authored content is created, and then verifying the full independent export/share/clear-system-data/DocumentsUI restore flow with real in-app user actions. It changed **only** `scripts/android-emulator-backup.py`, not the APK, storage implementation, user progress, or signing key.
+
+- Exact PR head `8d24e09e018d8f3a5e74b6ae36475009a0cbb1e3` passed [web 40713744051](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40713744051), [browser 40713744422](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40713744422), [Android Back/offline 40713743879](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40713743879) and [full AOSP backup/restore 40713744107](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40713744107).
+- Squash merged to main as `61b7e0b885a350cae7a5fb73e33d6368264180fd`.
+- **Repeat main-branch gates passed:** [web 40715481872](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40715481872), [native Android Back/offline 40715481928](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40715481928), [full Android DocumentsUI 40715481868](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40715481868).
+- The full Android log proves: `PASS: fresh Android Home backup shortcut opens actual learning backup tools`, `PASS: Android system file picker imported backup after user confirmation`, `PASS: exported JSON restored completed lesson and Make Lab story after total app data clear`, `FRAME ONE ANDROID BACKUP EXPORT RESTORE: PASS`.
+
+**Resolved:** this specific automated QA blocker. **Still unresolved:** one-time provisioning of a durable QA debug keystore (GitHub Actions secret `FRAMEONE_QA_DEBUG_KEYSTORE_B64`) and a same-signer, two-version *physical phone* upgrade test. The public v0.11A6 Android test APK remains temporary signed and may need uninstall-and-restore. No new APK was warranted by this test-only change.
