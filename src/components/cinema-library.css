@@ -246,3 +246,105 @@
 .cinema-art-variant-5{background-image:radial-gradient(circle at 53% 12%,#a9846966,transparent 49%),linear-gradient(155deg,#313b41,#121820 80%)}
 .cinema-art-variant-6{background-image:radial-gradient(circle at 24% 35%,#8f76735e,transparent 53%),linear-gradient(135deg,#32313a,#151b24 86%)}
 .cinema-art-variant-7{background-image:radial-gradient(circle at 70% 55%,#a98d7b45,transparent 50%),linear-gradient(145deg,#2b343a,#161820 84%)}
+
+
+/* v0.11A5: unfinished film journeys return as real, offline re-entry points.
+   No watched-time history or Lab completion is invented. */
+.cinema-journey-return{margin:0 0 26px;min-width:0}
+.cinema-journey-return-intro{
+  display:flex;align-items:end;justify-content:space-between;
+  gap:16px;margin-bottom:13px;
+}
+.cinema-journey-return-intro h2{
+  margin:3px 0 4px;color:#f4ece4;
+  font:550 clamp(22px,2.6vw,28px)/1.2 var(--cinema-type,system-ui);
+  letter-spacing:-.035em;
+}
+.cinema-journey-return-intro p{
+  color:#b6adb0;font-size:12px;line-height:1.5;margin:0;
+}
+.cinema-journey-return-count{
+  color:#cba68d;white-space:nowrap;font-size:11px;font-weight:650;
+}
+.cinema-journey-return-list{
+  display:flex;gap:12px;min-width:0;
+  overflow-x:auto;overflow-y:hidden;
+  scroll-snap-type:x proximity;scroll-padding-inline:2px;
+  overscroll-behavior-inline:contain;
+  scrollbar-width:thin;scrollbar-color:#595158 transparent;
+  padding:3px 2px 10px;
+  -webkit-overflow-scrolling:touch;
+}
+.cinema-journey-return-card{
+  display:flex;align-items:stretch;gap:13px;flex:0 0 324px;
+  max-width:calc(100% - 2px);min-width:0;
+  padding:12px;border:1px solid #544640;border-radius:15px;
+  text-align:left;color:#eee8e2;
+  background:linear-gradient(123deg,#282229,#191c22);
+  cursor:pointer;scroll-snap-align:start;
+  transition:background .16s ease,border-color .16s ease;
+}
+.cinema-journey-return-card:hover{
+  border-color:#b28a6e;background:linear-gradient(123deg,#33292a,#1d1e23)
+}
+.cinema-journey-return-card:focus-visible{
+  outline:3px solid #dbb99d;outline-offset:2px;
+}
+.cinema-journey-return-art{
+  display:block;flex:0 0 91px;min-height:143px;
+  position:relative;overflow:hidden;border-radius:9px;
+  border:1px solid #685148;background:#252328;
+}
+.cinema-journey-return-art .cinema-poster-scene{inset:0}
+.cinema-journey-return-art .cinema-poster-drawing{
+  inset:0;width:100%;height:100%;object-fit:cover;
+}
+.cinema-journey-return-details{
+  display:flex;flex:1;flex-direction:column;min-width:0;gap:4px;
+  padding:3px 0;
+}
+.cinema-journey-return-details .cinema-overline{
+  color:#d6a987;font-size:9px;
+}
+.cinema-journey-return-details strong{
+  color:#f1e9e3;
+  font:560 17px/1.23 var(--cinema-type,system-ui);
+  letter-spacing:-.027em;
+}
+.cinema-journey-act{color:#c7aba0;font-size:11px;line-height:1.4}
+.cinema-journey-numbers{margin-top:5px;color:#aaa4a5;font-size:10px}
+.cinema-journey-meter{
+  display:block;height:3px;border-radius:999px;overflow:hidden;
+  background:#504347;margin:2px 0 6px;
+}
+.cinema-journey-meter>span{
+  display:block;height:100%;border-radius:999px;
+  background:linear-gradient(90deg,#a77a62,#e8bb91);
+}
+.cinema-journey-return-action{
+  margin-top:auto;color:#dfb18f;font-size:11px;font-weight:700;
+}
+.cinema-journey-return-action>span{margin-left:5px}
+@media(max-width:760px){
+  .cinema-journey-return{margin-bottom:22px}
+  .cinema-journey-return-intro h2{font-size:23px}
+  .cinema-journey-return-intro p{font-size:11px}
+  .cinema-journey-return-list{
+    gap:10px;margin-right:-18px;padding-right:18px;scrollbar-width:none;
+  }
+  .cinema-journey-return-list::-webkit-scrollbar{display:none}
+  .cinema-journey-return-card{flex-basis:295px}
+  .cinema-journey-return-art{flex-basis:78px;min-height:140px}
+  .cinema-journey-return-details strong{font-size:15px}
+}
+@media(max-width:350px){
+  .cinema-journey-return-intro{align-items:start}
+  .cinema-journey-return-intro p{max-width:232px}
+  .cinema-journey-return-list{margin-right:-14px;padding-right:14px}
+  .cinema-journey-return-card{flex-basis:267px;padding:9px;gap:10px}
+  .cinema-journey-return-art{flex-basis:70px;min-height:132px}
+  .cinema-journey-return-details strong{font-size:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  .cinema-journey-return-card{transition:none}
+}
