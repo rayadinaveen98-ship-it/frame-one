@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useRef,useState} from 'react';
 import curriculum from '../data/curriculum.v08b.json';
 import type {Lesson} from '../data/schema';
 import {cinemaShelves,type CinemaEntry} from '../data/cinema-library';
@@ -77,6 +77,10 @@ function SeriesAct({act,actIndex,entries,startIndex,completed,next,isFeatured}:{
 export function CollectionJourney({collectionId}:{collectionId:string}){
   // Ephemeral film-preview choice: progression still comes only from lesson completions.
   const [previewAct,setPreviewAct]=useState<number|null>(null);
+  // An optional, ephemeral film-viewing mode: one act at a time.
+  // Neither selected act nor view mode modifies learner progress or backups.
+  const [focusAct,setFocusAct]=useState(false);
+  const chaptersRef=useRef<HTMLElement>(null);
   const shelf=cinemaShelves.find(item=>item.id===collectionId);
   const series=seriesById(collectionId);
   const completed=safeProgress(allIds);
@@ -103,6 +107,12 @@ export function CollectionJourney({collectionId}:{collectionId:string}){
   const featuredInfo=detail(featuredNext);
   const featuredTotal=featuredEntries.filter(entry=>entry.kind==='lesson').length;
   const featuredDone=featuredEntries.filter(entry=>entry.kind==='lesson'&&completed.has(entry.id)).length;
+  function focusOnAct(index:number){
+    setPreviewAct(index);
+    setFocusAct(true);
+    const reduceMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    chaptersRef.current?.scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'start'});
+  }
   let actOffset=0;
   return <div className="page collection-view" data-collection-view={shelf.id}>
     <button className="collection-back" type="button" onClick={()=>window.frameOneLegacy?.goBack()}>
@@ -158,6 +168,11 @@ export function CollectionJourney({collectionId}:{collectionId:string}){
             {featuredTotal>0?(featuredDone===featuredTotal?'Revisit act':'Enter this act'):'Try this act'}
             <span aria-hidden="true">→</span>
           </button>
+          <button type="button" className="collection-act-focus-link"
+            data-act-focus-entry
+            onClick={()=>focusOnAct(featuredIndex)}>
+            Explore this act, scene by scene <span aria-hidden="true">↓</span>
+          </button>
         </div>
         <div className="collection-act-spotlight-art" aria-hidden="true">
           <CinemaArtwork art={featuredNext.art} artId={featuredNext.id}/>
@@ -177,31 +192,50 @@ export function CollectionJourney({collectionId}:{collectionId:string}){
       </div>
       <p>{hasActivities?'Only finished lessons count. Experiments and roles are for exploration, not scores.':'Lesson completion stays in sync with your existing learning progress.'}</p>
     </section>:<div className="collection-no-progress">An open creative studio. Experiments are for discovery, not scores.</div>}
-    <section className="collection-chapters" aria-label={'Explore '+shelf.heading}>
+    <section ref={chaptersRef} className="collection-chapters" aria-label={'Explore '+shelf.heading}
+      data-collection-view-mode={focusAct?'focus':'all'}>
       <div className="collection-list-intro">
         <div>
-          <span className="cinema-overline">THREE ACTS · ONE JOURNEY</span>
-          <h2>Watch how the ideas connect.</h2>
+          <span className="cinema-overline">{focusAct?'ONE ACT AT A TIME':'THREE ACTS · ONE JOURNEY'}</span>
+          <h2>{focusAct?'Stay with this part of the story.':'Watch how the ideas connect.'}</h2>
         </div>
-        <span>{shelf.entries.length} parts</span>
+        <button className="collection-focus-toggle" type="button"
+          aria-pressed={focusAct} data-collection-focus-toggle
+          onClick={()=>setFocusAct(previous=>!previous)}>
+          {focusAct?'Show all three acts':'Focus on one act'} <span aria-hidden="true">{focusAct?'↗':'→'}</span>
+        </button>
       </div>
+      {focusAct?<nav className="collection-act-stepper" aria-label="Move between film acts">
+        <button type="button" data-focus-previous
+          disabled={featuredIndex===0}
+          onClick={()=>focusOnAct(Math.max(0,featuredIndex-1))}>
+          <span aria-hidden="true">←</span> Previous act
+        </button>
+        <span aria-live="polite">ACT {String(featuredIndex+1).padStart(2,'0')} / 03</span>
+        <button type="button" data-focus-next
+          disabled={featuredIndex===series.acts.length-1}
+          onClick={()=>focusOnAct(Math.min(series.acts.length-1,featuredIndex+1))}>
+          Next act <span aria-hidden="true">→</span>
+        </button>
+      </nav>:null}
       {series.acts.map((act,index)=>{
         const from=actOffset;actOffset+=act.count;
         const items=shelf.entries.slice(from,actOffset);
+        if(focusAct&&index!==featuredIndex)return null;
         return <SeriesAct key={index} act={act} actIndex={index}
           entries={items} startIndex={from} completed={completed} next={next}
           isFeatured={featuredIndex===index}/>;
       })}
     </section>
-    <section className="collection-finale" aria-label="After the last act">
+    {(!focusAct||featuredIndex===series.acts.length-1)?<section className="collection-finale" aria-label="After the last act">
       <span className="cinema-overline">THE FINAL FRAME</span>
       <p>{series.closing}</p>
-    </section>
-    <section className="collection-end">
+    </section>:null}
+    {(!focusAct||featuredIndex===series.acts.length-1)?<section className="collection-end">
       <span className="cinema-overline">EXPLORE BEYOND THIS COLLECTION</span>
       <h2>Every frame leads somewhere.</h2>
       <button type="button" onClick={()=>navigate('home')}>Browse other collections <span aria-hidden="true">→</span></button>
       <button type="button" onClick={()=>navigate('learn')}>Full learning syllabus <span aria-hidden="true">→</span></button>
-    </section>
+    </section>:null}
   </div>;
 }

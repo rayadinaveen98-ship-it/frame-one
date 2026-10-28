@@ -128,6 +128,7 @@ def launch():
 def complete_first_lesson():
     ui.tap_label("Learn")
     find_text("YOUR LEARNING JOURNEY")
+    scroll_top()
     control("Continue learning",exact=False)
     find_text("Why do we watch films?")
     control("B. Shape how we experience a story")
