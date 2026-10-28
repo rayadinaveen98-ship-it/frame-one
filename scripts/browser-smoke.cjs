@@ -543,11 +543,11 @@ async function verify() {
     assert.equal(await phone.locator('[data-cinema-shelf]').count(),6);
     assert.equal(await phone.locator('[data-cinema-entry^="lab:"]').count(),7);
     assert.equal(await phone.locator('#content .card-grid').isVisible(),false);
-    const horizontal=await phone.locator('.cinema-rail').first().evaluate(el=>{
+    const libraryRailMetrics=await phone.locator('.cinema-rail').first().evaluate(el=>{
       const before=el.scrollLeft;el.scrollLeft=140;
       return {before,after:el.scrollLeft,max:el.scrollWidth-el.clientWidth};
     });
-    assert.ok(horizontal.max>90&&horizontal.after>0,
+    assert.ok(libraryRailMetrics.max>90&&libraryRailMetrics.after>0,
       'Cinema rails really swipe horizontally on '+width+'px screens');
     await photo(phone, 'v11-discovery-home-'+width+'.png');
     // Every poster has a real destination: lesson, interactive Lab and Film Roles.
