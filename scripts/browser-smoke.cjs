@@ -76,7 +76,23 @@ async function verify() {
   assert.equal(await page.locator('.cinema-continue').count(),0,
     'Do not invent a Continue row for a new learner with zero progress');
   await photo(page, '01-home-desktop.png');
-  console.log('PASS: real cinema library mounts six editorial shelves with working content and keeps the original featured hero');
+  assert.equal(await page.locator('[data-cinema-collection]').count(),6);
+  await page.locator('[data-cinema-collection="beginnings"]').click();
+  await page.locator('[data-collection-view="beginnings"]').waitFor();
+  assert.equal(new URL(page.url()).hash,'#collection/beginnings');
+  assert.equal(await page.locator('[data-collection-entry]').count(),5);
+  assert.equal(await page.getByRole('progressbar',{name:'Lessons completed in this collection'}).getAttribute('aria-valuenow'),'0');
+  await photo(page,'01b-collection-beginnings-desktop.png');
+  await page.locator('.collection-primary').click();
+  await page.locator('.react-lesson h1').waitFor();
+  assert.equal((await page.locator('.react-lesson h1').textContent()).trim(),curriculum.lessons[0].title);
+  await page.getByRole('button',{name:'Back within Frame One'}).click();
+  await page.locator('[data-collection-view="beginnings"]').waitFor();
+  assert.equal(new URL(page.url()).hash,'#collection/beginnings','Back returns to actual collection');
+  await page.locator('.collection-back').click();
+  await page.locator('.cinema-discovery').waitFor();
+  assert.equal(new URL(page.url()).hash,'#home','collection back returns Home');
+  console.log('PASS: real cinema library and first collection journey navigate with working history');
 
   await page.locator('.sidebar [data-page="learn"]').click();
   await page.locator('.react-learn-view h1').waitFor();
@@ -550,7 +566,32 @@ async function verify() {
     assert.ok(libraryRailMetrics.max>90&&libraryRailMetrics.after>0,
       'Cinema rails really swipe horizontally on '+width+'px screens');
     await photo(phone, 'v11-discovery-home-'+width+'.png');
-    // Every poster has a real destination: lesson, interactive Lab and Film Roles.
+    // Tapping a shelf title opens a real collection, not a duplicated Home carousel.
+    await phone.locator('[data-cinema-collection="visual"]').click();
+    await phone.locator('[data-collection-view="visual"]').waitFor();
+    assert.equal(new URL(phone.url()).hash,'#collection/visual');
+    assert.equal(await phone.locator('[data-collection-entry]').count(),7);
+    assert.equal(await phone.getByRole('progressbar',{name:'Lessons completed in this collection'}).getAttribute('aria-valuemax'),'7');
+    await photo(phone,'v11-collection-visual-'+width+'.png');
+    await phone.locator('[data-collection-entry="lesson:lighting"]').click();
+    await phone.locator('.react-lesson h1').waitFor();
+    await phone.getByRole('button',{name:'Back within Frame One'}).click();
+    await phone.locator('[data-collection-view="visual"]').waitFor();
+    await phone.locator('.collection-back').click();
+    await phone.locator('.cinema-discovery').waitFor();
+    await phone.locator('[data-cinema-collection="studio"]').click();
+    await phone.locator('[data-collection-view="studio"]').waitFor();
+    assert.equal(await phone.locator('[data-collection-entry^="lab:"]').count(),7);
+    assert.equal(await phone.getByRole('progressbar',{name:'Lessons completed in this collection'}).count(),0,
+      'Do not claim Lab practice is completed without a tracking system');
+    await photo(phone,'v11-collection-studio-'+width+'.png');
+    await phone.locator('.collection-primary').click();
+    await phone.locator('.react-frame-lab').waitFor();
+    await phone.getByRole('button',{name:'Back within Frame One'}).click();
+    await phone.locator('[data-collection-view="studio"]').waitFor();
+    await phone.locator('.collection-back').click();
+    await phone.locator('.cinema-discovery').waitFor();
+    // Every poster still has a direct destination: lesson, interactive Lab and Film Roles.
     await phone.locator('[data-cinema-entry="lesson:lighting"]').click();
     await phone.locator('.react-lesson h1').waitFor();
     assert.match(await phone.locator('.react-lesson h1').textContent(),/lighting do/i);
