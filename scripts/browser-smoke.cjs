@@ -570,6 +570,7 @@ async function verify() {
     // Tapping a shelf title opens a real collection, not a duplicated Home carousel.
     await phone.locator('[data-cinema-collection="visual"]').click();
     await phone.locator('[data-collection-view="visual"]').waitFor();
+    assert.equal(await phone.locator('.collection-back').isVisible(),false,'No duplicate mobile Back controls');
     assert.equal(new URL(phone.url()).hash,'#collection/visual');
     assert.equal(await phone.locator('[data-collection-entry]').count(),7);
     assert.equal(await phone.getByRole('progressbar',{name:'Lessons completed in this collection'}).getAttribute('aria-valuemax'),'7');
@@ -578,7 +579,7 @@ async function verify() {
     await phone.locator('.react-lesson h1').waitFor();
     await phone.getByRole('button',{name:'Back within Frame One'}).click();
     await phone.locator('[data-collection-view="visual"]').waitFor();
-    await phone.locator('.collection-back').click();
+    await phone.getByRole('button',{name:'Back within Frame One'}).click();
     await phone.locator('.cinema-discovery').waitFor();
     await phone.locator('[data-cinema-collection="studio"]').click();
     await phone.locator('[data-collection-view="studio"]').waitFor();
@@ -590,7 +591,7 @@ async function verify() {
     await phone.locator('.react-frame-lab').waitFor();
     await phone.getByRole('button',{name:'Back within Frame One'}).click();
     await phone.locator('[data-collection-view="studio"]').waitFor();
-    await phone.locator('.collection-back').click();
+    await phone.getByRole('button',{name:'Back within Frame One'}).click();
     await phone.locator('.cinema-discovery').waitFor();
     // Every poster still has a direct destination: lesson, interactive Lab and Film Roles.
     await phone.locator('[data-cinema-entry="lesson:lighting"]').click();
