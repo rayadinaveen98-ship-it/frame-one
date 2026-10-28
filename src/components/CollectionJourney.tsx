@@ -1,7 +1,7 @@
 import curriculum from '../data/curriculum.v08b.json';
 import type {Lesson} from '../data/schema';
 import {cinemaShelves,type CinemaEntry} from '../data/cinema-library';
-import {seriesById,actAtIndex,type FilmAct} from '../data/cinema-series';
+import {seriesById,type FilmAct} from '../data/cinema-series';
 import {navigate,openLab} from '../legacy/bridge';
 import {safeProgress} from '../state/learning';
 import {CinemaArtwork} from './CinemaArtwork';
@@ -89,7 +89,6 @@ export function CollectionJourney({collectionId}:{collectionId:string}){
   const hasActivities=shelf.entries.some(entry=>entry.kind!=='lesson');
   const next=lessonEntries.find(entry=>!completed.has(entry.id))??shelf.entries[0];
   const primary=next?detail(next):null;
-  const nextIndex=shelf.entries.findIndex(entry=>entry.kind===next.kind&&entry.id===next.id);
   let actOffset=0;
   return <div className="page collection-view" data-collection-view={shelf.id}>
     <button className="collection-back" type="button" onClick={()=>window.frameOneLegacy?.goBack()}>
