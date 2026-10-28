@@ -1,8 +1,16 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.12A1 cinematic Act Focus merged · updated Android preview published 28 October 2026 · not app-store released.**
+**Latest development checkpoint: v0.12A2 seamless lesson/act transitions merged · updated Android preview published 28 October 2026 · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.12A2 cinematic scene continuity (28 October 2026)
+
+[PR #26](https://github.com/rayadinaveen98-ship-it/frame-one/pull/26) merged as [`7c515646`](https://github.com/rayadinaveen98-ship-it/frame-one/commit/7c5156467200443137f877aeb82fe31c7e196c05). A film-journey lesson now has one compact **Part/Act** scene heading and true progress indicator. The lesson's ending flows into the original current-act reflection, an authentic next-act intermission only when appropriate, and the **real next scene title and subtitle**. At a journey's last lesson, the original closing line replaces a false upcoming scene. The collection **Cinema Library** return now reliably opens Home, rather than reopening a visited lesson. Normal syllabus lessons, quizzes, notes, seven Labs and saved progress keys remain untouched.
+
+Five exact-commit PR checks passed at `45ac87ab`: [web 40729586319](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40729586319), [Chromium mobile/desktop 40729585477](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40729585477), [Android build 40729585301](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40729585301), [real Android Back/offline 40729585596](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40729585596), and [full Android backup restore 40729585669](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40729585669). Independent merged-main [web 40731071455](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40731071455), [Chromium 40731071587](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40731071587), [Android build 40731071443](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40731071443), and [public publisher 40731396092](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40731396092) passed; the last two independent main native emulator gates are documented in [v0.12A2 QA](docs/QA_V12A2.md).
+
+[**Download latest v0.12A2 Android preview APK**](https://github.com/rayadinaveen98-ship-it/frame-one/releases/download/android-preview-latest/FrameOne-android-debug.apk). The public release explicitly verifies source commit `7c515646`. **Warning:** it is still *temporarily debug signed*. The certificate changed from the preceding APK (new public fingerprint `669aaccf68142c0db7b90b3ff1407a39db40c7131717dc5533a195214e278ea8`); Android rejects in-place upgrades from that previous preview. Export and verify an external learning backup before uninstalling the old version. Permanent QA signing and physical-device upgrade acceptance remain outstanding.
 
 ## Latest — v0.12A1 cinematic Act Focus (28 October 2026)
 
