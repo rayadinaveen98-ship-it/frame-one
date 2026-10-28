@@ -1,8 +1,14 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.11A5 · genuine film-journey continuation on Home · verified Android preview published 28 October 2026 · not app-store released.**
+**Latest development checkpoint: v0.11A7 Android QA isolation merged · current installable APK v0.11A6 · 28 October 2026 · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.11A7 QA gate and v0.11A6 APK (28 October 2026)
+
+- **v0.11A7 QA gate:** [PR #23](https://github.com/rayadinaveen98-ship-it/frame-one/pull/23) merged as `61b7e0b8` after four exact-commit checks passed: web, Chromium, Android native Back/offline, and real Android DocumentsUI backup restore. The new test isolates a fresh Android Home → Back up → Learn panel action from a separately verified saved-lesson/storyboard JSON export and restore. No application source, backup schema or compiled APK behavior was changed. Main-branch repeat native checks were running at the time of this update.
+- **v0.11A6 released APK:** [PR #22](https://github.com/rayadinaveen98-ship-it/frame-one/pull/22) merged as `a81e66cb`; the [downloadable Android test APK](https://github.com/rayadinaveen98-ship-it/frame-one/releases/download/android-preview-latest/FrameOne-android-debug.apk) was published from that build. The Home screen has a compact Android backup shortcut. The release publisher guards against rollback builds and records the actual certificate status and mismatch in release notes.
+- **Still blocked:** persistent Android QA signing certificate, physical-device upgrade validation and final accessibility/Play Store QA. The v0.11A6 APK uses a temporary debug certificate **different from the preceding APK**. Export and verify an external learning backup before uninstalling an older app. [Android signing handoff](docs/ANDROID_QA_SIGNING.md) · [v0.11A6 QA](docs/QA_V11A6.md).
 
 ## Latest — v0.11A5 (28 October 2026)
 
