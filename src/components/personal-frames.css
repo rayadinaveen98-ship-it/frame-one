@@ -120,3 +120,22 @@
   .frames-active,.frames-loading{animation:none!important}
   .frames-image{transform:none!important;opacity:1!important;clip-path:none!important}
 }
+
+/* No chosen images = no gallery, no loading skeleton, no empty Home spacer.
+   The hidden file input remains in the DOM for the Home + control. */
+.personal-frames[hidden]{display:none!important}
+.personal-frames{margin:0 0 13px}
+.frames-stage{
+  border-radius:16px;
+  border-color:#34353b;
+  background:#101216;
+  box-shadow:none;
+}
+.frames-more{background:#131416d9;border-color:#8d858174;border-radius:10px}
+.frames-options{background:#191b20f0;border-color:#49434a}
+.frames-options button{font-weight:550;color:#f0eae5}
+.frames-options button:hover{background:#302b2b}
+@media(max-width:760px){
+  .personal-frames{margin:0 0 12px}
+  .frames-stage{border-radius:15px}
+}
