@@ -115,7 +115,7 @@ export function CollectionJourney({collectionId}:{collectionId:string}){
   }
   let actOffset=0;
   return <div className="page collection-view" data-collection-view={shelf.id}>
-    <button className="collection-back" type="button" onClick={()=>window.frameOneLegacy?.goBack()}>
+    <button className="collection-back" type="button" onClick={()=>navigate('home')}>
       <span aria-hidden="true">←</span> Cinema Library
     </button>
     <section className="collection-feature" aria-labelledby="collectionTitle">

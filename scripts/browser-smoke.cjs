@@ -121,6 +121,10 @@ async function verify() {
   assert.equal((await page.locator('.react-lesson h1').textContent()).trim(),curriculum.lessons[0].title);
   assert.equal(await page.locator('[data-series-lesson="beginnings"]').count(),1);
   assert.match(await page.locator('.series-lesson-context').textContent(),/PART 1 OF 5/);
+  assert.equal(await page.getByRole('progressbar',{name:'Current scene in film journey'}).getAttribute('aria-valuenow'),'1');
+  assert.equal(await page.locator('.lesson-navline').count(),0,'Series uses one clear View journey return control');
+  assert.equal(await page.locator('[data-scene-transition="scene"]').count(),1,'Ordinary scene handoff shows no false act break');
+  assert.match(await page.locator('.series-up-next').textContent(),/How did cinema begin\?/,'Outro names the real following lesson');
   assert.equal(await page.getByRole('button',{name:'Next in series →'}).count(),1);
   await photo(page,'01c-beginnings-series-lesson-desktop.png');
   await page.getByRole('button',{name:'Next in series →'}).click();
@@ -128,12 +132,21 @@ async function verify() {
   assert.match(await page.locator('.series-lesson-context').textContent(),/PART 2 OF 5/);
   assert.match(await page.locator('.series-intermission').textContent(),/A shared language/,
     'Boundary after the first act previews the actual next act');
+  assert.equal(await page.locator('[data-scene-transition="act"]').count(),1);
+  assert.match(await page.locator('.series-up-next').textContent(),/Frame, shot, scene/,'Real next scene follows next-act editorial cue');
   // Desktop history must still unwind both lessons to the collection.
   await page.goBack();
   await page.locator('.series-lesson-context').getByText(/PART 1 OF 5/).waitFor();
   await page.goBack();
   await page.locator('[data-collection-view="beginnings"]').waitFor();
   assert.equal(new URL(page.url()).hash,'#collection/beginnings','Back returns to actual collection');
+  await page.locator('[data-collection-entry="lesson:india"]').click();
+  await page.locator('[data-series-lesson="beginnings"]').waitFor();
+  assert.equal(await page.locator('[data-scene-transition="finale"]').count(),1,'Last genuine scene has closing, not a fabricated fourth act');
+  assert.equal(await page.locator('.series-intermission').count(),0,'Finale does not preview an imaginary act');
+  assert.equal(await page.getByRole('button',{name:'Return to collection →'}).count(),1);
+  await page.getByRole('button',{name:'Return to collection →'}).click();
+  await page.locator('[data-collection-view="beginnings"]').waitFor();
   await page.locator('.collection-back').click();
   await page.locator('.cinema-discovery').waitFor();
   assert.equal(new URL(page.url()).hash,'#home','collection back returns Home');
@@ -682,7 +695,11 @@ async function verify() {
     await phone.locator('.react-lesson h1').waitFor();
     assert.equal(await phone.locator('[data-series-lesson="visual"]').count(),1);
     assert.match(await phone.locator('.series-lesson-context').textContent(),/PART 3 OF 7/);
+    assert.equal(await phone.locator('.lesson-navline').count(),0);
+    assert.equal(await phone.locator('.series-scene-progress').count(),1);
+    assert.equal(await phone.locator('.series-scene-outro').count(),1);
     assert.equal(await phone.getByRole('button',{name:'Next in series →'}).count(),1);
+    await photo(phone,'v12a2-scene-bridge-'+width+'.png');
     await phone.getByRole('button',{name:'Back within Frame One'}).click();
     await phone.locator('[data-collection-view="visual"]').waitFor();
     await phone.getByRole('button',{name:'Back within Frame One'}).click();

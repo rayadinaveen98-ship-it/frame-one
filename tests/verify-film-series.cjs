@@ -74,9 +74,35 @@ assert(lesson.includes('Previous in series')&&lesson.includes('Next in series'))
 assert(lesson.includes('series-intermission')&&lesson.includes('followingPosition.actIndex!==seriesPosition?.actIndex'),
   'Intermission occurs only when the next lesson actually crosses an act');
 assert(lesson.includes('Next lesson →'),'non-series syllabus controls unchanged');
+// v0.12A2: the scene-to-scene reading experience is true to the existing
+// lesson/act editorial model; standalone syllabus lessons stay unchanged.
+for(const contract of [
+  'className="series-scene-heading"',
+  'className="series-scene-progress" role="progressbar"',
+  'aria-label="Current scene in film journey"',
+  'data-scene-transition={intermission?',
+  'className="series-scene-outro"',
+  'className="series-scene-reflection"',
+  'className="series-up-next"',
+  'nextScene?nextScene.title:series.closing',
+  "nextScene=seriesPosition?.next?lessons.find(item=>item.id===seriesPosition.next):null",
+  "activeAct?.reflection",
+  "className=\"lesson-pagination series-scene-pagination\"",
+  "seriesPosition.next?'Next in series →':'Return to collection →'",
+  'navigate(\'learn\')'
+]) assert(lesson.includes(contract),'Scene continuity contract: '+contract);
+const sceneCss=read('src/components/lesson-react.css');
+for(const css of ['.series-scene-outro','.series-scene-progress','.series-scene-pagination','@media(max-width:350px)','prefers-reduced-motion']){
+  assert(sceneCss.includes(css),'Accessible, narrow-friendly lesson transition styling: '+css);
+}
+assert(!lesson.includes('localStorage.setItem'),'Scene continuity does not add tracking keys');
+assert(lesson.includes('completeLesson(lesson.id,seriesPosition.next?'),
+  'Actual completion still delegates to the existing progress engine');
 assert(runtime.includes('frameOneJourney:state.page===\'lesson\'?state.journey:null'),'history context persists');
 assert(runtime.includes("continuation?.returnCollectionId===state.journey"),'return-to-series completion restricted to current context');
 assert(runtime.includes('finished.add(id);persist()'),'original progress key remains sole source');
+assert(view.includes('className="collection-back" type="button" onClick={()=>navigate(\'home\')}'),
+  'Collection Cinema Library return goes Home instead of reopening prior lesson history');
 assert(app.includes('journeyId={route.journey}'),'React receives exact legacy series route');
 assert(art.includes('artId=art'),'cover variants are deterministic across refreshes');
 assert(art.includes('cinema-poster-signature'),'poster variants have original decorative signatures');
