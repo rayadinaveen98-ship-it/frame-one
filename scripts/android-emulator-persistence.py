@@ -68,7 +68,24 @@ def open_first_lesson():
     # Lesson cards are offscreen in the full emulator. An accessibility
     # match to the card can be virtual and tapping it silently does nothing.
     # The visible Continue learning control reliably opens lesson one.
-    ui.tap_label("Continue learning →")
+    # A native bottom bar overlays the final WebView rows. Never tap an
+    # accessibility node whose rectangle is under those tabs. Scroll until
+    # the lesson CTA is fully inside the usable document viewport.
+    opened=False
+    for _ in range(8):
+        choices=ui.find("Continue learning →",exact=True,tries=3)
+        visible=[n for n in choices if 180<int(n["y"])<1820 and int(n["bottom"])<1900]
+        if visible:
+            button=visible[0]
+            print(f"TAP SAFE CONTINUE at {button['x']},{button['y']}",flush=True)
+            ui.adb("shell","input","tap",str(button["x"]),str(button["y"]))
+            opened=True
+            break
+        ui.adb("shell","input","swipe","540","1750","540","1150","320")
+        time.sleep(.45)
+    if not opened:
+        ui.capture("continue-learning-obscured-by-navigation")
+        raise AssertionError("Continue learning never became safely tappable above Android navigation")
     ui.find("My own filmmaking idea",tries=12)
     ui.find("Why do we watch films?")
     ui.capture("persistence-01-lesson-open")

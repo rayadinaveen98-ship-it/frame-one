@@ -182,7 +182,9 @@ def restart_offline():
 def verify_after_restart():
     find_text("1/33 lessons")
     ui.tap_label("Learn")
-    find_text("1 of 33 lessons finished")
+    find_text("YOUR CINEMA JOURNEY")
+    find_text("3 percent complete")
+    find_text("1 of 5 lessons finished")
     print("PASS: completed first lesson still counts after offline force-stop",flush=True)
     ui.tap_label("Lab")
     find_text("One moment. Many frames.")
