@@ -97,6 +97,15 @@ export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyI
   const activeAct=series&&seriesPosition?series.acts[seriesPosition.actIndex]:null;
   const link = labLinks[lesson.id];
   const correct = quiz === lesson.answer;
+  function finishLesson(){
+    if(seriesPosition&&journeyId){
+      completeLesson(lesson.id,seriesPosition.next?
+        {nextLessonId:seriesPosition.next}:{returnCollectionId:journeyId});
+    }else{
+      // Keep the untouched Learn syllabus completion path.
+      completeLesson(lesson.id);
+    }
+  }
   return <div className="page lesson-view react-lesson">
     {series&&seriesPosition&&journeyId?<section className="series-lesson-context" aria-label="Your cinema series" data-series-lesson={journeyId}>
       <div className="series-lesson-copy">
@@ -144,9 +153,7 @@ export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyI
         <div className={`quiz-feedback ${quiz!==null&&!correct?'error':''}`} role="status" aria-live="polite">{quiz===null?quizStatus:<>{correct?'✓ Exactly. ':'Not quite. '}{lesson.feedback}</>}</div>
         <div className="lesson-actions">
           {quiz!==null&&!correct?<button className="btn-secondary" type="button" onClick={()=>{setQuiz(null);setQuizStatus('Choose another answer.');}}>Try again</button>:null}
-          <button className="cta" type="button" disabled={!correct} onClick={()=>completeLesson(lesson.id,seriesPosition&&journeyId?(
-              seriesPosition.next?{nextLessonId:seriesPosition.next}:{returnCollectionId:journeyId}
-            ):undefined)}>{completed?'✓ Completed — continue':'Mark lesson complete'} →</button>
+          <button className="cta" type="button" disabled={!correct} onClick={finishLesson}>{completed?'✓ Completed — continue':'Mark lesson complete'} →</button>
         </div>
       </section>
       <nav className="lesson-pagination" aria-label="Lesson navigation">
