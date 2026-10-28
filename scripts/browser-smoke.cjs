@@ -72,6 +72,14 @@ async function verify() {
   await page.locator('.react-learn-view h1').waitFor();
   assert.match(await page.locator('.react-learn-view h1').textContent(), /film starts with curiosity/i);
   assert.equal(await page.locator('.react-lesson-card').count(), 33);
+  assert.equal(await page.locator('.journey-chapter-segment').count(),6,
+    'All six course chapters have a clickable progress marker');
+  assert.equal(await page.getByRole('progressbar',{name:'Completed lessons'}).getAttribute('aria-valuenow'),'0');
+  assert.equal((await page.locator('.journey-next-title').textContent()).trim(),curriculum.lessons[0].title);
+  await page.getByRole('button',{name:/View chapter 2:/}).click();
+  assert.equal(await page.getByRole('button',{name:/View chapter 2:/}).getAttribute('aria-pressed'),'true');
+  assert.equal(await page.locator('#reactChapter1').textContent(),'Tell a human story');
+  await page.getByRole('button',{name:/View chapter 1:/}).click();
   await photo(page, '02-chapters-desktop.png');
   console.log('PASS: React renders all 33 lessons and six chapters');
 
@@ -86,6 +94,13 @@ async function verify() {
   assert.equal(await page.evaluate(() => {
     try { return JSON.parse(localStorage.getItem('frameone-progress-v01') || '[]').includes('why'); } catch { return false; }
   }), true);
+  await page.locator('.react-lesson h1').waitFor();
+  await page.locator('.sidebar [data-page="learn"]').click();
+  await page.locator('.react-learn-view').waitFor();
+  assert.equal(await page.getByRole('progressbar',{name:'Completed lessons'}).getAttribute('aria-valuenow'),'1');
+  assert.equal((await page.locator('.journey-next-title').textContent()).trim(),curriculum.lessons[1].title);
+  assert.match(await page.getByRole('button',{name:/View chapter 1:/}).getAttribute('aria-label'),/1 of 5 lessons finished/);
+  await page.getByRole('button',{name:'Continue learning →'}).click();
   await page.locator('.react-lesson h1').waitFor();
   await photo(page, '03-lesson-desktop.png');
   console.log('PASS: React quiz marks original progress key and advances to next lesson');
@@ -570,6 +585,14 @@ async function verify() {
     assert.equal(new URL(phone.url()).hash,'#home','mobile Back returns home without leaving Frame One');
     await phone.locator('.mobile-nav [data-page="learn"]').click();
     await phone.locator('.react-learn-view h1').waitFor();
+    assert.equal(await phone.locator('.journey-chapter-segment').count(),6);
+    assert.equal(await phone.locator('.journey-next-title').textContent(),curriculum.lessons[0].title);
+    await phone.getByRole('button',{name:/View chapter 3:/}).click();
+    await phone.locator('#reactChapter2').waitFor();
+    assert.equal(await phone.getByRole('button',{name:/View chapter 3:/}).getAttribute('aria-pressed'),'true');
+    assert.equal(await phone.locator('#chapterLessons2').getAttribute('class'),'chapter-body is-expanded');
+    await phone.getByRole('button',{name:/View chapter 1:/}).click();
+    assert.equal(await phone.getByRole('button',{name:/View chapter 1:/}).getAttribute('aria-pressed'),'true');
     assert.equal(await phone.locator('.chapter-mobile-toggle').count(), 6);
     assert.equal(await phone.locator('.chapter-body.is-expanded').count(), 1);
     assert.equal(await phone.locator('.chapter-mobile-toggle').first().getAttribute('aria-expanded'), 'true');
