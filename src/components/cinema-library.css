@@ -348,3 +348,30 @@
 @media(prefers-reduced-motion:reduce){
   .cinema-journey-return-card{transition:none}
 }
+
+/* v0.11A6 — a quiet Android-only way to protect local creative work. */
+.cinema-backup-shortcut{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:14px;min-width:0;margin:1px 0 22px;padding:12px 15px;
+  border:1px solid #514740;border-radius:12px;
+  background:linear-gradient(110deg,#272326,#1b1e23);
+}
+.cinema-backup-shortcut>div{min-width:0}
+.cinema-backup-shortcut .cinema-overline{font-size:9px}
+.cinema-backup-shortcut p{
+  color:#c9bdb5;font-size:12px;line-height:1.5;margin:3px 0 0;
+}
+.cinema-backup-shortcut button{
+  display:inline-flex;align-items:center;justify-content:center;
+  gap:7px;flex:0 0 auto;min-height:44px;padding:10px 13px;
+  border:1px solid #8b715f;background:#342c2b;color:#f0cbb0;
+  border-radius:9px;font-size:12px;font-weight:680;
+}
+.cinema-backup-shortcut button:focus-visible{
+  outline:3px solid #e1ba94;outline-offset:3px;
+}
+@media(max-width:350px){
+  .cinema-backup-shortcut{padding:10px;gap:9px}
+  .cinema-backup-shortcut p{font-size:11px}
+  .cinema-backup-shortcut button{padding:9px;min-height:44px;font-size:11px}
+}

@@ -56,6 +56,50 @@ jobs:
           unzip -Z1 release/app-debug.apk | grep -qx 'assets/public/index.html'
           mv release/app-debug.apk release/FrameOne-android-debug.apk
           (cd release && sha256sum FrameOne-android-debug.apk > SHA256SUMS.txt)
+      - name: Reject rollback builds and report real signing compatibility
+        shell: bash
+        run: |
+          set -euo pipefail
+          # The receipt comes from the trusted successful main Android job.
+          # It contains only a public certificate fingerprint, never keys.
+          new_cert="$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' release/android-qa-signature.txt | head -n 1)"
+          [[ "$new_cert" =~ ^[0-9a-fA-F]{64}$ ]] || { echo 'Missing valid Android signing certificate receipt'; exit 1; }
+          if grep -Fxq 'Persistent QA signer: YES (managed by GitHub Secret)' release/android-qa-signature.txt; then
+            signer='persistent'
+          elif grep -Fxq 'Persistent QA signer: NO (temporary runner signer; not upgrade-safe)' release/android-qa-signature.txt; then
+            signer='temporary'
+          else
+            echo 'Missing explicit persistent/temporary signing status'; exit 1
+          fi
+
+          mkdir -p previous
+          prior_cert=''
+          if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            previous_sha="$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${RELEASE_TAG}" --jq '.target_commitish')"
+            [[ "$previous_sha" =~ ^[0-9a-fA-F]{40}$ ]] || { echo 'Invalid previous source commit'; exit 1; }
+            # Out-of-order successful workflow_run events must not roll back
+            # a newer published preview. Docs-only commits do not block builds.
+            ancestry="$(gh api "repos/${GITHUB_REPOSITORY}/compare/${previous_sha}...${SOURCE_SHA}" --jq '.status')"
+            if [ "$ancestry" != ahead ] && [ "$ancestry" != identical ]; then
+              echo "::error::Refusing to replace preview from $previous_sha with older/divergent $SOURCE_SHA ($ancestry)"
+              exit 1
+            fi
+            gh release download "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --pattern 'android-qa-signature.txt' --dir previous
+            prior_cert="$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' previous/android-qa-signature.txt | head -n 1)"
+            [[ "$prior_cert" =~ ^[0-9a-fA-F]{64}$ ]] || { echo 'Missing valid previous certificate receipt'; exit 1; }
+          fi
+
+          if [ "$signer" = temporary ]; then
+            printf '%s\n' '**Android signing: TEMPORARY DEBUG KEY. Do not expect in-place updates to work.** Export your learning JSON to an external location, verify it exists, then only uninstall if necessary.' > release/UPGRADE_NOTE.md
+          elif [ -n "$prior_cert" ] && [ "$prior_cert" != "$new_cert" ]; then
+            printf '%s\n' '**Android signing: PERSISTENT QA KEY, but it differs from the previous public build.** Back up before reinstalling this first stable-key preview. Future updates still require matching certificates and a real-device test.' > release/UPGRADE_NOTE.md
+          else
+            printf '%s\n' '**Android signing: PERSISTENT QA KEY.** In-place upgrades still require an identical installed certificate and real-device validation; keep an external backup.' > release/UPGRADE_NOTE.md
+          fi
+          if [ -n "$prior_cert" ] && [ "$prior_cert" != "$new_cert" ]; then
+            printf '%s\n' '**Certificate changed from the previous published APK. Android will reject an in-place update from that APK. Back up your learning data before uninstalling it.**' >> release/UPGRADE_NOTE.md
+          fi
+          printf 'Current public certificate SHA-256: %s\n' "$new_cert" >> release/UPGRADE_NOTE.md
       - name: Publish same stable direct APK URL with verified build receipt
         shell: bash
         run: |
@@ -72,7 +116,11 @@ jobs:
 
           Export a learning backup before uninstalling an older version. No private signing keys or learner data are included in this artifact.
 
-          See **android-qa-signature.txt** for this build's signing certificate fingerprint and whether it uses a persistent QA signer. A stable download URL alone does NOT guarantee in-place APK upgrades; Android requires the same certificate as the installed build.
+          EOF
+          cat release/UPGRADE_NOTE.md >> release/NOTES.md
+          cat >>release/NOTES.md <<EOF
+
+          See **android-qa-signature.txt** for this build's certificate receipt. The public download URL is stable, but that does not establish Android update compatibility.
           EOF
           if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release upload "$RELEASE_TAG" release/FrameOne-android-debug.apk release/SHA256SUMS.txt release/android-qa-signature.txt --clobber --repo "$GITHUB_REPOSITORY"

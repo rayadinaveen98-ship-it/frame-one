@@ -5,6 +5,8 @@ import {startedFilmJourneys} from '../data/journey-progress';
 import type {Lesson} from '../data/schema';
 import {navigate,openLab,openCollection} from '../legacy/bridge';
 import {safeProgress} from '../state/learning';
+import {isAndroidBackupAvailable} from '../native-backup';
+import {openLearningBackup} from '../state/backup-navigation';
 import {CinemaArtwork} from './CinemaArtwork';
 import './cinema-library.css';
 
@@ -126,6 +128,14 @@ export function CinemaLibraryHome(){
   const next=lessons.find(lesson=>!completed.has(lesson.id))??lessons[0];
   return <div className="cinema-discovery" aria-label="Explore the cinema library">
     <JourneyResumeRail completed={completed}/>
+    {isAndroidBackupAvailable()?<aside className="cinema-backup-shortcut" aria-label="Protect your local learning data">
+      <div>
+        <span className="cinema-overline">YOUR WORK STAYS ON THIS DEVICE</span>
+        <p>Replacing a test APK? Save your learning backup outside Frame One first.</p>
+      </div>
+      <button type="button" data-android-backup-shortcut
+        onClick={openLearningBackup}>Back up <span aria-hidden="true">→</span></button>
+    </aside>:null}
     {completed.size>0?<section className="cinema-continue" aria-label="Continue your learning">
       <div className="cinema-continue-copy">
         <span className="cinema-overline">CONTINUE YOUR JOURNEY · {completed.size}/{lessons.length}</span>
