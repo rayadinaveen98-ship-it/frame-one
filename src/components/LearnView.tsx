@@ -1,9 +1,10 @@
-import { useMemo, useRef, useState, type ChangeEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import curriculum from '../data/curriculum.v08b.json';
 import type { Lesson } from '../data/schema';
 import { navigate } from '../legacy/bridge';
 import { isAndroidBackupAvailable, shareAndroidLearningBackup } from '../native-backup';
 import { safeProgress } from '../state/learning';
+import { LearningJourney } from './LearningJourney';
 import './learn-react.css';
 
 type Chapter = { name: string; strap: string; ids: string[]; later: string[] };
@@ -129,23 +130,42 @@ export function LearnView() {
   const [query,setQuery] = useState('');
   const [glossaryQuery,setGlossaryQuery] = useState('');
   const [revision,setRevision] = useState(0);
-  // Keep the course approachable on narrow screens: open only one chapter at a time.
-  const [expandedChapters,setExpandedChapters] = useState<Set<number>>(()=>new Set([0]));
+  // Begin inside the chapter that contains the next lesson, without creating any new saved data.
+  const [expandedChapters,setExpandedChapters] = useState<Set<number>>(()=>{
+    const progress=safeProgress(ids);
+    const upcoming=lessons.find(lesson=>!progress.has(lesson.id));
+    const chapter=chapters.findIndex(item=>upcoming?item.ids.includes(upcoming.id):item.ids.includes(lessons[0].id));
+    return new Set([Math.max(0,chapter)]);
+  });
+  const pendingChapterFocus=useRef<number|null>(null);
+  useEffect(()=>{
+    const targetIndex=pendingChapterFocus.current;
+    if(targetIndex===null || query.trim()!=='' || filter!=='All')return;
+    const heading=document.getElementById('reactChapter'+targetIndex);
+    if(!heading)return;
+    pendingChapterFocus.current=null;
+    heading.tabIndex=-1;
+    heading.focus({preventScroll:true});
+    heading.scrollIntoView({block:'start',behavior:window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+  },[expandedChapters,query,filter]);
+  const jumpToChapter=(chapter:number)=>{
+    pendingChapterFocus.current=chapter;
+    setQuery('');
+    setFilter('All');
+    setExpandedChapters(new Set([chapter]));
+  };
   // Read on render: completed lessons are stored in the same original progress key.
   const completed = safeProgress(ids);
   const completedCount=completed.size;
-  const percent=Math.round(completedCount/lessons.length*100);
   const next=lessons.find(l=>!completed.has(l.id))??lessons[0];
   const filtered = useMemo(()=>lessons.filter(l=>(filter==='All'||l.unit===filter) && `${l.title} ${l.subtitle} ${l.unit}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())),[filter,query]);
   const matchedGlossary = useMemo(()=>glossary.filter(t=>`${t.term} ${t.te} ${t.meaning}`.toLocaleLowerCase().includes(glossaryQuery.trim().toLocaleLowerCase())),[glossaryQuery]);
   const searched = query.trim()!==''||filter!=='All';
   return <div className="page react-learn-view" data-revision={revision}>
     <div className="page-intro"><div className="eyebrow">YOUR LEARNING JOURNEY</div><h1>Every great film starts with curiosity.</h1><p>33 beginner lessons in six chapters. Explore in any order, or follow a simple path.</p></div>
-    <div className="journey-summary" aria-label={`${completedCount} of ${lessons.length} lessons finished`}>
-      <div><small>YOUR LEARNING PROGRESS</small><strong>{completedCount} <span>/ {lessons.length} lessons</span></strong></div>
-      <div className="journey-meter" role="progressbar" aria-label="Completed lessons" aria-valuenow={completedCount} aria-valuemin={0} aria-valuemax={lessons.length}><div style={{width:`${percent}%`}} /></div>
-      <button className="cta" type="button" onClick={()=>navigate('lesson',next.id)}>{completedCount===lessons.length?'Revisit first lesson':'Continue learning'} →</button>
-    </div>
+    <LearningJourney chapters={chapters} completed={completed} totalLessons={lessons.length}
+      nextLesson={next} onNext={()=>navigate('lesson',next.id)}
+      activeChapter={[...expandedChapters][0]??0} onChapterSelect={jumpToChapter}/>
     <div className="search-row"><label className="sr-only" htmlFor="reactLessonSearch">Search lessons</label><input className="learn-search" id="reactLessonSearch" type="search" placeholder="Search: frames, sound, dialogue..." value={query} onChange={e=>setQuery(e.target.value)} /><small>{filtered.length} of {lessons.length} lessons</small></div>
     <div className="filter-row" aria-label="Filter lessons by chapter topic">{filters.map(c=><button type="button" className="filter-chip" key={c} aria-pressed={filter===c} onClick={()=>setFilter(c)}>{c}</button>)}</div>
     {searched ? <div className="list-grid" aria-live="polite">{filtered.length ? filtered.map(l=><LessonRow key={l.id} lesson={l} completed={completed.has(l.id)}/>) : <p className="empty">No matching lessons. Try another word or choose All.</p>}</div>
