@@ -65,7 +65,7 @@ const modeYes='Persistent QA signer: YES (managed by GitHub Secret)';
 const modeNo='Persistent QA signer: NO (temporary runner signer; not upgrade-safe)';
 function receipt(name,cert,mode){
   const file=path.join(tmp,name);
-  fs.writeFileSync(file,'Signer #1 certificate SHA-256 digest: '+cert+'\\n'+mode+'\\n');
+  fs.writeFileSync(file,'Signer #1 certificate SHA-256 digest: '+cert+'\n'+mode+'\n');
   return file;
 }
 function verify(label,next,previous,shouldPass,contains){
@@ -81,7 +81,7 @@ try{
   const sameStable=receipt('same-stable.txt',certA,modeYes);
   const newStable=receipt('new-stable.txt',certB,modeYes);
   const malformed=receipt('malformed.txt','NOT_SHA256',modeYes);
-  const conflicting=receipt('conflicting.txt',certA,modeYes+'\\n'+modeNo);
+  const conflicting=receipt('conflicting.txt',certA,modeYes+'\n'+modeNo);
   verify('Initial preview',newTemp,path.join(tmp,'no-existing-release'),true,'accepted');
   verify('Temporary to temporary still supported',newTemp,oldTemp,true,'temporary');
   verify('One-time temporary to persistent migration',newStable,oldTemp,true,'First permanent QA signer');
