@@ -32,6 +32,10 @@ jobs:
       SOURCE_RUN_ID: ${{ github.event.workflow_run.id || inputs.source_run_id }}
       RELEASE_TAG: android-preview-latest
     steps:
+      - name: Check out trusted release policy
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Verify trusted main-branch source build
         shell: bash
         run: |
@@ -88,6 +92,12 @@ jobs:
             prior_cert="$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' previous/android-qa-signature.txt | head -n 1)"
             [[ "$prior_cert" =~ ^[0-9a-fA-F]{64}$ ]] || { echo 'Missing valid previous certificate receipt'; exit 1; }
           fi
+
+          # Never allow an accidental lost/rotated QA secret to replace the
+          # public APK once a permanent signing identity has been published.
+          # The rule checks only public receipts; private keys stay in the
+          # Android build job's protected GitHub Actions secret.
+          bash scripts/check-android-signing-continuity.sh release/android-qa-signature.txt previous/android-qa-signature.txt
 
           if [ "$signer" = temporary ]; then
             printf '%s\n' '**Android signing: TEMPORARY DEBUG KEY. Do not expect in-place updates to work.** Export your learning JSON to an external location, verify it exists, then only uninstall if necessary.' > release/UPGRADE_NOTE.md
