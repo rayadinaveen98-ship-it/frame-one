@@ -3,6 +3,7 @@ import { LessonView } from './components/LessonView';
 import { LearnView } from './components/LearnView';
 import { PersonalFrames } from './components/PersonalFrames';
 import { CinemaLibraryHome } from './components/CinemaLibraryHome';
+import { CollectionJourney } from './components/CollectionJourney';
 import { LaunchExperience } from './components/LaunchExperience';
 import { ContinuityLab, type ContinuityMode } from './components/labs/ContinuityLab';
 import { ColourLab, type ColourMode } from './components/labs/ColourLab';
@@ -62,7 +63,7 @@ export function greetingForHour(hour: number): string {
   if (hour >= 17 && hour < 21) return 'Good evening.';
   return 'Good night.';
 }
-function ProgressTopbar({page}: {page: Destination | 'lesson'}) {
+function ProgressTopbar({page}: {page: Destination | 'lesson' | 'collection'}) {
   const [greeting,setGreeting] = useState(() => greetingForHour(new Date().getHours()));
   useEffect(() => {
     const refresh = () => setGreeting(greetingForHour(new Date().getHours()));
@@ -140,7 +141,7 @@ export default function App() {
   // On SPA navigation, return keyboard/screen-reader focus to the page heading.
   // Skip the initial home mount to avoid stealing focus when booting.
   useEffect(() => {
-    const key = route.page + ':' + (route.lesson ?? route.lab ?? '');
+    const key = route.page + ':' + (route.lesson ?? route.collection ?? route.lab ?? '');
     if (previousRoute.current === key) return;
     previousRoute.current = key;
     const frame = requestAnimationFrame(() => {
@@ -188,8 +189,9 @@ export default function App() {
       </div> : null}
       {bootError ? <p role="alert">{bootError}</p> : null}
       {route.page==='home' ? <PersonalFrames /> : null}
-      <div id="content" aria-live="off" hidden={route.page==='lesson'||route.page==='learn'||(route.page==='lab'&&(route.lab==='continuity'||route.lab==='colour'||route.lab==='frame'||route.lab==='light'||route.lab==='cut'||route.lab==='story'||route.lab==='sound'))} />
+      <div id="content" aria-live="off" hidden={route.page==='lesson'||route.page==='learn'||route.page==='collection'||(route.page==='lab'&&(route.lab==='continuity'||route.lab==='colour'||route.lab==='frame'||route.lab==='light'||route.lab==='cut'||route.lab==='story'||route.lab==='sound'))} />
       {route.page==='home' ? <CinemaLibraryHome /> : null}
+      {route.page==='collection' && route.collection ? <CollectionJourney key={route.collection} collectionId={route.collection} /> : null}
       {route.page==='lab' && route.lab==='continuity' ? <ContinuityLab mode={continuityMode} setMode={setContinuityMode} /> : null}
       {route.page==='lab' && route.lab==='colour' ? <ColourLab mode={colourMode} setMode={setColourMode} strength={colourStrength} setStrength={setColourStrength} /> : null}
       {route.page==='lab' && route.lab==='frame' ? <FrameLab mode={frameMode} setMode={setFrameMode} zoom={frameZoom} setZoom={setFrameZoom} guides={frameGuides} setGuides={setFrameGuides} compare={frameCompare} setCompare={setFrameCompare} /> : null}
