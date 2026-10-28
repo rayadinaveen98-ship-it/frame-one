@@ -10,10 +10,10 @@ for(const p of files){
   assert.equal(node.parseDiagnostics.length,0,p+' must parse without JSX/TS errors');
 }
 const source=read('src/data/cinema-library.ts');
-const module={exports:{}};
+const compiledModule={exports:{}};
 const transformed=ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
-vm.runInNewContext(transformed,{module,exports:module.exports});
-const shelves=module.exports.cinemaShelves;
+vm.runInNewContext(transformed,{module:compiledModule,exports:compiledModule.exports});
+const shelves=compiledModule.exports.cinemaShelves;
 const knownIds=new Set(curriculum.lessons.map(l=>l.id));
 const runtime=read('src/legacy/runtime.js');
 const listed=runtime.match(/const collectionIds=\[([^\]]+)\]/);
