@@ -19,7 +19,7 @@ const runtime=read('src/legacy/runtime.js');
 const listed=runtime.match(/const collectionIds=\[([^\]]+)\]/);
 assert(listed,'legacy history bridge contains validated IDs');
 const legacyIds=listed[1].split(',').map(s=>s.trim().replace(/'/g,''));
-assert.deepEqual(legacyIds,shelves.map(x=>x.id),'route whitelist always matches live editorial shelves');
+assert.equal(JSON.stringify(legacyIds),JSON.stringify(shelves.map(x=>x.id)),'route whitelist always matches live editorial shelves');
 const journey=read('src/components/CollectionJourney.tsx');
 const home=read('src/components/CinemaLibraryHome.tsx');
 const app=read('src/App.tsx');
