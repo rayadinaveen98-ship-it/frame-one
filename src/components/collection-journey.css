@@ -181,3 +181,88 @@
 @media(prefers-reduced-motion:reduce){
   .collection-entry{transition:none}
 }
+
+
+/* v0.11A3 — distinct acts create a film-like rhythm without hiding real material. */
+.collection-invitation{
+  display:grid;grid-template-columns:170px minmax(0,1fr);align-items:center;
+  gap:22px;padding:19px 22px;margin:17px 0 10px;
+  border-top:1px solid #5d4840;border-bottom:1px solid #3d393f;
+  background:linear-gradient(110deg,#211e23,#191b21);
+  border-radius:11px;
+}
+.collection-invitation p{
+  font-size:14px;line-height:1.65;max-width:680px;
+  color:#d6c8bd;margin:0;letter-spacing:-.006em;
+}
+.collection-act{position:relative;padding:0 0 16px;margin:20px 0 30px}
+.collection-act+.collection-act{border-top:1px solid #3b393b;padding-top:28px}
+.collection-act-intro{
+  display:grid;grid-template-columns:51px minmax(0,1fr) auto;
+  gap:14px;align-items:start;margin:0 0 17px;
+}
+.collection-act-index{
+  font:350 41px/1 var(--cinema-type,system-ui);
+  letter-spacing:-.075em;color:#7e6254;
+}
+.collection-act-story{min-width:0}
+.collection-act-story h3{
+  font:520 23px/1.23 var(--cinema-type,system-ui);
+  letter-spacing:-.028em;color:#ede6df;margin:4px 0 5px;
+}
+.collection-act-story p{
+  color:#b4aeb0;font-size:12.5px;line-height:1.6;
+  margin:0;max-width:540px;
+}
+.collection-act-state{
+  color:#c3a186;border:1px solid #4a4241;
+  border-radius:99px;padding:6px 9px;
+  letter-spacing:.075em;font-size:9px;font-weight:650;
+  white-space:nowrap;
+}
+.collection-entry.is-next{
+  border-color:#80624d;background:linear-gradient(110deg,#28232a,#1a1d23);
+}
+.collection-next-label{
+  color:#e0b594;font-size:9px;letter-spacing:.07em;font-weight:750;
+}
+.collection-act-reflection{
+  border-left:2px solid #8f715f;padding:4px 0 4px 13px;
+  margin:15px 0 1px 65px;
+  font-size:12px;line-height:1.6;
+  color:#bbb1ae;
+}
+.collection-act-reflection span{
+  display:block;color:#c59e83;font-size:9px;
+  font-weight:700;letter-spacing:.11em;margin-bottom:2px;
+}
+.collection-finale{
+  padding:25px 25px 27px;border-radius:14px;
+  border:1px solid #484044;
+  background:radial-gradient(ellipse at 90% 0%,#8d59452f,transparent 65%),#1c1d23;
+}
+.collection-finale p{
+  max-width:620px;font:510 clamp(19px,2.3vw,26px)/1.45 var(--cinema-type,system-ui);
+  letter-spacing:-.02em;color:#e7d4c5;
+  margin:8px 0 0;
+}
+@media(max-width:760px){
+  .collection-invitation{grid-template-columns:1fr;gap:7px;padding:17px;margin:13px 0 8px}
+  .collection-invitation p{font-size:12.5px;line-height:1.55}
+  .collection-act{margin:18px 0 24px}
+  .collection-act+.collection-act{padding-top:22px}
+  .collection-act-intro{grid-template-columns:36px minmax(0,1fr);gap:11px;margin-bottom:12px}
+  .collection-act-index{font-size:32px}
+  .collection-act-story h3{font-size:20px}
+  .collection-act-story p{font-size:11.5px}
+  .collection-act-state{grid-column:2;font-size:9px;justify-self:start;padding:4px 8px}
+  .collection-act-reflection{margin-left:47px;font-size:11px}
+  .collection-finale{padding:20px}
+  .collection-finale p{font-size:18px;line-height:1.42}
+}
+@media(max-width:350px){
+  .collection-act-intro{grid-template-columns:29px minmax(0,1fr);gap:9px}
+  .collection-act-index{font-size:28px}
+  .collection-act-story h3{font-size:18px}
+  .collection-act-reflection{margin-left:37px}
+}
