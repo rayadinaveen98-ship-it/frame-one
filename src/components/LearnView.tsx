@@ -3,6 +3,7 @@ import curriculum from '../data/curriculum.v08b.json';
 import type { Lesson } from '../data/schema';
 import { navigate } from '../legacy/bridge';
 import { isAndroidBackupAvailable, shareAndroidLearningBackup } from '../native-backup';
+import { consumeLearningBackupRequest } from '../state/backup-navigation';
 import { safeProgress } from '../state/learning';
 import { LearningJourney } from './LearningJourney';
 import './learn-react.css';
@@ -30,6 +31,20 @@ function LearningBackup({onRestored}: {onRestored:()=>void}) {
   const [backupText,setBackupText] = useState('');
   const [restoreText,setRestoreText] = useState('');
   const fileRef=useRef<HTMLInputElement>(null);
+  const panelRef=useRef<HTMLDetailsElement>(null);
+  useEffect(()=>{
+    if(!consumeLearningBackupRequest())return;
+    const panel=panelRef.current;
+    if(!panel)return;
+    panel.open=true;
+    // After React mounts the actual screen, make the existing backup
+    // actions visible and accessible by keyboard/TalkBack.
+    const frame=requestAnimationFrame(()=>{
+      panel.scrollIntoView({block:'start',behavior:'auto'});
+      panel.querySelector<HTMLElement>('summary')?.focus({preventScroll:true});
+    });
+    return ()=>cancelAnimationFrame(frame);
+  },[]);
 
   // One validation/confirmation route for both JSON files and pasted JSON.
   // The legacy engine owns exact schema validation and saved-data keys.
@@ -93,9 +108,10 @@ function LearningBackup({onRestored}: {onRestored:()=>void}) {
       setMessage('Backup text is unavailable. Please try again from the Learn screen.');
     }
   };
-  return <details className="backup-panel">
+  return <details id="learningBackupPanel" ref={panelRef} className="backup-panel">
     <summary>Keep a copy of your learning <span>Save / restore locally</span></summary>
     <p>A different browser or app address can have separate saved data. Export your progress and storyboard before switching devices or versions.</p>
+    {isAndroidBackupAvailable()?<p className="backup-upgrade-warning"><strong>Before replacing a Frame One test APK:</strong> Android may reject installing a newer test build over your existing app because signing certificates can differ. Save your JSON to Downloads, Drive, or another location outside Frame One, verify it exists, and only then consider uninstalling the old app. An Android share sheet alone does not mean the file was saved.</p>:null}
     {isAndroidBackupAvailable() ? <p>The Android save/share chooser opens a temporary JSON backup. Choose an external destination and verify the file is there. A file left inside this app may disappear on uninstall.</p> : null}
     <div className="backup-actions">
       {isAndroidBackupAvailable()
