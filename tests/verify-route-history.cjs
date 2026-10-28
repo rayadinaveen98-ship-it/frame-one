@@ -78,6 +78,29 @@ assert.equal(app.location.hash,'#lab','opening a lab records a navigable route')
 app.bridge.goBack();
 assert.equal(app.location.hash,'#home','Back leaves the lab for the previous screen');
 
+// Collection visits are ordinary, owned Frame One history entries—not modals.
+app.bridge.openCollection('visual');
+assert.equal(app.location.hash,'#collection/visual','real collection deep link');
+assert.equal(app.events.at(-1).detail.collection,'visual','React receives exact selected collection');
+assert.equal(app.history.state.frameOneDepth,1,'collection adds one navigation depth');
+app.bridge.navigate('lesson','shot');
+assert.equal(app.location.hash,'#lesson/shot');
+app.bridge.goBack();
+assert.equal(app.location.hash,'#collection/visual','Android Back returns from lesson to collection');
+assert.equal(app.events.at(-1).detail.collection,'visual');
+app.bridge.goBack();
+assert.equal(app.location.hash,'#home','Back from collection returns Home');
+app.bridge.openCollection('missing-collection');
+assert.equal(app.location.hash,'#home','unknown collection never becomes a route');
+
+const collectionDirect=boot('#collection/studio');
+assert.equal(collectionDirect.location.hash,'#collection/studio','cold deep link opens real Lab collection');
+assert.equal(collectionDirect.events.at(-1).detail.collection,'studio');
+collectionDirect.bridge.goBack();
+assert.equal(collectionDirect.location.hash,'#home','direct collection Back never exits app');
+const unknownCollection=boot('#collection/invented');
+assert.equal(unknownCollection.location.hash,'#home','invalid deep links fail safely');
+
 // Deep-linked users must never need an external browser entry to navigate Back.
 const direct=boot('#lesson/why');
 assert.equal(direct.location.hash,'#lesson/why');

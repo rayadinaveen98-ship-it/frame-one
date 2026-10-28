@@ -218,3 +218,19 @@
   .cinema-tile{transition:none}
   .cinema-rail{scroll-behavior:auto}
 }
+
+/* v0.11A2: collection titles are their own navigable editorial destinations.
+   Poster taps still open the individual lessons and labs directly. */
+.cinema-shelf-open{
+  display:inline-flex;align-items:baseline;gap:9px;
+  border:0;background:transparent;color:inherit;
+  font:inherit;letter-spacing:inherit;line-height:inherit;
+  text-align:left;padding:4px 0;min-height:36px;cursor:pointer;
+}
+.cinema-shelf-open span{font-size:16px;color:#ba997e;font-weight:500}
+.cinema-shelf-open:hover{color:#e3bea0}
+.cinema-shelf-open:focus-visible{outline:3px solid #d6ae8c;outline-offset:3px;border-radius:4px}
+@media(max-width:760px){
+  .cinema-shelf-open{min-height:44px;align-items:center}
+  .cinema-shelf-open span{font-size:15px}
+}
