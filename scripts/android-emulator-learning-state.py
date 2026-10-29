@@ -105,8 +105,13 @@ def editor():
             cls=n.attrib.get("class","")
             b=bounds_of(n)
             if b and ("EditText" in cls or n.attrib.get("editable")=="true"):
-                if b[1]>=TOP and b[3]<=BOTTOM and b[2]-b[0]>=100 and b[3]-b[1]>=35:
-                    return b
+                # Android WebView can clip a few pixels of a textarea at
+                # the toolbar edge. Require a real, tappable intersection
+                # with the safe viewport; reject fully offscreen fields.
+                visible_top=max(b[1],TOP)
+                visible_bottom=min(b[3],BOTTOM)
+                if b[2]-b[0]>=100 and visible_bottom-visible_top>=45:
+                    return (b[0],visible_top,b[2],visible_bottom)
         scroll_up()
     ui.capture("state-editor-not-visible")
     raise AssertionError("Storyboard shot editor inaccessible")
