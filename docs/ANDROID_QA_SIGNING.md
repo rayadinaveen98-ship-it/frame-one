@@ -6,6 +6,8 @@ The public `android-preview-latest` APK remains **v0.12A2** (source `7c515646720
 
 **v0.12A3 development-only QA:** [PR #27](https://github.com/rayadinaveen98-ship-it/frame-one/pull/27) added and passed the [same-signer Android emulator v1 → v2 in-place upgrade and learning-data retention test](QA_V12A3.md) on 29 October 2026. This uses a **one-job throwaway key**, proves the app handles same-certificate package replacement in the tested scenario, and **does not** provision persistent signing or validate real upgrades between separately published app versions. It did not change the public APK.
 
+**v0.12A4 historical-code migration QA:** [PR #28](https://github.com/rayadinaveen98-ship-it/frame-one/pull/28) added a [real historical v0.11A4 → current Android source migration acceptance test](QA_V12A4.md). Exact-head Android [run 40825869466](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40825869466) passed genuine UI-written progress, storyboard and notes surviving an in-place upgrade and subsequent offline relaunch. Both APKs were compiled independently from different commits, but **signed with a single throwaway key inside one job**. This still cannot guarantee upgrades between separate public CI releases or replace the private long-lived QA signing requirement. No new public APK was issued.
+
 **Do not tell testers to install a later APK over an earlier debug APK.** Android only accepts package updates signed with a matching key. Changing key usually requires uninstalling the existing app, which can remove locally saved learner notes, progress and storyboards.
 
 ## The secure one-time provision (not yet performed)
