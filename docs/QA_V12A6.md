@@ -51,3 +51,20 @@ passing real separate-build upgrade. This feature stays unverified until
 the independently signed APKs exist and the Android emulator passes.
 Actual physical phone upgrade, native back, local backup export/restore,
 accessibility and Play Store signing remain separate release gates.
+
+
+## Implemented and PR-verified — 29 October 2026
+
+[PR #30](https://github.com/rayadinaveen98-ship-it/frame-one/pull/30) was merged into main as
+commit d65a398f213320b64f90c788532b5aa0cf0d48b9 after the exact PR head
+f9fe835a2e7d749aee6b4998a7299b93bfda73a4 passed:
+
+- [Web checks including Python independent-APK regression tests 40833770133](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40833770133): SUCCESS.
+- [Desktop/mobile browser QA 40833770264](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40833770264): SUCCESS.
+- [Same-source Android emulator upgrade 40833770123](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40833770123): SUCCESS.
+- [Historical-to-current Android emulator upgrade 40833770142](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40833770142): SUCCESS.
+
+The separate-run workflow is intentionally workflow_dispatch only.
+It is NOT claimed as passed until two real persistent-signed main Android
+builds are available and it has been executed against both of them.
+The previous public preview is still v0.12A2 and temporarily signed.
