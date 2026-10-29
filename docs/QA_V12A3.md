@@ -60,9 +60,13 @@ This was not an application, Android, test-assertion or signing failure.
 The workflow now treats screenshot artifact storage as best-effort and emits
 a warning if upload fails. A missing upload is **not** evidence of visual review.
 
-## Status
+## Final v0.12A3 acceptance — merged 29 October 2026
 
-The upgrade assertions passed in the initial exact-head emulator job. The
-follow-up workflow change still needs its own green CI run before merging.
-The public APK is unchanged; a physical device and stable cross-run QA signer
-are independent release gates.
+[PR #27](https://github.com/rayadinaveen98-ship-it/frame-one/pull/27) merged to `main` as `b4494fa3f5566b4918b2aa1bf1b33ab0e61b24b4`.
+Final exact-head CI on `a4257e68a372c7e808bff4a150efdf3a99826fa3` was **green**:
+
+- [Android same-signer upgrade 40822702656](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40822702656): **SUCCESS**, including actual v1 → v2 package update, offline learning state retention, and successful screenshot evidence upload.
+- [Web source/build checks 40822702573](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40822702573): **SUCCESS**.
+- [Desktop/mobile browser checks 40822702564](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40822702564): **SUCCESS**.
+
+This validates **same-code, same-signer versionCode upgrade on Android emulator**. It cannot guarantee different-version source migrations, a public-download upgrade, or physical-phone retention. The public APK is **still v0.12A2**, temporarily debug signed. Permanent cross-run QA signing and physical-device two-version testing remain release blockers.
