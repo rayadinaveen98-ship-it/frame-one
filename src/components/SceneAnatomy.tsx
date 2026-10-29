@@ -17,7 +17,7 @@ export function SceneAnatomy(){
     <div className="scene-anatomy-head">
       <div>
         <span className="scene-anatomy-overline">THE DIRECTOR'S EYE · INTERACTIVE SCENE STUDY</span>
-        <h2 id="scene-anatomy-title">One moment. Three different meanings.</h2>
+        <h2 id="scene-anatomy-title">One moment. Five filmmaking choices.</h2>
         <p>Explore an original scene. Change one filmmaking choice and notice how the story feels different.</p>
       </div>
       <span className="scene-anatomy-episode">SCENE 001 <span>•</span> THE WAIT</span>
@@ -38,14 +38,21 @@ export function SceneAnatomy(){
           <span className="scene-anatomy-window-glow" aria-hidden="true"/>
           <span className="scene-anatomy-light-pool" aria-hidden="true"/>
           <span className="scene-anatomy-figure" aria-hidden="true">
-            <span className="scene-anatomy-figure-head"/>
+            <span className="scene-anatomy-figure-head"><span className="scene-anatomy-eye scene-anatomy-eye-left"/><span className="scene-anatomy-eye scene-anatomy-eye-right"/></span>
             <span className="scene-anatomy-figure-body"/>
           </span>
           <span className="scene-anatomy-chair" aria-hidden="true"/>
           <span className="scene-anatomy-table" aria-hidden="true"/>
           <span className="scene-anatomy-phone" aria-hidden="true"><span>Typing…</span></span>
+          <span className="scene-anatomy-rhythm-plan" aria-hidden="true">
+            {variant==='a'?<span className="scene-anatomy-rhythm-clip scene-anatomy-rhythm-hold">ONE UNBROKEN SHOT <b>0–6s</b></span>:<>
+              <span className="scene-anatomy-rhythm-clip">FACE <b>0–2s</b></span>
+              <span className="scene-anatomy-rhythm-clip">PHONE <b>2–4s</b></span>
+              <span className="scene-anatomy-rhythm-clip">FACE <b>4–6s</b></span>
+            </>}
+          </span>
           <span className="scene-anatomy-film-grain" aria-hidden="true"/>
-          <span className="scene-anatomy-shot-label" aria-hidden="true">{study.id==='edit'&&variant==='b'?'SHOT 02 / INSERT':'SHOT 01 / WIDE'}</span>
+          <span className="scene-anatomy-shot-label" aria-hidden="true">{study.id==='edit'&&variant==='b'?'SHOT 02 / INSERT':study.id==='reaction'&&variant==='b'?'SHOT 02 / REACTION':study.id==='rhythm'?'EDIT PLAN / 6 SECONDS':'SHOT 01 / WIDE'}</span>
         </div>
         <div className="scene-anatomy-cue">
           <span>{study.sceneCue}</span>
