@@ -1,0 +1,125 @@
+name: Frame One same-signer Android upgrade continuity
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/android-upgrade-qa.yml'
+      - 'scripts/android-emulator-upgrade.py'
+      - 'scripts/android-emulator-learning-state.py'
+      - 'scripts/android-emulator-smoke.py'
+      - 'src/**'
+      - 'public/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'capacitor.config.ts'
+      - 'scripts/render-brand-icons.py'
+      - 'scripts/generate-offline.cjs'
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/android-upgrade-qa.yml'
+      - 'scripts/android-emulator-upgrade.py'
+      - 'scripts/android-emulator-learning-state.py'
+      - 'scripts/android-emulator-smoke.py'
+      - 'src/**'
+      - 'public/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'capacitor.config.ts'
+      - 'scripts/render-brand-icons.py'
+      - 'scripts/generate-offline.cjs'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  same-signer-upgrade:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Check out exact Frame One source
+        uses: actions/checkout@v4
+      - name: Set up Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Prepare Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools'
+          log-accepted-android-sdk-licenses: 'false'
+      - name: Install Android API 36 and build tools
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+      - name: Validate scripts before launching emulator
+        run: |
+          python3 -m py_compile scripts/android-emulator-upgrade.py scripts/android-emulator-learning-state.py scripts/android-emulator-smoke.py
+          npm ci --no-audit --no-fund
+          npm test
+          npm run build
+      - name: Generate Capacitor Android project and two QA APK versions
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx cap add android
+          npx cap sync android
+          python3 scripts/render-brand-icons.py --android
+          mkdir -p qa/upgrade "$HOME/.android"
+          chmod 700 "$HOME/.android"
+          # Ephemeral, isolated QA identity: created once and used for BOTH APKs.
+          # Never use this key for public releases or upload it.
+          test ! -e "$HOME/.android/debug.keystore"
+          keytool -genkeypair -noprompt -keystore "$HOME/.android/debug.keystore" \
+            -storepass android -keypass android -alias androiddebugkey \
+            -keyalg RSA -keysize 3072 -validity 7 \
+            -dname 'CN=Frame One Emulator Upgrade QA,O=Frame One,C=IN'
+          chmod +x android/gradlew
+          (cd android && ./gradlew :app:assembleDebug --no-daemon)
+          cp android/app/build/outputs/apk/debug/app-debug.apk qa/upgrade/app-v1.apk
+          # Fail closed if the generated Gradle template changes.
+          python3 -c 'from pathlib import Path; import re; p=Path("android/app/build.gradle"); original=p.read_text(); changed,n=re.subn(r"(?m)^(\s*)versionCode\s+1\s*$",r"\g<1>versionCode 2",original); assert n==1, f"Expected exactly one versionCode 1, got {n}"; p.write_text(changed)'
+          (cd android && ./gradlew :app:assembleDebug --no-daemon)
+          cp android/app/build/outputs/apk/debug/app-debug.apk qa/upgrade/app-v2.apk
+          for code in 1 2; do
+            apk="qa/upgrade/app-v$code.apk"
+            test -s "$apk"
+            "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$apk" \
+              | grep -F "package: name='com.frameone.learncinema' versionCode='$code'"
+            unzip -Z1 "$apk" | grep -Fx 'assets/public/index.html'
+          done
+          cert_v1="$("$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --print-certs qa/upgrade/app-v1.apk | sed -n 's/^Signer #1 certificate SHA-256 digest: //p')"
+          cert_v2="$("$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --print-certs qa/upgrade/app-v2.apk | sed -n 's/^Signer #1 certificate SHA-256 digest: //p')"
+          test -n "$cert_v1"
+          test "$cert_v1" = "$cert_v2"
+          echo "PASS: both QA APKs use identical signing certificate; versionCode 1 -> 2"
+      - name: Enable KVM for real Android emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Verify installed local learner data survives Android package update
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: aosp_atd
+          arch: x86_64
+          profile: pixel_5
+          ram-size: 3072M
+          emulator-boot-timeout: 600
+          emulator-options: -no-window -no-snapshot -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: python3 scripts/android-emulator-upgrade.py
+      - name: Upload evidence only (never APK or signing keystore)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frame-one-same-signer-upgrade-evidence
+          path: qa/android-emulator/upgrade-*
+          if-no-files-found: warn
+          retention-days: 14
