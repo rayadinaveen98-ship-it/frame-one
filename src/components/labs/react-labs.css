@@ -167,3 +167,53 @@
 .react-sound-lab .monitor-hud,
 .react-sound-lab .frame-corner,
 .react-sound-lab .scene-label{display:none;}
+
+
+/* v0.13A3: explicit, non-destructive Director's Desk handoff before Make Lab
+   ever updates its existing single v0.7 storyboard/backup entry. */
+.react-make-lab .make-director-handoff{
+  margin:16px 0 23px;padding:18px;border:1px solid #ae815f;
+  border-radius:15px;background:linear-gradient(150deg,#372e2e,#222630 82%);
+  color:#f4e5d8;min-width:0;
+}
+.react-make-lab .make-director-handoff h2{
+  margin:7px 0 8px;color:#f6e7d9;font-size:clamp(19px,2.1vw,24px);letter-spacing:-.025em
+}
+.react-make-lab .make-director-handoff p{
+  color:#e2d1c5;font-size:12.5px;line-height:1.55;margin:8px 0
+}
+.react-make-lab .make-director-handoff .make-handoff-detail{
+  color:#c5b7b5
+}
+.react-make-lab .make-handoff-preview{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:14px 0
+}
+.react-make-lab .make-handoff-preview>div{
+  min-width:0;padding:12px 11px;border:1px solid #6b5756;
+  background:#222731;border-radius:9px
+}
+.react-make-lab .make-handoff-preview strong{
+  color:#e7b48d;font-size:10px;letter-spacing:.06em;line-height:1.35;
+  overflow-wrap:anywhere
+}
+.react-make-lab .make-handoff-preview p{font-size:11.5px;line-height:1.55;margin:7px 0 0}
+.react-make-lab .make-handoff-warning{
+  color:#ffe3c9;background:#573e33;border-left:3px solid #f1be87;
+  padding:11px 12px;border-radius:7px
+}
+.react-make-lab .make-handoff-actions{
+  display:flex;gap:9px;flex-wrap:wrap;margin-top:12px
+}
+.react-make-lab .make-handoff-actions button{
+  cursor:pointer;min-height:46px;font-size:12px;line-height:1.4;
+  flex:1 1 auto;white-space:normal
+}
+.react-make-lab .make-handoff-actions :focus-visible{
+  outline:3px solid #f1c39c;outline-offset:3px
+}
+@media(max-width:760px){
+  .react-make-lab .make-director-handoff{padding:14px 12px}
+  .react-make-lab .make-handoff-preview{grid-template-columns:minmax(0,1fr)}
+  .react-make-lab .make-handoff-actions{flex-direction:column}
+  .react-make-lab .make-handoff-actions button{width:100%;flex:none}
+}
