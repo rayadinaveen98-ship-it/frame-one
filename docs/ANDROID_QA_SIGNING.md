@@ -1,8 +1,10 @@
 # Frame One Android — stable QA signing and safe upgrades
 
-## Current status (28 October 2026)
+## Current status (29 October 2026)
 
-The public `android-preview-latest` APK is **v0.11A6 debug-signed** and its verified receipt reports `Persistent QA signer: NO` (temporary runner signer). Public SHA-256 certificate fingerprint: `7bf4a1fb60b88307042cb3236fe34957caa9d761485ec1797d0a3b1a32b411c5`. The current signer is **different** from the previous preview's certificate; Android will reject an in-place update from that build. The APK still uses a disposable signing key, not a long-lived QA key.
+The public `android-preview-latest` APK remains **v0.12A2** (source `7c5156467200443137f877aeb82fe31c7e196c05`) and its verified release receipt reports `Persistent QA signer: NO` (temporary runner signer). Public SHA-256 certificate fingerprint: `669aaccf68142c0db7b90b3ff1407a39db40c7131717dc5533a195214e278ea8`. The certificate **differs from the previous public preview**, so Android will reject an in-place update from that version. This 4,666,865-byte downloadable APK still has a disposable key, not a long-lived QA signer. See the [public GitHub release](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/android-preview-latest).
+
+**v0.12A3 development-only QA:** [PR #27](https://github.com/rayadinaveen98-ship-it/frame-one/pull/27) added and passed the [same-signer Android emulator v1 → v2 in-place upgrade and learning-data retention test](QA_V12A3.md) on 29 October 2026. This uses a **one-job throwaway key**, proves the app handles same-certificate package replacement in the tested scenario, and **does not** provision persistent signing or validate real upgrades between separately published app versions. It did not change the public APK.
 
 **Do not tell testers to install a later APK over an earlier debug APK.** Android only accepts package updates signed with a matching key. Changing key usually requires uninstalling the existing app, which can remove locally saved learner notes, progress and storyboards.
 
