@@ -56,3 +56,22 @@ remote requests, external clips, copyrighted film footage or downloads**.
 This is **v0.13 application source only**, not yet a new downloadable Android
 preview. The existing public APK remains v0.12A2, signed with a temporary key,
 and the v0.12A5 public publication freeze must remain active.
+
+## Verified and merged — 29 October 2026
+
+[PR #31](https://github.com/rayadinaveen98-ship-it/frame-one/pull/31) merged into main
+as [f1514372](https://github.com/rayadinaveen98-ship-it/frame-one/commit/f15143726299e1ddf7ff1e319d01715e83e89044)
+after **all seven exact PR-head gates passed**:
+
+- [Web source tests, TypeScript and production build 40836453992](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40836453992): PASS.
+- [Real desktop, 390px and 320px Chromium QA 40836453984](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40836453984): PASS. The logs explicitly confirm switching both sound takes, visible warm/cool lighting comparison, editing phone insert, navigation into the functioning Cut Lab, and no mobile viewport overflow. Screenshots were uploaded to that run for human review.
+- [Android native debug build 40836453951](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40836453951): PASS.
+- [Android same-signer package upgrade 40836454058](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40836454058): PASS.
+- [Historical old-to-new-code Android upgrade 40836454112](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40836454112): PASS.
+- [Actual Android DocumentsUI JSON backup/restore 40836453942](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40836453942): PASS.
+- [Android native Back, offline and authored-note persistence 40836453970](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40836453970): PASS.
+
+This verifies the code and tested interactions. A person must still review the attached
+screenshots for final visual/aesthetic sign-off. It does NOT make an update-safe public
+Android build: GitHub's existing public preview still points at temporarily signed
+v0.12A2, with automatic unsafe publication intentionally blocked.
