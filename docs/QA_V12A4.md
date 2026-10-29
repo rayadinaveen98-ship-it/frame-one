@@ -63,4 +63,10 @@ change or upload the public APK merely to exercise this test.
 
 The first cross-source [run 40825195419](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40825195419) also passed, but used GitHub's synthetic PR merge ref. We then made the source checkout and assertion explicit before the **final successful exact-head run** above.
 
-The independent merged-`main` cross-source check is [40826638730](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40826638730); its completion must be checked separately. The public release remains v0.12A2 and **still uses a changing temporary debug certificate**. A persistent QA signer, separate-build cross-run continuity and real-device phone upgrade are not completed by this milestone.
+Independent merged-`main` verification also **PASSED** on the actual merge commit `0775a50d982bb6174f01a9ded1c71f8eb33652ba`:
+
+- [Historical-to-current Android upgrade 40826638730](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40826638730): **SUCCESS**.
+- [Same-source Android upgrade 40826638790](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40826638790): **SUCCESS**.
+- [Web checks 40826638799](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40826638799): **SUCCESS**.
+
+**Acceptance complete for the tested Android emulator migration path.** The public release remains v0.12A2 and **still uses a changing temporary debug certificate**. A persistent QA signer, separate-release cross-run signing continuity and a physical-device phone upgrade are not completed by this milestone.
