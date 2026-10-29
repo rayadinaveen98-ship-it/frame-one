@@ -8,6 +8,7 @@ import {safeProgress} from '../state/learning';
 import {isAndroidBackupAvailable} from '../native-backup';
 import {openLearningBackup} from '../state/backup-navigation';
 import {CinemaArtwork} from './CinemaArtwork';
+import {SceneAnatomy} from './SceneAnatomy';
 import './cinema-library.css';
 
 const lessons=curriculum.lessons as unknown as Lesson[];
@@ -153,6 +154,7 @@ export function CinemaLibraryHome(){
       <h2>Follow your curiosity.</h2>
       <p>Short lessons, visual ideas and hands-on experiments—choose where to begin.</p>
     </div>
+    <SceneAnatomy/>
     {cinemaShelves.map(shelf=><CinemaShelfRow key={shelf.id} shelf={shelf} completed={completed}/>)}
     <section className="cinema-explore-more" aria-label="Explore more learning">
       <div>
