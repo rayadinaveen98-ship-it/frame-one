@@ -1,8 +1,14 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.12A2 seamless lesson/act transitions merged · updated Android preview published 28 October 2026 · not app-store released.**
+**Latest development checkpoint: v0.12A3 Android same-signer upgrade/data-retention QA merged 29 October 2026 · latest downloadable APK remains v0.12A2 (28 October) · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.12A3 Android upgrade safety QA (29 October 2026)
+
+[PR #27](https://github.com/rayadinaveen98-ship-it/frame-one/pull/27) merged to `main` as [`b4494fa3`](https://github.com/rayadinaveen98-ship-it/frame-one/commit/b4494fa3f5566b4918b2aa1bf1b33ab0e61b24b4). A new GitHub Actions real Android API 35 emulator gate installs same-source APK v1, completes a real learner quiz, saves Make storyboard framing and authored notes, installs APK v2 **in place** with the **same single-job signing certificate**, then verifies all work is retained and survives another offline cold start. The exact PR head passed [Android upgrade 40822702656](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40822702656), [web 40822702573](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40822702573), and [Chromium 40822702564](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40822702564). Screenshots uploaded successfully on the green final run. [Detailed QA and limitations](docs/QA_V12A3.md).
+
+**This is a QA milestone, not a new public app build.** The GitHub APK remains **v0.12A2**, signed using a temporary certificate that differs from the prior public APK. Same-signer emulator acceptance does not replace a long-lived GitHub QA keystore, physical-phone upgrade retention test, or a real old-source → new-source migration.
 
 ## Latest — v0.12A2 cinematic scene continuity (28 October 2026)
 
