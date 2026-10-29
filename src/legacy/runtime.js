@@ -1678,10 +1678,15 @@
       getStoryboard:()=>JSON.parse(JSON.stringify(state.story)),
       saveStoryboard:(plan)=>{
         if(!plan||typeof plan!=='object'||!Object.hasOwn(sceneQuestions,plan.question)||!Array.isArray(plan.shots)||!Array.isArray(plan.notes)||plan.shots.length!==3||plan.notes.length!==3)return false;
+        // Preserve the currently loaded project even when browser storage
+        // rejects writes (private mode, quota, disabled WebView storage).
+        const previousStory=state.story;
         state.story={question:plan.question,
           shots:[0,1,2].map(i=>['wide','medium','close'].includes(plan.shots[i])?plan.shots[i]:'wide'),
           notes:[0,1,2].map(i=>typeof plan.notes[i]==='string'?plan.notes[i].slice(0,240):'')};
-        return saveStory();
+        if(saveStory())return true;
+        state.story=previousStory;
+        return false;
       },
       exportShotList:()=>{
         const blob=new Blob([storyPlanText()],{type:'text/plain;charset=utf-8'});

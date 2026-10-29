@@ -167,11 +167,63 @@ async function verify() {
   assert.equal(await direction.getAttribute('data-direct-preview-light'),'cold');
   assert.equal(await direction.getAttribute('data-direct-preview-sound'),'pulse');
   assert.equal(await direction.getAttribute('data-direct-preview-edit'),'reveal');
+  // v0.13A3: importing never overwrites an existing three-shot storyboard
+  // until the learner explicitly accepts, even when opening Make Lab.
+  const previousDraft={
+    question:'reunion',shots:['wide','medium','close'],
+    notes:['Original authored beginning — do not overwrite','Original authored middle','Original authored ending']
+  };
+  await page.evaluate(p=>window.frameOneLegacy.saveStoryboard(p),previousDraft);
+  const preImportJSON=await page.evaluate(()=>localStorage.getItem('frameone-scene-v07'));
   await director.locator('[data-direct-make-lab]').click();
-  await page.locator('.react-make-lab').waitFor();
+  let handoffLab=page.locator('.react-make-lab');
+  await handoffLab.waitFor();
+  await handoffLab.locator('[data-director-handoff]').waitFor();
+  assert.equal(await handoffLab.locator('[data-director-proposed-shot]').count(),3);
+  assert.match(await handoffLab.locator('[data-director-proposed-shot="0"]').textContent(),/Cool window/);
+  assert.match(await handoffLab.locator('[data-director-proposed-shot="0"]').textContent(),/musical pulse/i);
+  assert.equal(await page.evaluate(()=>localStorage.getItem('frameone-scene-v07')),preImportJSON,
+    'Just entering Make Lab must not overwrite saved storyboard bytes');
+  assert.equal(await handoffLab.locator('[data-director-confirm]').count(),1);
+  assert.equal(await handoffLab.locator('[data-director-export-existing]').count(),1,
+    'Existing custom authored work needs an export option before replacement');
+  await handoffLab.locator('[data-director-keep]').click();
+  assert.equal(await handoffLab.locator('[data-director-handoff]').count(),0);
+  assert.equal(await page.evaluate(()=>localStorage.getItem('frameone-scene-v07')),preImportJSON,
+    'Declining import must leave original scene completely unchanged');
   await page.locator('.nav-menu [data-page="home"]').click();
   await page.locator('[data-direct-moment]').waitFor();
-  console.log('PASS: independent four-craft directing decisions, real framing/light preview, six-second edit plan, presets and Make Lab navigation');
+  await page.locator('[data-direct-toggle]').click();
+  await page.locator('[data-direct-preset="uneasy"]').click();
+  await page.locator('[data-direct-make-lab]').click();
+  handoffLab=page.locator('.react-make-lab');
+  await handoffLab.locator('[data-director-handoff]').waitFor();
+  const oldShotDownload=page.waitForEvent('download');
+  await handoffLab.locator('[data-director-export-existing]').click();
+  assert.match((await oldShotDownload).suggestedFilename(),/frame-one-my-first-scene\.txt/);
+  assert.equal(await page.evaluate(()=>localStorage.getItem('frameone-scene-v07')),preImportJSON,
+    'Exporting the previous shot list must not change it');
+  await handoffLab.locator('[data-director-confirm]').click();
+  assert.equal(await handoffLab.locator('[data-director-handoff]').count(),0);
+  assert.equal(await handoffLab.locator('[data-story-question="mystery"]').getAttribute('aria-pressed'),'true');
+  assert.match(await handoffLab.locator('#storyNote').inputValue(),/0–4s, first shot/i);
+  assert.match(await handoffLab.locator('#storyNote').inputValue(),/Cool window/i);
+  assert.match(await handoffLab.locator('#storyNote').inputValue(),/musical pulse/i);
+  const importedPlan=await page.evaluate(()=>window.frameOneLegacy.getStoryboard());
+  assert.equal(importedPlan.question,'mystery');
+  assert.equal(importedPlan.shots[0],'close');
+  assert.equal(importedPlan.shots[1],'close');
+  assert.match(importedPlan.notes[1],/4–6s, phone insert/);
+  assert.match(importedPlan.notes[2],/FUTURE BEAT/);
+  const exportedBackup=JSON.parse(await page.evaluate(()=>window.frameOneLegacy.getBackupJSON()));
+  assert.deepEqual(exportedBackup.scene,importedPlan,
+    'The original backup serializer must contain the imported storyboard with no new schema key');
+  await handoffLab.locator('#storyNote').fill('My editable imported shot idea.');
+  assert.equal((await page.evaluate(()=>window.frameOneLegacy.getStoryboard())).notes[0],'My editable imported shot idea.');
+  await page.locator('.nav-menu [data-page="home"]').click();
+  await page.locator('[data-direct-moment]').waitFor();
+  console.log('PASS: Director sketch review, old-board byte retention on decline, export-before-replace, explicit import, editable saved Make Lab and JSON backup');
+
 
   assert.equal(await page.locator('[data-cinema-collection]').count(),6);
   await page.locator('[data-cinema-collection="beginnings"]').click();
