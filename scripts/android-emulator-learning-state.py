@@ -41,8 +41,11 @@ def scroll_up():
     time.sleep(0.35)
 
 def scroll_top():
-    for _ in range(6):
-        ui.adb("shell","input","swipe","540","660","540","1920","250")
+    # The new film-project library adds substantial height above Make Lab.
+    # Swipe through the safe right gutter rather than over a textarea or
+    # nested button, where Android may scroll that control instead of page.
+    for _ in range(14):
+        ui.adb("shell","input","swipe","1010","660","1010","1920","220")
     time.sleep(.5)
 
 def control(label,exact=True,tries=19):
@@ -76,7 +79,12 @@ def control(label,exact=True,tries=19):
             ui.adb("shell","input","tap",str((b[0]+b[2])//2),str((b[1]+b[3])//2))
             time.sleep(.7)
             return
-        scroll_up()
+        # If navigation began below an expanded workspace, do not keep
+        # scrolling in only one direction and miss earlier controls forever.
+        if attempt==6 and label=="Decision":
+            scroll_top()
+        else:
+            scroll_up()
     ui.capture("state-missing-"+re.sub(r"[^a-z0-9]+","-",label.lower())[:32])
     raise AssertionError(f"Cannot find enabled visible Android control {label!r}")
 
@@ -101,12 +109,23 @@ def assert_close_framing():
 
 def editor():
     for attempt in range(13):
-        for n in nodes():
+        tree=nodes()
+        # The fixed Android tab bar overlays the lower WebView. A textarea
+        # partly visible *behind* it must not be tapped under the overlay.
+        tab_tops=[b[1] for n in tree
+                  for b in [bounds_of(n)]
+                  if b and ("Mobile navigation" in n.attrib.get("text","")
+                            or "Mobile navigation" in n.attrib.get("content-desc",""))]
+        visible_bottom_limit=min(BOTTOM,min(tab_tops)-55) if tab_tops else BOTTOM
+        for n in tree:
             cls=n.attrib.get("class","")
             b=bounds_of(n)
             if b and ("EditText" in cls or n.attrib.get("editable")=="true"):
-                if b[1]>=TOP and b[3]<=BOTTOM and b[2]-b[0]>=100 and b[3]-b[1]>=35:
-                    return b
+                # Clip to both safe top and actual unobstructed bottom.
+                visible_top=max(b[1],TOP)
+                visible_bottom=min(b[3],visible_bottom_limit)
+                if b[2]-b[0]>=100 and visible_bottom-visible_top>=45:
+                    return (b[0],visible_top,b[2],visible_bottom)
         scroll_up()
     ui.capture("state-editor-not-visible")
     raise AssertionError("Storyboard shot editor inaccessible")

@@ -585,6 +585,79 @@ async function verify() {
   await make.waitFor();
   assert.equal(await make.locator('[data-story-question="decision"]').getAttribute('aria-pressed'),'true');
   assert.equal(await make.locator('#storyNote').inputValue(),'Old restored scene','Restored storyboard loads after navigation');
+
+  // v0.14: real project migration, switching, renaming, deletion, JSON restore.
+  const projects=make.locator('[data-story-project-library]');
+  assert.equal(await projects.locator('[data-story-project]').count(),1,
+    'v1 backup without collection should migrate to exactly one legacy project');
+  assert.equal(await projects.locator('[data-story-project-active="true"]').count(),1);
+  const originalScene=await page.evaluate(()=>window.frameOneLegacy.getStoryboard());
+  await projects.locator('#new-project-name').fill('The empty chair');
+  await projects.locator('[data-project-create]').click();
+  assert.equal(await projects.locator('[data-story-project]').count(),2);
+  assert.equal((await page.evaluate(()=>window.frameOneLegacy.getStoryProjects())).projects.length,2);
+  assert.deepEqual(await page.evaluate(()=>window.frameOneLegacy.getStoryboard()),
+    {question:'mystery',shots:['wide','medium','close'],notes:[
+      'A person waits at a bus stop.','Something makes the wait important.','The person makes a choice.'
+    ]},'new project should start from a separate default story');
+  await make.locator('#storyNote').fill('My second film is about an empty chair.');
+  const projectRows=projects.locator('[data-story-project]');
+  const newProjectId=await projectRows.nth(1).getAttribute('data-story-project');
+  const oldProjectId=await projectRows.first().getAttribute('data-story-project');
+  await projects.locator('[data-project-switch="'+oldProjectId+'"]').click();
+  assert.equal(await make.locator('#storyNote').inputValue(),originalScene.notes[0],
+    'switching back should restore original project content');
+  await projects.locator('[data-project-switch="'+newProjectId+'"]').click();
+  assert.equal(await make.locator('#storyNote').inputValue(),'My second film is about an empty chair.',
+    'second project notes should survive a round trip');
+  await projects.locator('[data-project-rename="'+newProjectId+'"]').click();
+  await projects.locator('#rename-project-'+newProjectId).fill('My empty-chair short');
+  await projects.locator('[data-project-rename-save="'+newProjectId+'"]').click();
+  assert.match(await projects.locator('[data-story-project="'+newProjectId+'"]').textContent(),/My empty-chair short/);
+  const currentProjectBackup=JSON.parse(await page.evaluate(()=>window.frameOneLegacy.getBackupJSON()));
+  assert.equal(currentProjectBackup.version,1,'keep v1 backup compatibility');
+  assert.equal(currentProjectBackup.projects.version,1);
+  assert.equal(currentProjectBackup.projects.projects.length,2);
+  assert.equal(currentProjectBackup.scene.notes[0],'My second film is about an empty chair.');
+  const retainedBeforeDelete=await page.evaluate(()=>localStorage.getItem('frameone-story-projects-v1'));
+  await projects.locator('[data-project-delete="'+newProjectId+'"]').click();
+  assert.equal(await projects.locator('[data-project-delete-confirm="'+newProjectId+'"]').count(),1);
+  assert.equal(await page.evaluate(()=>localStorage.getItem('frameone-story-projects-v1')),
+    retainedBeforeDelete,'opening delete confirmation is not permission to delete');
+  await projects.locator('[data-project-delete-cancel="'+newProjectId+'"]').click();
+  assert.equal(await page.evaluate(()=>localStorage.getItem('frameone-story-projects-v1')),
+    retainedBeforeDelete,'cancelled deletion must preserve every project');
+  await projects.locator('[data-project-delete="'+newProjectId+'"]').click();
+  await projects.locator('[data-project-delete-confirm="'+newProjectId+'"]').click();
+  assert.equal(await projects.locator('[data-story-project]').count(),1);
+  assert.equal(await make.locator('#storyNote').inputValue(),originalScene.notes[0],
+    'deleting active second project selects and preserves original');
+  assert.equal(await projects.locator('[data-project-delete]:enabled').count(),0,'cannot delete final project');
+  await page.evaluate(b=>window.frameOneLegacy.importBackup(b),currentProjectBackup);
+  await page.waitForFunction(()=>document.querySelectorAll('[data-story-project]').length===2);
+  assert.equal(await make.locator('#storyNote').inputValue(),'My second film is about an empty chair.',
+    'v1 backup with projects must restore active draft and selection');
+  const beforeInvalid=await page.evaluate(()=>({
+    projects:localStorage.getItem('frameone-story-projects-v1'),
+    story:localStorage.getItem('frameone-scene-v07')}));
+  await assert.rejects(page.evaluate(b=>{
+    const malformed=structuredClone(b);malformed.projects.projects[0].scene.notes=[];
+    window.frameOneLegacy.importBackup(malformed);
+  },currentProjectBackup),/backup project collection is invalid/i);
+  assert.deepEqual(await page.evaluate(()=>({
+    projects:localStorage.getItem('frameone-story-projects-v1'),
+    story:localStorage.getItem('frameone-scene-v07')})),beforeInvalid,
+    'invalid collection should fail before any of the four backup keys are written');
+  await page.evaluate(()=>window.frameOneLegacy.importBackup({
+    format:'frameone-learning-backup',version:1,completed:['why'],notes:{},
+    scene:{question:'decision',shots:['wide','wide','medium'],
+      notes:['Old restored scene','Restored middle','Restored ending']}
+  }));
+  await page.waitForFunction(()=>document.querySelectorAll('[data-story-project]').length===1);
+  assert.equal(await make.locator('#storyNote').inputValue(),'Old restored scene',
+    'older v1 backup with no projects remains restorable');
+  console.log('PASS: multi-project migration, create/switch/rename/confirm-delete, v1 backup restore, invalid collection and old backup compatibility');
+
   console.log('PASS: React Make Lab writes original storage, exports text, survives navigation and updates on backup restore');
 
   await page.locator('.lab-tabs:visible [data-lab="continuity"]').click();
@@ -1089,6 +1162,12 @@ async function verify() {
     await mobileMake.locator('[data-story-question="decision"]').click();
     await mobileMake.locator('[data-story-step="1"]').click();
     await mobileMake.locator('#storyNote').fill('A clue in the rain.');
+
+    await mobileMake.locator('#new-project-name').fill('Phone-width test scene');
+    await mobileMake.locator('[data-project-create]').click();
+    assert.equal(await mobileMake.locator('[data-story-project]').count(),2);
+    assert.equal(await mobileMake.locator('[data-story-project-active="true"]').count(),1);
+
     const storyOverflow=await phone.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
     if(storyOverflow.scroll>storyOverflow.viewport+3)record('React Make Lab overflow at '+width+'px: '+storyOverflow.scroll+'/'+storyOverflow.viewport);
     await photo(phone,'18-react-make-'+width+'px.png');
