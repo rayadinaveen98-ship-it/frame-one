@@ -109,15 +109,21 @@ def assert_close_framing():
 
 def editor():
     for attempt in range(13):
-        for n in nodes():
+        tree=nodes()
+        # The fixed Android tab bar overlays the lower WebView. A textarea
+        # partly visible *behind* it must not be tapped under the overlay.
+        tab_tops=[b[1] for n in tree
+                  for b in [bounds_of(n)]
+                  if b and ("Mobile navigation" in n.attrib.get("text","")
+                            or "Mobile navigation" in n.attrib.get("content-desc",""))]
+        visible_bottom_limit=min(BOTTOM,min(tab_tops)-55) if tab_tops else BOTTOM
+        for n in tree:
             cls=n.attrib.get("class","")
             b=bounds_of(n)
             if b and ("EditText" in cls or n.attrib.get("editable")=="true"):
-                # Android WebView can clip a few pixels of a textarea at
-                # the toolbar edge. Require a real, tappable intersection
-                # with the safe viewport; reject fully offscreen fields.
+                # Clip to both safe top and actual unobstructed bottom.
                 visible_top=max(b[1],TOP)
-                visible_bottom=min(b[3],BOTTOM)
+                visible_bottom=min(b[3],visible_bottom_limit)
                 if b[2]-b[0]>=100 and visible_bottom-visible_top>=45:
                     return (b[0],visible_top,b[2],visible_bottom)
         scroll_up()
