@@ -83,3 +83,19 @@ This is a source-code milestone, **not a safe new public APK**.
 The last published download is still the temporarily debug-signed v0.12A2.
 A permanent private QA signing key, genuine two-run signed APK update and
 physical-Android-phone acceptance remain outstanding.
+
+## Verified and merged — 29 October 2026
+
+[PR #34](https://github.com/rayadinaveen98-ship-it/frame-one/pull/34) merged to main as [`4b5c438f`](https://github.com/rayadinaveen98-ship-it/frame-one/commit/4b5c438f2a227e715bb9a19d643d77cacf7da3e5). All seven **exact final PR-head** checks (`951dfd9dfa7709b352a94fdd33ee62a7ae9229ab`) passed:
+
+- [Web tests, 16 mappings, TypeScript and production build — 40854067373](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40854067373) — PASS.
+- [Real desktop/mobile browser QA — 40854067239](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40854067239) — PASS. Logs explicitly confirm unchanged stored storyboard bytes on entry/decline/export, explicit replace, editable imported notes, and the original JSON backup serialization, plus 390px and 320px lab navigation.
+- [Native Android debug APK build — 40854067237](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40854067237) — PASS.
+- [Android native Back and offline-note retention — 40854067164](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40854067164) — PASS.
+- [Actual Android DocumentsUI JSON backup/restore — 40854067194](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40854067194) — PASS.
+- [Same-signer Android upgrade/data retention — 40854067150](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40854067150) — PASS.
+- [Historical-source Android upgrade/data retention — 40854067168](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40854067168) — PASS.
+
+The independent merged-main checks are a separate set and were still running when this note was written. Automated interaction passes are not a human artistic screenshot review or physical-phone/Play Store update test.
+
+The public APK remains **v0.12A2**, source `7c5156467200443137f877aeb82fe31c7e196c05`, 4,666,865 bytes, **TEMPORARY DEBUG KEY**. No newer APK was released. Persistent QA signing and the real separate-build update gate are outstanding.
