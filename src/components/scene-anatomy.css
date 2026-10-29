@@ -181,3 +181,71 @@
 @media(prefers-reduced-motion:reduce){
   .scene-anatomy :is(button){transition:none!important}
 }
+
+
+/* v0.13A1: the same fictional scene reveals expression or an edit PLAN.
+   Shot durations are visualized as static authored plans, never fake video. */
+.scene-anatomy-eye{display:none}
+.scene-anatomy-body[data-scene-study='reaction'][data-scene-choice='a'] .scene-anatomy-phone{
+  box-shadow:0 0 0 2px #b5d6e48b,0 0 40px 13px #87bdcf9c;
+  background:#d9f2f4;
+}
+.scene-anatomy-body[data-scene-study='reaction'][data-scene-choice='a'] .scene-anatomy-figure{opacity:.55}
+.scene-anatomy-body[data-scene-study='reaction'][data-scene-choice='b'] .scene-anatomy-stage{
+  background:radial-gradient(ellipse at 50% 39%,#aa7a596b,transparent 58%),linear-gradient(155deg,#272e37,#0b1018 90%);
+}
+.scene-anatomy-body[data-scene-study='reaction'][data-scene-choice='b'] :is(.scene-anatomy-window,.scene-anatomy-window-glow,.scene-anatomy-chair,.scene-anatomy-table,.scene-anatomy-phone){display:none}
+.scene-anatomy-body[data-scene-study='reaction'][data-scene-choice='b'] .scene-anatomy-figure{
+  left:25%;top:5%;width:51%;height:111%;
+  filter:drop-shadow(18px 0 22px #05070c9a);
+}
+.scene-anatomy-body[data-scene-study='reaction'][data-scene-choice='b'] .scene-anatomy-figure-head{
+  left:17%;top:2%;width:65%;height:60%;border-radius:41% 41% 49% 48%;
+  transform:rotate(-4deg);
+  background:linear-gradient(92deg,#c99877,#966a55 35%,#543d38 66%,#1d2028 88%);
+  box-shadow:inset 13px 0 16px #d1ae8055,inset -12px 0 18px #0a111b;
+}
+.scene-anatomy-body[data-scene-study='reaction'][data-scene-choice='b'] .scene-anatomy-figure-body{
+  bottom:-3%;height:50%;border-radius:47% 46% 6% 6%;
+  background:linear-gradient(110deg,#4d4140,#202832 69%,#121820);
+}
+.scene-anatomy-body[data-scene-study='reaction'][data-scene-choice='b'] .scene-anatomy-eye{
+  display:block;position:absolute;top:45%;height:8%;width:17%;
+  border-top:3px solid #2b2222;
+  border-radius:50%;
+  background:radial-gradient(ellipse at 50% 38%,#27262a 0 19%,#b8a48c 22% 44%,transparent 55%);
+}
+.scene-anatomy-body[data-scene-study='reaction'][data-scene-choice='b'] .scene-anatomy-eye-left{left:21%;transform:rotate(8deg)}
+.scene-anatomy-body[data-scene-study='reaction'][data-scene-choice='b'] .scene-anatomy-eye-right{right:19%;transform:rotate(9deg)}
+.scene-anatomy-rhythm-plan{display:none}
+.scene-anatomy-body[data-scene-study='rhythm'] .scene-anatomy-stage{
+  background:linear-gradient(150deg,#2b3038,#121b26 76%);
+}
+.scene-anatomy-body[data-scene-study='rhythm'] .scene-anatomy-rhythm-plan{
+  display:flex;position:absolute;z-index:9;left:7%;right:7%;bottom:8%;
+  min-height:31%;padding:8px;gap:6px;align-items:stretch;
+  background:#12161de8;border:1px solid #caa88f85;border-radius:9px;
+  box-shadow:0 10px 20px #0007;
+}
+.scene-anatomy-body[data-scene-study='rhythm'] .scene-anatomy-rhythm-clip{
+  display:flex;min-width:0;flex:1 1 0;flex-direction:column;align-items:center;
+  justify-content:center;gap:6px;text-align:center;
+  border:1px solid #b6a18c80;border-radius:5px;
+  background:linear-gradient(130deg,#69564c,#283543);
+  color:#f4d7bc;font-size:clamp(8px,1.1vw,12px);
+  letter-spacing:.06em;font-weight:700;line-height:1.25;
+}
+.scene-anatomy-body[data-scene-study='rhythm'] .scene-anatomy-rhythm-clip:nth-child(even){
+  background:linear-gradient(130deg,#364e5a,#232e3b)
+}
+.scene-anatomy-body[data-scene-study='rhythm'] .scene-anatomy-rhythm-clip b{
+  color:#f5efeb;font-size:clamp(10px,1.2vw,14px);font-weight:600;letter-spacing:0;
+}
+.scene-anatomy-body[data-scene-study='rhythm'] .scene-anatomy-rhythm-hold{
+  background:linear-gradient(130deg,#5c514e,#283543)
+}
+@media(max-width:760px){
+  .scene-anatomy-body[data-scene-study='rhythm'] .scene-anatomy-rhythm-plan{padding:5px;gap:4px}
+  .scene-anatomy-body[data-scene-study='rhythm'] .scene-anatomy-rhythm-clip{font-size:9px;letter-spacing:0}
+  .scene-anatomy-body[data-scene-study='rhythm'] .scene-anatomy-rhythm-clip b{font-size:10px}
+}
