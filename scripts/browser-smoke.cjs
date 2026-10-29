@@ -98,6 +98,26 @@ async function verify() {
   assert.equal(await anatomy.locator('.scene-anatomy-phone span').isVisible(),true,
     'The motivated edit reveals a real on-screen phone insert');
   assert.equal(await anatomy.locator('[data-anatomy-lab="cut"]').count(),1);
+
+  // v0.13A1: new character reaction and 6-second planned-edit contrasts.
+  assert.equal(await anatomy.locator('[data-anatomy-study]').count(),5);
+  await anatomy.locator('[data-anatomy-study="reaction"]').click();
+  assert.equal(await anatomy.locator('[data-scene-choice]').getAttribute('data-scene-choice'),'a');
+  await anatomy.locator('[data-anatomy-option="b"]').click();
+  assert.equal(await anatomy.locator('.scene-anatomy-eye-left').isVisible(),true,
+    'Reaction close-up must reveal readable illustrated eyes, not just new copy');
+  assert.equal(await anatomy.locator('[data-anatomy-lab="frame"]').count(),1);
+  await anatomy.locator('[data-anatomy-study="rhythm"]').click();
+  assert.equal(await anatomy.locator('[data-scene-choice]').getAttribute('data-scene-choice'),'a');
+  assert.equal(await anatomy.locator('.scene-anatomy-rhythm-clip:visible').count(),1);
+  assert.match(await anatomy.locator('.scene-anatomy-rhythm-plan').textContent(),/0–6s/);
+  await anatomy.locator('[data-anatomy-option="b"]').click();
+  assert.equal(await anatomy.locator('.scene-anatomy-rhythm-clip:visible').count(),3,
+    'Quick-cut plan must show three distinct two-second segments');
+  assert.match(await anatomy.locator('.scene-anatomy-rhythm-plan').textContent(),/4–6s/);
+  assert.match(await anatomy.locator('.scene-anatomy-cue').textContent(),/2–4s: phone/i);
+  await anatomy.screenshot({path:path.join(shots,'01-scene-anatomy-reaction-rhythm.png'),animations:'disabled'});
+
   await anatomy.screenshot({path:path.join(shots,'01-scene-anatomy-desktop.png'),animations:'disabled'});
   await anatomy.locator('[data-anatomy-lab="cut"]').click();
   await page.locator('.react-cut-lab').waitFor();
@@ -662,6 +682,16 @@ async function verify() {
     await mobileAnatomy.locator('[data-anatomy-study="light"]').click();
     await mobileAnatomy.locator('[data-anatomy-option="b"]').click();
     assert.equal(await mobileAnatomy.locator('[data-scene-choice]').getAttribute('data-scene-choice'),'b');
+
+    await mobileAnatomy.locator('[data-anatomy-study="rhythm"]').click();
+    await mobileAnatomy.locator('[data-anatomy-option="b"]').click();
+    assert.equal(await mobileAnatomy.locator('.scene-anatomy-rhythm-clip:visible').count(),3);
+    const rhythmLayout=await mobileAnatomy.locator('.scene-anatomy-rhythm-plan').evaluate(node=>({
+      scroll:node.scrollWidth,width:node.clientWidth
+    }));
+    assert.ok(rhythmLayout.scroll<=rhythmLayout.width+3,
+      'Edit plan clips must not overflow their timeline on compact phones');
+
     const anatomyBounds=await mobileAnatomy.boundingBox();
     assert.ok(anatomyBounds && anatomyBounds.width<=width+2,
       'Scene Anatomy must fit a narrow phone without clipped horizontal layout');
