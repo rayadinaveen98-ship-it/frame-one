@@ -14,11 +14,11 @@ vm.runInNewContext(ts.transpileModule(read(dataPath),{compilerOptions:{module:ts
 const studies=moduleValue.exports.sceneAnatomyStudies;
 const curriculum=JSON.parse(read('src/data/curriculum.v08b.json'));
 const lessonIds=new Set(curriculum.lessons.map(x=>x.id));
-assert.equal(studies.length,3,'exactly three original comparative scene studies');
-assert.deepEqual(Array.from(studies,x=>x.id),['sound','light','edit']);
+assert.equal(studies.length,5,'five original comparative filmmaking decisions');
+assert.deepEqual(Array.from(studies,x=>x.id),['sound','light','edit','reaction','rhythm']);
 for(const study of studies){
  assert(lessonIds.has(study.lesson),'each studio case points at a real lesson: '+study.id);
- assert(['sound','light','cut'].includes(study.lab),'each studio case routes to a working lab');
+ assert(['sound','light','cut','frame'].includes(study.lab),'each studio case routes to a working lab');
  assert(study.tab&&study.title&&study.question&&study.observation&&study.sceneCue,'case has actual explanatory content');
  assert(study.choices.length===2,'each study has exactly two meaningful authored decisions');
  assert.deepEqual(Array.from(study.choices,x=>x.id),['a','b']);
@@ -40,8 +40,10 @@ assert(scene.includes("onClick={()=>openLab(study.lab)}"),'next action opens act
 assert(!scene.includes('localStorage')&&!scene.includes('fetch('),'no new saved keys or remote dependencies');
 assert(!read(dataPath).includes('http://')&&!read(dataPath).includes('https://'),'all authored scene studies are offline');
 assert(read(dataPath).includes('DESCRIBED, NOT PLAYED'),'the screenplay cue is not misrepresented as audible sound');
-for(const marker of ['.scene-anatomy-stage','.scene-anatomy-choices','@media(max-width:760px)','@media(max-width:360px)','[data-scene-study=\'light\']','[data-scene-study=\'edit\']'])
+for(const marker of ['.scene-anatomy-stage','.scene-anatomy-choices','@media(max-width:760px)','@media(max-width:360px)','[data-scene-study=\'light\']','[data-scene-study=\'edit\']','[data-scene-study=\'reaction\']','[data-scene-study=\'rhythm\']'])
  assert(style.includes(marker),'responsive scene mode missing '+marker);
 assert(browser.includes('data-anatomy-study'),'browser QA must press scene study controls');
 assert(browser.includes('data-anatomy-option'),'browser QA must compare takes');
-console.log('PASS: 3 original offline Scene Anatomy studies, real two-take visual changes, accessible switches, and linked actual lessons and labs.');
+assert(scene.includes('scene-anatomy-rhythm-plan')&&scene.includes('scene-anatomy-eye'),'both new studies have actual illustrated visual changes');
+assert(style.includes('scene-anatomy-rhythm-clip')&&style.includes('scene-anatomy-eye-left'),'both contrasts are authored, not just copy changes');
+console.log('PASS: 5 original offline filmmaking studies, reaction close-up, honest edit-duration strip, accessible A/B choices and real labs.');
