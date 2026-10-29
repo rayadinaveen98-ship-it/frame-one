@@ -1,8 +1,16 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.12A6 independent Android APK update-test infrastructure merged 29 October 2026 · latest downloadable APK remains v0.12A2 (28 October) · not app-store released.**
+**Latest development checkpoint: v0.13 interactive Scene Anatomy / The Director's Eye merged 29 October 2026 · latest downloadable APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.13 Scene Anatomy / The Director's Eye (29 October 2026)
+
+[PR #31](https://github.com/rayadinaveen98-ship-it/frame-one/pull/31) merged as [`f1514372`](https://github.com/rayadinaveen98-ship-it/frame-one/commit/f15143726299e1ddf7ff1e319d01715e83e89044). Frame One's Cinema Library now features **Scene Anatomy**, an original fictional night scene where the learner compares two directing choices in each of three topics: **no score vs an imagined musical pulse**, **warm practical lamp vs cold window sidelight**, and **holding the reaction vs cutting to a readable phone insert**. Real CSS lighting and framing change in response to the comparison. Each study explains possible effects without claiming that every audience has identical emotions, and links to the existing working Sound, Light and Cut Labs and their source lessons. Sound directions are honestly marked **described, not played**; audio can be experienced in the original Sound Lab. The feature runs offline and creates no new learner storage keys.
+
+**All seven exact-commit PR tests passed**: [web](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40836453992), [Chromium desktop/390px/320px](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40836453984), [native APK](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40836453951), [same-signer upgrade](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40836454058), [historical-source upgrade](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40836454112), [real JSON DocumentsUI backup/restore](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40836453942) and [native Back + offline notes](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40836453970). [Detailed test and release boundary](docs/QA_V13_SCENE_ANATOMY.md).
+
+**This is source progress, not a newly published APK.** The public v0.12A2 download remains temporary-signed and publication is frozen for upgrade safety until the long-lived QA signing identity and real cross-run/phone acceptance are established.
 
 ## Latest — v0.12A6 independent APK upgrade test readiness (29 October 2026)
 
