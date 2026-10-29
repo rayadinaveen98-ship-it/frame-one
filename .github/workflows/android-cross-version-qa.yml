@@ -41,6 +41,7 @@ jobs:
       - name: Check out new Frame One source at PR or main HEAD
         uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           persist-credentials: false
       - name: Set up Node 22
         uses: actions/setup-node@v4
@@ -60,8 +61,11 @@ jobs:
       - name: Install Android API 36 and build tools
         run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
       - name: Verify new source and script
+        env:
+          EXPECTED_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$EXPECTED_SOURCE_SHA"
           python3 -m py_compile scripts/android-emulator-upgrade.py scripts/android-emulator-learning-state.py scripts/android-emulator-smoke.py
           npm ci --no-audit --no-fund
           npm test
