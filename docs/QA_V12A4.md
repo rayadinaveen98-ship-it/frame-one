@@ -52,7 +52,15 @@ privately, verify certificate continuity across separate CI builds and test
 an install-without-uninstall upgrade on a physical Android phone. Do not
 change or upload the public APK merely to exercise this test.
 
-## Status
+## Verified acceptance — 29 October 2026
 
-Implementation is staged; require passing exact-commit GitHub Actions tests
-and a merged-main confirmation before marking this acceptance complete.
+[PR #28](https://github.com/rayadinaveen98-ship-it/frame-one/pull/28) merged into `main` as [`0775a50d`](https://github.com/rayadinaveen98-ship-it/frame-one/commit/0775a50d982bb6174f01a9ded1c71f8eb33652ba). The final PR head `e01b47145acd367c49349bafa29cb26106139486` passed all four independent gates:
+
+- [Old v0.11A4 source → exact new PR head Android upgrade 40825869466](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40825869466): **SUCCESS**. Both real source builds, exact SHA assertion, different packaged pages, matching ephemeral certificate, versionCode 1 → 2, saved quiz/storyboard/note and subsequent offline retention passed.
+- [Same-source Android package update 40825869419](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40825869419): **SUCCESS**.
+- [Web source and production build 40825869550](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40825869550): **SUCCESS**.
+- [Real Chromium desktop/mobile QA 40825869619](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40825869619): **SUCCESS**.
+
+The first cross-source [run 40825195419](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40825195419) also passed, but used GitHub's synthetic PR merge ref. We then made the source checkout and assertion explicit before the **final successful exact-head run** above.
+
+The independent merged-`main` cross-source check is [40826638730](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40826638730); its completion must be checked separately. The public release remains v0.12A2 and **still uses a changing temporary debug certificate**. A persistent QA signer, separate-build cross-run continuity and real-device phone upgrade are not completed by this milestone.
