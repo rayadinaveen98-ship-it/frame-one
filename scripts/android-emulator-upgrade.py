@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Same-certificate Android APK v1 -> v2 upgrade acceptance on a real emulator.
+"""Android v1 -> v2 same-certificate upgrade/data-retention acceptance.
 
-This is a mechanical update/data-retention gate using two versionCodes of
-the SAME source built in one CI job with one throwaway test signing key.
-It does not prove cross-run signing, true app-code migration, or phone behavior.
+This UI-driven test consumes two pre-built APKs staged by its workflow. The
+same-source gate checks native package-update mechanics. The cross-source
+gate builds historical and current sources to check a real code migration.
+Both use one throwaway CI key; neither proves persistent public-release
+signing, multi-run upgrades, or physical-phone behavior.
 """
 from __future__ import annotations
 
