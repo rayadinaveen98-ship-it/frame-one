@@ -31,6 +31,7 @@ jobs:
           NEW_RUN_ID: ${{ inputs.new_run_id }}
         run: |
           set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main || { echo "::error::Cross-run QA must run from trusted main"; exit 1; }
           [[ "$OLD_RUN_ID" =~ ^[1-9][0-9]*$ ]]
           [[ "$NEW_RUN_ID" =~ ^[1-9][0-9]*$ ]]
           test "$OLD_RUN_ID" != "$NEW_RUN_ID"
