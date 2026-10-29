@@ -1,8 +1,14 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.12A3 Android same-signer upgrade/data-retention QA merged 29 October 2026 · latest downloadable APK remains v0.12A2 (28 October) · not app-store released.**
+**Latest development checkpoint: v0.12A4 real historical-to-current Android upgrade/data-retention QA merged 29 October 2026 · latest downloadable APK remains v0.12A2 (28 October) · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.12A4 historical-to-current Android upgrade QA (29 October 2026)
+
+[PR #28](https://github.com/rayadinaveen98-ship-it/frame-one/pull/28) merged as [`0775a50d`](https://github.com/rayadinaveen98-ship-it/frame-one/commit/0775a50d982bb6174f01a9ded1c71f8eb33652ba). A new Android API 35 emulator QA gate independently builds the original v0.11A4 source at `b31033bc` and current app source, verifies **different app bundles**, an identical **one-job disposable signing certificate**, and Android versionCode 1 → 2. It then uses the actual Android UI to save a lesson quiz, storyboard decision, close framing and authored note in the old app, installs the new app **without uninstalling**, and verifies all local work remains after the upgrade and another offline restart. This closes the v0.12A3 same-source coverage gap for this specific historical-to-current transition. The final **exact PR head** passed [cross-version Android 40825869466](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40825869466), [same-source Android 40825869419](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40825869419), [web 40825869550](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40825869550), and [Chromium 40825869619](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40825869619). [Detailed acceptance and limits](docs/QA_V12A4.md).
+
+**QA-only milestone:** the public APK is **still v0.12A2**, temporarily debug signed. The test uses one throwaway CI key rather than a permanent key spanning separately published APK versions. Physical-device upgrades and actual public test-APK update safety remain open.
 
 ## Latest — v0.12A3 Android upgrade safety QA (29 October 2026)
 
