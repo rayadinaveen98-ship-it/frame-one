@@ -113,7 +113,7 @@ const legacyStable=withVersion('legacy-stable.txt',modeYes,null);
 const nextStable=withVersion('stable-100001.txt',modeYes,100001);
 const furtherStable=withVersion('stable-100002.txt',modeYes,100002);
 const sameCode=withVersion('stable-same.txt',modeYes,100001);
-const rollback=withVersion('stable-rollback.txt',modeYes,99999);
+const rollback=withVersion('stable-rollback.txt',modeYes,100001);
 const invalidVersion=withVersion('invalid-version.txt',modeYes,'not-a-number');
 const duplicateVersion=withVersion('duplicate-version.txt',modeYes,'100003\nAndroid versionCode: 100004');
 function verifyCode(label,newFile,priorFile,pass,includes){
@@ -128,7 +128,7 @@ verifyCode('Cannot migrate version-less stable',nextStable,legacyStable,false,'v
 verifyCode('Cannot replace legacy temp with another temporary',withVersion('new-temp.txt',modeNo,100001),legacyTemp,false,'requires the first permanent');
 verifyCode('Increasing signed version accepted',furtherStable,nextStable,true,'accepted');
 verifyCode('Equal code rejected',sameCode,nextStable,false,'BLOCKED:');
-verifyCode('Rollback code rejected',rollback,nextStable,false,'BLOCKED:');
+verifyCode('Rollback code rejected',rollback,furtherStable,false,'BLOCKED:');
 verifyCode('Invalid version rejected',invalidVersion,nextStable,false,'Invalid Android versionCode');
 verifyCode('Duplicate receipt rejected',duplicateVersion,nextStable,false,'duplicate');
 
