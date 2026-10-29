@@ -39,6 +39,9 @@ export function MakeLab(){
   const framing=plan.shots[step];
 
   useEffect(()=>{
+    // Entering the editor from a long lesson or lab must never inherit
+    // an unrelated bottom-of-page scroll position in Android WebView.
+    window.scrollTo({top:0,left:0,behavior:'auto'});
     const onRestore=()=>{clearDirectorHandoff();setDirectorOffer(null);setSavedAtOffer(null);setPlan(readSavedPlan());setLibrary(readProjects());setStep(0);setStatus('Restored storyboard and project library are ready.');};
     window.addEventListener('frameone:story-restored',onRestore);
     return ()=>{window.removeEventListener('frameone:story-restored',onRestore);clearDirectorHandoff();};
