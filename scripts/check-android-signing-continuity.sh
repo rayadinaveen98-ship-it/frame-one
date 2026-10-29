@@ -42,6 +42,9 @@ if [[ -n "$prior_receipt" && -e "$prior_receipt" ]]; then
   if [[ "$prior_mode" == persistent && "$new_cert" != "$prior_cert" ]]; then
     fail "BLOCKED: permanent QA signer certificate changed. Public preview must retain the same certificate to protect in-place upgrades."
   fi
+  if [[ "$prior_mode" == temporary && "$new_mode" == temporary ]]; then
+    fail "BLOCKED: public preview remains frozen while using temporary signing. Configure persistent QA signing before replacing the existing APK; keep existing testers' local work safe."
+  fi
   if [[ "$prior_mode" == temporary && "$new_mode" == persistent ]]; then
     echo "::notice::First permanent QA signer: the currently installed temporary-signed APK will NOT upgrade in place; back up, reinstall once, then restore."
   elif [[ "$new_mode" == temporary ]]; then
