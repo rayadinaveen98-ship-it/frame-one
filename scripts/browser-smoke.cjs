@@ -80,7 +80,7 @@ async function verify() {
   // v0.13: real, illustrated director's-choice comparisons on Home.
   const anatomy=page.locator('[data-scene-anatomy]');
   assert.equal(await anatomy.count(),1,'A single editorial scene study must be mounted');
-  assert.equal(await anatomy.locator('[data-anatomy-study]').count(),3);
+  assert.equal(await anatomy.locator('[data-anatomy-study]').count(),5);
   assert.equal(await anatomy.locator('[data-scene-study]').getAttribute('data-scene-study'),'sound');
   assert.equal(await anatomy.locator('[data-scene-choice]').getAttribute('data-scene-choice'),'a');
   await anatomy.locator('[data-anatomy-option="b"]').click();
