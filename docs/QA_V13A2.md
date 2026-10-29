@@ -68,3 +68,19 @@ acceptance and physical-device test are complete, this is source
 development only. The last public Android preview is v0.12A2 with a
 temporary signing certificate; automatic publication remains deliberately
 blocked for existing learner-data safety.
+
+## Verification: merged 29 October 2026
+
+[PR #33](https://github.com/rayadinaveen98-ship-it/frame-one/pull/33) merged to main as [83f43802](https://github.com/rayadinaveen98-ship-it/frame-one/commit/83f438024922192a771f6b2337d0677bf7ff418e). All **seven exact PR-head** checks passed:
+
+- [Web source, 16 deterministic treatments and TypeScript: 40842085319](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40842085319) — PASS.
+- [Chromium desktop and 390px/320px interaction QA: 40842085590](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40842085590) — PASS. Verified framing zoom, lighting changes, described sound cue, real 0–4/4–6 edit plan, presets, functioning Make Lab and all seven original labs.
+- [Android APK build: 40842085213](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40842085213) — PASS.
+- [Same-signer Android upgrade/data retention: 40842085390](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40842085390) — PASS.
+- [Historical v0.11A4-to-current Android upgrade/data retention: 40842085488](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40842085488) — PASS.
+- [Real Android DocumentsUI JSON backup/restore: 40842085657](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40842085657) — PASS.
+- [Native Back and offline-note retention: 40842085207](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40842085207) — PASS.
+
+This proves the tested source and emulator behavior, **not production-signing compatibility or physical-phone upgrades**. A human still needs to inspect the browser screenshots for artistic sign-off. Post-merge independent main checks were still running when this document was updated.
+
+The public APK still points to v0.12A2 source `7c5156467200443137f877aeb82fe31c7e196c05`, 4,666,865 bytes, with a TEMPORARY DEBUG KEY. No new public APK was released.
