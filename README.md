@@ -1,8 +1,16 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.13A2 Direct the Moment four-choice film workshop merged 29 October 2026 · downloadable APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
+**Latest development checkpoint: v0.13A3 safe director-to-storyboard handoff merged 29 October 2026 · downloadable APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.13A3 Director → editable Make Lab storyboard (29 October 2026)
+
+[PR #34](https://github.com/rayadinaveen98-ship-it/frame-one/pull/34) merged as [`4b5c438f`](https://github.com/rayadinaveen98-ship-it/frame-one/commit/4b5c438f2a227e715bb9a19d643d77cacf7da3e5). The **Direct the Moment** workshop now carries all four filmmaking decisions into a **review-only, unsaved three-beat Make Lab storyboard proposal**, with editable shot notes and framing. The learner must explicitly **Keep existing storyboard** or **Save/Replace existing storyboard**; a saved custom board triggers a warning and a working **Export existing shot list** option. No navigation or preview automatically writes learner data. All sixteen treatments are bounded to the unchanged three-beat `frameone-scene-v07` storage/JSON backup shape, with any beats after the six-second scene clearly labeled as future actions rather than fake cuts. Backup restores cancel pending previews, and failed writes roll back the in-memory legacy storyboard.
+
+**All seven exact PR-head gates passed:** [web/TypeScript](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40854067373), [desktop/390px/320px browser](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40854067239), [Android APK build](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40854067237), [real Android JSON backup/restore](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40854067194), [native Back/offline](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40854067164), [same-signer upgrade](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40854067150) and [historical-source upgrade](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40854067168). [Detailed testing and single-project limitation](docs/QA_V13A3.md).
+
+**Limit:** Make Lab still holds **one saved storyboard**, not multiple projects. Import never silently replaces it, but explicit approval does replace that one slot. The public APK remains v0.12A2, temporary-signed; persistent QA signing, physical-phone testing and two independent real-signer builds are still required to safely publish an upgrade.
 
 ## Latest — v0.13A2 Direct the Moment (29 October 2026)
 
