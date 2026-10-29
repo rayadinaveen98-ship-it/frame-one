@@ -1,8 +1,16 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.13 interactive Scene Anatomy / The Director's Eye merged 29 October 2026 · latest downloadable APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
+**Latest development checkpoint: v0.13A1 Director's Eye reaction shots and editing rhythm merged 29 October 2026 · downloadable APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.13A1 Reaction shots and editing rhythm (29 October 2026)
+
+[PR #32](https://github.com/rayadinaveen98-ship-it/frame-one/pull/32) merged as [`0823460b`](https://github.com/rayadinaveen98-ship-it/frame-one/commit/0823460b40cfbc24ec1d8822171193fe52920e87). The Director's Eye now has **five** original, offline scene investigations. Beyond sound, light and information-revealing cuts, learners can choose between an object-focused shot and an illustrated close-up of the character's reaction, then compare a **single six-second hold** with a truthful **three-shot 2+2+2-second static edit plan**. The plans are not fake videos or playback. Both decisions show meaningful visual changes, explanations and working links to original lessons and hands-on Frame and Cut Labs. No existing progress or backup keys change.
+
+**All five final PR-head gates passed:** [web](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40838855952), [real-browser desktop and 390px/320px](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40838855957), [native Android APK build](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40838855943), [same-signer Android data retention](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40838856028), and [historical-code Android data retention](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40838855989). [Detailed v0.13A1 QA and limitations](docs/QA_V13A1.md). Independent merged-main checks are separate.
+
+**This is merged source, not a newly published APK.** The public release remains v0.12A2 with a temporary signing certificate. Automatic replacement stays blocked until long-lived QA signing and real separate-build/physical-phone update acceptance are completed.
 
 ## Latest — v0.13 Scene Anatomy / The Director's Eye (29 October 2026)
 
