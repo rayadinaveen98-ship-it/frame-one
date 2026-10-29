@@ -46,7 +46,23 @@ or physical phone, audio, gesture and TalkBack behavior.
 Complete docs/ANDROID_QA_SIGNING.md and docs/RELEASE_CHECKLIST.md before
 claiming stable public APK updates. The CI keystore must never be published.
 
+## First emulator acceptance and artifact outage (29 October 2026)
+
+The initial exact-head [Android workflow run 40812941078](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40812941078) completed all build, emulator and upgrade assertions **successfully**:
+versionCode 1 to 2 with identical signer, no uninstall, real quiz completion,
+Make storyboard/Close-up/note retention and a second offline restart.
+The emulator printed `FRAME ONE ANDROID TWO-APK SAME-SIGNER UPGRADE: PASS`.
+
+The run's overall result was **failure** solely because the *optional* GitHub
+`actions/upload-artifact` call timed out five times contacting the artifact
+service during `CreateArtifact`; six screenshot/XML evidence files existed.
+This was not an application, Android, test-assertion or signing failure.
+The workflow now treats screenshot artifact storage as best-effort and emits
+a warning if upload fails. A missing upload is **not** evidence of visual review.
+
 ## Status
 
-Implementation staged for exact-commit pull-request verification. Do not
-mark this gate as passing until the actual workflow returns success.
+The upgrade assertions passed in the initial exact-head emulator job. The
+follow-up workflow change still needs its own green CI run before merging.
+The public APK is unchanged; a physical device and stable cross-run QA signer
+are independent release gates.
