@@ -1398,10 +1398,112 @@
     function initialStory(){return {question:'mystery',shots:['wide','medium','close'],notes:['A person waits at a bus stop.','Something makes the wait important.','The person makes a choice.']}}
     function loadStory(){const raw=safeGet(STORY_KEY,null);const def=initialStory();if(!raw||typeof raw!=='object')return def;return {question:Object.hasOwn(sceneQuestions,raw.question)?raw.question:def.question,shots:[0,1,2].map(i=>['wide','medium','close'].includes(raw.shots?.[i])?raw.shots[i]:def.shots[i]),notes:[0,1,2].map(i=>typeof raw.notes?.[i]==='string'?raw.notes[i].slice(0,240):def.notes[i])}}
     function saveStory(){try{localStorage.setItem(STORY_KEY,JSON.stringify(state.story));return true}catch{return false}}
+    // v0.14 project library keeps the v0.7 scene key as an active-slot mirror.
+    // Newer backups contain this optional collection, while old v1 backups
+    // restore to a single imported project. All writes are transactional-ish:
+    // snapshot both keys and restore previous bytes if either write fails.
+    const PROJECTS_KEY='frameone-story-projects-v1',MAX_PROJECTS=20;
+    function firstProject(scene){return {version:1,activeId:'legacy-project',projects:[{id:'legacy-project',name:'My first scene',scene:scene}]}}
+    function validProjectLibrary(value){
+      if(!value||typeof value!=='object'||value.version!==1||!Array.isArray(value.projects)||value.projects.length<1||value.projects.length>MAX_PROJECTS)return null;
+      const ids=new Set(),projects=[];
+      for(const item of value.projects){
+        if(!item||typeof item!=='object'||typeof item.id!=='string'||!/^[-_a-zA-Z0-9]{1,90}$/.test(item.id)||ids.has(item.id)||
+          typeof item.name!=='string'||item.name.trim().length<1||item.name.length>60||
+          !item.scene||!Object.hasOwn(sceneQuestions,item.scene.question)||!Array.isArray(item.scene.shots)||item.scene.shots.length!==3||
+          !Array.isArray(item.scene.notes)||item.scene.notes.length!==3)return null;
+        ids.add(item.id);
+        projects.push({id:item.id,name:item.name.trim(),scene:{
+          question:item.scene.question,
+          shots:[0,1,2].map(i=>['wide','medium','close'].includes(item.scene.shots[i])?item.scene.shots[i]:'wide'),
+          notes:[0,1,2].map(i=>typeof item.scene.notes[i]==='string'?item.scene.notes[i].slice(0,240):'')}});
+      }
+      if(typeof value.activeId!=='string'||!ids.has(value.activeId))return null;
+      return {version:1,activeId:value.activeId,projects:projects};
+    }
+    function loadProjectLibrary(activeScene){
+      let raw;
+      try{raw=localStorage.getItem(PROJECTS_KEY)}catch{return {library:null,error:'Storage unavailable; projects cannot be saved.'}}
+      if(raw===null)return {library:firstProject(activeScene),error:null};
+      try{
+        const library=validProjectLibrary(JSON.parse(raw));
+        if(!library)return {library:null,error:'Existing project library is invalid. Export your backup before changing projects.'};
+        // v0.7 mirror wins if an older APK edited the active storyboard.
+        library.projects.find(p=>p.id===library.activeId).scene=activeScene;
+        return {library:library,error:null};
+      }catch{return {library:null,error:'Existing project library could not be read; it has not been overwritten.'}}
+    }
+    function writeProjectAndScene(library,scene){
+      if(state.projectsError)return false;
+      const safe=validProjectLibrary(library);
+      if(!safe)return false;
+      const active=safe.projects.find(p=>p.id===safe.activeId);
+      active.scene=scene;
+      const keys=[PROJECTS_KEY,STORY_KEY];
+      let prev;
+      try{prev=keys.map(k=>localStorage.getItem(k))}catch{return false}
+      try{
+        localStorage.setItem(PROJECTS_KEY,JSON.stringify(safe));
+        localStorage.setItem(STORY_KEY,JSON.stringify(scene));
+      }catch{
+        for(let i=0;i<keys.length;i++)try{
+          if(prev[i]===null)localStorage.removeItem(keys[i]);else localStorage.setItem(keys[i],prev[i]);
+        }catch{}
+        return false;
+      }
+      state.projects=safe;state.story=scene;
+      return true;
+    }
+    function getProjectSnapshot(){
+      return {activeId:state.projects?.activeId||null,error:state.projectsError||null,
+        projects:state.projects?JSON.parse(JSON.stringify(state.projects.projects)):[]};
+    }
+    function nextProjectId(){
+      const base='project-'+Date.now().toString(36);
+      let i=0,existing=new Set(state.projects.projects.map(p=>p.id));
+      while(existing.has(base+'-'+i))i++;
+      return base+'-'+i;
+    }
+    function createStoryProject(name,seed){
+      if(!state.projects||state.projects.projects.length>=MAX_PROJECTS)return false;
+      const label=typeof name==='string'?name.trim():'';
+      if(!label||label.length>60)return false;
+      const scene=seed&&Object.hasOwn(sceneQuestions,seed.question)&&Array.isArray(seed.shots)&&Array.isArray(seed.notes)
+        ? {question:seed.question,shots:[0,1,2].map(i=>['wide','medium','close'].includes(seed.shots[i])?seed.shots[i]:'wide'),
+          notes:[0,1,2].map(i=>typeof seed.notes[i]==='string'?seed.notes[i].slice(0,240):'')}
+        : initialStory();
+      const copy=JSON.parse(JSON.stringify(state.projects)),id=nextProjectId();
+      copy.projects.push({id:id,name:label,scene:scene});copy.activeId=id;
+      return writeProjectAndScene(copy,scene);
+    }
+    function switchStoryProject(id){
+      if(!state.projects||typeof id!=='string')return false;
+      const item=state.projects.projects.find(p=>p.id===id);
+      if(!item)return false;
+      const copy=JSON.parse(JSON.stringify(state.projects));copy.activeId=id;
+      return writeProjectAndScene(copy,item.scene);
+    }
+    function renameStoryProject(id,name){
+      if(!state.projects||typeof name!=='string'||!name.trim()||name.trim().length>60)return false;
+      const copy=JSON.parse(JSON.stringify(state.projects)),item=copy.projects.find(p=>p.id===id);
+      if(!item)return false;item.name=name.trim();
+      return writeProjectAndScene(copy,state.story);
+    }
+    function deleteStoryProject(id){
+      if(!state.projects||state.projects.projects.length<2)return false;
+      const copy=JSON.parse(JSON.stringify(state.projects)),position=copy.projects.findIndex(p=>p.id===id);
+      if(position<0)return false;
+      copy.projects.splice(position,1);
+      if(copy.activeId===id)copy.activeId=copy.projects[0].id;
+      const next=copy.projects.find(p=>p.id===copy.activeId);
+      return writeProjectAndScene(copy,next.scene);
+    }
     function loadNotes(){const data=safeGet(NOTES_KEY,{});return data&&typeof data==='object'&&!Array.isArray(data)?data:{}}
     function saveNotes(){try{localStorage.setItem(NOTES_KEY,JSON.stringify(state.notes));return true}catch{return false}}
     function storyPlanText(){const q=sceneQuestions[state.story.question];return ['FRAME ONE · FIRST SCENE SHOT PLAN','Story question: '+q.question,'Setting: A fictional bus stop.','',...scenePhases.flatMap((p,i)=>['SHOT '+(i+1)+' · '+p.name+' · '+state.story.shots[i].toUpperCase(), 'Action idea: '+(state.story.notes[i].trim()||'(not written yet)'), 'Purpose: '+q.hints[i],'']), 'A shot plan is an idea for filming, not a finished film.','Created locally in Frame One.'].join('\n')}
     const state={page:'home',collection:null,journey:null,thoughtIndex:0,story:loadStory(),storyStep:0,notes:loadNotes(),crewPhase:'idea',miniStep:0,lesson:null,craft:null,lab:'frame',frame:'wide',sound:'silence',light:'front',filter:'All',query:'',quiz:null,quizAnswered:false,audio:null,cutOpening:'place',cutStep:0,cutOrder:['place','detail','person'],cutDuration:[2,2,2],cutPlaying:false,cutTimer:null,activity:null,frameGuide:true,compare:false,frameZoom:1,lightPower:90,lightSoft:35,ambience:true,soundPlaying:false,soundTimer:null,colourMode:'neutral',colourStrength:65,continuityMode:'match',telugu:loadTelugu()};
+    const loadedProjects=loadProjectLibrary(state.story);
+    state.projects=loadedProjects.library;state.projectsError=loadedProjects.error;
     let finished=loadProgress();
     function loadTelugu(){try{return localStorage.getItem(LANGUAGE_KEY)==='yes'}catch{return false}}
     function saveTelugu(){try{localStorage.setItem(LANGUAGE_KEY,state.telugu?'yes':'no')}catch{}}
@@ -1605,13 +1707,18 @@
     }
 
     // v0.8 portable backup. Every imported field is validated; user-created notes are escaped when rendered.
-    function makeBackup(){return {format:'frameone-learning-backup',version:1,exportedAt:new Date().toISOString(),completed:[...finished],notes:{...state.notes},scene:state.story}}
+    function makeBackup(){return {format:'frameone-learning-backup',version:1,exportedAt:new Date().toISOString(),completed:[...finished],notes:{...state.notes},scene:state.story,projects:state.projects?JSON.parse(JSON.stringify(state.projects)):null}}
     function restoreBackup(payload){
       if(!payload||payload.format!=='frameone-learning-backup'||payload.version!==1)throw new Error('Not a Frame One backup.');
       if(!Array.isArray(payload.completed)||payload.completed.length>500||!payload.notes||typeof payload.notes!=='object'||Array.isArray(payload.notes))throw new Error('Backup fields are incomplete.');
       const allowed=new Set(lessons.map(l=>l.id));
       const restoredIds=payload.completed.filter(id=>typeof id==='string'&&allowed.has(id));
       const incomingNotes={};for(const [key,val] of Object.entries(payload.notes)){if(allowed.has(key)&&typeof val==='string')incomingNotes[key]=val.slice(0,240)}
+      // Older v1 backups without projects remain importable as one project.
+      // Do not silently discard a malformed optional project collection.
+      const suppliedProjects=payload.projects;
+      const importedProjects=suppliedProjects===undefined||suppliedProjects===null?null:validProjectLibrary(suppliedProjects);
+      if(suppliedProjects!==undefined&&suppliedProjects!==null&&!importedProjects)throw new Error('The backup project collection is invalid.');
       const savedScene=payload.scene;if(!savedScene||typeof savedScene!=='object'||!Object.hasOwn(sceneQuestions,savedScene.question)||!Array.isArray(savedScene.shots)||!Array.isArray(savedScene.notes))throw new Error('Scene in backup is invalid.');
       const safeScene={question:savedScene.question,shots:[0,1,2].map(i=>['wide','medium','close'].includes(savedScene.shots[i])?savedScene.shots[i]:'wide'),notes:[0,1,2].map(i=>typeof savedScene.notes[i]==='string'?savedScene.notes[i].slice(0,240):'')};
       // Validate everything BEFORE replacing any in-memory or persisted values.
@@ -1619,12 +1726,15 @@
       // roll them back if quota/private-mode errors interrupt a multi-key save.
       // Do not mutate live UI state until all three writes have succeeded.
       const nextProgress=[...new Set(restoredIds)];
-      const restoreKeys=[STORAGE_KEY,NOTES_KEY,STORY_KEY];
+      const restoredLibrary=importedProjects||firstProject(safeScene);
+      restoredLibrary.projects.find(p=>p.id===restoredLibrary.activeId).scene=safeScene;
+      const restoreKeys=[STORAGE_KEY,NOTES_KEY,STORY_KEY,PROJECTS_KEY];
       const previous=restoreKeys.map(key=>localStorage.getItem(key));
       try {
         localStorage.setItem(STORAGE_KEY,JSON.stringify(nextProgress));
         localStorage.setItem(NOTES_KEY,JSON.stringify(incomingNotes));
         localStorage.setItem(STORY_KEY,JSON.stringify(safeScene));
+        localStorage.setItem(PROJECTS_KEY,JSON.stringify(restoredLibrary));
       } catch {
         for(let i=0;i<restoreKeys.length;i++){
           try {
@@ -1635,6 +1745,7 @@
         throw new Error('The backup could not be saved. Check device storage and retry; existing data was restored where possible.');
       }
       finished.clear();nextProgress.forEach(x=>finished.add(x));state.notes=incomingNotes;state.story=safeScene;state.storyStep=0;
+      state.projects=restoredLibrary;state.projectsError=null;
     }
     function downloadBackup(){
       const blob=new Blob([JSON.stringify(makeBackup(),null,2)],{type:'application/json;charset=utf-8'});
@@ -1676,17 +1787,17 @@
       getBackupJSON:()=>JSON.stringify(makeBackup(),null,2),
       importBackup:(payload)=>{restoreBackup(payload);window.dispatchEvent(new Event('frameone:story-restored'));render()},
       getStoryboard:()=>JSON.parse(JSON.stringify(state.story)),
+      getStoryProjects:()=>getProjectSnapshot(),
+      createStoryProject:(name,seed)=>createStoryProject(name,seed),
+      switchStoryProject:(id)=>switchStoryProject(id),
+      renameStoryProject:(id,name)=>renameStoryProject(id,name),
+      deleteStoryProject:(id)=>deleteStoryProject(id),
       saveStoryboard:(plan)=>{
         if(!plan||typeof plan!=='object'||!Object.hasOwn(sceneQuestions,plan.question)||!Array.isArray(plan.shots)||!Array.isArray(plan.notes)||plan.shots.length!==3||plan.notes.length!==3)return false;
-        // Preserve the currently loaded project even when browser storage
-        // rejects writes (private mode, quota, disabled WebView storage).
-        const previousStory=state.story;
-        state.story={question:plan.question,
+        const next={question:plan.question,
           shots:[0,1,2].map(i=>['wide','medium','close'].includes(plan.shots[i])?plan.shots[i]:'wide'),
           notes:[0,1,2].map(i=>typeof plan.notes[i]==='string'?plan.notes[i].slice(0,240):'')};
-        if(saveStory())return true;
-        state.story=previousStory;
-        return false;
+        return writeProjectAndScene(state.projects,next);
       },
       exportShotList:()=>{
         const blob=new Blob([storyPlanText()],{type:'text/plain;charset=utf-8'});
