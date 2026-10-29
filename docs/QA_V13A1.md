@@ -38,3 +38,24 @@ Selections are ephemeral React state and don't add user data or migrations.
 This is source code; it is **not yet** an installable update for existing
 testers. The long-lived QA key, two persistent-signed APKs and physical-phone
 upgrade test are still pending.
+
+## Verified PR acceptance — 29 October 2026
+
+[PR #32](https://github.com/rayadinaveen98-ship-it/frame-one/pull/32) merged into
+`main` as [`0823460b`](https://github.com/rayadinaveen98-ship-it/frame-one/commit/0823460b40cfbc24ec1d8822171193fe52920e87).
+All five **exact final PR-head** checks on
+`ea4bfa6559ad8f95b9474551103557621de61663` passed:
+
+- [Web regression, TypeScript and production build — 40838855952](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40838855952): SUCCESS.
+- [Real browser desktop, 390px and 320px interaction QA — 40838855957](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40838855957): SUCCESS.
+- [Native Android debug build — 40838855943](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40838855943): SUCCESS.
+- [Same-signer Android package upgrade and saved-data retention — 40838856028](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40838856028): SUCCESS.
+- [Historical-to-current Android source upgrade and saved-data retention — 40838855989](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40838855989): SUCCESS.
+
+Browser QA confirms the appearance of the enlarged reaction close-up and
+the **1-vs-3 real static timing strips**. These test results confirm source
+quality and the covered emulator paths, **not production-signed/public APK
+upgrade continuity or physical-phone compatibility**.
+
+The independent merged-`main` verification for commit `0823460b` was
+still running when the PR was merged and is tracked independently.
