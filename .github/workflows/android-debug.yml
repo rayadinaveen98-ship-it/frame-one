@@ -8,6 +8,7 @@ on:
       - 'src/**'
       - 'public/**'
       - 'scripts/generate-offline.cjs'
+      - 'scripts/set-android-qa-version-code.py'
       # Browser QA and emulator test scripts are not application assets.
       # Changes to those files must NOT republish a freshly signed APK.
       - 'package.json'
@@ -65,6 +66,11 @@ jobs:
           npx cap add android
           npx cap sync android
           python3 scripts/render-brand-icons.py --android
+      - name: Assign Android QA versionCode from this workflow run
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/set-android-qa-version-code.py --gradle android/app/build.gradle --run-number "$GITHUB_RUN_NUMBER"
       - name: Restore persistent debug signing identity when provisioned
         if: ${{ github.event_name != 'pull_request' }}
         env:
@@ -98,7 +104,12 @@ jobs:
           else
             printf 'Persistent QA signer: NO (temporary runner signer; not upgrade-safe)\n' >> android-qa-signature.txt
           fi
-          grep -E 'certificate SHA-256 digest|Persistent QA signer' android-qa-signature.txt
+          app_line="$("$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$apk" | grep '^package: ' | head -n 1)"
+          [[ "$app_line" == *"name='com.frameone.learncinema'"* ]] || { echo 'Unexpected Android package ID'; exit 1; }
+          version_code="$(printf '%s\n' "$app_line" | sed -n "s/.*versionCode='\\([0-9][0-9]*\\)'.*/\\1/p")"
+          [[ "$version_code" =~ ^[1-9][0-9]*$ ]] || { echo 'Invalid Android QA versionCode'; exit 1; }
+          echo "Android versionCode: $version_code" >> android-qa-signature.txt
+          grep -E 'certificate SHA-256 digest|Persistent QA signer|Android versionCode' android-qa-signature.txt
       - name: Verify APK contains the bundled web app
         run: |
           test -s android/app/build/outputs/apk/debug/app-debug.apk
