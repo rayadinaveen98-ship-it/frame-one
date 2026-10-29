@@ -98,6 +98,10 @@ jobs:
           # The rule checks only public receipts; private keys stay in the
           # Android build job's protected GitHub Actions secret.
           bash scripts/check-android-signing-continuity.sh release/android-qa-signature.txt previous/android-qa-signature.txt
+          # A stable certificate alone cannot make versionCode rollbacks safe.
+          # Older v0.12A2 has no versionCode receipt; allow exactly one
+          # temporary-to-permanent transition, never another temporary release.
+          bash scripts/check-android-qa-version-continuity.sh release/android-qa-signature.txt previous/android-qa-signature.txt
 
           if [ "$signer" = temporary ]; then
             printf '%s\n' '**Android signing: TEMPORARY DEBUG KEY. Do not expect in-place updates to work.** Export your learning JSON to an external location, verify it exists, then only uninstall if necessary.' > release/UPGRADE_NOTE.md
@@ -110,6 +114,8 @@ jobs:
             printf '%s\n' '**Certificate changed from the previous published APK. Android will reject an in-place update from that APK. Back up your learning data before uninstalling it.**' >> release/UPGRADE_NOTE.md
           fi
           printf 'Current public certificate SHA-256: %s\n' "$new_cert" >> release/UPGRADE_NOTE.md
+          version_code="$(sed -n 's/^Android versionCode: //p' release/android-qa-signature.txt)"
+          printf 'Current Android QA versionCode: %s\n' "$version_code" >> release/UPGRADE_NOTE.md
       - name: Publish same stable direct APK URL with verified build receipt
         shell: bash
         run: |
