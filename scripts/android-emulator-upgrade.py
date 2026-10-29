@@ -4,12 +4,14 @@
 This UI-driven test consumes two pre-built APKs staged by its workflow. The
 same-source gate checks native package-update mechanics. The cross-source
 gate builds historical and current sources to check a real code migration.
-Both use one throwaway CI key; neither proves persistent public-release
-signing, multi-run upgrades, or physical-phone behavior.
+In same-job tests, one throwaway CI key signs both APKs. For cross-run QA,
+this script can also consume independently built APKs signed by a persistent
+QA key. Emulator acceptance never proves physical-phone or Play Store behavior.
 """
 from __future__ import annotations
 
 import importlib.util
+import os
 import re
 import sys
 from pathlib import Path
@@ -50,10 +52,16 @@ def assert_version(expected: int) -> None:
 def main() -> None:
     if not APK_V1.is_file() or not APK_V2.is_file():
         raise FileNotFoundError("Both signed APKs must be staged in qa/upgrade")
+    # Same-job tests use 1 -> 2. Cross-run tests pass real Android APK codes.
+    old_code = int(os.environ.get("FRAMEONE_UPGRADE_OLD_CODE", "1"))
+    new_code = int(os.environ.get("FRAMEONE_UPGRADE_NEW_CODE", "2"))
+    if old_code < 1 or new_code <= old_code or new_code > 2100000000:
+        raise ValueError("Upgrade versionCodes must be increasing positive Android codes")
+    print(f"UPGRADE QA versionCode {old_code} -> {new_code}", flush=True)
     print("UPGRADE QA: clean-install test v1; no pre-existing data", flush=True)
     # No uninstall between v1 and v2: preserving the app data is the test.
     ui.adb("install", "-t", str(APK_V1), timeout=120)
-    assert_version(1)
+    assert_version(old_code)
     state.launch()
     state.complete_first_lesson()
     state.make_storyboard()
@@ -70,7 +78,7 @@ def main() -> None:
     result = ui.adb("install", "-r", "-t", str(APK_V2), timeout=120)
     if "Success" not in result:
         raise AssertionError("Android did not report successful in-place package update")
-    assert_version(2)
+    assert_version(new_code)
     state.launch()
     state.verify_after_restart()
     ui.capture("upgrade-02-v2-progress-retained")

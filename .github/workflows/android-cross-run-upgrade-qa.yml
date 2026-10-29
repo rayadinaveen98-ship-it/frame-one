@@ -1,0 +1,122 @@
+name: Frame One independent Android APK upgrade acceptance
+
+# Manual only. The input runs must both be successful main-branch Android
+# debug builds with a persistent QA signing key. Never publishes any APK.
+on:
+  workflow_dispatch:
+    inputs:
+      old_run_id:
+        description: 'Older successful Android debug build run ID'
+        type: string
+        required: true
+      new_run_id:
+        description: 'Newer successful Android debug build run ID'
+        type: string
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  separate-builds-upgrade:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate run IDs
+        shell: bash
+        env:
+          OLD_RUN_ID: ${{ inputs.old_run_id }}
+          NEW_RUN_ID: ${{ inputs.new_run_id }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main || { echo "::error::Cross-run QA must run from trusted main"; exit 1; }
+          [[ "$OLD_RUN_ID" =~ ^[1-9][0-9]*$ ]]
+          [[ "$NEW_RUN_ID" =~ ^[1-9][0-9]*$ ]]
+          test "$OLD_RUN_ID" != "$NEW_RUN_ID"
+      - name: Require two successful ordered main-branch Android build runs
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OLD_RUN_ID: ${{ inputs.old_run_id }}
+          NEW_RUN_ID: ${{ inputs.new_run_id }}
+        run: |
+          set -euo pipefail
+          old_sha=''
+          new_sha=''
+          for slot in old new; do
+            if [ "$slot" = old ]; then run_id="$OLD_RUN_ID"; else run_id="$NEW_RUN_ID"; fi
+            metadata="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$run_id")"
+            test "$(jq -r .name <<< "$metadata")" = 'Frame One Android debug APK'
+            test "$(jq -r .status <<< "$metadata")" = completed
+            test "$(jq -r .conclusion <<< "$metadata")" = success
+            test "$(jq -r .head_branch <<< "$metadata")" = main
+            test "$(jq -r .repository.full_name <<< "$metadata")" = "$GITHUB_REPOSITORY"
+            event="$(jq -r .event <<< "$metadata")"
+            [[ "$event" = push || "$event" = workflow_dispatch ]]
+            source_sha="$(jq -r .head_sha <<< "$metadata")"
+            [[ "$source_sha" =~ ^[0-9a-f]{40}$ ]]
+            if [ "$slot" = old ]; then old_sha="$source_sha"; else new_sha="$source_sha"; fi
+          done
+          test "$old_sha" != "$new_sha"
+          relation="$(gh api "repos/$GITHUB_REPOSITORY/compare/$old_sha...$new_sha" --jq '.status')"
+          test "$relation" = ahead || { echo "::error::Newer build must descend from older main build"; exit 1; }
+          echo "PASS: two independently built, successful ordered main-branch sources"
+      - name: Download first independently built Android APK and receipt
+        uses: actions/download-artifact@v4
+        with:
+          name: frame-one-android-debug-apk
+          run-id: ${{ inputs.old_run_id }}
+          github-token: ${{ github.token }}
+          path: qa/upgrade/old
+      - name: Download second independently built Android APK and receipt
+        uses: actions/download-artifact@v4
+        with:
+          name: frame-one-android-debug-apk
+          run-id: ${{ inputs.new_run_id }}
+          github-token: ${{ github.token }}
+          path: qa/upgrade/new
+      - name: Set up Android command-line tools
+        uses: android-actions/setup-android@v4
+        with:
+          packages: platform-tools
+          log-accepted-android-sdk-licenses: 'false'
+      - name: Install Android API 36 and build tools
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+      - name: Validate separate-build persistent signing and real APK versions
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 scripts/verify-android-cross-run-apks.py \
+            --old-dir qa/upgrade/old --new-dir qa/upgrade/new \
+            --aapt "$ANDROID_HOME/build-tools/36.0.0/aapt" \
+            --apksigner "$ANDROID_HOME/build-tools/36.0.0/apksigner"
+          cp qa/upgrade/old/app-debug.apk qa/upgrade/app-v1.apk
+          cp qa/upgrade/new/app-debug.apk qa/upgrade/app-v2.apk
+      - name: Enable emulator KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Verify local learning data survives an in-place Android update
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: aosp_atd
+          arch: x86_64
+          profile: pixel_5
+          ram-size: 3072M
+          emulator-boot-timeout: 600
+          emulator-options: -no-window -no-snapshot -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: python3 scripts/android-emulator-upgrade.py
+      - name: Upload screenshots only; never upload private keys or QA APKs
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: frame-one-independent-upgrade-qa
+          path: qa/android-emulator/upgrade-*
+          if-no-files-found: warn
+          retention-days: 14
