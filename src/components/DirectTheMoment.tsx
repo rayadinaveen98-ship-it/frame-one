@@ -4,6 +4,7 @@ import {
   type DirectorPlan
 } from '../data/direct-the-moment';
 import {openLab} from '../legacy/bridge';
+import {stageDirectorHandoff} from '../state/director-handoff';
 import './direct-the-moment.css';
 
 /** A compact original scene workshop; no video playback or invented data persistence. */
@@ -107,10 +108,10 @@ export function DirectTheMoment(){
       <footer className="direct-moment-footer">
         <p><strong>Filmmaker's challenge:</strong> Change only one decision. Does the image offer new information, or does it change the expectation you bring to that information?</p>
         <div className="direct-moment-links">
-          <button type="button" data-direct-make-lab onClick={()=>openLab('story')}>Open Make Lab <span aria-hidden="true">→</span></button>
+          <button type="button" data-direct-make-lab onClick={()=>{stageDirectorHandoff(plan);openLab('story');}}>Review in Make Lab <span aria-hidden="true">→</span></button>
           <button type="button" data-direct-sound-lab onClick={()=>openLab('sound')}>Experiment with real sound <span aria-hidden="true">↗</span></button>
         </div>
-        <p className="direct-moment-disclaimer">This experiment is a temporary sketch. Make Lab is a separate saved storyboard tool; these selections are not automatically transferred.</p>
+        <p className="direct-moment-disclaimer">Your choices will open as an unsaved preview in Make Lab. Nothing is replaced until you explicitly confirm. Make Lab currently stores one three-beat storyboard; the remaining beats are marked as future ideas, not shots inside the six seconds.</p>
       </footer>
     </div>:null}
   </section>;
