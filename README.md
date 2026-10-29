@@ -1,8 +1,16 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.12A5 guarded Android signing/versionCode release safety merged 29 October 2026 · latest downloadable APK remains v0.12A2 (28 October) · not app-store released.**
+**Latest development checkpoint: v0.12A6 independent Android APK update-test infrastructure merged 29 October 2026 · latest downloadable APK remains v0.12A2 (28 October) · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.12A6 independent APK upgrade test readiness (29 October 2026)
+
+[PR #30](https://github.com/rayadinaveen98-ship-it/frame-one/pull/30) merged as [`d65a398f`](https://github.com/rayadinaveen98-ship-it/frame-one/commit/d65a398f213320b64f90c788532b5aa0cf0d48b9). A new **manual, non-publishing** GitHub Actions acceptance workflow can download two separately built main-branch Android APKs and signing receipts, verify **persistent QA signing identity**, matching certificate SHA-256, increasing real APK versionCodes, unchanged package ID, distinct compiled app content, and then run the Android UI/data-retention upgrade test with real version codes. It does not create or upload keys or replace the public APK. Local certificate/manifest validation has executable regression tests.
+
+All exact PR-head [web 40833770133](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40833770133), [Chromium 40833770264](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40833770264), [same-source Android 40833770123](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40833770123), and [historical-code Android 40833770142](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40833770142) checks **passed**. [v0.12A6 QA plan](docs/QA_V12A6.md).
+
+**Important:** The actual two-run, persistent-signer Android emulator acceptance is **not yet run**. It requires privately provisioning the repository's long-lived QA debug signing key and creating two separate signed main builds. The public v0.12A2 APK is still signed with a temporary key and remains frozen until its release-safety conditions are met.
 
 ## Latest — v0.12A5 safe Android preview versioning (29 October 2026)
 
