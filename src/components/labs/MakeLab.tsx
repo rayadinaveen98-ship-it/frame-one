@@ -1,6 +1,8 @@
 import { useEffect, useState, type MouseEvent } from 'react';
 import type { LabName } from '../../legacy/bridge';
 import { StoryboardArt } from './StoryboardArt';
+import {peekDirectorHandoff,clearDirectorHandoff,previewDirectorStoryboard} from '../../state/director-handoff';
+import type {DirectorPlan} from '../../data/direct-the-moment';
 import { safeStory, INITIAL_STORY, storyQuestions, storyPhases,
   type StoryPlan, type StoryQuestion, type StoryFraming } from './story-data';
 
@@ -19,15 +21,45 @@ export function MakeLab(){
   const [plan,setPlan]=useState<StoryPlan>(readSavedPlan);
   const [step,setStep]=useState(0);
   const [status,setStatus]=useState('');
+  const [directorOffer,setDirectorOffer]=useState<DirectorPlan|null>(peekDirectorHandoff);
+  const [savedAtOffer,setSavedAtOffer]=useState<StoryPlan|null>(()=>peekDirectorHandoff()?readSavedPlan():null);
+  const directorPreview=directorOffer?previewDirectorStoryboard(directorOffer):null;
+  const hasExistingWork=Boolean(savedAtOffer)&&JSON.stringify(savedAtOffer)!==JSON.stringify(INITIAL_STORY);
+
   const current=storyQuestions[plan.question];
   const framing=plan.shots[step];
 
   useEffect(()=>{
-    const onRestore=()=>{setPlan(readSavedPlan());setStep(0);setStatus('Restored storyboard is ready.');};
+    const onRestore=()=>{clearDirectorHandoff();setDirectorOffer(null);setSavedAtOffer(null);setPlan(readSavedPlan());setStep(0);setStatus('Restored storyboard is ready.');};
     window.addEventListener('frameone:story-restored',onRestore);
-    return ()=>window.removeEventListener('frameone:story-restored',onRestore);
+    return ()=>{window.removeEventListener('frameone:story-restored',onRestore);clearDirectorHandoff();};
   },[]);
 
+  function dismissDirectorOffer(){
+    clearDirectorHandoff();setDirectorOffer(null);setSavedAtOffer(null);
+    setStatus('Your existing storyboard was kept unchanged.');
+  }
+  function applyDirectorOffer(){
+    if(!directorPreview||!savedAtOffer)return;
+    // A backup restore or concurrent edit must never be silently overwritten.
+    const latest=readSavedPlan();
+    if(JSON.stringify(latest)!==JSON.stringify(savedAtOffer)){
+      setSavedAtOffer(latest);
+      setPlan(latest);
+      setStatus('The existing storyboard changed. Review it before deciding to replace it.');
+      return;
+    }
+    const didSave=window.frameOneLegacy?.saveStoryboard(directorPreview)??false;
+    if(!didSave){setStatus('Could not save the imported storyboard. Your original board remains available; export your shot list before retrying.');return;}
+    setPlan(directorPreview);setStep(0);
+    clearDirectorHandoff();setDirectorOffer(null);setSavedAtOffer(null);
+    setStatus('Your directing choices were saved in the existing storyboard and are ready to edit or export.');
+  }
+  function exportExistingBeforeReplace(event:MouseEvent<HTMLButtonElement>){
+    event.stopPropagation();
+    try{window.frameOneLegacy?.exportShotList();setStatus('Current storyboard shot list prepared; confirm your download before replacing it.');}
+    catch{setStatus('Could not export the existing storyboard. Use JSON backup first, or keep your current board.');}
+  }
   function keep(event:MouseEvent<HTMLButtonElement>){event.stopPropagation();}
   function commit(next:StoryPlan,showStatus=false){
     const sanitized=safeStory(next);
@@ -68,6 +100,30 @@ export function MakeLab(){
       <h1>Plan a tiny scene.</h1>
       <p>Pick a story question, plan three shots and describe the action. Make something you could try filming on a phone.</p>
     </div>
+    {directorPreview?<section className="make-director-handoff" data-director-handoff
+      aria-labelledby="make-handoff-title">
+      <span className="eyebrow">UNSAVED DIRECTOR'S SKETCH · REVIEW BEFORE SAVING</span>
+      <h2 id="make-handoff-title">Bring this scene into your storyboard?</h2>
+      <p>This is a preview only. Your original Make Lab storyboard has <strong>not</strong> been changed. Make Lab stores one three-beat storyboard, so saving these choices will replace the current board.</p>
+      <p className="make-handoff-detail">The original six-second scene has {directorOffer?.edit==='hold'?'one planned shot':'two planned shots'}. Remaining storyboard slots are clearly marked for ideas <em>after</em> those six seconds. Make Lab's bus-stop artwork illustrates framing only; the night-room setting, sound and light directions stay in the written shot notes.</p>
+      <div className="make-handoff-preview" aria-label="Proposed storyboard shots">
+        {directorPreview.notes.map((note,index)=><div key={index} data-director-proposed-shot={index}>
+          <strong>{index===0?'FIRST SHOT':index===1?'SECOND BEAT':'FUTURE BEAT'} · {directorPreview.shots[index].toUpperCase()}</strong>
+          <p>{note}</p>
+        </div>)}
+      </div>
+      {hasExistingWork?<p className="make-handoff-warning" role="status">You already have a customised storyboard. Replace it only if you've saved a backup or exported its shot list. This app currently has one saved storyboard slot.</p>:null}
+      <div className="make-handoff-actions">
+        <button type="button" data-director-keep className="btn-secondary"
+          onClick={event=>{keep(event);dismissDirectorOffer();}}>Keep my existing storyboard</button>
+        {hasExistingWork?<button type="button" className="btn-secondary" data-director-export-existing
+          onClick={exportExistingBeforeReplace}>Export existing shot list</button>:null}
+        <button type="button" data-director-confirm className="cta"
+          onClick={event=>{keep(event);applyDirectorOffer();}}>
+          {hasExistingWork?'Replace existing storyboard — I understand':'Save this as my storyboard'}
+        </button>
+      </div>
+    </section>:null}
     <div className="lab-tabs" role="group" aria-label="Choose a creative experiment">
       {tabs.map(tab=><button className="lab-tab" type="button" key={tab.id}
         data-lab={tab.id} aria-pressed={tab.id==='story'}>{tab.label}</button>)}
