@@ -106,7 +106,7 @@ jobs:
           fi
           app_line="$("$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$apk" | grep '^package: ' | head -n 1)"
           [[ "$app_line" == *"name='com.frameone.learncinema'"* ]] || { echo 'Unexpected Android package ID'; exit 1; }
-          version_code="$(printf '%s\n' "$app_line" | sed -n "s/.*versionCode='\\([0-9][0-9]*\\)'.*/\\1/p")"
+          version_code="$(printf '%s\n' "$app_line" | cut -d"'" -f4)"
           [[ "$version_code" =~ ^[1-9][0-9]*$ ]] || { echo 'Invalid Android QA versionCode'; exit 1; }
           echo "Android versionCode: $version_code" >> android-qa-signature.txt
           grep -E 'certificate SHA-256 digest|Persistent QA signer|Android versionCode' android-qa-signature.txt
