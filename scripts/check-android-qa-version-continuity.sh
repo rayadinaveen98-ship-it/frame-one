@@ -8,7 +8,8 @@ if (( $# < 1 || $# > 2 )); then
 fi
 
 new_receipt="$1"
-prior_receipt="$2"
+prior_receipt=""
+if (( $# == 2 )); then prior_receipt="$2"; fi
 
 fail() { echo "::error::$*" >&2; exit 1; }
 
