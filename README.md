@@ -1,8 +1,14 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.12A4 real historical-to-current Android upgrade/data-retention QA merged 29 October 2026 · latest downloadable APK remains v0.12A2 (28 October) · not app-store released.**
+**Latest development checkpoint: v0.12A5 guarded Android signing/versionCode release safety merged 29 October 2026 · latest downloadable APK remains v0.12A2 (28 October) · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.12A5 safe Android preview versioning (29 October 2026)
+
+[PR #29](https://github.com/rayadinaveen98-ship-it/frame-one/pull/29) merged as [`31e90dfd`](https://github.com/rayadinaveen98-ship-it/frame-one/commit/31e90dfd96e48aa9931f6a8064c9a1e9fd765568). Android QA builds now assign an increasing generated versionCode from the GitHub workflow run number and record the **actual APK package versionCode** in the public signing receipt. The release publisher freezes replacement of the existing preview by another **temporary-signed** APK. The first persistent signer can migrate from legacy temporary previews once, and later public preview updates must retain the same certificate **and** increase versionCode. Executable tests verify malformed, missing, equal and downgraded versionCodes and the signing freeze. All three [exact-PR-head checks](https://github.com/rayadinaveen98-ship-it/frame-one/pull/29/checks) passed (web, Chromium and Android native build). [Release policy and limitations](docs/QA_V12A5.md).
+
+**No new public APK is included in this milestone.** The current v0.12A2 public release remains temporary-signed. Until the private permanent QA signing secret is provisioned, follow-up CI debug APKs may build but **must not replace** the public download. Actual separate-build, real-phone upgrade acceptance and Play Store release signing are still pending.
 
 ## Latest — v0.12A4 historical-to-current Android upgrade QA (29 October 2026)
 
