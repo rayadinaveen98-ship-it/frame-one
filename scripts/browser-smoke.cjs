@@ -85,7 +85,7 @@ async function verify() {
   assert.equal(await anatomy.locator('[data-scene-choice]').getAttribute('data-scene-choice'),'a');
   await anatomy.locator('[data-anatomy-option="b"]').click();
   assert.equal(await anatomy.locator('[data-scene-choice]').getAttribute('data-scene-choice'),'b');
-  assert.match(await anatomy.locator('.scene-anatomy-cue').textContent(),/rising musical pulse/i);
+  assert.match(await anatomy.locator('.scene-anatomy-cue').textContent(),/low, repeating musical pulse/i);
   await anatomy.locator('[data-anatomy-study="light"]').click();
   assert.equal(await anatomy.locator('[data-scene-choice]').getAttribute('data-scene-choice'),'a',
     'Choosing a new film craft must return to the first take');
