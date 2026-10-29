@@ -115,11 +115,22 @@ jobs:
           emulator-options: -no-window -no-snapshot -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: python3 scripts/android-emulator-upgrade.py
+      # GitHub's artifact storage is an external, best-effort evidence sink.
+      # A transient CreateArtifact timeout must not invalidate a successful
+      # on-device upgrade/data-retention gate; the job log still has assertions.
       - name: Upload evidence only (never APK or signing keystore)
+        id: evidence_upload
         if: always()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: frame-one-same-signer-upgrade-evidence
           path: qa/android-emulator/upgrade-*
           if-no-files-found: warn
           retention-days: 14
+      - name: Warn if optional screenshot upload failed
+        if: always() && steps.evidence_upload.outcome == 'failure'
+        shell: bash
+        run: |
+          echo "::warning::Android upgrade assertion logs are in this job, but GitHub's optional QA screenshot artifact upload failed. Re-run this workflow for visual evidence before calling screenshot review complete."
+          echo "⚠️ GitHub artifact storage was unavailable; upgrade checks and screenshots must be evaluated separately." >> "$GITHUB_STEP_SUMMARY"
