@@ -41,8 +41,11 @@ def scroll_up():
     time.sleep(0.35)
 
 def scroll_top():
-    for _ in range(6):
-        ui.adb("shell","input","swipe","540","660","540","1920","250")
+    # The new film-project library adds substantial height above Make Lab.
+    # Swipe through the safe right gutter rather than over a textarea or
+    # nested button, where Android may scroll that control instead of page.
+    for _ in range(14):
+        ui.adb("shell","input","swipe","1010","660","1010","1920","220")
     time.sleep(.5)
 
 def control(label,exact=True,tries=19):
@@ -76,7 +79,12 @@ def control(label,exact=True,tries=19):
             ui.adb("shell","input","tap",str((b[0]+b[2])//2),str((b[1]+b[3])//2))
             time.sleep(.7)
             return
-        scroll_up()
+        # If navigation began below an expanded workspace, do not keep
+        # scrolling in only one direction and miss earlier controls forever.
+        if attempt==6 and label=="Decision":
+            scroll_top()
+        else:
+            scroll_up()
     ui.capture("state-missing-"+re.sub(r"[^a-z0-9]+","-",label.lower())[:32])
     raise AssertionError(f"Cannot find enabled visible Android control {label!r}")
 
