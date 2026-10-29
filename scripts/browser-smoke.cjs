@@ -125,6 +125,54 @@ async function verify() {
   await page.locator('[data-scene-anatomy]').waitFor();
   console.log('PASS: scene anatomy real A/B decisions, lighting relight, edit reveal and functional Cut Lab route');
   await photo(page, '01-home-desktop.png');
+
+  // v0.13A2: real combined directing workshop, not a decorative mockup.
+  const director=page.locator('[data-direct-moment]');
+  assert.equal(await director.count(),1);
+  assert.equal(await director.locator('[data-direct-toggle]').getAttribute('aria-expanded'),'false');
+  assert.equal(await director.locator('[data-direct-preview]').count(),0,
+    'The large workshop must be collapsed until a learner chooses to direct');
+  await director.locator('[data-direct-toggle]').click();
+  const direction=director.locator('[data-direct-preview]');
+  await direction.waitFor();
+  assert.equal(await direction.getAttribute('data-direct-preview-frame'),'wide');
+  assert.equal(await direction.getAttribute('data-direct-preview-light'),'warm');
+  assert.equal(await direction.getAttribute('data-direct-preview-sound'),'room');
+  assert.equal(await direction.getAttribute('data-direct-preview-edit'),'hold');
+  assert.equal(await director.locator('.direct-moment-shot-list li').count(),1);
+  const widePerson=await director.locator('.direct-moment-person').boundingBox();
+  const warmStage=await director.locator('.direct-moment-stage').evaluate(el=>getComputedStyle(el).backgroundImage);
+  await director.locator('[data-direct-frame="close"]').click();
+  const closePerson=await director.locator('.direct-moment-person').boundingBox();
+  assert.ok(widePerson&&closePerson&&closePerson.width>widePerson.width*1.6,
+    'Framing choice must truly change the preview scale');
+  await director.locator('[data-direct-light="cold"]').click();
+  const coldStage=await director.locator('.direct-moment-stage').evaluate(el=>getComputedStyle(el).backgroundImage);
+  assert.notEqual(warmStage,coldStage,'Lighting choice must change the rendered scene');
+  await director.locator('[data-direct-sound="pulse"]').click();
+  assert.match(await director.locator('[data-direct-sound-cue]').textContent(),/described, not played/i);
+  assert.match(await director.locator('[data-direct-sound-cue]').textContent(),/musical pulse/i);
+  await director.locator('[data-direct-edit="reveal"]').click();
+  assert.equal(await director.locator('[data-direct-insert]').count(),1);
+  assert.equal(await director.locator('.direct-moment-shot-list li').count(),2);
+  assert.match(await director.locator('[data-direct-second-shot]').textContent(),/4–6s/);
+  assert.equal(await director.locator('[data-direct-preview-edit="reveal"]').count(),1);
+  await director.screenshot({path:path.join(shots,'01-direct-the-moment-desktop.png'),animations:'disabled'});
+  await director.locator('[data-direct-preset="quiet"]').click();
+  assert.equal(await direction.getAttribute('data-direct-preview-frame'),'wide');
+  assert.equal(await direction.getAttribute('data-direct-preview-edit'),'hold');
+  assert.equal(await director.locator('[data-direct-insert]').count(),0);
+  await director.locator('[data-direct-preset="uneasy"]').click();
+  assert.equal(await direction.getAttribute('data-direct-preview-frame'),'close');
+  assert.equal(await direction.getAttribute('data-direct-preview-light'),'cold');
+  assert.equal(await direction.getAttribute('data-direct-preview-sound'),'pulse');
+  assert.equal(await direction.getAttribute('data-direct-preview-edit'),'reveal');
+  await director.locator('[data-direct-make-lab]').click();
+  await page.locator('.react-make-lab').waitFor();
+  await page.locator('.nav-menu [data-page="home"]').click();
+  await page.locator('[data-direct-moment]').waitFor();
+  console.log('PASS: independent four-craft directing decisions, real framing/light preview, six-second edit plan, presets and Make Lab navigation');
+
   assert.equal(await page.locator('[data-cinema-collection]').count(),6);
   await page.locator('[data-cinema-collection="beginnings"]').click();
   await page.locator('[data-collection-view="beginnings"]').waitFor();
@@ -696,6 +744,22 @@ async function verify() {
     assert.ok(anatomyBounds && anatomyBounds.width<=width+2,
       'Scene Anatomy must fit a narrow phone without clipped horizontal layout');
     await mobileAnatomy.screenshot({path:path.join(shots,'01-scene-anatomy-'+width+'px.png'),animations:'disabled'});
+
+    const mobileDirector=phone.locator('[data-direct-moment]');
+    await mobileDirector.locator('[data-direct-toggle]').click();
+    await mobileDirector.locator('[data-direct-frame="close"]').click();
+    await mobileDirector.locator('[data-direct-light="cold"]').click();
+    await mobileDirector.locator('[data-direct-sound="pulse"]').click();
+    await mobileDirector.locator('[data-direct-edit="reveal"]').click();
+    assert.equal(await mobileDirector.locator('[data-direct-second-shot]').count(),1);
+    const directBounds=await mobileDirector.boundingBox();
+    assert.ok(directBounds&&directBounds.width<=width+2,'Director workshop must fit '+width+'px');
+    const directOverflow=await mobileDirector.evaluate(el=>({scroll:el.scrollWidth,viewport:el.clientWidth}));
+    assert.ok(directOverflow.scroll<=directOverflow.viewport+3,
+      'Four craft selectors and shot strip must not overflow '+width+'px');
+    await mobileDirector.screenshot({path:path.join(shots,'01-direct-the-moment-'+width+'px.png'),animations:'disabled'});
+    await mobileDirector.locator('[data-direct-toggle]').click();
+
 
     assert.equal(await phone.locator('[data-cinema-entry^="lab:"]').count(),7);
     assert.equal(await phone.locator('#content .card-grid').isVisible(),false);

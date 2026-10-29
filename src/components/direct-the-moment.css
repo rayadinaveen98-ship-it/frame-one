@@ -1,0 +1,118 @@
+/* Frame One original offline creative workshop. The picture changes with two
+ * independent craft axes; shot 2 appears only when the edit reveals it. */
+.direct-moment{color:#f0e6dd;margin:0 0 29px;overflow:hidden;min-width:0;
+  border:1px solid #61514d;border-radius:18px;background:
+  radial-gradient(ellipse at 0 0,#8f684b36,transparent 52%),
+  linear-gradient(145deg,#25242c,#151921 75%);}
+.direct-moment-header{padding:22px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.direct-moment-eyebrow{color:#ddad89;letter-spacing:.13em;font-size:10px;font-weight:700;line-height:1.4}
+.direct-moment-header h2{font:570 clamp(21px,2.7vw,28px)/1.15 var(--cinema-type,system-ui);letter-spacing:-.035em;margin:6px 0;color:#f4e9df}
+.direct-moment-header p{color:#c7b9b2;font-size:13px;line-height:1.6;max-width:630px;margin:5px 0 0}
+.direct-moment-open{min-height:46px;flex-shrink:0;padding:11px 16px;border-radius:10px;border:1px solid #e7b48b;
+  background:#d8ac84;color:#171921;font-weight:700;font-size:12px;cursor:pointer}
+.direct-moment-open span{margin-left:8px}
+.direct-moment-workspace{border-top:1px solid #564448;padding:18px 20px 20px}
+.direct-moment-presets{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 15px}
+.direct-moment-presets span{font-size:12px;color:#c6b8b2;margin-right:3px}
+.direct-moment-presets button{min-height:42px;border:1px solid #62514e;border-radius:9px;background:#29272d;
+  color:#f2d2b5;font-weight:650;font-size:11px;padding:10px 13px;cursor:pointer}
+.direct-moment-decision-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.direct-moment-group{border:1px solid #504750;background:#1d222a;border-radius:11px;padding:12px;min-width:0;margin:0}
+.direct-moment-group legend{color:#e1b08b;font-size:10px;font-weight:730;letter-spacing:.09em;padding:0 5px}
+.direct-moment-group legend span{display:block;color:#dad0c8;font-size:12px;letter-spacing:0;font-weight:550;margin-top:4px}
+.direct-moment-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.direct-moment-pair button{min-width:0;min-height:47px;padding:9px;border-radius:8px;border:1px solid #494953;
+  background:#252832;color:#cfc4bf;text-align:center;font-size:11px;line-height:1.35;cursor:pointer}
+.direct-moment-pair button[aria-pressed='true']{border-color:#e2af87;background:#624535;color:#ffdfc3;font-weight:700}
+.direct-moment-result{display:grid;grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);gap:15px;margin-top:18px;align-items:start}
+.direct-moment-visual{min-width:0;border:1px solid #51444a;background:#111821;border-radius:11px;padding:12px}
+.direct-moment-stage{position:relative;isolation:isolate;overflow:hidden;aspect-ratio:16/9;
+  border:1px solid #a9a5a229;border-radius:7px;background:
+  radial-gradient(ellipse at 33% 26%,#bb825c46,transparent 52%),
+  linear-gradient(145deg,#484047,#1c252d 65%,#0d1720);
+  box-shadow:inset 0 0 65px #060a1394}
+.direct-moment-back-wall{position:absolute;inset:8% 5% 22%;border:1px solid #b5b1a318}
+.direct-moment-window{position:absolute;right:13%;top:7%;height:54%;width:26%;background:
+  linear-gradient(145deg,#7897a14f,#2538478f);border:7px solid #181f28;box-shadow:0 0 25px #8da8b52a}
+.direct-moment-window:after{content:'';position:absolute;top:0;bottom:0;left:50%;width:5px;background:#16212a}
+.direct-moment-lamp{position:absolute;top:8%;left:10%;height:78%;width:62%;
+  background:radial-gradient(ellipse at 47% 30%,#ffc08b58,transparent 62%);pointer-events:none}
+.direct-moment-person{position:absolute;z-index:2;left:32%;top:26%;width:19%;height:65%;filter:drop-shadow(10px 5px 10px #04070bb9)}
+.direct-moment-head{position:absolute;left:25%;top:0;width:52%;height:34%;border-radius:45% 45% 48% 47%;
+  background:linear-gradient(95deg,#e8b08b,#846053 52%,#1d2831);transform:rotate(4deg)}
+.direct-moment-face-eye{display:none;position:absolute;left:18%;top:46%;width:63%;height:7%;
+  background:radial-gradient(ellipse,#201a1b 0 15%,#e4b596 23%,transparent 55%)}
+.direct-moment-shoulders{position:absolute;bottom:0;left:0;width:100%;height:68%;border-radius:44% 45% 0 0;background:
+  linear-gradient(90deg,#656068,#283641 68%,#101b25)}
+.direct-moment-table{position:absolute;z-index:3;left:7%;right:6%;bottom:8%;height:9%;border-top:5px solid #8c7161;
+  background:#2f2930;transform:skewY(-2deg)}
+.direct-moment-device{position:absolute;z-index:4;bottom:18%;left:69%;width:11%;height:8%;border-radius:3px;
+  transform:rotate(-14deg);border:2px solid #111b22;background:#b5d6df;box-shadow:0 0 16px #a5d9e14d}
+.direct-moment-stage-tag{position:absolute;left:7%;top:8%;z-index:8;padding:6px 8px;background:#111923ae;
+  border:1px solid #e2c0a452;border-radius:4px;color:#ffe1c3;font-size:10px;font-weight:700;letter-spacing:.06em}
+.direct-moment-result[data-direct-preview-frame='close'] .direct-moment-person{left:21%;top:3%;width:56%;height:115%}
+.direct-moment-result[data-direct-preview-frame='close'] .direct-moment-head{left:16%;width:68%;height:58%;
+  box-shadow:inset -8px 0 18px #121922a6}
+.direct-moment-result[data-direct-preview-frame='close'] .direct-moment-face-eye{display:block}
+.direct-moment-result[data-direct-preview-frame='close'] .direct-moment-shoulders{height:47%}
+.direct-moment-result[data-direct-preview-frame='close'] :is(.direct-moment-device,.direct-moment-table){opacity:.35}
+.direct-moment-result[data-direct-preview-light='cold'] .direct-moment-stage{background:
+  radial-gradient(ellipse at 74% 29%,#6790b04a,transparent 48%),
+  linear-gradient(140deg,#1d2937,#111b2a 67%,#080e18)}
+.direct-moment-result[data-direct-preview-light='cold'] .direct-moment-lamp{left:36%;top:-12%;width:65%;
+  background:radial-gradient(ellipse at 60% 36%,#93b6ce54,transparent 64%)}
+.direct-moment-result[data-direct-preview-light='cold'] .direct-moment-head{background:
+  linear-gradient(90deg,#161d29 9%,#45677c 55%,#9dbfd0 82%,#1e2f40 95%)}
+.direct-moment-result[data-direct-preview-light='cold'] .direct-moment-device{box-shadow:0 0 20px #82bce06a}
+.direct-moment-strip{display:flex;gap:6px;margin:9px 0;color:#f9dcc4;font-size:10px;letter-spacing:.05em}
+.direct-moment-strip>div{min-width:0;display:flex;align-items:center;justify-content:space-between;gap:5px;padding:10px;
+  border-radius:6px;border:1px solid #b293797d;background:#604c43}
+.direct-moment-strip-main{flex:3}
+.direct-moment-strip-insert{flex:1;background:#354b5c!important;border-color:#7196a4!important}
+.direct-moment-strip strong{font-weight:740;overflow-wrap:anywhere}
+.direct-moment-strip span{white-space:nowrap;font-weight:600}
+.direct-moment-second-shot{display:flex;align-items:center;gap:13px;margin-top:9px;color:#ddc5b0;
+  font-weight:690;font-size:10px;letter-spacing:.06em}
+.direct-moment-insert-art{display:grid;place-items:center;flex-shrink:0;width:76px;height:89px;border-radius:9px;
+  background:linear-gradient(145deg,#3b5366,#152331);border:7px solid #0b141f;box-shadow:0 0 0 1px #849da785}
+.direct-moment-insert-art span{border-radius:10px;padding:5px;color:#e8f5f5;background:#507482;font-size:10px}
+.direct-moment-sound-cue{min-height:42px;padding:10px 12px;border-radius:7px;background:#29282f;
+  border-left:3px solid #d0aa86;color:#f4d8bf;font-size:12px;line-height:1.55}
+.direct-moment-result[data-direct-preview-sound='pulse'] .direct-moment-sound-cue{border-left-color:#8fadd0;background:#263243;color:#dcecff}
+.direct-moment-no-play{margin:0;color:#a79c9b;font-size:9px;letter-spacing:.09em;font-weight:650}
+.direct-moment-reading{min-width:0;border:1px solid #51444a;border-radius:11px;background:#20232a;padding:17px}
+.direct-moment-reading h3{margin:6px 0 14px;color:#f1e6dd;font:560 clamp(17px,2vw,21px)/1.2 var(--cinema-type,system-ui)}
+.direct-moment-shot-list{margin:0 0 16px;padding-left:19px;display:grid;gap:9px;font-size:12px;line-height:1.6;color:#ead0bb}
+.direct-moment-reading h4{color:#edc39f;font-size:12px;letter-spacing:.02em;margin:0 0 9px}
+.direct-moment-reading p{color:#d2c3bd;font-size:12px;line-height:1.6;margin:0 0 10px}
+.direct-moment-reading .direct-moment-insight{border-left:2px solid #d6a681;padding:9px 10px;margin:12px 0 0;color:#f0d5bc;background:#342d2d}
+.direct-moment-footer{padding:15px 1px 1px}
+.direct-moment-footer p{font-size:12px;color:#c8bdb8;line-height:1.55;margin:0 0 12px}
+.direct-moment-footer strong{color:#ebc09e}
+.direct-moment-links{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:12px}
+.direct-moment-links button{padding:11px 14px;min-height:45px;border-radius:9px;border:1px solid #b88e6c;
+  background:#d6ac86;color:#18202a;font-size:12px;font-weight:700;cursor:pointer}
+.direct-moment-links button:last-child{background:#24272f;color:#edd0b7}
+.direct-moment-disclaimer{font-size:10.5px!important;color:#ada3a2!important}
+.direct-moment button:focus-visible{outline:3px solid #f1ba89;outline-offset:3px}
+@media(max-width:820px){.direct-moment-header{align-items:flex-start;flex-direction:column}
+  .direct-moment-open{align-self:flex-start}
+  .direct-moment-result{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:600px){
+  .direct-moment{border-radius:14px}
+  .direct-moment-header{padding:16px}
+  .direct-moment-header h2{font-size:22px}
+  .direct-moment-workspace{padding:14px 12px 16px}
+  .direct-moment-decision-grid{grid-template-columns:minmax(0,1fr);gap:10px}
+  .direct-moment-group{padding:11px}
+  .direct-moment-visual{padding:9px}
+  .direct-moment-stage-tag{font-size:9px}
+  .direct-moment-reading{padding:14px}
+  .direct-moment-links button{flex:1 1 auto}
+}
+@media(max-width:350px){.direct-moment-strip{font-size:9px}
+  .direct-moment-strip>div{padding:7px 5px}
+  .direct-moment-pair button{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){.direct-moment *{transition:none!important;animation:none!important}}
