@@ -100,9 +100,10 @@ try{
 }
 
 /* Android versionCode receipt, backwards compatibility and provenance checks. */
+const versionTmp=fs.mkdtempSync(path.join(os.tmpdir(),'frameone-version-policy-'));
 const versionGate=path.join(root,'scripts/check-android-qa-version-continuity.sh');
 function withVersion(name,mode,version){
-  const file=path.join(tmp,name);
+  const file=path.join(versionTmp,name);
   fs.writeFileSync(file,'Signer #1 certificate SHA-256 digest: '+certA+'\n'+mode+'\n'+
     (version==null?'':'Android versionCode: '+version+'\n'));
   return file;
@@ -121,7 +122,7 @@ function verifyCode(label,newFile,priorFile,pass,includes){
   assert.equal(proc.status===0,pass,label+' exit='+proc.status+' '+output);
   if(includes)assert(output.includes(includes),label+' missing '+includes+' '+output);
 }
-verifyCode('New preview requires generated code',nextStable,path.join(tmp,'none'),true,'accepted');
+verifyCode('New preview requires generated code',nextStable,path.join(versionTmp,'none'),true,'accepted');
 verifyCode('First stable signer may migrate legacy temp',nextStable,legacyTemp,true,'one-time');
 verifyCode('Cannot migrate version-less stable',nextStable,legacyStable,false,'versionCode-less');
 verifyCode('Cannot replace legacy temp with another temporary',withVersion('new-temp.txt',modeNo,100001),legacyTemp,false,'requires the first permanent');
@@ -133,7 +134,7 @@ verifyCode('Duplicate receipt rejected',duplicateVersion,nextStable,false,'dupli
 
 const pythonScript=path.join(root,'scripts/set-android-qa-version-code.py');
 function checkVersionBuilder(runNumber,content,shouldPass,expected){
-  const file=path.join(tmp,'app-gradle-'+String(runNumber)+'.gradle');
+  const file=path.join(versionTmp,'app-gradle-'+String(runNumber)+'.gradle');
   fs.writeFileSync(file,content,'utf8');
   const proc=child.spawnSync('python3',[pythonScript,'--gradle',file,'--run-number',String(runNumber)],{encoding:'utf8'});
   assert.equal(proc.status===0,shouldPass,'Python version script '+runNumber+': '+proc.stderr);
@@ -147,4 +148,5 @@ checkVersionBuilder('bad',gradle,false);
 checkVersionBuilder('7',gradle.replace('versionCode 1','versionCode 9'),false);
 checkVersionBuilder('7',gradle.replace('com.frameone.learncinema','com.wrong.app'),false);
 
+fs.rmSync(versionTmp,{recursive:true,force:true});
 console.log('PASS: backup-first UX, signing freeze, versionCode provenance, and upgrade continuity guards.');
