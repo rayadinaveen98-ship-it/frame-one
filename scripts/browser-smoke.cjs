@@ -77,6 +77,33 @@ async function verify() {
     'Do not invent a Continue row for a new learner with zero progress');
   assert.equal(await page.locator('[data-journey-resume]').count(),0,
     'A new learner must never be labelled as having started a film');
+  // v0.13: real, illustrated director's-choice comparisons on Home.
+  const anatomy=page.locator('[data-scene-anatomy]');
+  assert.equal(await anatomy.count(),1,'A single editorial scene study must be mounted');
+  assert.equal(await anatomy.locator('[data-anatomy-study]').count(),3);
+  assert.equal(await anatomy.locator('[data-scene-study]').getAttribute('data-scene-study'),'sound');
+  assert.equal(await anatomy.locator('[data-scene-choice]').getAttribute('data-scene-choice'),'a');
+  await anatomy.locator('[data-anatomy-option="b"]').click();
+  assert.equal(await anatomy.locator('[data-scene-choice]').getAttribute('data-scene-choice'),'b');
+  assert.match(await anatomy.locator('.scene-anatomy-cue').textContent(),/rising musical pulse/i);
+  await anatomy.locator('[data-anatomy-study="light"]').click();
+  assert.equal(await anatomy.locator('[data-scene-choice]').getAttribute('data-scene-choice'),'a',
+    'Choosing a new film craft must return to the first take');
+  const warmArt=await anatomy.locator('.scene-anatomy-stage').evaluate(node=>getComputedStyle(node).backgroundImage);
+  await anatomy.locator('[data-anatomy-option="b"]').click();
+  const coolArt=await anatomy.locator('.scene-anatomy-stage').evaluate(node=>getComputedStyle(node).backgroundImage);
+  assert.notEqual(warmArt,coolArt,'Lighting comparison must visibly relight the illustrated shot');
+  await anatomy.locator('[data-anatomy-study="edit"]').click();
+  await anatomy.locator('[data-anatomy-option="b"]').click();
+  assert.equal(await anatomy.locator('.scene-anatomy-phone span').isVisible(),true,
+    'The motivated edit reveals a real on-screen phone insert');
+  assert.equal(await anatomy.locator('[data-anatomy-lab="cut"]').count(),1);
+  await anatomy.screenshot({path:path.join(shots,'01-scene-anatomy-desktop.png'),animations:'disabled'});
+  await anatomy.locator('[data-anatomy-lab="cut"]').click();
+  await page.locator('.react-cut-lab').waitFor();
+  await page.locator('.nav-menu [data-page="home"]').click();
+  await page.locator('[data-scene-anatomy]').waitFor();
+  console.log('PASS: scene anatomy real A/B decisions, lighting relight, edit reveal and functional Cut Lab route');
   await photo(page, '01-home-desktop.png');
   assert.equal(await page.locator('[data-cinema-collection]').count(),6);
   await page.locator('[data-cinema-collection="beginnings"]').click();
@@ -631,6 +658,15 @@ async function verify() {
     assert.equal(await phone.locator('.fact-panel #filmThoughtTitle').count(),1);
     await phone.locator('.cinema-discovery').waitFor();
     assert.equal(await phone.locator('[data-cinema-shelf]').count(),6);
+    const mobileAnatomy=phone.locator('[data-scene-anatomy]');
+    await mobileAnatomy.locator('[data-anatomy-study="light"]').click();
+    await mobileAnatomy.locator('[data-anatomy-option="b"]').click();
+    assert.equal(await mobileAnatomy.locator('[data-scene-choice]').getAttribute('data-scene-choice'),'b');
+    const anatomyBounds=await mobileAnatomy.boundingBox();
+    assert.ok(anatomyBounds && anatomyBounds.width<=width+2,
+      'Scene Anatomy must fit a narrow phone without clipped horizontal layout');
+    await mobileAnatomy.screenshot({path:path.join(shots,'01-scene-anatomy-'+width+'px.png'),animations:'disabled'});
+
     assert.equal(await phone.locator('[data-cinema-entry^="lab:"]').count(),7);
     assert.equal(await phone.locator('#content .card-grid').isVisible(),false);
     const libraryRailMetrics=await phone.locator('.cinema-rail').first().evaluate(el=>{
