@@ -56,6 +56,11 @@ assert(!workflow.includes('FRAMEONE_QA_DEBUG_KEYSTORE_B64'),
   'Public release publisher never reads or outputs the private signing secret');
 assert(workflow.includes('bash scripts/check-android-signing-continuity.sh release/android-qa-signature.txt previous/android-qa-signature.txt'),
   'Publisher must enforce permanent signer continuity before changing public release');
+assert(workflow.includes('bash scripts/check-android-qa-version-continuity.sh release/android-qa-signature.txt previous/android-qa-signature.txt'),
+  'Publisher must enforce monotonic Android versionCode before replacing public APK');
+const androidBuild=read('.github/workflows/android-debug.yml');
+assert(androidBuild.includes('scripts/set-android-qa-version-code.py --gradle android/app/build.gradle --run-number "$GITHUB_RUN_NUMBER"'));
+assert(androidBuild.includes('Android versionCode: $version_code'));
 
 const os=require('node:os'),child=require('node:child_process');
 const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'frameone-release-signing-'));
@@ -83,7 +88,7 @@ try{
   const malformed=receipt('malformed.txt','NOT_SHA256',modeYes);
   const conflicting=receipt('conflicting.txt',certA,modeYes+'\n'+modeNo);
   verify('Initial preview',newTemp,path.join(tmp,'no-existing-release'),true,'accepted');
-  verify('Temporary to temporary still supported',newTemp,oldTemp,true,'temporary');
+  verify('Temporary to temporary is frozen',newTemp,oldTemp,false,'BLOCKED:');
   verify('One-time temporary to persistent migration',newStable,oldTemp,true,'First permanent QA signer');
   verify('Matching permanent identity',sameStable,oldStable,true,'accepted');
   verify('Permanent to temporary is blocked',newTemp,oldStable,false,'BLOCKED:');
@@ -93,4 +98,53 @@ try{
 } finally {
   fs.rmSync(tmp,{recursive:true,force:true});
 }
-console.log('PASS: one-tap backup, rollback protection, and eight executable public signing-continuity policy scenarios.');
+
+/* Android versionCode receipt, backwards compatibility and provenance checks. */
+const versionGate=path.join(root,'scripts/check-android-qa-version-continuity.sh');
+function withVersion(name,mode,version){
+  const file=path.join(tmp,name);
+  fs.writeFileSync(file,'Signer #1 certificate SHA-256 digest: '+certA+'\n'+mode+'\n'+
+    (version==null?'':'Android versionCode: '+version+'\n'));
+  return file;
+}
+const legacyTemp=withVersion('legacy-temp.txt',modeNo,null);
+const legacyStable=withVersion('legacy-stable.txt',modeYes,null);
+const nextStable=withVersion('stable-100001.txt',modeYes,100001);
+const furtherStable=withVersion('stable-100002.txt',modeYes,100002);
+const sameCode=withVersion('stable-same.txt',modeYes,100001);
+const rollback=withVersion('stable-rollback.txt',modeYes,99999);
+const invalidVersion=withVersion('invalid-version.txt',modeYes,'not-a-number');
+const duplicateVersion=withVersion('duplicate-version.txt',modeYes,'100003\nAndroid versionCode: 100004');
+function verifyCode(label,newFile,priorFile,pass,includes){
+  const proc=child.spawnSync('bash',[versionGate,newFile,priorFile],{encoding:'utf8'});
+  const output=(proc.stdout||'')+(proc.stderr||'');
+  assert.equal(proc.status===0,pass,label+' exit='+proc.status+' '+output);
+  if(includes)assert(output.includes(includes),label+' missing '+includes+' '+output);
+}
+verifyCode('New preview requires generated code',nextStable,path.join(tmp,'none'),true,'accepted');
+verifyCode('First stable signer may migrate legacy temp',nextStable,legacyTemp,true,'one-time');
+verifyCode('Cannot migrate version-less stable',nextStable,legacyStable,false,'versionCode-less');
+verifyCode('Cannot replace legacy temp with another temporary',withVersion('new-temp.txt',modeNo,100001),legacyTemp,false,'requires the first permanent');
+verifyCode('Increasing signed version accepted',furtherStable,nextStable,true,'accepted');
+verifyCode('Equal code rejected',sameCode,nextStable,false,'BLOCKED:');
+verifyCode('Rollback code rejected',rollback,nextStable,false,'BLOCKED:');
+verifyCode('Invalid version rejected',invalidVersion,nextStable,false,'Invalid Android versionCode');
+verifyCode('Duplicate receipt rejected',duplicateVersion,nextStable,false,'duplicate');
+
+const pythonScript=path.join(root,'scripts/set-android-qa-version-code.py');
+function checkVersionBuilder(runNumber,content,shouldPass,expected){
+  const file=path.join(tmp,'app-gradle-'+String(runNumber)+'.gradle');
+  fs.writeFileSync(file,content,'utf8');
+  const proc=child.spawnSync('python3',[pythonScript,'--gradle',file,'--run-number',String(runNumber)],{encoding:'utf8'});
+  assert.equal(proc.status===0,shouldPass,'Python version script '+runNumber+': '+proc.stderr);
+  if(expected)assert(fs.readFileSync(file,'utf8').includes('versionCode '+expected));
+}
+const gradle='android { defaultConfig { \n    applicationId "com.frameone.learncinema"\n    versionCode 1\n  } }\n';
+checkVersionBuilder('7',gradle,true,100007);
+checkVersionBuilder('8',gradle,true,100008);
+checkVersionBuilder('0',gradle,false);
+checkVersionBuilder('bad',gradle,false);
+checkVersionBuilder('7',gradle.replace('versionCode 1','versionCode 9'),false);
+checkVersionBuilder('7',gradle.replace('com.frameone.learncinema','com.wrong.app'),false);
+
+console.log('PASS: backup-first UX, signing freeze, versionCode provenance, and upgrade continuity guards.');
