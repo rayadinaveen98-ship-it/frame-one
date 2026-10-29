@@ -1,8 +1,16 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.13A1 Director's Eye reaction shots and editing rhythm merged 29 October 2026 · downloadable APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
+**Latest development checkpoint: v0.13A2 Direct the Moment four-choice film workshop merged 29 October 2026 · downloadable APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.13A2 Direct the Moment (29 October 2026)
+
+[PR #33](https://github.com/rayadinaveen98-ship-it/frame-one/pull/33) merged as [`83f43802`](https://github.com/rayadinaveen98-ship-it/frame-one/commit/83f438024922192a771f6b2337d0677bf7ff418e). Frame One's Home now offers **Direct the Moment**, an opt-in, collapsible creative workshop. Learners direct one original **six-second fictional scene** by choosing **framing, lighting, sound direction and editing** independently. All **16 combinations** produce distinct shot treatments. The picture truly zooms from a wide room to a reaction close-up, relights warm/cold, and can reveal a second phone insert with a truthful 0–4s + 4–6s static timeline. The soundtrack is a **written cue, not playable audio**; Sound Lab remains the separate real-audio experiment. The existing Make Lab is a real destination, with clear notice that this temporary sketch is not auto-transferred or saved as a storyboard.
+
+**All seven exact PR-head gates passed**: [web + TypeScript](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40842085319), [real Chromium desktop/390px/320px](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40842085590), [native Android build](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40842085213), [same-signer upgrade](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40842085390), [historical-code upgrade](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40842085488), [actual DocumentsUI JSON backup/restore](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40842085657) and [native Back/offline notes](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40842085207). [Detailed QA](docs/QA_V13A2.md).
+
+**Source milestone only:** the public APK remains v0.12A2 and temporary-signed. Incompatible automatic publication remains blocked until the private persistent QA signer, separate-build emulator acceptance and physical-phone checks are complete. Post-merge independent checks are tracked separately.
 
 ## Latest — v0.13A1 Reaction shots and editing rhythm (29 October 2026)
 
