@@ -23,7 +23,7 @@ $SecretName = 'FRAMEONE_QA_DEBUG_KEYSTORE_B64'
 
 function Stop-Safely([string]$Reason) { throw "BLOCKED: $Reason" }
 function Find-Executable([string]$Name) {
-  $tool = Get-Command $Name -CommandType Application -ErrorAction SilentlyContinue
+  $tool = Get-Command $Name -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
   if ($null -eq $tool) { return $null }
   return $tool.Source
 }
