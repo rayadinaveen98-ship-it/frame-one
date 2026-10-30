@@ -10,11 +10,19 @@ for(const file of [source,component,'src/components/LessonView.tsx']){
  assert.equal(tree.parseDiagnostics.length,0,file+' must parse');
 }
 const moduleValue={exports:{}};
+const choicesModule={exports:{}};
+vm.runInNewContext(ts.transpileModule(read('src/data/visual-choice-ten.ts'),{compilerOptions:{
+ module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022
+}}).outputText,{module:choicesModule,exports:choicesModule.exports});
 vm.runInNewContext(ts.transpileModule(read(source),{compilerOptions:{
  module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022
-}}).outputText,{module:moduleValue,exports:moduleValue.exports});
+}}).outputText,{module:moduleValue,exports:moduleValue.exports,
+ require:(id)=>{if(id==='./visual-choice-ten')return choicesModule.exports;throw Error('unexpected import '+id);}});
 const {visualPilots,visualPilotForLesson}=moduleValue.exports;
-assert.deepEqual(Object.keys(visualPilots),['lighting','rhythm','ambience','shot','composition','colour']);
+const tenIds=['story','script','acting','character','dialogue','camera','movement','lenses','music','editing'];
+assert.deepEqual(Object.keys(visualPilots),
+ ['lighting','rhythm','ambience','shot','composition','colour',...tenIds]);
+assert.equal(tenIds.length,10);
 const ids=new Set(curriculum.lessons.map(item=>item.id));
 for(const [id,pilot] of Object.entries(visualPilots)){
  assert(ids.has(id),'Pilots use real curriculum routes');
@@ -27,7 +35,7 @@ for(const [id,pilot] of Object.entries(visualPilots)){
  assert(pilot.discovery.length>30&&pilot.reason.length>50);
  assert.equal(pilot.notice.length,3);
  assert(pilot.takeaway.length>25&&pilot.prompt.length>50);
- assert(['light','cut','sound','frame','colour'].includes(pilot.lab));
+ assert(['light','cut','sound','frame','colour','story'].includes(pilot.lab));
  assert(pilot.labLabel.length>10&&pilot.footnote.length>45);
 }
 assert.equal(visualPilotForLesson('why'),null);
@@ -55,6 +63,17 @@ assert(view.includes('data-visual-reveal')&&view.includes('aria-expanded={reveal
 assert(view.includes('data-visual-focus')&&view.includes('data-visual-description'));
 assert(view.includes("take===0?['Indoor room tone','No background score']"));
 assert(view.includes('<SoundFrame/>'),'Sound scene is locked independent of selected sound direction');
+assert(view.includes('<TenVisualFrame id={id} take={take}/>'),'All new experiences use original authored artwork');
+assert(view.includes("pilot.id==='music'"),'Written music cues must be present for the Music lesson');
+const tenArt=read('src/components/TenVisualFrames.tsx');
+const tenArtTree=ts.createSourceFile('src/components/TenVisualFrames.tsx',tenArt,ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
+assert.equal(tenArtTree.parseDiagnostics.length,0,'Ten custom illustrations parse as TSX');
+for(const id of tenIds){
+ assert(tenArt.includes("case '"+id+"':"),id+' must have a different illustrated scene, not text-only changes');
+}
+assert(tenArt.includes("function Room(")&&tenArt.includes("function Human("));
+assert(read('src/data/visual-choice-ten.ts').includes('tenChoices'));
+assert(!tenArt.includes('fetch(')&&!tenArt.includes('localStorage'));
 for(const part of ['ShotSizeFrames','CompositionFrames','ColourFrames']){
  assert(view.includes('<'+part+' take={take}/>'),'Shared lesson renderer mounts '+part);
 }
@@ -70,4 +89,4 @@ assert(!read(source).includes('fetch(')&&!read(source).includes('localStorage'))
 assert(css.includes('@media(max-width:350px)'));
 assert(css.includes('prefers-reduced-motion'));
 assert(browser.includes('[data-visual-lesson="lighting"]'),'Real-browser checks must exercise stage');
-console.log('PASS: six illustrated visual-first lessons, A/B stages, honest sound directions, accessible discovery, existing quiz/notes and no storage changes.');
+console.log('PASS: sixteen illustrated visual-first lessons, A/B stages, honest sound directions, accessible discovery, existing quiz/notes and no storage changes.');

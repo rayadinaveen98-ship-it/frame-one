@@ -2,6 +2,7 @@ import {useState} from 'react';
 import {visualPilotForLesson,type VisualPilotId} from '../data/visual-lessons';
 import {openLab} from '../legacy/bridge';
 import {ShotSizeFrames,CompositionFrames,ColourFrames} from './VisualFramesNext';
+import {TenVisualFrame} from './TenVisualFrames';
 import './visual-lessons.css';
 
 function LightingFrame({take}:{take:0|1}){
@@ -108,9 +109,9 @@ function SoundFrame(){
 }
 function VisualStage({id,take}:{id:VisualPilotId;take:0|1}){
   return <figure className="vl-stage" data-visual-take={take} data-visual-art={id}>
-    {id==='lighting'?<LightingFrame take={take}/>:id==='rhythm'?<RhythmFrame take={take}/>:id==='shot'?<ShotSizeFrames take={take}/>:id==='composition'?<CompositionFrames take={take}/>:id==='colour'?<ColourFrames take={take}/>:<SoundFrame/>}
+    {id==='lighting'?<LightingFrame take={take}/>:id==='rhythm'?<RhythmFrame take={take}/>:id==='shot'?<ShotSizeFrames take={take}/>:id==='composition'?<CompositionFrames take={take}/>:id==='colour'?<ColourFrames take={take}/>:id==='ambience'?<SoundFrame/>:<TenVisualFrame id={id} take={take}/>}
     <figcaption className="vl-stage-caption">
-      <span>{id==='ambience'?'IDENTICAL PICTURE / SOUND DIRECTIONS':'ILLUSTRATED SHOT STUDY'}</span>
+      <span>{id==='ambience'||id==='music'?'IDENTICAL PICTURE / WRITTEN SOUND DIRECTIONS':'ILLUSTRATED FILM STUDY'}</span>
       <span>TAKE {take===0?'A':'B'}</span>
     </figcaption>
   </figure>;
@@ -150,9 +151,9 @@ export function VisualLessonPilot({lessonId}:{lessonId:string}){
       <div className="vl-noticing-label"><span>01 / SEE THE DIFFERENCE</span><span className="vl-micro">NO RIGHT FEELING REQUIRED</span></div>
       <h3 data-visual-focus>{current.focus}</h3>
       <p data-visual-description>{current.description}</p>
-      {pilot.id==='ambience'?<div className="vl-sound-direction" data-visual-sound-layers>
+      {(pilot.id==='ambience'||pilot.id==='music')?<div className="vl-sound-direction" data-visual-sound-layers>
         <span>IMAGINED SOUND LAYERS</span>
-        {(take===0?['Indoor room tone','No background score']:['Faint fan','Distant road traffic','No background score']).map(layer=><em key={layer}>{layer}</em>)}
+        {(pilot.id==='music'?(take===0?['Imagined gentle tones','Long pauses','No actual playback']:['Imagined uneven low pulses','Irregular spacing','No actual playback']):(take===0?['Indoor room tone','No background score']:['Faint fan','Distant road traffic','No background score'])).map(layer=><em key={layer}>{layer}</em>)}
       </div>:null}
       <div className="vl-discovery">
         <button type="button" data-visual-reveal aria-expanded={revealed}
