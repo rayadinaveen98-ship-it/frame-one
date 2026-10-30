@@ -349,29 +349,65 @@
   .cinema-journey-return-card{transition:none}
 }
 
-/* v0.11A6 — a quiet Android-only way to protect local creative work. */
-.cinema-backup-shortcut{
-  display:flex;align-items:center;justify-content:space-between;
-  gap:14px;min-width:0;margin:1px 0 22px;padding:12px 15px;
-  border:1px solid #514740;border-radius:12px;
-  background:linear-gradient(110deg,#272326,#1b1e23);
+/* v0.13A16 — editorial home: posters first, extra workshops only on demand.
+   Backup remains on Learn, not as a Home advertisement. */
+.cinema-shelves-first{min-width:0}
+.cinema-workshop-zone{min-width:0;margin:15px 0 22px;display:grid;gap:15px}
+.cinema-workshop-details{min-width:0;overflow:hidden;
+  border:1px solid #48444a;border-radius:14px;
+  background:linear-gradient(114deg,#24242a,#1a2028 76%);
 }
-.cinema-backup-shortcut>div{min-width:0}
-.cinema-backup-shortcut .cinema-overline{font-size:9px}
-.cinema-backup-shortcut p{
-  color:#c9bdb5;font-size:12px;line-height:1.5;margin:3px 0 0;
+.cinema-workshop-details>summary{
+  display:flex;align-items:center;gap:14px;min-width:0;
+  list-style:none;cursor:pointer;padding:18px 19px;
+  min-height:90px;color:#f1e9df;
 }
-.cinema-backup-shortcut button{
-  display:inline-flex;align-items:center;justify-content:center;
-  gap:7px;flex:0 0 auto;min-height:44px;padding:10px 13px;
-  border:1px solid #8b715f;background:#342c2b;color:#f0cbb0;
-  border-radius:9px;font-size:12px;font-weight:680;
+.cinema-workshop-details>summary::-webkit-details-marker{display:none}
+.cinema-workshop-details>summary:focus-visible{
+  outline:3px solid #e3b994;outline-offset:-3px;border-radius:13px;
 }
-.cinema-backup-shortcut button:focus-visible{
-  outline:3px solid #e1ba94;outline-offset:3px;
+.cinema-workshop-details>summary:hover{background:#ffffff07}
+.cinema-workshop-summary-art{
+  flex:0 0 52px;width:52px;height:52px;display:grid;place-items:center;
+  border:1px solid #7b6157;border-radius:11px;
+  font:500 30px/1 system-ui;color:#d5ad8e;
+  background:radial-gradient(circle at 55% 42%,#6d574e80,transparent 70%),#29282f;
+}
+.cinema-workshop-summary-copy{display:grid;gap:3px;flex:1;min-width:0}
+.cinema-workshop-summary-copy strong{
+  font:560 clamp(18px,2vw,22px)/1.24 var(--cinema-type,system-ui);
+  letter-spacing:-.028em;color:#f4e7db;
+}
+.cinema-workshop-summary-copy>span:last-child{
+  font:440 12px/1.5 system-ui;color:#b4b1b2;
+}
+.cinema-workshop-summary-action{display:flex;align-items:center;gap:9px;
+  flex:0 0 auto;color:#d8b497;font-size:12px;font-weight:680}
+.cinema-workshop-summary-action>span{
+  font-size:23px;display:inline-block;transition:transform .16s ease;
+}
+.cinema-workshop-details[open] .cinema-workshop-summary-action>span{transform:rotate(180deg)}
+.cinema-workshop-content{padding:0 15px 15px;display:grid;gap:14px;min-width:0}
+.cinema-workshop-content .scene-anatomy,
+.cinema-workshop-content .direct-moment{margin:0}
+.cinema-workshop-details[open]>summary{border-bottom:1px solid #4f4443;margin-bottom:15px}
+@media(max-width:760px){
+  .cinema-discovery{margin-top:18px}
+  .cinema-library-intro{margin-bottom:17px}
+  .cinema-workshop-zone{margin:11px 0 18px;gap:12px}
+  .cinema-workshop-details>summary{gap:10px;padding:13px;min-height:85px}
+  .cinema-workshop-summary-art{flex-basis:42px;width:42px;height:42px;font-size:25px}
+  .cinema-workshop-summary-copy>span:last-child{font-size:11px}
+  .cinema-workshop-summary-action{font-size:11px}
+  .cinema-workshop-content{padding:0 9px 10px;gap:11px}
 }
 @media(max-width:350px){
-  .cinema-backup-shortcut{padding:10px;gap:9px}
-  .cinema-backup-shortcut p{font-size:11px}
-  .cinema-backup-shortcut button{padding:9px;min-height:44px;font-size:11px}
+  .cinema-workshop-details>summary{gap:8px;padding:11px}
+  .cinema-workshop-summary-art{flex-basis:36px;width:36px;height:36px;font-size:21px}
+  .cinema-workshop-summary-copy strong{font-size:16px}
+  .cinema-workshop-summary-action{font-size:0;gap:0}
+  .cinema-workshop-summary-action>span{font-size:20px}
+}
+@media(prefers-reduced-motion:reduce){
+  .cinema-workshop-summary-action>span{transition:none}
 }
