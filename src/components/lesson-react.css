@@ -133,3 +133,13 @@
   .series-scene-pagination{grid-template-columns:minmax(0,1fr)}
   .series-scene-pagination button{font-size:12px}
 }
+
+/* v0.13A9: lesson → physical filmmaking, with no saved data side effects. */
+.lesson-craft-actions{display:flex;align-items:stretch;gap:9px;flex-wrap:wrap;margin-top:12px}
+.lesson-craft-actions button{white-space:normal;text-align:left;min-height:44px}
+.lesson-practice-link{border-color:#b88a64!important;color:#f2cba9!important}
+.lesson-practice-description{display:block;font-size:11px;line-height:1.5;color:#b4aba5;margin-top:9px}
+@media(max-width:500px){
+  .lesson-craft-actions{flex-direction:column}
+  .lesson-craft-actions button{width:100%}
+}

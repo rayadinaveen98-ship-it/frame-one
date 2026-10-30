@@ -61,3 +61,8 @@
 @media(prefers-reduced-motion:reduce){
   .practice-studio *{transition:none!important;animation:none!important}
 }
+
+/* A lesson handoff selects a real mission; never a fabricated completion. */
+.practice-arrival{border-left:2px solid #c29a78;background:#302b2b;color:#e6cebb;
+  border-radius:0 8px 8px 0;padding:10px 12px;margin:0 0 15px;
+  font-size:12px;line-height:1.5}

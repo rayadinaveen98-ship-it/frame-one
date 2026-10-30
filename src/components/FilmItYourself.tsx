@@ -1,14 +1,35 @@
-import {useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import {practiceMissions,type PracticeId} from '../data/film-it-yourself';
 import {navigate,openLab} from '../legacy/bridge';
+import {takePracticeHandoff} from '../state/practice-handoff';
 import './film-it-yourself.css';
 
 /** Small, self-contained practice desk; no camera access, new storage keys,
  * upload, fabricated video results or permanent completion claims.
  */
 export function FilmItYourself(){
-  const [expanded,setExpanded]=useState(false);
-  const [selected,setSelected]=useState<PracticeId>('three-shots');
+  const [incoming]=useState<PracticeId|null>(takePracticeHandoff);
+  const [expanded,setExpanded]=useState(Boolean(incoming));
+  const [selected,setSelected]=useState<PracticeId>(incoming??'three-shots');
+  const headlineRef=useRef<HTMLHeadingElement>(null);
+  // Only an explicit lesson handoff scrolls and focuses the expanded workshop.
+  // Ordinary Home visits preserve the compact, closed state.
+  useEffect(()=>{
+    if(!incoming)return;
+    // App's route-change focus lands on the Home hero in the first frame.
+    // Let that finish before focusing the lesson-selected exercise.
+    let focusFrame=0;
+    const routeFrame=requestAnimationFrame(()=>{
+      focusFrame=requestAnimationFrame(()=>{
+        const heading=headlineRef.current;
+        if(!heading)return;
+        heading.tabIndex=-1;
+        heading.scrollIntoView({block:'start',behavior:'auto'});
+        heading.focus({preventScroll:true});
+      });
+    });
+    return ()=>{cancelAnimationFrame(routeFrame);cancelAnimationFrame(focusFrame);};
+  },[incoming]);
   const [tried,setTried]=useState<readonly boolean[]>([false,false,false]);
   const mission=practiceMissions.find(item=>item.id===selected)??practiceMissions[0];
   const count=tried.filter(Boolean).length;
@@ -24,7 +45,7 @@ export function FilmItYourself(){
     <header className="practice-studio-header">
       <div>
         <span className="practice-overline">THE PRACTICE DESK · PHONE-FRIENDLY</span>
-        <h2 id="practice-studio-title">Film it yourself.</h2>
+        <h2 ref={headlineRef} id="practice-studio-title">Film it yourself.</h2>
         <p>Four small exercises you can try with a phone and everyday objects. Learn by comparing what changes.</p>
       </div>
       <button type="button" className="practice-open" data-practice-toggle
@@ -35,6 +56,7 @@ export function FilmItYourself(){
       </button>
     </header>
     {expanded?<div className="practice-workspace" id="practice-studio-workspace">
+      {incoming?<p className="practice-arrival" role="status" data-practice-arrival>From your lesson · Try this exercise with your phone, then compare what you noticed.</p>:null}
       <div className="practice-choices" role="group" aria-label="Choose a filmmaking exercise">
         {practiceMissions.map(item=><button type="button"
           key={item.id} data-practice-choice={item.id}
