@@ -18,6 +18,10 @@ The public `android-preview-latest` APK remains **v0.12A2** (source `7c515646720
 
 Since **v0.13A4**, a passing Android build no longer triggers automatic replacement of the public QA APK. Publishing must be manually approved **after** cross-run emulator upgrade evidence and separate real-phone/backup checks. **v0.13A5** adds a conservative Windows-compatible local tester to ensure neither the fresh installation nor the in-place upgrade silently deletes installed learning data. [Release approval gate](QA_V13A4.md) · [Phone QA procedure](QA_V13A5.md).
 
+## Windows one-time setup helper (v0.13A6)
+
+The owner can now use the private, opt-in PowerShell helper `scripts/setup-frameone-qa-signing.ps1` to inspect prerequisites, generate a dedicated QA debug keystore **outside** the Git repository, and provision the existing GitHub Actions secret after confirming a securely verified backup. This does not change or publish any APK. Read the [full v0.13A6 Windows setup procedure](QA_V13A6.md) before using it; never share the key or its base64 encoding in chat.
+
 ## The secure one-time provision (not yet performed)
 
 The repository already supports the protected GitHub Actions secret `FRAMEONE_QA_DEBUG_KEYSTORE_B64`; it expects a base64-encoded Java/Android debug keystore at `~/.android/debug.keystore`, with alias `androiddebugkey` and conventional local debug passwords, as implemented in [android-debug.yml](../.github/workflows/android-debug.yml).
