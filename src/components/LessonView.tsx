@@ -8,6 +8,8 @@ import {practiceById} from '../data/film-it-yourself';
 import {practiceForLesson,stagePracticeHandoff} from '../state/practice-handoff';
 import {visualPilotForLesson} from '../data/visual-lessons';
 import {VisualLessonPilot} from './VisualLessonPilot';
+import {sceneSequenceForLesson} from '../data/scene-sequences';
+import {SceneSequence} from './SceneSequence';
 import { readPractice, readTelugu, safeProgress, savePractice, saveTelugu } from '../state/learning';
 import './lesson-react.css';
 
@@ -112,6 +114,7 @@ export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyI
   const link = labLinks[lesson.id];
   const linkedPractice=practiceForLesson(lesson.id);
   const visualPilot=visualPilotForLesson(lesson.id);
+  const sceneSequence=sceneSequenceForLesson(lesson.id);
   const correct = quiz === lesson.answer;
   function finishLesson(){
     if(seriesPosition&&journeyId){
@@ -148,6 +151,7 @@ export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyI
       <h1>{lesson.title}</h1><p>{lesson.subtitle}</p>
     </div>
     {visualPilot?<VisualLessonPilot key={lesson.id} lessonId={lesson.id}/>:null}
+    {sceneSequence?<SceneSequence key={lesson.id} lessonId={lesson.id}/>:null}
     <article className="lesson-body">
       {decision ? <section className="decision-activity" aria-label="Interactive filmmaking decision">
         <div className="activity-heading"><span className="eyebrow">✦ YOU'RE THE FILMMAKER</span><span className="activity-count">ONE QUESTION · MULTIPLE POSSIBILITIES</span></div>
@@ -155,16 +159,23 @@ export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyI
         <div className="activity-options">{decision.opts.map((opt,i)=><button type="button" className="activity-option" key={i} aria-pressed={selected===i} onClick={()=>setSelected(i)}><span className="activity-letter">{String.fromCharCode(65+i)}</span><strong>{opt[0]}</strong><span aria-hidden="true">↗</span></button>)}</div>
         {selected!==null ? <div className="activity-feedback" role="status"><span>YOUR CHOICE · {decision.opts[selected][0]}</span><p>{decision.opts[selected][1]}</p><small>Switch choices to compare what each one might emphasize.</small></div>:null}
       </section>:null}
-      {!visualPilot?<div className="reading-note">EXPLORE · COMPARE · PRACTISE · CHECK YOUR LEARNING</div>:null}
+      {!visualPilot&&!sceneSequence?<div className="reading-note">EXPLORE · COMPARE · PRACTISE · CHECK YOUR LEARNING</div>:null}
       <button className="language-toggle" type="button" aria-pressed={showTelugu} onClick={()=>{const enabled=!showTelugu;setShowTelugu(enabled);saveTelugu(enabled);window.frameOneLegacy?.setTelugu(enabled);}}>{showTelugu?'Hide Telugu explanation':'తెలుగులో సులభంగా చెప్పు'} <span aria-hidden="true">⇄</span></button>
       {showTelugu ? <aside className="telugu-note" lang="te"><strong>చిన్న వివరణ · Telugu quick explanation</strong><p>{notes[lesson.id]}</p><small>ఇది సంక్షిప్త సారాంశం మాత్రమే. పూర్తి పాఠం ఇంగ్లీష్‌లో ఉంది.</small></aside>:null}
+      {sceneSequence?<details className="sq-deeper" data-sequence-deeper>
+        <summary>Explore the complete lesson and extra storyboard</summary>
+        <div className="sq-deeper-content">
+          {lesson.sections.map(([heading,explanation],i)=><section className="lesson-section" key={i}><h3>{heading}</h3><p>{explanation}</p></section>)}
+          {board?<Storyboard key={lesson.id} board={board}/>:null}
+        </div>
+      </details>:null}
       {visualPilot?<details className="vl-deeper" data-visual-deeper>
         <summary>Explore the craft in more detail</summary>
         <div className="vl-deeper-content">
           {lesson.sections.map(([heading,explanation],i)=><section className="lesson-section" key={i}><h3>{heading}</h3><p>{explanation}</p></section>)}
         </div>
-      </details>:lesson.sections.map(([heading, explanation],i)=><section className="lesson-section" key={i}><h3>{heading}</h3><p>{explanation}</p></section>)}
-      {board ? <Storyboard key={lesson.id} board={board}/>:null}
+      </details>:!sceneSequence?lesson.sections.map(([heading, explanation],i)=><section className="lesson-section" key={i}><h3>{heading}</h3><p>{explanation}</p></section>):null}
+      {!sceneSequence&&board ? <Storyboard key={lesson.id} board={board}/>:null}
       <aside className="key-idea"><strong>THE BIG IDEA</strong><p>{String(lesson.idea)}</p></aside>
       <aside className="exercise"><strong>✦ TRY THIS YOURSELF</strong><p>{String(lesson.try)}</p>
         <div className="lesson-craft-actions">
