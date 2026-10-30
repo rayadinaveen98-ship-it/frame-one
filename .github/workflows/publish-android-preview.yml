@@ -1,18 +1,33 @@
 name: Publish downloadable Frame One Android preview
 
 on:
-  # Every verified Android build on main refreshes the same stable public URL.
-  workflow_run:
-    workflows: ['Frame One Android debug APK']
-    types: [completed]
-    branches: [main]
+  # Safety: secret provisioning or successful Android builds must never
+  # silently overwrite an installed test APK. Release requires explicit approval.
   workflow_dispatch:
     inputs:
       source_run_id:
-        description: 'Successful main-branch Android build run ID'
+        description: 'Successful main-branch Android build run ID to publish'
         required: true
         type: string
-        default: '40474407084'
+      verified_upgrade_run_id:
+        description: 'Successful independent two-build Android upgrade QA run ID'
+        required: true
+        type: string
+      physical_phone_verified:
+        description: 'I tested the candidate APK on a real Android phone'
+        required: true
+        type: boolean
+        default: false
+      backup_restore_verified:
+        description: 'I verified an external learning backup and restore'
+        required: true
+        type: boolean
+        default: false
+      release_approved:
+        description: 'I approve replacing the public QA preview download'
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   actions: read
@@ -24,18 +39,30 @@ concurrency:
 
 jobs:
   publish-android-preview:
-    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     env:
       GH_TOKEN: ${{ github.token }}
-      SOURCE_RUN_ID: ${{ github.event.workflow_run.id || inputs.source_run_id }}
+      SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+      UPGRADE_QA_RUN_ID: ${{ inputs.verified_upgrade_run_id }}
       RELEASE_TAG: android-preview-latest
     steps:
       - name: Check out trusted release policy
         uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - name: Require deliberate release approval and real-device data testing
+        shell: bash
+        env:
+          PHONE_VERIFIED: ${{ inputs.physical_phone_verified }}
+          BACKUP_VERIFIED: ${{ inputs.backup_restore_verified }}
+          RELEASE_APPROVED: ${{ inputs.release_approved }}
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/main || { echo '::error::Only main can publish the Android preview'; exit 1; }
+          for confirmation in "$PHONE_VERIFIED" "$BACKUP_VERIFIED" "$RELEASE_APPROVED"; do
+            test "$confirmation" = true || { echo '::error::Manual physical phone, backup/restore and release confirmations are all required'; exit 1; }
+          done
       - name: Verify trusted main-branch source build
         shell: bash
         run: |
@@ -48,6 +75,23 @@ jobs:
           test "$workflow" = "Frame One Android debug APK"
           sha="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${SOURCE_RUN_ID}" --jq '.head_sha')"
           printf 'SOURCE_SHA=%s\n' "$sha" >> "$GITHUB_ENV"
+      - name: Require independent upgrade proof matching exact candidate build
+        shell: bash
+        run: |
+          set -euo pipefail
+          [[ "$UPGRADE_QA_RUN_ID" =~ ^[1-9][0-9]*$ ]] || { echo '::error::Invalid upgrade QA run ID'; exit 1; }
+          qa_metadata="$(gh api "repos/${GITHUB_REPOSITORY}/actions/runs/${UPGRADE_QA_RUN_ID}")"
+          test "$(jq -r .name <<< "$qa_metadata")" = 'Frame One independent Android APK upgrade acceptance'
+          test "$(jq -r .status <<< "$qa_metadata")" = completed
+          test "$(jq -r .conclusion <<< "$qa_metadata")" = success
+          test "$(jq -r .head_branch <<< "$qa_metadata")" = main
+          test "$(jq -r .event <<< "$qa_metadata")" = workflow_dispatch
+          test "$(jq -r .repository.full_name <<< "$qa_metadata")" = "$GITHUB_REPOSITORY"
+          mkdir -p qa-proof
+          gh run download "$UPGRADE_QA_RUN_ID" --repo "$GITHUB_REPOSITORY" \
+            --name frame-one-cross-run-upgrade-proof --dir qa-proof
+          python3 scripts/check-android-release-approval.py \
+            --proof qa-proof/independent-upgrade.json --candidate-run-id "$SOURCE_RUN_ID"
       - name: Download and verify the existing compiled APK
         shell: bash
         run: |
