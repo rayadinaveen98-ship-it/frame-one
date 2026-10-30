@@ -12,6 +12,7 @@ import {sceneSequenceForLesson} from '../data/scene-sequences';
 import {SceneSequence} from './SceneSequence';
 import {fieldLessonForId} from '../data/visual-field-guide';
 import {VisualFieldGuide} from './VisualFieldGuide';
+import {LessonCompass,jumpToLessonStage} from './LessonCompass';
 import { readPractice, readTelugu, safeProgress, savePractice, saveTelugu } from '../state/learning';
 import './lesson-react.css';
 
@@ -153,11 +154,16 @@ export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyI
       <div className="eyebrow">{seriesPosition?'SCENE '+String(seriesPosition.index+1).padStart(2,'0')+' · '+lesson.minutes+' MIN READ':'LESSON '+lesson.num+' · '+lesson.unit.toUpperCase()+' · '+lesson.minutes+' MIN READ'}</div>
       <h1>{lesson.title}</h1><p>{lesson.subtitle}</p>
     </div>
-    {visualPilot?<VisualLessonPilot key={lesson.id} lessonId={lesson.id}/>:null}
-    {sceneSequence?<SceneSequence key={lesson.id} lessonId={lesson.id}/>:null}
-    {fieldGuide?<VisualFieldGuide key={lesson.id} lessonId={lesson.id}/>:null}
+    <LessonCompass/>
+    <section id="lesson-stage-explore" className="lesson-stage-explore" tabIndex={-1}
+      data-lesson-stage="explore" aria-label="Explore the filmmaking scene">
+      {visualPilot?<VisualLessonPilot key={lesson.id} lessonId={lesson.id}/>:null}
+      {sceneSequence?<SceneSequence key={lesson.id} lessonId={lesson.id}/>:null}
+      {fieldGuide?<VisualFieldGuide key={lesson.id} lessonId={lesson.id}/>:null}
+    </section>
     <article className="lesson-body">
-      {decision ? <section className="decision-activity" aria-label="Interactive filmmaking decision">
+      {decision ? <section className="decision-activity" id="lesson-stage-decide" tabIndex={-1}
+        data-lesson-stage="decide" aria-label="Interactive filmmaking decision">
         <div className="activity-heading"><span className="eyebrow">✦ YOU'RE THE FILMMAKER</span><span className="activity-count">ONE QUESTION · MULTIPLE POSSIBILITIES</span></div>
         <div className="activity-stage"><span className="activity-projector" aria-hidden="true">◉</span><h3>{decision.prompt}</h3><p>Creative choices do not always have one right answer. Try both.</p></div>
         <div className="activity-options">{decision.opts.map((opt,i)=><button type="button" className="activity-option" key={i} aria-pressed={selected===i} onClick={()=>setSelected(i)}><span className="activity-letter">{String.fromCharCode(65+i)}</span><strong>{opt[0]}</strong><span aria-hidden="true">↗</span></button>)}</div>
@@ -207,11 +213,14 @@ export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyI
         <span className="note-status" role="status">{saveStatus}</span>
         <p className="story-help">Private in this browser’s local storage. No account or cloud upload. Completing the lesson does not require notes.</p>
       </section>
-      <section className="quiz" aria-label="Knowledge check">
+      <section className="quiz" id="lesson-stage-check" tabIndex={-1}
+        data-lesson-stage="check" aria-label="Knowledge check">
         <span className="eyebrow-secondary">CHECK WHAT YOU UNDERSTOOD</span><h3>{lesson.q}</h3>
         <div className="quiz-options">{lesson.opts.map((option,i)=><button className={`quiz-option ${quiz!==null&&i===lesson.answer?'right':''} ${quiz===i&&i!==lesson.answer?'wrong':''}`} type="button" key={i} disabled={quiz!==null} onClick={()=>{setQuiz(i);setQuizStatus('');}}>{String.fromCharCode(65+i)}. {option}</button>)}</div>
         <div className={`quiz-feedback ${quiz!==null&&!correct?'error':''}`} role="status" aria-live="polite">{quiz===null?quizStatus:<>{correct?'✓ Exactly. ':'Not quite. '}{lesson.feedback}</>}</div>
         <div className="lesson-actions">
+          {quiz!==null&&!correct?<button className="btn-secondary" type="button"
+            data-lesson-revisit onClick={()=>jumpToLessonStage('explore')}>Review the visual scene ↗</button>:null}
           {quiz!==null&&!correct?<button className="btn-secondary" type="button" onClick={()=>{setQuiz(null);setQuizStatus('Choose another answer.');}}>Try again</button>:null}
           <button className="cta" type="button" disabled={!correct} onClick={finishLesson}>{completed?'✓ Completed — continue':'Mark lesson complete'} →</button>
         </div>
