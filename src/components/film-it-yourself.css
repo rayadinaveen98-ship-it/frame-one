@@ -66,3 +66,37 @@
 .practice-arrival{border-left:2px solid #c29a78;background:#302b2b;color:#e6cebb;
   border-radius:0 8px 8px 0;padding:10px 12px;margin:0 0 15px;
   font-size:12px;line-height:1.5}
+
+/* v0.13A10: portable paper-like shoot plan, optional session reflection. */
+.practice-pocket{min-width:0;margin-top:13px;border:1px solid #615347;border-radius:11px;
+  background:linear-gradient(135deg,#29292c,#1d2429);padding:15px}
+.practice-pocket-heading{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.practice-pocket-heading h4{margin:4px 0;color:#f6e8d9;font-size:17px;letter-spacing:-.015em}
+.practice-pocket-heading p{margin:0;font-size:12px;line-height:1.5;color:#cbc1b9}
+.practice-pocket-heading button,.practice-pocket-copy{flex-shrink:0;border:1px solid #d6b18d;
+  background:#d6b18d;border-radius:9px;color:#1a2126;font-weight:730;
+  min-height:44px;padding:10px 13px;font-size:12px}
+.practice-pocket-workspace{display:grid;gap:9px;border-top:1px solid #5c4b42;
+  margin-top:15px;padding-top:15px;min-width:0}
+.practice-pocket-workspace label{font-size:11px;line-height:1.4;color:#efd1b3;font-weight:680}
+.practice-pocket-workspace textarea{display:block;min-width:0;max-width:100%;width:100%;
+  box-sizing:border-box;border:1px solid #67605d;background:#191e25;
+  color:#f3e5da;font:500 12px/1.55 system-ui,sans-serif;
+  border-radius:9px;padding:11px;resize:vertical}
+.practice-pocket-workspace textarea:focus-visible{outline:3px solid #f1c395;outline-offset:2px}
+.practice-pocket-workspace textarea::placeholder{color:#aeadb1}
+.practice-pocket-workspace .practice-pocket-text{font:500 11.5px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;
+  white-space:pre-wrap}
+.practice-pocket-privacy{font-size:10.5px;line-height:1.5;color:#b9b0ab;margin:0}
+.practice-pocket-copy{justify-self:start;margin-top:3px}
+.practice-pocket-status{margin:0;font-size:11px;line-height:1.5;color:#e9c5a6}
+.practice-pocket-status:empty{display:none}
+@media(max-width:500px){
+  .practice-pocket{padding:12px}
+  .practice-pocket-heading{flex-direction:column;align-items:stretch;gap:12px}
+  .practice-pocket-heading button{align-self:flex-start}
+}
+@media(max-width:350px){
+  .practice-pocket-workspace textarea{font-size:11px}
+  .practice-pocket-heading h4{font-size:16px}
+}
