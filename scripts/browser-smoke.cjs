@@ -144,6 +144,26 @@ async function verify() {
   await searchInput.press('Enter');
   await page.locator('.react-lesson h1').waitFor();
   assert.match(await page.locator('.react-lesson h1').textContent(),/lighting/i);
+  // v0.13A11: the lesson begins with a real illustration, not an article.
+  const lightingPilot=page.locator('[data-visual-lesson="lighting"]');
+  assert.equal(await lightingPilot.count(),1);
+  assert.equal(await lightingPilot.locator('[data-visual-take]').getAttribute('data-visual-take'),'0');
+  assert.equal(await lightingPilot.locator('[data-visual-option="a"]').getAttribute('aria-pressed'),'true');
+  const firstLight=await lightingPilot.locator('.vl-illustration').innerHTML();
+  await lightingPilot.locator('[data-visual-option="b"]').click();
+  assert.equal(await lightingPilot.locator('[data-visual-take]').getAttribute('data-visual-take'),'1');
+  const sideLight=await lightingPilot.locator('.vl-illustration').innerHTML();
+  assert.notEqual(firstLight,sideLight,'The light study must visually relight the same illustrated cup');
+  await lightingPilot.locator('[data-visual-reveal]').click();
+  assert.equal(await lightingPilot.locator('[data-visual-reveal]').getAttribute('aria-expanded'),'true');
+  assert.match(await lightingPilot.locator('.vl-explanation').textContent(),/Light controls/);
+  assert.equal(await page.locator('[data-visual-deeper]').getAttribute('open'),null,
+    'Long lesson paragraphs must start collapsed for the visual-first pilot');
+  await page.locator('[data-visual-deeper] summary').click();
+  assert.equal(await page.locator('[data-visual-deeper]').getAttribute('open'),'',
+    'Full original curriculum text remains accessible on request');
+  assert.equal(await page.locator('.react-lesson .quiz').count(),1);
+  await lightingPilot.screenshot({path:path.join(shots,'02-visual-lesson-lighting-desktop.png'),animations:'disabled'});
   await page.locator('.nav-menu [data-page="home"]').click();
   await page.locator('[data-cinema-quick-find]').waitFor();
   await quick.locator('[data-cinema-search-input]').fill('silence');
@@ -168,6 +188,31 @@ async function verify() {
     'Search remains ephemeral when leaving/re-entering Home');
   console.log('PASS: offline Home search finds real lessons, audio aliases and working Labs; Enter, clear, Escape and reset work');
 
+  // Every pilot has one visually distinct comparison, an honest note and real lab route.
+  await quick.locator('[data-cinema-search-input]').fill('editing rhythm');
+  await quick.locator('[data-cinema-search-result="lesson:rhythm"]').click();
+  const rhythmPilot=page.locator('[data-visual-lesson="rhythm"]');
+  await rhythmPilot.waitFor();
+  const uncutPlan=await rhythmPilot.locator('.vl-illustration').innerHTML();
+  await rhythmPilot.locator('[data-visual-option="b"]').click();
+  assert.notEqual(await rhythmPilot.locator('.vl-illustration').innerHTML(),uncutPlan);
+  assert.match(await rhythmPilot.locator('[data-visual-description]').textContent(),/two-second shots/i);
+  await rhythmPilot.screenshot({path:path.join(shots,'02-visual-lesson-rhythm-desktop.png'),animations:'disabled'});
+  await page.locator('.nav-menu [data-page="home"]').click();
+  await page.locator('[data-cinema-quick-find]').waitFor();
+  await quick.locator('[data-cinema-search-input]').fill('ambience');
+  await quick.locator('[data-cinema-search-result="lesson:ambience"]').click();
+  const ambiencePilot=page.locator('[data-visual-lesson="ambience"]');
+  await ambiencePilot.waitFor();
+  const lockedImage=await ambiencePilot.locator('.vl-illustration').innerHTML();
+  await ambiencePilot.locator('[data-visual-option="b"]').click();
+  assert.equal(await ambiencePilot.locator('.vl-illustration').innerHTML(),lockedImage,
+    'Sound study must keep the picture exactly unchanged');
+  assert.match(await ambiencePilot.locator('[data-visual-sound-layers]').textContent(),/road traffic/i);
+  assert.match(await ambiencePilot.textContent(),/not audio playback/i);
+  await ambiencePilot.screenshot({path:path.join(shots,'02-visual-lesson-ambience-desktop.png'),animations:'disabled'});
+  await page.locator('.nav-menu [data-page="home"]').click();
+  await page.locator('[data-cinema-quick-find]').waitFor();
   // v0.13A9: contextual lesson → the correct practical phone exercise.
   await quick.locator('[data-cinema-search-input]').fill('lighting');
   await quick.locator('[data-cinema-search-result="lesson:lighting"]').click();
@@ -906,6 +951,21 @@ async function verify() {
     await mobileSearch.screenshot({path:path.join(shots,'01-cinema-search-'+width+'px.png'),animations:'disabled'});
     await mobileSearch.locator('[data-cinema-search-input]').press('Escape');
     assert.equal(await mobileSearch.locator('[data-cinema-search-result]').count(),0);
+
+    // v0.13A11 real mobile pilot: wide artwork fits the actual small phone screen.
+    await mobileSearch.locator('[data-cinema-search-input]').fill('lighting');
+    await mobileSearch.locator('[data-cinema-search-result="lesson:lighting"]').click();
+    const mobileVisual=phone.locator('[data-visual-lesson="lighting"]');
+    await mobileVisual.waitFor();
+    await mobileVisual.locator('[data-visual-option="b"]').click();
+    await mobileVisual.locator('[data-visual-reveal]').click();
+    const visualBounds=await mobileVisual.boundingBox();
+    const visualOverflow=await mobileVisual.evaluate(el=>({scroll:el.scrollWidth,width:el.clientWidth}));
+    assert.ok(visualBounds&&visualBounds.width<=width+2,'Visual lesson fits '+width+'px mobile viewport');
+    assert.ok(visualOverflow.scroll<=visualOverflow.width+3,'Visual lesson must not clip horizontally at '+width+'px');
+    await mobileVisual.screenshot({path:path.join(shots,'02-visual-lesson-lighting-'+width+'px.png'),animations:'disabled'});
+    await phone.locator('.mobile-nav [data-page="home"]').click();
+    await phone.locator('[data-cinema-quick-find]').waitFor();
 
     // Narrow-screen lesson handoff must open the matching exercise, not a generic Home card.
     await mobileSearch.locator('[data-cinema-search-input]').fill('rhythm');
