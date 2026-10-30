@@ -33,7 +33,7 @@ for(const item of practiceMissions){
     assert(!labels.has(step.title),'Each stage is distinct');labels.add(step.title);
   }
 }
-const source=read(viewPath),home=read(homePath),styles=read(css),qa=read('scripts/browser-smoke.cjs');
+const source=read(viewPath),home=read(homePath),styles=read(cssPath),qa=read('scripts/browser-smoke.cjs');
 assert(home.includes("import {FilmItYourself} from './FilmItYourself'"));
 assert(home.includes('<FilmItYourself/>'),'Home mounts practice once');
 assert(source.includes('aria-expanded={expanded}')&&source.includes('aria-controls="practice-studio-workspace"'));
