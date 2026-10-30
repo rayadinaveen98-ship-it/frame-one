@@ -443,6 +443,7 @@ async function verify() {
   await anatomy.locator('[data-anatomy-lab="cut"]').click();
   await page.locator('.react-cut-lab').waitFor();
   await page.locator('.nav-menu [data-page="home"]').click();
+  await openHomeWorkshops(page);
   await page.locator('[data-scene-anatomy]').waitFor();
   console.log('PASS: scene anatomy real A/B decisions, lighting relight, edit reveal and functional Cut Lab route');
   await photo(page, '01-home-desktop.png');
@@ -514,6 +515,7 @@ async function verify() {
   assert.equal(await page.evaluate(()=>localStorage.getItem('frameone-scene-v07')),preImportJSON,
     'Declining import must leave original scene completely unchanged');
   await page.locator('.nav-menu [data-page="home"]').click();
+  await openHomeWorkshops(page);
   await page.locator('[data-direct-moment]').waitFor();
   await openHomeWorkshops(page);
   await page.locator('[data-direct-toggle]').click();
@@ -544,6 +546,7 @@ async function verify() {
   await handoffLab.locator('#storyNote').fill('My editable imported shot idea.');
   assert.equal((await page.evaluate(()=>window.frameOneLegacy.getStoryboard())).notes[0],'My editable imported shot idea.');
   await page.locator('.nav-menu [data-page="home"]').click();
+  await openHomeWorkshops(page);
   await page.locator('[data-direct-moment]').waitFor();
   console.log('PASS: Director sketch review, old-board byte retention on decline, export-before-replace, explicit import, editable saved Make Lab and JSON backup');
 
