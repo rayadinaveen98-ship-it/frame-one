@@ -99,6 +99,31 @@ async function verify() {
   await practice.locator('[data-practice-check="1"]').click();
   await practice.locator('[data-practice-check="2"]').click();
   assert.match(await practice.locator('[data-practice-status]').textContent(),/All three steps marked tried in this session/);
+  // v0.13A10: portable filming guide and an honest clipboard/manual-copy fallback.
+  assert.equal(await practice.locator('[data-practice-pocket-toggle]').getAttribute('aria-expanded'),'false');
+  await practice.locator('[data-practice-pocket-toggle]').click();
+  assert.equal(await practice.locator('[data-practice-pocket-toggle]').getAttribute('aria-expanded'),'true');
+  const pocket=practice.locator('[data-practice-pocket]');
+  assert.equal(await pocket.locator('[data-practice-plan-text]').count(),1);
+  const defaultPlan=await pocket.locator('[data-practice-plan-text]').inputValue();
+  assert(defaultPlan.includes('One subject. Two moods.')&&defaultPlan.includes('SHOT / STEP 03'));
+  await pocket.locator('[data-practice-observation]').fill('Changing the light made the edges clearer.');
+  const writtenPlan=await pocket.locator('[data-practice-plan-text]').inputValue();
+  assert(writtenPlan.includes('Changing the light made the edges clearer.'));
+  await pocket.locator('[data-practice-pocket-copy]').click();
+  await pocket.locator('[data-practice-pocket-status]').filter({hasText:/Plan copied|Automatic copying is unavailable/}).waitFor({timeout:8000});
+  assert.match(await pocket.locator('[data-practice-pocket-status]').textContent(),
+    /Plan copied|Automatic copying is unavailable/);
+  assert.equal(await pocket.locator('[data-practice-plan-text]').inputValue(),writtenPlan,
+    "Copying should never clear or alter the user\'s exercise note");
+  await practice.locator('[data-practice-choice="silence"]').click();
+  await practice.locator('[data-practice-pocket-toggle]').click();
+  const switchedPlan=await pocket.locator('[data-practice-plan-text]').inputValue();
+  assert(switchedPlan.includes('Tell it without dialogue.'));
+  assert(!switchedPlan.includes('Changing the light made the edges clearer.'),
+    'Notes from one exercise must not leak into the next');
+  await practice.locator('[data-practice-pocket-toggle]').click();
+  await practice.locator('[data-practice-choice="light"]').click();
   await practice.screenshot({path:path.join(shots,'01-film-it-yourself-desktop.png'),animations:'disabled'});
   await practice.locator('[data-practice-open-lab="light"]').click();
   await page.locator('.react-lighting-lab').waitFor();
@@ -947,6 +972,18 @@ async function verify() {
     assert.ok(practiceBounds&&practiceBounds.width<=width+2,'Film practice fits '+width+'px phone');
     const practiceOverflow=await mobilePractice.evaluate(el=>({scroll:el.scrollWidth,width:el.clientWidth}));
     assert.ok(practiceOverflow.scroll<=practiceOverflow.width+3,'Practice instructions do not overflow '+width+'px');
+    await mobilePractice.locator('[data-practice-pocket-toggle]').click();
+    await mobilePractice.locator('[data-practice-observation]').fill('I noticed the quicker edit made the action easier to follow.');
+    const phonePlan=await mobilePractice.locator('[data-practice-plan-text]').inputValue();
+    assert(phonePlan.includes('One action. Two rhythms.'));
+    assert(phonePlan.includes('I noticed the quicker edit made the action easier to follow.'));
+    const pocketOverflow=await mobilePractice.locator('[data-practice-pocket]').evaluate(
+      el=>({scroll:el.scrollWidth,width:el.clientWidth}));
+    assert.ok(pocketOverflow.scroll<=pocketOverflow.width+3,
+      'Pocket sheet must not overflow '+width+'px phone');
+    await mobilePractice.locator('[data-practice-pocket]').screenshot({
+      path:path.join(shots,'01-pocket-shoot-plan-'+width+'px.png'),animations:'disabled'});
+    await mobilePractice.locator('[data-practice-pocket-toggle]').click();
     await mobilePractice.screenshot({path:path.join(shots,'01-film-it-yourself-'+width+'px.png'),animations:'disabled'});
     await mobilePractice.locator('[data-practice-toggle]').click();
     assert.equal(await phone.locator('[data-cinema-entry^="lab:"]').count(),7);
