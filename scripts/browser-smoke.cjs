@@ -213,6 +213,37 @@ async function verify() {
   await ambiencePilot.screenshot({path:path.join(shots,'02-visual-lesson-ambience-desktop.png'),animations:'disabled'});
   await page.locator('.nav-menu [data-page="home"]').click();
   await page.locator('[data-cinema-quick-find]').waitFor();
+  // v0.13A12: three more true illustrated A/B studies; legacy quiz/note state stays intact.
+  for(const study of [
+    {word:'shot',id:'shot',lab:'frame',tag:'shot'},
+    {word:'composition',id:'composition',lab:'frame',tag:'composition'},
+    {word:'colour',id:'colour',lab:'colour',tag:'colour'}
+  ]){
+    await quick.locator('[data-cinema-search-input]').fill(study.word);
+    await quick.locator('[data-cinema-search-result="lesson:'+study.id+'"]').click();
+    const visual=page.locator('[data-visual-lesson="'+study.id+'"]');
+    await visual.waitFor();
+    const firstArt=await visual.locator('.vl-illustration').innerHTML();
+    assert.equal(await visual.locator('[data-visual-option="a"]').getAttribute('aria-pressed'),'true');
+    assert.equal(await visual.locator('[data-visual-take]').getAttribute('data-visual-take'),'0');
+    await visual.locator('[data-visual-option="b"]').click();
+    const secondArt=await visual.locator('.vl-illustration').innerHTML();
+    assert.notEqual(firstArt,secondArt,study.id+' must change SVG artwork, not just its explanation');
+    assert.equal(await visual.locator('[data-visual-take]').getAttribute('data-visual-take'),'1');
+    assert.equal(await visual.locator('[data-visual-option="b"]').getAttribute('aria-pressed'),'true');
+    assert.equal(await visual.locator('[data-visual-lab="'+study.lab+'"]').count(),1);
+    await visual.locator('[data-visual-reveal]').click();
+    assert.equal(await visual.locator('[data-visual-reveal]').getAttribute('aria-expanded'),'true');
+    assert.equal(await page.locator('[data-visual-deeper]').getAttribute('open'),null);
+    assert.equal(await page.locator('.react-lesson .quiz').count(),1,
+      'Original lesson comprehension quiz must be present after redesign');
+    assert.equal(await page.locator('#lessonPractice').count(),1,'Existing saved note editor must remain');
+    await visual.screenshot({path:path.join(shots,'02-visual-lesson-'+study.id+'-desktop.png'),animations:'disabled'});
+    await page.locator('.nav-menu [data-page="home"]').click();
+    await page.locator('[data-cinema-quick-find]').waitFor();
+  }
+  console.log('PASS: new shot size, composition and colour lessons visibly change original SVGs while preserving original notes and quiz');
+
   // v0.13A9: contextual lesson → the correct practical phone exercise.
   await quick.locator('[data-cinema-search-input]').fill('lighting');
   await quick.locator('[data-cinema-search-result="lesson:lighting"]').click();
@@ -966,6 +997,20 @@ async function verify() {
     await mobileVisual.screenshot({path:path.join(shots,'02-visual-lesson-lighting-'+width+'px.png'),animations:'disabled'});
     await phone.locator('.mobile-nav [data-page="home"]').click();
     await phone.locator('[data-cinema-quick-find]').waitFor();
+
+    // v0.13A12: each new SVG comparison must fit tiny screens with controls.
+    for(const study of ['shot','composition','colour']){
+      await mobileSearch.locator('[data-cinema-search-input]').fill(study);
+      await mobileSearch.locator('[data-cinema-search-result="lesson:'+study+'"]').click();
+      const stage=phone.locator('[data-visual-lesson="'+study+'"]');
+      await stage.waitFor();
+      await stage.locator('[data-visual-option="b"]').click();
+      const fit=await stage.evaluate(el=>({scroll:el.scrollWidth,width:el.clientWidth}));
+      assert.ok(fit.scroll<=fit.width+3,study+' visual experience must fit '+width+'px');
+      await stage.screenshot({path:path.join(shots,'02-visual-lesson-'+study+'-'+width+'px.png'),animations:'disabled'});
+      await phone.locator('.mobile-nav [data-page="home"]').click();
+      await phone.locator('[data-cinema-quick-find]').waitFor();
+    }
 
     // Narrow-screen lesson handoff must open the matching exercise, not a generic Home card.
     await mobileSearch.locator('[data-cinema-search-input]').fill('rhythm');
