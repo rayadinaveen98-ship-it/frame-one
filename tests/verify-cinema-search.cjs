@@ -27,7 +27,12 @@ const engine=transpile('src/data/cinema-search.ts',name=>{
 const {cinemaSearchIndex,searchCinemaLibrary}=engine;
 const entries=library.cinemaShelves.flatMap(shelf=>shelf.entries);
 assert.equal(cinemaSearchIndex.length,41,'Every 33 lessons, 7 labs and roles destination is searchable');
-assert.equal(cinemaSearchIndex.length,entries.length);
+assert(entries.length<cinemaSearchIndex.length,
+  'Search must include lessons outside the six curated Home shelves');
+for(const entry of entries){
+  assert(cinemaSearchIndex.some(item=>item.entry.kind===entry.kind&&item.entry.id===entry.id),
+    'Every curated shelf item must be searchable');
+}
 const keys=cinemaSearchIndex.map(item=>item.entry.kind+':'+item.entry.id);
 assert.equal(new Set(keys).size,41,'Results must never duplicate destinations');
 assert.equal(keys.filter(key=>key.startsWith('lesson:')).length,33);
