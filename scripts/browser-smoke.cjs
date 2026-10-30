@@ -279,6 +279,39 @@ async function verify() {
     await page.locator('[data-cinema-quick-find]').waitFor();
   }
   console.log('PASS: three interactive scenes tell accurate 3-frame stories, reveal ideas only after the ending and keep old quiz/notes');
+  // v0.13A14: ten authored director's-choice investigations, not text-only cards.
+  const newVisualIds=['story','script','acting','character','dialogue',
+    'camera','movement','lenses','music','editing'];
+  for(const id of newVisualIds){
+    await quick.locator('[data-cinema-search-input]').fill(id);
+    await quick.locator('[data-cinema-search-result="lesson:'+id+'"]').click();
+    const visual=page.locator('[data-visual-lesson="'+id+'"]');
+    await visual.waitFor();
+    const firstArt=await visual.locator('.vl-illustration').innerHTML();
+    assert.equal(await visual.locator('[data-visual-option="a"]').getAttribute('aria-pressed'),'true');
+    assert.equal(await visual.locator('[data-visual-deeper]').count(),0,
+      'The visual explanation must be in the normal optional deeper lesson');
+    await visual.locator('[data-visual-option="b"]').click();
+    assert.equal(await visual.locator('[data-visual-take]').getAttribute('data-visual-take'),'1');
+    const secondArt=await visual.locator('.vl-illustration').innerHTML();
+    if(id==='music'){
+      assert.equal(secondArt,firstArt,'Music study must lock picture when only imagined score changes');
+      assert.match(await visual.locator('[data-visual-sound-layers]').textContent(),/uneven low pulses/i);
+      assert.match(await visual.textContent(),/NOT playable music/i);
+    }else{
+      assert.notEqual(secondArt,firstArt,id+' must visibly change the original drawing, not just the label');
+    }
+    await visual.locator('[data-visual-reveal]').click();
+    assert.equal(await visual.locator('[data-visual-reveal]').getAttribute('aria-expanded'),'true');
+    assert.equal(await page.locator('[data-visual-deeper]').getAttribute('open'),null);
+    assert.equal(await page.locator('.react-lesson .quiz').count(),1);
+    assert.equal(await page.locator('#lessonPractice').count(),1);
+    await visual.screenshot({path:path.join(shots,'02-director-choice-'+id+'-desktop.png'),animations:'disabled'});
+    await page.locator('.nav-menu [data-page="home"]').click();
+    await page.locator('[data-cinema-quick-find]').waitFor();
+  }
+  console.log('PASS: all 10 authored director choices render real A/B artwork, truthful imaginary music and untouched quizzes/notes');
+
   // v0.13A9: contextual lesson → the correct practical phone exercise.
   await quick.locator('[data-cinema-search-input]').fill('lighting');
   await quick.locator('[data-cinema-search-result="lesson:lighting"]').click();
@@ -1061,6 +1094,24 @@ async function verify() {
       const frame=await sequence.boundingBox();
       assert.ok(frame&&frame.width<=width+2,id+' stage must fit '+width+'px phone');
       await sequence.screenshot({path:path.join(shots,'02-scene-sequence-'+id+'-'+width+'px.png'),animations:'disabled'});
+      await phone.locator('.mobile-nav [data-page="home"]').click();
+      await phone.locator('[data-cinema-quick-find]').waitFor();
+    }
+
+    // v0.13A14: all ten new choices receive phone QA, split evenly across 390/320px.
+    const choicesOnThisPhone=width===390?['story','script','acting','character','dialogue']:
+      ['camera','movement','lenses','music','editing'];
+    for(const id of choicesOnThisPhone){
+      await mobileSearch.locator('[data-cinema-search-input]').fill(id);
+      await mobileSearch.locator('[data-cinema-search-result="lesson:'+id+'"]').click();
+      const stage=phone.locator('[data-visual-lesson="'+id+'"]');
+      await stage.waitFor();
+      await stage.locator('[data-visual-option="b"]').click();
+      const fit=await stage.evaluate(el=>({scroll:el.scrollWidth,width:el.clientWidth}));
+      assert.ok(fit.scroll<=fit.width+3,'Director choice '+id+' must not overflow '+width+'px');
+      const bounds=await stage.boundingBox();
+      assert.ok(bounds&&bounds.width<=width+2,id+' must fit phone viewport');
+      await stage.screenshot({path:path.join(shots,'02-director-choice-'+id+'-'+width+'px.png'),animations:'disabled'});
       await phone.locator('.mobile-nav [data-page="home"]').click();
       await phone.locator('[data-cinema-quick-find]').waitFor();
     }
