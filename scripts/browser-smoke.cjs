@@ -843,6 +843,17 @@ async function verify() {
     await mobileDirector.locator('[data-direct-toggle]').click();
 
 
+    const mobilePractice=phone.locator('[data-film-it-yourself]');
+    await mobilePractice.locator('[data-practice-toggle]').click();
+    await mobilePractice.locator('[data-practice-choice="rhythm"]').click();
+    assert.equal(await mobilePractice.locator('[data-practice-step]').count(),3);
+    assert.equal(await mobilePractice.locator('[data-practice-open-lab]').getAttribute('data-practice-open-lab'),'cut');
+    const practiceBounds=await mobilePractice.boundingBox();
+    assert.ok(practiceBounds&&practiceBounds.width<=width+2,'Film practice fits '+width+'px phone');
+    const practiceOverflow=await mobilePractice.evaluate(el=>({scroll:el.scrollWidth,width:el.clientWidth}));
+    assert.ok(practiceOverflow.scroll<=practiceOverflow.width+3,'Practice instructions do not overflow '+width+'px');
+    await mobilePractice.screenshot({path:path.join(shots,'01-film-it-yourself-'+width+'px.png'),animations:'disabled'});
+    await mobilePractice.locator('[data-practice-toggle]').click();
     assert.equal(await phone.locator('[data-cinema-entry^="lab:"]').count(),7);
     assert.equal(await phone.locator('#content .card-grid').isVisible(),false);
     const libraryRailMetrics=await phone.locator('.cinema-rail').first().evaluate(el=>{
