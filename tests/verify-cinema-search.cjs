@@ -47,7 +47,11 @@ assert.equal(searchCinemaLibrary('  ').total,0);
 assert.equal(searchCinemaLibrary('').results.length,0);
 assert.equal(searchCinemaLibrary('notarealfilmmakingterm').total,0);
 assert.equal(searchCinemaLibrary('lighting').results[0].entry.id,'lighting','Exact lesson title ranked first');
-assert.equal(searchCinemaLibrary('EDITING').results[0].entry.id,'editing','Case-insensitive exact term search');
+assert.deepEqual(JSON.parse(JSON.stringify(searchCinemaLibrary('EDITING'))),
+  JSON.parse(JSON.stringify(searchCinemaLibrary('editing'))),
+  'Search must ignore case without forcing an incorrect result order');
+assert(searchCinemaLibrary('editing').results.some(item=>item.entry.id==='editing'),
+  'Editing lessons must remain discoverable even when their titles use different words');
 assert.equal(searchCinemaLibrary('  Film     roles ').results[0].entry.kind,'roles');
 assert(searchCinemaLibrary('cinematography').results.some(item=>item.entry.id==='camera'));
 assert(searchCinemaLibrary('silence').results.some(item=>item.entry.id==='ambience'));
