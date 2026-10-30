@@ -166,6 +166,32 @@ async function verify() {
   await searchInput.press('Enter');
   await page.locator('.react-lesson h1').waitFor();
   assert.match(await page.locator('.react-lesson h1').textContent(),/lighting/i);
+  // v0.13A17: a quiet three-step path, not another oversized lesson card.
+  const compass=page.locator('[data-lesson-compass]');
+  assert.equal(await compass.count(),1);
+  for(const step of ['explore','decide','check']){
+    assert.equal(await compass.locator('[data-lesson-jump="'+step+'"]').count(),1);
+    assert.equal(await page.locator('[data-lesson-stage="'+step+'"]').count(),1);
+    await compass.locator('[data-lesson-jump="'+step+'"]').click();
+    const focused=await page.evaluate(()=>document.activeElement?.id);
+    assert.equal(focused,'lesson-stage-'+step,'Lesson guide must focus the real '+step+' stage');
+  }
+  const lessonForCompass=curriculum.lessons.find(item=>item.id==='lighting');
+  assert(lessonForCompass,'The tested lighting lesson must exist');
+  const wrongAnswer=(lessonForCompass.answer+1)%lessonForCompass.opts.length;
+  const quizForCompass=page.locator('[data-lesson-stage="check"]');
+  await quizForCompass.locator('.quiz-options button').nth(wrongAnswer).click();
+  assert.equal(await quizForCompass.locator('[data-lesson-revisit]').count(),1,
+    'Wrong answer reveals a helpful review action, not a fake completion');
+  assert.equal(await quizForCompass.locator('.lesson-actions .cta').isDisabled(),true);
+  await quizForCompass.locator('[data-lesson-revisit]').click();
+  assert.equal(await page.evaluate(()=>document.activeElement?.id),'lesson-stage-explore',
+    'Visual review must return to the actual scene');
+  await quizForCompass.getByRole('button',{name:'Try again'}).click();
+  assert.equal(await quizForCompass.locator('[data-lesson-revisit]').count(),0);
+  assert.equal(await quizForCompass.locator('.lesson-actions .cta').isDisabled(),true);
+  console.log('PASS: lesson compass reaches actual Explore/Decide/Check sections, wrong answer reviews scene without marking complete');
+
   // v0.13A11: the lesson begins with a real illustration, not an article.
   const lightingPilot=page.locator('[data-visual-lesson="lighting"]');
   assert.equal(await lightingPilot.count(),1);
@@ -1181,6 +1207,21 @@ async function verify() {
       await phone.locator('.mobile-nav [data-page="home"]').click();
       await phone.locator('[data-cinema-quick-find]').waitFor();
     }
+
+    // v0.13A17: actual compact lesson navigation works at both 320px and 390px.
+    await mobileSearch.locator('[data-cinema-search-input]').fill('lighting');
+    await mobileSearch.locator('[data-cinema-search-result="lesson:lighting"]').click();
+    const mobileCompass=phone.locator('[data-lesson-compass]');
+    await mobileCompass.waitFor();
+    const compact=await mobileCompass.evaluate(el=>({scroll:el.scrollWidth,width:el.clientWidth}));
+    assert.ok(compact.scroll<=compact.width+3,'Lesson path does not overflow '+width+'px');
+    await mobileCompass.locator('[data-lesson-jump="check"]').click();
+    assert.equal(await phone.evaluate(()=>document.activeElement?.id),'lesson-stage-check');
+    await mobileCompass.locator('[data-lesson-jump="explore"]').click();
+    assert.equal(await phone.evaluate(()=>document.activeElement?.id),'lesson-stage-explore');
+    await mobileCompass.screenshot({path:path.join(shots,'02-lesson-compass-'+width+'px.png'),animations:'disabled'});
+    await phone.locator('.mobile-nav [data-page="home"]').click();
+    await phone.locator('[data-cinema-quick-find]').waitFor();
 
     // v0.13A15: all 14 original field guide illustrations are checked across phone sizes.
     const fieldOnPhone=width===390?['why','history','genres','india','sound','crew','craft24']:

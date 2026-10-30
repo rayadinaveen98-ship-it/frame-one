@@ -143,3 +143,51 @@
   .lesson-craft-actions{flex-direction:column}
   .lesson-craft-actions button{width:100%}
 }
+
+
+/* v0.13A17 — understated lesson navigation. No extra page-length card. */
+.lesson-compass{
+  display:flex;align-items:center;gap:18px;min-width:0;
+  margin:0 0 16px;padding:11px 0 12px;
+  border-top:1px solid #4b4548;border-bottom:1px solid #4b4548;
+}
+.lesson-compass-caption{font:720 9px/1.4 system-ui;letter-spacing:.11em;
+  color:#c9a68c;flex:0 0 auto}
+.lesson-compass-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;flex:1;min-width:0}
+.lesson-compass-actions button{
+  min-height:44px;min-width:0;display:flex;align-items:center;justify-content:center;gap:8px;
+  border:1px solid #49444b;border-radius:8px;
+  color:#e8e1dc;background:#242329;
+  font:630 12px/1.3 system-ui;cursor:pointer;
+}
+.lesson-compass-actions button:hover{
+  background:#322b2d;border-color:#b08b70;color:#f3d8bf;
+}
+.lesson-compass-number{
+  font:750 10px/1.3 ui-monospace,Consolas,monospace;
+  color:#c6a186;
+}
+.lesson-compass-label{white-space:nowrap}
+.lesson-compass-actions button:focus-visible{outline:3px solid #e9bd98;outline-offset:2px}
+.lesson-stage-explore,
+.react-lesson [data-lesson-stage="decide"],
+.react-lesson [data-lesson-stage="check"]{scroll-margin-top:20px}
+.react-lesson [data-lesson-stage]:focus{outline:none}
+.react-lesson .lesson-actions [data-lesson-revisit]{
+  background:transparent;border-color:#876b5b;color:#efc8a7;
+}
+@media(max-width:760px){
+  .lesson-compass{gap:9px;align-items:stretch;flex-direction:column;margin-bottom:13px;padding:9px 0 11px}
+  .lesson-compass-caption{font-size:9px}
+  .lesson-compass-actions{gap:7px;width:100%}
+  .lesson-compass-actions button{padding:9px 6px;gap:5px}
+}
+@media(max-width:350px){
+  .lesson-compass-actions{gap:5px}
+  .lesson-compass-actions button{font-size:11px;padding:8px 3px}
+  .lesson-compass-number{font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+  .lesson-compass-actions button{transition:none}
+}
