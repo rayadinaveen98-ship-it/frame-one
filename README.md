@@ -1,8 +1,14 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.13A6 Windows QA signing bootstrap (30 October 2026) · downloadable APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
+**Latest development checkpoint: v0.13A7 Film It Yourself beginner practices (30 October 2026) · downloadable APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.13A7 Film It Yourself: guided real-phone filming practice (30 October 2026)
+
+A new compact, collapsed-by-default **Film It Yourself** practice studio on Home offers four offline, actual shooting exercises for beginners: three-shot action, light direction, wordless storytelling, and editing rhythm. Each contains three actionable filming steps, a specific craft learning objective, an optional session-only checklist, reflection prompt, and real links to existing lessons and Creative Labs. The app never records, uploads or inspects users' footage; no new stored data or modified backup keys. [Content, acceptance and limitations](docs/QA_V13A7.md).
+
+**Release boundary:** This is new **source functionality**, not a downloadable APK. The public Android preview stays v0.12A2 while permanent signing and actual phone upgrade checks remain uncompleted. No user action on signing is needed to continue developing the content and web experience.
 
 ## Latest — v0.13A6 safe Windows QA signing setup (30 October 2026)
 
