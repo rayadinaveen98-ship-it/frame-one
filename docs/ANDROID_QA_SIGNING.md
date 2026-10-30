@@ -14,6 +14,10 @@ The public `android-preview-latest` APK remains **v0.12A2** (source `7c515646720
 
 **Do not tell testers to install a later APK over an earlier debug APK.** Android only accepts package updates signed with a matching key. Changing key usually requires uninstalling the existing app, which can remove locally saved learner notes, progress and storyboards.
 
+## Updated publication policy — 30 October 2026
+
+Since **v0.13A4**, a passing Android build no longer triggers automatic replacement of the public QA APK. Publishing must be manually approved **after** cross-run emulator upgrade evidence and separate real-phone/backup checks. **v0.13A5** adds a conservative Windows-compatible local tester to ensure neither the fresh installation nor the in-place upgrade silently deletes installed learning data. [Release approval gate](QA_V13A4.md) · [Phone QA procedure](QA_V13A5.md).
+
 ## The secure one-time provision (not yet performed)
 
 The repository already supports the protected GitHub Actions secret `FRAMEONE_QA_DEBUG_KEYSTORE_B64`; it expects a base64-encoded Java/Android debug keystore at `~/.android/debug.keystore`, with alias `androiddebugkey` and conventional local debug passwords, as implemented in [android-debug.yml](../.github/workflows/android-debug.yml).
@@ -24,9 +28,9 @@ The repository already supports the protected GitHub Actions secret `FRAMEONE_QA
    ```
 2. Store the original keystore in an encrypted private backup, with separately protected access to its passwords. A lost QA key cannot be recovered from Git history.
 3. Base64-encode the keystore *locally*, without pasting or uploading it into a conversation or committing the file to the repository. Put the encoded result directly in the GitHub repository **Actions secret** `FRAMEONE_QA_DEBUG_KEYSTORE_B64` under Settings → Secrets and variables → Actions.
-4. After provisioning, dispatch the Android debug build on `main` and verify that the run shows `Persistent QA signer: YES` and a recorded SHA-256 signing certificate. Confirm the public APK receipt references that build.
+4. After provisioning, dispatch the Android debug build on `main` and verify that its **CI artifact receipt** shows `Persistent QA signer: YES` and a recorded SHA-256 signing certificate. **Do not assume that build was published**: since v0.13A4 the public APK publisher is manual-only. Produce **two** independently signed, ordered builds from different commits and pass the separate-build emulator gate before any release approval.
 5. Export an independent learning backup from any app installed using an older **temporary** key before uninstalling it once. Install the first stable-key APK and restore the backup. From that point on, subsequent QA builds can update in-place *provided the permanent QA key never changes*.
-6. Run a **two-version physical-device upgrade**: install build A, write a note, complete a lesson, save a storyboard, install build B signed with the same key without uninstalling, then confirm data and native Back. Also test restore, offline, Android document picker and an Android restart.
+6. Run a **two-version physical-device upgrade** on a dedicated test device or empty test profile: install build A, write a note, complete a lesson, save a storyboard, then upgrade to build B signed with the same key **without uninstalling**. Follow the fail-closed [v0.13A5 phone testing instructions](QA_V13A5.md); inspect retention of real learner data, native Back, audio, backup restore, offline use, Android document picker and device restart. Only after those checks may the owner manually approve replacing the public preview.
 
 ## Do not confuse signing modes
 

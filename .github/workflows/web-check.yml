@@ -36,6 +36,8 @@ jobs:
           python3 tests/test_android_cross_run_apks.py
           python3 -m py_compile scripts/check-android-release-approval.py
           python3 tests/test_android_release_approval.py
+          python3 -m py_compile scripts/android-phone-upgrade-qa.py
+          python3 tests/test_android_phone_upgrade.py
       - name: Typecheck and build
         run: npm run build
       - name: Upload website build
