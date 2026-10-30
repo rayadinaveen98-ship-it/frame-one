@@ -114,7 +114,7 @@ async function verify() {
   assert.match(await pocket.locator('[data-practice-pocket-status]').textContent(),
     /Plan copied|Automatic copying is unavailable/);
   assert.equal(await pocket.locator('[data-practice-plan-text]').inputValue(),writtenPlan,
-    'Copying should never clear or alter the user's exercise note');
+    "Copying should never clear or alter the user\'s exercise note");
   await practice.locator('[data-practice-choice="silence"]').click();
   await practice.locator('[data-practice-pocket-toggle]').click();
   const switchedPlan=await pocket.locator('[data-practice-plan-text]').inputValue();
