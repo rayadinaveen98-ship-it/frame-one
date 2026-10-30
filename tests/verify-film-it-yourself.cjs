@@ -37,7 +37,8 @@ const source=read(viewPath),home=read(homePath),styles=read(cssPath),qa=read('sc
 assert(home.includes("import {FilmItYourself} from './FilmItYourself'"));
 assert(home.includes('<FilmItYourself/>'),'Home mounts practice once');
 assert(source.includes('aria-expanded={expanded}')&&source.includes('aria-controls="practice-studio-workspace"'));
-assert(source.includes("useState(false)")&&source.includes('setTried([false,false,false])'));
+assert(source.includes('useState(Boolean(incoming))')&&source.includes('setTried([false,false,false])'),
+  'Practice stays collapsed unless an explicit one-use lesson handoff opens it');
 assert(source.includes("aria-pressed={tried[index]}"),'Checkmarks are announced to assistive tech');
 assert(source.includes('mission.steps.map'),'All three shots render actual instructions');
 assert(source.includes("openLab(mission.lab)"),'Studio uses real React creative labs');
