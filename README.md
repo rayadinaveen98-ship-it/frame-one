@@ -1,8 +1,14 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.13A3 safe director-to-storyboard handoff merged 29 October 2026 · downloadable APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
+**Latest development checkpoint: v0.13A4 manual Android preview release safety (30 October 2026) · downloadable APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.13A4 Android release approval safety (30 October 2026)
+
+[PR #36](https://github.com/rayadinaveen98-ship-it/frame-one/pull/36) adds a **manual-only** Android preview publisher. Provisioning a new private QA signing secret or passing an Android build must **not** automatically replace the public APK. Before publication, the owner must supply a verified two-independent-build emulator upgrade QA run for that exact candidate and separately confirm physical-phone testing, external learning backup/restore and deliberate publication approval. The cross-run emulator workflow now produces a public-only proof artifact after a successful data-retaining upgrade; a strict validator rejects mismatched proof and versions. The existing signer continuity, versionCode and rollback checks remain.
+
+**Source/release boundary:** This is a publication-safety milestone, not an APK. The published Android preview remains **v0.12A2 with temporary signing**. Long-lived QA key provisioning, a successful two-run signed upgrade, real-device testing and explicit release approval remain outstanding. [Acceptance and operating instructions](docs/QA_V13A4.md).
 
 ## Latest — v0.13A3 Director → editable Make Lab storyboard (29 October 2026)
 
@@ -128,7 +134,7 @@ React 19 + TypeScript + Vite + Capacitor 8 powers the built web app and Android 
 
 **[Direct public APK — latest Frame One Android preview](https://github.com/rayadinaveen98-ship-it/frame-one/releases/download/android-preview-latest/FrameOne-android-debug.apk)** · [Release page / SHA-256 checksum](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/android-preview-latest).
 
-The stable public address is updated automatically after successful main-branch Android debug builds. **v0.9F** was verified by [web build 40478349107](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478349107), [compiled browser QA 40478349333](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478349333), [Android build 40478349105](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478349105), and the [public release publisher 40478579858](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478579858). Preserve the earlier [v0.9E test APK release](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/v0.9e-android-debug-1) for rollback/reference.
+Historically, this stable public address was updated automatically after successful main-branch Android debug builds. **As of v0.13A4 publication is manual-only with explicit QA approval.** **v0.9F** was verified by [web build 40478349107](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478349107), [compiled browser QA 40478349333](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478349333), [Android build 40478349105](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478349105), and the [public release publisher 40478579858](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40478579858). Preserve the earlier [v0.9E test APK release](https://github.com/rayadinaveen98-ship-it/frame-one/releases/tag/v0.9e-android-debug-1) for rollback/reference.
 
 **v0.9G** now adds a private, user-initiated **copy/paste JSON learning-backup alternative** under Learn, without changing the existing file download/import path or data schema. Merged code passed [web build 40480555312](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480555312), [compiled Chromium QA 40480555273](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480555273), [Android APK 40480555401](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480555401) and [latest public APK publisher 40480801867](https://github.com/rayadinaveen98-ship-it/frame-one/actions/runs/40480801867). [v0.9G QA report](docs/QA_V09G.md).
 
