@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import {visualPilotForLesson,type VisualPilotId} from '../data/visual-lessons';
 import {openLab} from '../legacy/bridge';
+import {ShotSizeFrames,CompositionFrames,ColourFrames} from './VisualFramesNext';
 import './visual-lessons.css';
 
 function LightingFrame({take}:{take:0|1}){
@@ -107,7 +108,7 @@ function SoundFrame(){
 }
 function VisualStage({id,take}:{id:VisualPilotId;take:0|1}){
   return <figure className="vl-stage" data-visual-take={take} data-visual-art={id}>
-    {id==='lighting'?<LightingFrame take={take}/>:id==='rhythm'?<RhythmFrame take={take}/>:<SoundFrame/>}
+    {id==='lighting'?<LightingFrame take={take}/>:id==='rhythm'?<RhythmFrame take={take}/>:id==='shot'?<ShotSizeFrames take={take}/>:id==='composition'?<CompositionFrames take={take}/>:id==='colour'?<ColourFrames take={take}/>:<SoundFrame/>}
     <figcaption className="vl-stage-caption">
       <span>{id==='ambience'?'IDENTICAL PICTURE / SOUND DIRECTIONS':'ILLUSTRATED SHOT STUDY'}</span>
       <span>TAKE {take===0?'A':'B'}</span>

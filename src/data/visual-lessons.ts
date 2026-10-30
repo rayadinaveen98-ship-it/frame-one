@@ -1,10 +1,10 @@
-/** Three original visual-first learning investigations.
+/** Six original visual-first learning investigations.
  * Entirely offline. Descriptions are qualified observations, not promised emotions.
  * Same format can expand to further crafts without changing the lesson renderer.
  */
 import type {LabName} from '../legacy/bridge';
 
-export type VisualPilotId='lighting'|'rhythm'|'ambience';
+export type VisualPilotId='lighting'|'rhythm'|'ambience'|'shot'|'composition'|'colour';
 export type VisualTake=Readonly<{label:string;cue:string;focus:string;description:string}>;
 export type VisualPilot=Readonly<{
   id:VisualPilotId;index:string;eyebrow:string;question:string;hook:string;
@@ -68,6 +68,60 @@ export const visualPilots:Readonly<Record<VisualPilotId,VisualPilot>>={
   prompt:'Record ten seconds of real room ambience on your phone. Notice two sounds you did not consciously hear before.',
   lab:'sound',labLabel:'Listen in the actual Sound Lab',
   footnote:'These are written sound directions, not audio playback. The Sound Lab contains separate original sound sketches.'
+ },
+ shot:{
+  id:'shot',index:'04',eyebrow:'THE CAMERA’S EYE / SHOT SIZE',
+  question:'Same action. How much should we show?',
+  hook:'Change only the frame size, then ask what is easier to see.',
+  takes:[
+   {label:'A · WIDE SHOT',cue:'Subject and room together',focus:'You can read the subject in relation to the room',
+    description:'A wide illustration shows the same person reaching for a cup, plus the surrounding window, table and empty space.'},
+   {label:'B · CLOSE-UP',cue:'A closer, detail-focused view',focus:'The hand and cup occupy most of the image',
+    description:'The illustration crops attention toward the hand and cup. It does not imply the person feels one particular emotion.'}
+  ],
+  discovery:'One action, two visible areas. The shot size changes which story details are available.',
+  reason:'A wide view can establish geography and relationships; a close-up can reveal action or expression. Neither is always better.',
+  notice:['Identify what the wide view shows that the close view hides','Find the most prominent detail in the close view','Ask which shot better answers your story question'],
+  takeaway:'Choose your shot size for the information the viewer needs.',
+  prompt:'Film a familiar object and reaching hand in a wide view, then safely move closer for a detail shot. Compare what each reveals.',
+  lab:'frame',labLabel:'Experiment in the Frame Lab',
+  footnote:'Original storyboard illustrations: not recorded footage or an optical lens simulation.'
+ },
+ composition:{
+  id:'composition',index:'05',eyebrow:'THE COMPOSER’S EYE / NEGATIVE SPACE',
+  question:'Same person. What does empty space do?',
+  hook:'Keep the shot size; change where the subject sits within the frame.',
+  takes:[
+   {label:'A · CENTRED',cue:'The subject is centred',focus:'Visual weight gathers around the middle',
+    description:'A small figure stands in the centre of the same illustrated space. The background stays visible on both sides.'},
+   {label:'B · OFF-CENTRE',cue:'Subject toward the left third',focus:'Empty space becomes more prominent to the right',
+    description:'The same figure moves toward the left side of the unchanged frame. More negative space is visible on the right.'}
+  ],
+  discovery:'The room, figure size and story have not changed. Placement changes visual balance.',
+  reason:'Negative space can lead the eye, suggest where someone is looking, or allow another element to matter. The rule of thirds is a guide, not a law.',
+  notice:['Look at the subject’s position against the vertical guide lines','Notice how much open space remains on the right','Imagine what kind of action might enter that space'],
+  takeaway:'Composition decides what shares the frame with your subject.',
+  prompt:'Take two pictures of the same object from a fixed position: one centred and one placed toward a side. Which has more useful empty space?',
+  lab:'frame',labLabel:'Try composition in the Frame Lab',
+  footnote:'Original illustration for placement and negative space, not a claim about universal emotion.'
+ },
+ colour:{
+  id:'colour',index:'06',eyebrow:'THE COLOURIST’S EYE / ATTENTION',
+  question:'Same scene. Which detail catches your eye?',
+  hook:'The objects stay still while one colour choice changes.',
+  takes:[
+   {label:'A · MUTED PALETTE',cue:'Quiet, low-saturation room',focus:'The cup and background have similar visual intensity',
+    description:'An illustrated cup, plant and wall share restrained colours. No single object has a strongly contrasting hue.'},
+   {label:'B · COLOUR ACCENT',cue:'One warm red cup',focus:'The warm red cup separates from its cooler surroundings',
+    description:'Only the illustrated cup changes to a warm red tone. Its different colour may make it stand out from the muted scene.'}
+  ],
+  discovery:'The framing and objects remain still. The cup becomes a distinct colour accent.',
+  reason:'Contrast in hue and saturation can direct attention, but colour does not assign one fixed meaning to an object or scene.',
+  notice:['Compare the cup against the background in both versions','Notice which colours are held constant','Ask why a story might want a particular object noticed'],
+  takeaway:'Colour becomes storytelling when it helps guide attention.',
+  prompt:'Arrange three ordinary objects. Add one item with a noticeably different colour, then photograph the group and compare what catches your eye.',
+  lab:'colour',labLabel:'Compare palettes in the Colour Lab',
+  footnote:'Original colour-block illustration, not a calibrated grading preview or a promise of a specific emotional reaction.'
  }
 };
 

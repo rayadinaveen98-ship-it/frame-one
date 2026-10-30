@@ -14,7 +14,7 @@ vm.runInNewContext(ts.transpileModule(read(source),{compilerOptions:{
  module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022
 }}).outputText,{module:moduleValue,exports:moduleValue.exports});
 const {visualPilots,visualPilotForLesson}=moduleValue.exports;
-assert.deepEqual(Object.keys(visualPilots),['lighting','rhythm','ambience']);
+assert.deepEqual(Object.keys(visualPilots),['lighting','rhythm','ambience','shot','composition','colour']);
 const ids=new Set(curriculum.lessons.map(item=>item.id));
 for(const [id,pilot] of Object.entries(visualPilots)){
  assert(ids.has(id),'Pilots use real curriculum routes');
@@ -27,7 +27,7 @@ for(const [id,pilot] of Object.entries(visualPilots)){
  assert(pilot.discovery.length>30&&pilot.reason.length>50);
  assert.equal(pilot.notice.length,3);
  assert(pilot.takeaway.length>25&&pilot.prompt.length>50);
- assert(['light','cut','sound'].includes(pilot.lab));
+ assert(['light','cut','sound','frame','colour'].includes(pilot.lab));
  assert(pilot.labLabel.length>10&&pilot.footnote.length>45);
 }
 assert.equal(visualPilotForLesson('why'),null);
@@ -36,6 +36,16 @@ assert.equal(visualPilots.rhythm.takes[0].cue.includes('6 seconds'),true);
 assert.equal(visualPilots.rhythm.takes[1].cue.includes('2s'),true);
 assert(visualPilots.ambience.footnote.includes('not audio playback'));
 assert(visualPilots.lighting.footnote.includes('not photographed footage'));
+const nextFrames='src/components/VisualFramesNext.tsx';
+const nextTree=ts.createSourceFile(nextFrames,read(nextFrames),ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
+assert.equal(nextTree.parseDiagnostics.length,0,'Additional visual frames parse');
+const newArt=read(nextFrames);
+for(const part of ['ShotSizeFrames','CompositionFrames','ColourFrames']){
+ assert(newArt.includes('export function '+part),'New visual lesson has its own actual artwork: '+part);
+}
+assert(newArt.includes('const close=take===1'),'Shot size changes the visible crop');
+assert(newArt.includes('const off=take===1'),'Composition alters the figure placement');
+assert(newArt.includes('const accent=take===1'),'Colour controls a single visual accent');
 const view=read(component),lesson=read('src/components/LessonView.tsx');
 const css=read('src/components/visual-lessons.css'),browser=read('scripts/browser-smoke.cjs');
 assert(view.includes("data-visual-option={index===0?'a':'b'}"));
@@ -45,6 +55,9 @@ assert(view.includes('data-visual-reveal')&&view.includes('aria-expanded={reveal
 assert(view.includes('data-visual-focus')&&view.includes('data-visual-description'));
 assert(view.includes("take===0?['Indoor room tone','No background score']"));
 assert(view.includes('<SoundFrame/>'),'Sound scene is locked independent of selected sound direction');
+for(const part of ['ShotSizeFrames','CompositionFrames','ColourFrames']){
+ assert(view.includes('<'+part+' take={take}/>'),'Shared lesson renderer mounts '+part);
+}
 assert(view.includes("openLab(pilot.lab)"),'Real related working Labs');
 assert(lesson.includes('<VisualLessonPilot key={lesson.id} lessonId={lesson.id}/>'));
 assert(lesson.includes('<details className="vl-deeper" data-visual-deeper>'));
@@ -57,4 +70,4 @@ assert(!read(source).includes('fetch(')&&!read(source).includes('localStorage'))
 assert(css.includes('@media(max-width:350px)'));
 assert(css.includes('prefers-reduced-motion'));
 assert(browser.includes('[data-visual-lesson="lighting"]'),'Real-browser checks must exercise stage');
-console.log('PASS: three illustrated visual-first lessons, A/B stages, honest sound directions, accessible discovery, existing quiz/notes and no storage changes.');
+console.log('PASS: six illustrated visual-first lessons, A/B stages, honest sound directions, accessible discovery, existing quiz/notes and no storage changes.');
