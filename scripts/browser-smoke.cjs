@@ -844,6 +844,19 @@ async function verify() {
     assert.equal(await phone.locator('.fact-panel #filmThoughtTitle').count(),1);
     await phone.locator('.cinema-discovery').waitFor();
     assert.equal(await phone.locator('[data-cinema-shelf]').count(),6);
+    const mobileSearch=phone.locator('[data-cinema-quick-find]');
+    await mobileSearch.locator('[data-cinema-search-input]').fill('camera');
+    assert.ok(await mobileSearch.locator('[data-cinema-search-result]').count()>0,
+      'Offline search returns real camera lessons on a phone');
+    const searchBounds=await mobileSearch.boundingBox();
+    const searchOverflow=await mobileSearch.evaluate(el=>({scroll:el.scrollWidth,width:el.clientWidth}));
+    assert.ok(searchBounds&&searchBounds.width<=width+2,'Search must fit '+width+'px');
+    assert.ok(searchOverflow.scroll<=searchOverflow.width+3,
+      'Search results must not overflow a '+width+'px phone');
+    await mobileSearch.screenshot({path:path.join(shots,'01-cinema-search-'+width+'px.png'),animations:'disabled'});
+    await mobileSearch.locator('[data-cinema-search-input]').press('Escape');
+    assert.equal(await mobileSearch.locator('[data-cinema-search-result]').count(),0);
+
     const mobileAnatomy=phone.locator('[data-scene-anatomy]');
     await mobileAnatomy.locator('[data-anatomy-study="light"]').click();
     await mobileAnatomy.locator('[data-anatomy-option="b"]').click();
