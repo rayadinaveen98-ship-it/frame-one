@@ -99,6 +99,30 @@ async function verify() {
   await practice.locator('[data-practice-check="1"]').click();
   await practice.locator('[data-practice-check="2"]').click();
   assert.match(await practice.locator('[data-practice-status]').textContent(),/All three steps marked tried in this session/);
+  // v0.13A10: portable filming guide and an honest clipboard/manual-copy fallback.
+  assert.equal(await practice.locator('[data-practice-pocket-toggle]').getAttribute('aria-expanded'),'false');
+  await practice.locator('[data-practice-pocket-toggle]').click();
+  assert.equal(await practice.locator('[data-practice-pocket-toggle]').getAttribute('aria-expanded'),'true');
+  const pocket=practice.locator('[data-practice-pocket]');
+  assert.equal(await pocket.locator('[data-practice-plan-text]').count(),1);
+  const defaultPlan=await pocket.locator('[data-practice-plan-text]').inputValue();
+  assert(defaultPlan.includes('One subject. Two moods.')&&defaultPlan.includes('SHOT / STEP 03'));
+  await pocket.locator('[data-practice-observation]').fill('Changing the light made the edges clearer.');
+  const writtenPlan=await pocket.locator('[data-practice-plan-text]').inputValue();
+  assert(writtenPlan.includes('Changing the light made the edges clearer.'));
+  await pocket.locator('[data-practice-pocket-copy]').click();
+  assert.match(await pocket.locator('[data-practice-pocket-status]').textContent(),
+    /Plan copied|Automatic copying is unavailable/);
+  assert.equal(await pocket.locator('[data-practice-plan-text]').inputValue(),writtenPlan,
+    'Copying should never clear or alter the user's exercise note');
+  await practice.locator('[data-practice-choice="silence"]').click();
+  await practice.locator('[data-practice-pocket-toggle]').click();
+  const switchedPlan=await pocket.locator('[data-practice-plan-text]').inputValue();
+  assert(switchedPlan.includes('Tell it without dialogue.'));
+  assert(!switchedPlan.includes('Changing the light made the edges clearer.'),
+    'Notes from one exercise must not leak into the next');
+  await practice.locator('[data-practice-pocket-toggle]').click();
+  await practice.locator('[data-practice-choice="light"]').click();
   await practice.screenshot({path:path.join(shots,'01-film-it-yourself-desktop.png'),animations:'disabled'});
   await practice.locator('[data-practice-open-lab="light"]').click();
   await page.locator('.react-lighting-lab').waitFor();
