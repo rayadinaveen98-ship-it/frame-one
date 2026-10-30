@@ -39,15 +39,15 @@ const js=ts.transpileModule(source,{fileName:compass,compilerOptions:{
 let scrolled=0,focused=0;
 const target={scrollIntoView({behavior,block}){scrolled++;assert.equal(block,'start');assert.equal(behavior,'auto');},
  focus({preventScroll}){focused++;assert.equal(preventScroll,true)}};
-const module={exports:{}};
-vm.runInNewContext(js,{module,exports:module.exports,require(name){
+const compiledModule={exports:{}};
+vm.runInNewContext(js,{module:compiledModule,exports:compiledModule.exports,require(name){
  if(name==='react/jsx-runtime')return {jsx:()=>({}),jsxs:()=>({})};
  throw Error('Unexpected dependency '+name);
 },document:{getElementById:id=>id==='lesson-stage-check'?target:null},
  window:{matchMedia:()=>({matches:true})}}, {timeout:5000});
-module.exports.jumpToLessonStage('not-real');
-module.exports.jumpToLessonStage('explore'); // no missing node errors
-module.exports.jumpToLessonStage('check');
+compiledModule.exports.jumpToLessonStage('not-real');
+compiledModule.exports.jumpToLessonStage('explore'); // no missing node errors
+compiledModule.exports.jumpToLessonStage('check');
 assert.equal(scrolled,1);
 assert.equal(focused,1);
 console.log('PASS: three visible and accessible lesson jumps, reduced-motion focus, original quiz/progress preserved.');
