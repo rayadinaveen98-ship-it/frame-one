@@ -111,6 +111,7 @@ async function verify() {
   const writtenPlan=await pocket.locator('[data-practice-plan-text]').inputValue();
   assert(writtenPlan.includes('Changing the light made the edges clearer.'));
   await pocket.locator('[data-practice-pocket-copy]').click();
+  await pocket.locator('[data-practice-pocket-status]').filter({hasText:/Plan copied|Automatic copying is unavailable/}).waitFor({timeout:8000});
   assert.match(await pocket.locator('[data-practice-pocket-status]').textContent(),
     /Plan copied|Automatic copying is unavailable/);
   assert.equal(await pocket.locator('[data-practice-plan-text]').inputValue(),writtenPlan,
