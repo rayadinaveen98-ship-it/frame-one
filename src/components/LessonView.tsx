@@ -6,6 +6,8 @@ import { completeLesson, navigate, openLab, type LabName } from '../legacy/bridg
 import {seriesById,seriesLessonPosition} from '../data/cinema-series';
 import {practiceById} from '../data/film-it-yourself';
 import {practiceForLesson,stagePracticeHandoff} from '../state/practice-handoff';
+import {visualPilotForLesson} from '../data/visual-lessons';
+import {VisualLessonPilot} from './VisualLessonPilot';
 import { readPractice, readTelugu, safeProgress, savePractice, saveTelugu } from '../state/learning';
 import './lesson-react.css';
 
@@ -109,6 +111,7 @@ export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyI
   const nextActNumber=followingPosition?followingPosition.actIndex+1:null;
   const link = labLinks[lesson.id];
   const linkedPractice=practiceForLesson(lesson.id);
+  const visualPilot=visualPilotForLesson(lesson.id);
   const correct = quiz === lesson.answer;
   function finishLesson(){
     if(seriesPosition&&journeyId){
@@ -144,6 +147,7 @@ export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyI
       <div className="eyebrow">{seriesPosition?'SCENE '+String(seriesPosition.index+1).padStart(2,'0')+' · '+lesson.minutes+' MIN READ':'LESSON '+lesson.num+' · '+lesson.unit.toUpperCase()+' · '+lesson.minutes+' MIN READ'}</div>
       <h1>{lesson.title}</h1><p>{lesson.subtitle}</p>
     </div>
+    {visualPilot?<VisualLessonPilot key={lesson.id} lessonId={lesson.id}/>:null}
     <article className="lesson-body">
       {decision ? <section className="decision-activity" aria-label="Interactive filmmaking decision">
         <div className="activity-heading"><span className="eyebrow">✦ YOU'RE THE FILMMAKER</span><span className="activity-count">ONE QUESTION · MULTIPLE POSSIBILITIES</span></div>
@@ -151,10 +155,15 @@ export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyI
         <div className="activity-options">{decision.opts.map((opt,i)=><button type="button" className="activity-option" key={i} aria-pressed={selected===i} onClick={()=>setSelected(i)}><span className="activity-letter">{String.fromCharCode(65+i)}</span><strong>{opt[0]}</strong><span aria-hidden="true">↗</span></button>)}</div>
         {selected!==null ? <div className="activity-feedback" role="status"><span>YOUR CHOICE · {decision.opts[selected][0]}</span><p>{decision.opts[selected][1]}</p><small>Switch choices to compare what each one might emphasize.</small></div>:null}
       </section>:null}
-      <div className="reading-note">EXPLORE · COMPARE · PRACTISE · CHECK YOUR LEARNING</div>
+      {!visualPilot?<div className="reading-note">EXPLORE · COMPARE · PRACTISE · CHECK YOUR LEARNING</div>:null}
       <button className="language-toggle" type="button" aria-pressed={showTelugu} onClick={()=>{const enabled=!showTelugu;setShowTelugu(enabled);saveTelugu(enabled);window.frameOneLegacy?.setTelugu(enabled);}}>{showTelugu?'Hide Telugu explanation':'తెలుగులో సులభంగా చెప్పు'} <span aria-hidden="true">⇄</span></button>
       {showTelugu ? <aside className="telugu-note" lang="te"><strong>చిన్న వివరణ · Telugu quick explanation</strong><p>{notes[lesson.id]}</p><small>ఇది సంక్షిప్త సారాంశం మాత్రమే. పూర్తి పాఠం ఇంగ్లీష్‌లో ఉంది.</small></aside>:null}
-      {lesson.sections.map(([heading, explanation],i)=><section className="lesson-section" key={i}><h3>{heading}</h3><p>{explanation}</p></section>)}
+      {visualPilot?<details className="vl-deeper" data-visual-deeper>
+        <summary>Explore the craft in more detail</summary>
+        <div className="vl-deeper-content">
+          {lesson.sections.map(([heading,explanation],i)=><section className="lesson-section" key={i}><h3>{heading}</h3><p>{explanation}</p></section>)}
+        </div>
+      </details>:lesson.sections.map(([heading, explanation],i)=><section className="lesson-section" key={i}><h3>{heading}</h3><p>{explanation}</p></section>)}
       {board ? <Storyboard key={lesson.id} board={board}/>:null}
       <aside className="key-idea"><strong>THE BIG IDEA</strong><p>{String(lesson.idea)}</p></aside>
       <aside className="exercise"><strong>✦ TRY THIS YOURSELF</strong><p>{String(lesson.try)}</p>

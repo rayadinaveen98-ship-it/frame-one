@@ -55,6 +55,8 @@ assert(searchCinemaLibrary('editing').results.some(item=>item.entry.id==='editin
 assert.equal(searchCinemaLibrary('  Film     roles ').results[0].entry.kind,'roles');
 assert(searchCinemaLibrary('cinematography').results.some(item=>item.entry.id==='camera'));
 assert(searchCinemaLibrary('silence').results.some(item=>item.entry.id==='ambience'));
+assert(searchCinemaLibrary('ambience').results.some(item=>item.entry.id==='ambience'),
+  'Learners must find the Ambience lesson by its technical topic even when the title uses other words');
 assert(searchCinemaLibrary('director').results.some(item=>item.entry.id==='crew'));
 assert(searchCinemaLibrary('frame shot').results.some(item=>item.entry.id==='units'));
 const broad=searchCinemaLibrary('film');

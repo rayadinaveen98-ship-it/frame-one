@@ -24,7 +24,7 @@ const additionalTerms:Readonly<Record<string,string>>={
   editing:'editing edit editor cutting cuts rhythm pacing montage post production',
   rhythm:'pacing editing cuts timing',
   sound:'audio silence quiet natural sound voice sound design',
-  ambience:'silence quiet sound atmosphere background noise',
+  ambience:'ambience room tone environmental sound silence quiet sound atmosphere background noise',
   music:'score soundtrack background music emotion',
   dialogue:'dialog speech voice conversation',
   story:'direction storytelling narrative plot',
@@ -79,7 +79,7 @@ export function searchCinemaLibrary(raw:string,maxResults=8):{total:number;resul
     const subtitle=normalize(item.subtitle);
     const category=normalize(item.category);
     const aliases=normalize(additionalTerms[item.entry.kind==='lesson'?item.entry.id:item.entry.kind+':'+item.entry.id]??'');
-    const combined=[title,subtitle,category,aliases].join(' ');
+    const combined=[title,subtitle,category,aliases,normalize(item.entry.id)].join(' ');
     if(!tokens.every(token=>combined.includes(token)))return null;
     let score=0;
     if(title===query)score+=100;
