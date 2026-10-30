@@ -1,0 +1,62 @@
+name: Frame One Windows signing setup safety
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/setup-frameone-qa-signing.ps1'
+      - '.github/workflows/windows-signing-qa.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/setup-frameone-qa-signing.ps1'
+      - '.github/workflows/windows-signing-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  signing-script-tests:
+    runs-on: windows-2022
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Parse PowerShell syntax and exercise safe local creation/refusals
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $scriptPath = Join-Path $env:GITHUB_WORKSPACE 'scripts/setup-frameone-qa-signing.ps1'
+          $tokens = $null
+          $errorsFound = $null
+          [void][System.Management.Automation.Language.Parser]::ParseFile($scriptPath, [ref]$tokens, [ref]$errorsFound)
+          if ($errorsFound.Count -ne 0) { throw ('PowerShell parse failure: ' + ($errorsFound -join '; ')) }
+          $testDir = Join-Path $env:RUNNER_TEMP 'frameone-signing-qa-regression'
+          $key = Join-Path $testDir 'test-only-debug.keystore'
+          New-Item -ItemType Directory -Force -Path $testDir | Out-Null
+          try {
+            function Assert-Blocked([string[]]$argsForScript, [string]$expected) {
+              $lines = & pwsh -NoProfile -File $scriptPath @argsForScript 2>&1 | Out-String
+              if ($LASTEXITCODE -eq 0 -or -not $lines.Contains($expected)) {
+                throw ('Expected safe refusal containing ' + $expected + ' but received ' + $lines)
+              }
+            }
+            & pwsh -NoProfile -File $scriptPath -KeystorePath $key
+            if ($LASTEXITCODE -ne 0) { throw 'Read-only inspection failed' }
+            if (Test-Path -LiteralPath $key) { throw 'Read-only mode created a key' }
+            Assert-Blocked @('-CreateKey','-ProvisionSecret','-KeystorePath',$key) 'Generate first'
+            Assert-Blocked @('-ProvisionSecret','-KeystorePath',$key) 'BackupConfirmed'
+            Assert-Blocked @('-CreateKey','-KeystorePath',(Join-Path $env:GITHUB_WORKSPACE 'private-debug.keystore')) 'must never be stored inside'
+            & pwsh -NoProfile -File $scriptPath -CreateKey -KeystorePath $key
+            if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $key -PathType Leaf)) { throw 'Local QA key generation failed' }
+            & keytool -list -keystore $key -storepass android -alias androiddebugkey 2>&1 | Out-Null
+            if ($LASTEXITCODE -ne 0) { throw 'Generated local test key lacks expected alias' }
+            Assert-Blocked @('-CreateKey','-KeystorePath',$key) 'Will not overwrite'
+            Write-Host 'PASS: Windows signing script parses, inspects read-only, generates a local debug test key and refuses unsafe operations.'
+          } finally {
+            Remove-Item -LiteralPath $testDir -Force -Recurse -ErrorAction SilentlyContinue
+          }
+          # This workflow NEVER invokes -ProvisionSecret and uploads no keys.
