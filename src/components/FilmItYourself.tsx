@@ -16,14 +16,19 @@ export function FilmItYourself(){
   // Ordinary Home visits preserve the compact, closed state.
   useEffect(()=>{
     if(!incoming)return;
-    const frame=requestAnimationFrame(()=>{
-      const heading=headlineRef.current;
-      if(!heading)return;
-      heading.tabIndex=-1;
-      heading.scrollIntoView({block:'start',behavior:'auto'});
-      heading.focus({preventScroll:true});
+    // App's route-change focus lands on the Home hero in the first frame.
+    // Let that finish before focusing the lesson-selected exercise.
+    let focusFrame=0;
+    const routeFrame=requestAnimationFrame(()=>{
+      focusFrame=requestAnimationFrame(()=>{
+        const heading=headlineRef.current;
+        if(!heading)return;
+        heading.tabIndex=-1;
+        heading.scrollIntoView({block:'start',behavior:'auto'});
+        heading.focus({preventScroll:true});
+      });
     });
-    return ()=>cancelAnimationFrame(frame);
+    return ()=>{cancelAnimationFrame(routeFrame);cancelAnimationFrame(focusFrame);};
   },[incoming]);
   const [tried,setTried]=useState<readonly boolean[]>([false,false,false]);
   const mission=practiceMissions.find(item=>item.id===selected)??practiceMissions[0];
