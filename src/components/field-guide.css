@@ -1,0 +1,75 @@
+/* v0.13A15 — fourteen original film-notebook visual field guides.
+   Story or diagram first, optional deeper context second. */
+.fg-guide{min-width:0;overflow:hidden;border:1px solid #645247;
+ border-radius:16px;margin:0 0 23px;color:#f4e5d4;
+ background:radial-gradient(ellipse at 90% 2%,#845e4833,transparent 60%),linear-gradient(145deg,#27252d,#161f29 87%)}
+.fg-intro{padding:23px clamp(13px,3vw,28px) 18px}
+.fg-overline{color:#e8bb97;letter-spacing:.12em;font:760 10px/1.5 system-ui}
+.fg-intro h2{font:560 clamp(23px,3.8vw,37px)/1.16 var(--cinema-type,system-ui);
+ letter-spacing:-.035em;color:#f7e7d4;margin:10px 0}
+.fg-intro p{max-width:700px;font:430 13px/1.55 system-ui;color:#d5c3b4;margin:0}
+.fg-stage{margin:0 18px;min-width:0;background:#16202b;border:1px solid #89634a;border-radius:11px;overflow:hidden}
+.fg-art{display:block;width:100%;height:auto;max-height:430px}
+.fg-stage figcaption{background:#121c26;display:flex;justify-content:space-between;
+ gap:8px;padding:10px 12px;color:#d2b394;font:680 10px/1.4 ui-monospace,Consolas,monospace}
+.fg-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 18px 0}
+.fg-tabs button{min-width:0;min-height:66px;border:1px solid #6b5650;border-radius:10px;
+ padding:11px;text-align:left;display:flex;flex-direction:column;gap:6px;
+ background:#232b34;color:#d6c6b9;cursor:pointer}
+.fg-tabs button[aria-current=step]{background:#403432;border-color:#edba91;box-shadow:inset 0 0 0 1px #dfae84aa}
+.fg-tabs span{font:760 10px/1.35 ui-monospace,Consolas,monospace;letter-spacing:.05em;color:#ebc39f}
+.fg-tabs strong{font:670 12px/1.36 system-ui;color:#f0e0cd}
+.fg-notice{border:1px solid #615049;background:#242228;margin:14px 18px 0;border-radius:11px;padding:clamp(13px,2.6vw,22px)}
+.fg-notice h3{color:#f7e5d3;font:570 clamp(20px,2.6vw,27px)/1.22 var(--cinema-type,system-ui);
+ letter-spacing:-.03em;margin:10px 0 9px}
+.fg-notice>p{font:430 13px/1.65 system-ui;color:#d7c6b8;margin:0 0 15px}
+.fg-controls{display:flex;justify-content:space-between;gap:9px;flex-wrap:wrap}
+.fg-controls button,.fg-finish button{border:1px solid #c6a185;border-radius:8px;background:#d4ad8d;
+ color:#1b232c;font:730 12px system-ui;min-height:44px;padding:10px 13px;cursor:pointer}
+.fg-controls button:first-child{color:#ead4bf;background:transparent;border-color:#826958}
+.fg-controls button:disabled{opacity:.4;cursor:default}
+.fg-discovery{border-top:1px solid #65514a;margin-top:15px;padding-top:14px}
+.fg-discovery>button{border:0;background:none;min-height:44px;display:flex;align-items:center;
+ justify-content:space-between;width:100%;text-align:left;color:#edc09a;font:730 13px system-ui;cursor:pointer}
+.fg-discovery>button span{font-size:23px;font-weight:400}
+.fg-insight{background:#352d2d;border:1px solid #8b6953;border-radius:9px;padding:14px;margin-top:9px}
+.fg-insight strong{display:block;color:#f9e3cb;font:660 13px/1.54 system-ui}
+.fg-insight p{color:#d3c1b2;font:430 12px/1.7 system-ui;margin:9px 0 0}
+.fg-finish{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;padding:17px 18px}
+.fg-finish>div{background:#3d302c;border:1px solid #725644;border-radius:11px;padding:15px;min-width:0}
+.fg-finish>div:nth-child(2){background:#27313a;border-color:#657278}
+.fg-finish span{display:block;font:760 10px/1.4 system-ui;letter-spacing:.08em;color:#e7ba93}
+.fg-finish strong{display:block;font:560 clamp(15px,2vw,18px)/1.42 var(--cinema-type,system-ui);
+ color:#f5e4d3;margin-top:8px}
+.fg-finish p{color:#d7d4d0;font:440 12px/1.6 system-ui;margin:9px 0 12px}
+.fg-finish>small{grid-column:1/-1;color:#baada3;font:420 10.5px/1.55 system-ui}
+.fg-guide button:focus-visible{outline:3px solid #f9d0a8;outline-offset:3px}
+.fg-deeper{margin:19px 0 23px;border-radius:12px;border:1px solid #62534a;background:#211f24;overflow:hidden}
+.fg-deeper summary{cursor:pointer;min-height:52px;display:flex;align-items:center;
+ justify-content:space-between;padding:15px 18px;font:720 13px/1.4 system-ui;
+ color:#f1d4b9;list-style:none}
+.fg-deeper summary::-webkit-details-marker{display:none}
+.fg-deeper summary:after{content:'+';font-size:21px}
+.fg-deeper[open] summary:after{content:'−'}
+.fg-deeper summary:focus-visible{outline:3px solid #efc19b;outline-offset:-3px}
+.fg-deeper-content{padding:0 18px 18px}
+@media(max-width:580px){
+ .fg-intro{padding:17px 12px 14px}
+ .fg-stage{margin:0 9px;border-radius:8px}
+ .fg-stage figcaption{font-size:9px;padding:8px}
+ .fg-tabs{gap:6px;margin:10px 9px 0}
+ .fg-tabs button{padding:8px;min-height:73px}
+ .fg-tabs span{font-size:9px}
+ .fg-tabs strong{font-size:10px}
+ .fg-notice{margin:11px 9px 0;padding:13px}
+ .fg-finish{grid-template-columns:1fr;padding:12px 9px}
+ .fg-finish>small{grid-column:1}
+}
+@media(max-width:350px){
+ .fg-stage figcaption{font-size:8px}
+ .fg-tabs button{padding:6px;min-height:76px}
+ .fg-tabs span{font-size:8px}
+ .fg-tabs strong{font-size:9px}
+ .fg-controls button{font-size:11px;padding:9px}
+}
+@media(prefers-reduced-motion:reduce){.fg-guide *{animation:none!important;transition:none!important}}
