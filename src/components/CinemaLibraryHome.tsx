@@ -11,6 +11,7 @@ import {CinemaArtwork} from './CinemaArtwork';
 import {SceneAnatomy} from './SceneAnatomy';
 import {DirectTheMoment} from './DirectTheMoment';
 import {FilmItYourself} from './FilmItYourself';
+import {CinemaQuickFind} from './CinemaQuickFind';
 import './cinema-library.css';
 
 const lessons=curriculum.lessons as unknown as Lesson[];
@@ -156,6 +157,7 @@ export function CinemaLibraryHome(){
       <h2>Follow your curiosity.</h2>
       <p>Short lessons, visual ideas and hands-on experiments—choose where to begin.</p>
     </div>
+    <CinemaQuickFind completed={completed}/>
     <SceneAnatomy/>
     <DirectTheMoment/>
     {cinemaShelves.map(shelf=><CinemaShelfRow key={shelf.id} shelf={shelf} completed={completed}/>)}

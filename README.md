@@ -1,8 +1,14 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.13A7 Film It Yourself beginner practices (30 October 2026) · downloadable APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
+**Latest development checkpoint: v0.13A8 offline Cinema Quick Find (30 October 2026) · downloadable APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.13A8 find lessons and labs without scrolling (30 October 2026)
+
+A compact **Find a film craft** search field on Home now indexes all **33 real lessons, seven existing Creative Labs and Film Roles** fully offline. Results open actual lessons, working labs or roles, with precise title ranking, useful cinematic aliases (silence → ambience, cinematography → camera), Enter/Escape keyboard support, Clear and no-results feedback. No user account, search history, permissions or modified progress/backup data. [Full scope and QA](docs/QA_V13A8.md).
+
+**This milestone changes source only.** The public Android preview remains the older temporarily signed v0.12A2 until safe independent-signing and device-upgrade evidence is established.
 
 ## Latest — v0.13A7 Film It Yourself: guided real-phone filming practice (30 October 2026)
 
