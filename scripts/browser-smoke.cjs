@@ -143,6 +143,31 @@ async function verify() {
     'Search remains ephemeral when leaving/re-entering Home');
   console.log('PASS: offline Home search finds real lessons, audio aliases and working Labs; Enter, clear, Escape and reset work');
 
+  // v0.13A9: contextual lesson → the correct practical phone exercise.
+  await quick.locator('[data-cinema-search-input]').fill('lighting');
+  await quick.locator('[data-cinema-search-result="lesson:lighting"]').click();
+  await page.locator('.react-lesson h1').waitFor();
+  const fromLesson=page.locator('[data-lesson-practice="light"]');
+  assert.equal(await fromLesson.count(),1,'A lighting lesson offers a practical light exercise');
+  await fromLesson.click();
+  await page.locator('[data-film-it-yourself]').waitFor();
+  assert.equal(await practice.locator('[data-practice-toggle]').getAttribute('aria-expanded'),'true',
+    'Lesson handoff should open the real exercise automatically');
+  assert.equal(await practice.locator('[data-practice-plan]').getAttribute('data-practice-plan'),'light',
+    'Lesson handoff must select the matched exercise');
+  assert.match(await practice.locator('[data-practice-arrival]').textContent(),/From your lesson/);
+  assert.equal(await practice.locator('[data-practice-check="0"]').getAttribute('aria-pressed'),'false',
+    'Lesson navigation never fabricates completed shooting work');
+  await page.waitForFunction(()=>document.activeElement?.id==='practice-studio-title');
+  await page.locator('.nav-menu [data-page="learn"]').click();
+  await page.locator('.react-learn-view').waitFor();
+  await page.locator('.nav-menu [data-page="home"]').click();
+  await page.locator('[data-film-it-yourself]').waitFor();
+  assert.equal(await practice.locator('[data-practice-toggle]').getAttribute('aria-expanded'),'false',
+    'One-shot lesson handoff must not reopen practice on unrelated Home visits');
+  assert.equal(await practice.locator('[data-practice-arrival]').count(),0);
+  console.log('PASS: lesson handoff selects/focuses real filming exercise, keeps checkmarks empty and resets on next visit');
+
   // v0.13: real, illustrated director's-choice comparisons on Home.
   const anatomy=page.locator('[data-scene-anatomy]');
   assert.equal(await anatomy.count(),1,'A single editorial scene study must be mounted');
