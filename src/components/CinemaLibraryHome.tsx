@@ -5,8 +5,6 @@ import {startedFilmJourneys} from '../data/journey-progress';
 import type {Lesson} from '../data/schema';
 import {navigate,openLab,openCollection} from '../legacy/bridge';
 import {safeProgress} from '../state/learning';
-import {isAndroidBackupAvailable} from '../native-backup';
-import {openLearningBackup} from '../state/backup-navigation';
 import {CinemaArtwork} from './CinemaArtwork';
 import {SceneAnatomy} from './SceneAnatomy';
 import {DirectTheMoment} from './DirectTheMoment';
@@ -132,14 +130,6 @@ export function CinemaLibraryHome(){
   const next=lessons.find(lesson=>!completed.has(lesson.id))??lessons[0];
   return <div className="cinema-discovery" aria-label="Explore the cinema library">
     <JourneyResumeRail completed={completed}/>
-    {isAndroidBackupAvailable()?<aside className="cinema-backup-shortcut" aria-label="Protect your local learning data">
-      <div>
-        <span className="cinema-overline">YOUR WORK STAYS ON THIS DEVICE</span>
-        <p>Replacing a test APK? Save your learning backup outside Frame One first.</p>
-      </div>
-      <button type="button" data-android-backup-shortcut
-        onClick={openLearningBackup}>Back up <span aria-hidden="true">→</span></button>
-    </aside>:null}
     {completed.size>0?<section className="cinema-continue" aria-label="Continue your learning">
       <div className="cinema-continue-copy">
         <span className="cinema-overline">CONTINUE YOUR JOURNEY · {completed.size}/{lessons.length}</span>
@@ -158,10 +148,27 @@ export function CinemaLibraryHome(){
       <p>Short lessons, visual ideas and hands-on experiments—choose where to begin.</p>
     </div>
     <CinemaQuickFind completed={completed}/>
-    <SceneAnatomy/>
-    <DirectTheMoment/>
-    {cinemaShelves.map(shelf=><CinemaShelfRow key={shelf.id} shelf={shelf} completed={completed}/>)}
-    <FilmItYourself/>
+    <div className="cinema-shelves-first" data-cinema-shelves-first>
+      {cinemaShelves.map(shelf=><CinemaShelfRow key={shelf.id} shelf={shelf} completed={completed}/>)}
+    </div>
+    <section className="cinema-workshop-zone" aria-label="Hands-on filmmaking workshops" data-cinema-workshop-zone>
+      <details className="cinema-workshop-details" data-cinema-workshop-details>
+        <summary>
+          <span className="cinema-workshop-summary-art" aria-hidden="true">◎</span>
+          <span className="cinema-workshop-summary-copy">
+            <span className="cinema-overline">INTERACTIVE FILMMAKING</span>
+            <strong>Step behind the frame.</strong>
+            <span>Scene breakdowns and a directing studio, when you're ready to explore.</span>
+          </span>
+          <span className="cinema-workshop-summary-action" aria-hidden="true">Explore <span>⌄</span></span>
+        </summary>
+        <div className="cinema-workshop-content">
+          <SceneAnatomy/>
+          <DirectTheMoment/>
+        </div>
+      </details>
+      <FilmItYourself/>
+    </section>
     <section className="cinema-explore-more" aria-label="Explore more learning">
       <div>
         <span className="cinema-overline">KEEP DISCOVERING</span>
