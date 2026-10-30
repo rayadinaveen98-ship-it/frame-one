@@ -882,6 +882,27 @@ async function verify() {
     await mobileSearch.locator('[data-cinema-search-input]').press('Escape');
     assert.equal(await mobileSearch.locator('[data-cinema-search-result]').count(),0);
 
+    // Narrow-screen lesson handoff must open the matching exercise, not a generic Home card.
+    await mobileSearch.locator('[data-cinema-search-input]').fill('rhythm');
+    await mobileSearch.locator('[data-cinema-search-result="lesson:rhythm"]').click();
+    await phone.locator('.react-lesson h1').waitFor();
+    await phone.locator('[data-lesson-practice="rhythm"]').click();
+    const mobileHandoff=phone.locator('[data-film-it-yourself]');
+    await mobileHandoff.locator('[data-practice-plan="rhythm"]').waitFor();
+    assert.equal(await mobileHandoff.locator('[data-practice-toggle]').getAttribute('aria-expanded'),'true');
+    const handoffBounds=await mobileHandoff.boundingBox();
+    assert.ok(handoffBounds&&handoffBounds.width<=width+2,
+      'Linked filmmaking exercise should fit '+width+'px mobile width');
+    const handoffOverflow=await mobileHandoff.evaluate(el=>({scroll:el.scrollWidth,width:el.clientWidth}));
+    assert.ok(handoffOverflow.scroll<=handoffOverflow.width+3,
+      'Linked practical exercise must not overflow '+width+'px');
+    await mobileHandoff.screenshot({path:path.join(shots,'01-lesson-practice-handoff-'+width+'px.png'),animations:'disabled'});
+    await phone.locator('.mobile-nav [data-page="learn"]').click();
+    await phone.locator('.react-learn-view').waitFor();
+    await phone.locator('.mobile-nav [data-page="home"]').click();
+    await phone.locator('[data-film-it-yourself]').waitFor();
+    assert.equal(await mobileHandoff.locator('[data-practice-toggle]').getAttribute('aria-expanded'),'false');
+
     const mobileAnatomy=phone.locator('[data-scene-anatomy]');
     await mobileAnatomy.locator('[data-anatomy-study="light"]').click();
     await mobileAnatomy.locator('[data-anatomy-option="b"]').click();
