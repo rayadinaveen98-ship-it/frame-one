@@ -77,6 +77,36 @@ async function verify() {
     'Do not invent a Continue row for a new learner with zero progress');
   assert.equal(await page.locator('[data-journey-resume]').count(),0,
     'A new learner must never be labelled as having started a film');
+  // v0.13A7: offline camera-free practice guidance; only the user can film.
+  const practice=page.locator('[data-film-it-yourself]');
+  assert.equal(await practice.count(),1);
+  assert.equal(await practice.locator('[data-practice-toggle]').getAttribute('aria-expanded'),'false');
+  assert.equal(await practice.locator('[data-practice-step]').count(),0,
+    'Practical studio stays compact until deliberately opened');
+  await practice.locator('[data-practice-toggle]').click();
+  assert.equal(await practice.locator('[data-practice-step]').count(),3);
+  assert.equal(await practice.locator('[data-practice-choice]').count(),4);
+  assert.equal(await practice.locator('[data-practice-plan]').getAttribute('data-practice-plan'),'three-shots');
+  await practice.locator('[data-practice-check="0"]').click();
+  assert.equal(await practice.locator('[data-practice-check="0"]').getAttribute('aria-pressed'),'true');
+  assert.match(await practice.locator('[data-practice-status]').textContent(),/1 of 3/);
+  await practice.locator('[data-practice-choice="light"]').click();
+  assert.equal(await practice.locator('[data-practice-plan]').getAttribute('data-practice-plan'),'light');
+  assert.equal(await practice.locator('[data-practice-check="0"]').getAttribute('aria-pressed'),'false',
+    'Choosing another practice resets only session checkmarks');
+  assert.match(await practice.locator('[data-practice-status]').textContent(),/0 of 3/);
+  await practice.locator('[data-practice-check="0"]').click();
+  await practice.locator('[data-practice-check="1"]').click();
+  await practice.locator('[data-practice-check="2"]').click();
+  assert.match(await practice.locator('[data-practice-status]').textContent(),/All three steps marked tried in this session/);
+  await practice.screenshot({path:path.join(shots,'01-film-it-yourself-desktop.png'),animations:'disabled'});
+  await practice.locator('[data-practice-open-lab="light"]').click();
+  await page.locator('.react-lighting-lab').waitFor();
+  await page.locator('.nav-menu [data-page="home"]').click();
+  await page.locator('[data-film-it-yourself]').waitFor();
+  assert.equal(await page.locator('[data-practice-toggle]').getAttribute('aria-expanded'),'false',
+    'Progress remains ephemeral; revisiting Home does not fabricate saved shoots');
+  console.log('PASS: real film practice opens, tracks session-only steps, resets correctly and links to Lighting Lab');
   // v0.13: real, illustrated director's-choice comparisons on Home.
   const anatomy=page.locator('[data-scene-anatomy]');
   assert.equal(await anatomy.count(),1,'A single editorial scene study must be mounted');
@@ -813,6 +843,17 @@ async function verify() {
     await mobileDirector.locator('[data-direct-toggle]').click();
 
 
+    const mobilePractice=phone.locator('[data-film-it-yourself]');
+    await mobilePractice.locator('[data-practice-toggle]').click();
+    await mobilePractice.locator('[data-practice-choice="rhythm"]').click();
+    assert.equal(await mobilePractice.locator('[data-practice-step]').count(),3);
+    assert.equal(await mobilePractice.locator('[data-practice-open-lab]').getAttribute('data-practice-open-lab'),'cut');
+    const practiceBounds=await mobilePractice.boundingBox();
+    assert.ok(practiceBounds&&practiceBounds.width<=width+2,'Film practice fits '+width+'px phone');
+    const practiceOverflow=await mobilePractice.evaluate(el=>({scroll:el.scrollWidth,width:el.clientWidth}));
+    assert.ok(practiceOverflow.scroll<=practiceOverflow.width+3,'Practice instructions do not overflow '+width+'px');
+    await mobilePractice.screenshot({path:path.join(shots,'01-film-it-yourself-'+width+'px.png'),animations:'disabled'});
+    await mobilePractice.locator('[data-practice-toggle]').click();
     assert.equal(await phone.locator('[data-cinema-entry^="lab:"]').count(),7);
     assert.equal(await phone.locator('#content .card-grid').isVisible(),false);
     const libraryRailMetrics=await phone.locator('.cinema-rail').first().evaluate(el=>{

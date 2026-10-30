@@ -1,0 +1,63 @@
+/* Original offline shooting workshop. Compact by default to keep Home focused. */
+.practice-studio{min-width:0;margin:7px 0 29px;overflow:hidden;
+  border:1px solid #504744;border-radius:17px;background:
+  radial-gradient(ellipse at 100% 0,#9b72512b,transparent 54%),
+  linear-gradient(145deg,#20232a,#151a21 80%);color:#f1e9df}
+.practice-studio-header{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:21px 22px}
+.practice-overline{font-size:10px;font-weight:700;letter-spacing:.115em;color:#cfad8e;line-height:1.5}
+.practice-studio-header h2{margin:4px 0;font:560 clamp(21px,2.4vw,26px)/1.18 var(--cinema-type,system-ui);letter-spacing:-.025em}
+.practice-studio-header p{max-width:610px;font-size:12px;line-height:1.6;color:#bab7b4;margin:5px 0 0}
+.practice-studio button{cursor:pointer}
+.practice-studio button:focus-visible{outline:3px solid #ebc29d;outline-offset:3px}
+.practice-open{min-height:44px;flex-shrink:0;padding:10px 15px;border-radius:10px;
+  border:1px solid #b79277;color:#1b1b20;background:#d8b393;font-weight:720;font-size:12px}
+.practice-open span{margin-left:9px}
+.practice-workspace{border-top:1px solid #484044;padding:18px 21px 20px;min-width:0}
+.practice-choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:17px}
+.practice-choices button{min-width:0;min-height:45px;text-align:left;border:1px solid #51515a;background:#252a31;
+  color:#dad5d1;border-radius:9px;padding:10px 11px;font-weight:620;font-size:11px;line-height:1.3}
+.practice-choices button[aria-pressed='true']{border-color:#e7ba98;color:#fff0df;background:#614735}
+.practice-plan{min-width:0}
+.practice-plan-intro h3{font:560 clamp(19px,2.3vw,23px)/1.25 var(--cinema-type,system-ui);letter-spacing:-.022em;margin:5px 0 2px}
+.practice-plan-intro p{font-size:12px;color:#b8b8b8;margin:0 0 15px;line-height:1.5}
+.practice-step-list{display:grid;gap:8px}
+.practice-step{min-width:0;display:grid;grid-template-columns:35px minmax(0,1fr) auto;gap:12px;align-items:center;
+  border:1px solid #45464d;border-radius:10px;background:#1a2028;padding:12px}
+.practice-step[data-practice-done='true']{border-color:#807864;background:#24292d}
+.practice-step-number{align-self:start;font:600 15px/1.4 var(--cinema-type,system-ui);color:#d3b18e}
+.practice-step-content{min-width:0}
+.practice-step-content h4{margin:0 0 4px;color:#f0e4d9;font-size:13px;font-weight:700}
+.practice-step-content p{font-size:12px;color:#cac4c1;line-height:1.5;margin:0}
+.practice-step-content small{display:block;color:#b89f89;font-size:11px;line-height:1.45;margin-top:7px}
+.practice-step-check{min-height:42px;min-width:86px;border:1px solid #806f61;border-radius:8px;
+  color:#ead1bd;background:#2c292c;font-weight:650;font-size:11px;padding:8px 10px}
+.practice-step-check[aria-pressed='true']{border-color:#d7ad85;background:#725540;color:#fff0dc}
+.practice-reflection{padding:15px;margin-top:13px;border-left:2px solid #b99577;background:#27272c;border-radius:0 8px 8px 0}
+.practice-reflection p{font-size:12px;line-height:1.55;color:#e2d6cb;margin:5px 0 0}
+.practice-studio-footer{padding-top:16px}
+.practice-studio-footer>p:first-child{margin:0 0 12px;color:#dcc0a6;font-size:11px}
+.practice-studio-links{display:flex;gap:9px;flex-wrap:wrap}
+.practice-studio-links button{min-height:43px;padding:10px 13px;border:1px solid #aa896c;border-radius:9px;
+  background:#d9b393;color:#171f28;font-size:11px;font-weight:700}
+.practice-studio-links button:last-child{background:#29292f;color:#f0d2b8}
+.practice-studio-links button span{margin-left:6px}
+.practice-studio-note{margin:12px 0 0;color:#a8a7a8;font-size:10px;line-height:1.5}
+@media(max-width:760px){
+  .practice-studio-header{flex-direction:column;align-items:flex-start;padding:16px;gap:13px}
+  .practice-studio-header h2{font-size:22px}
+  .practice-open{align-self:flex-start}
+  .practice-workspace{padding:13px 12px 16px}
+  .practice-choices{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:450px){
+  .practice-step{grid-template-columns:24px minmax(0,1fr);gap:7px;padding:11px}
+  .practice-step-check{grid-column:2;justify-self:start;margin-top:2px}
+  .practice-studio-links button{flex:1 1 100%}
+}
+@media(max-width:350px){
+  .practice-choices{grid-template-columns:minmax(0,1fr)}
+  .practice-studio-header p,.practice-step-content p{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+  .practice-studio *{transition:none!important;animation:none!important}
+}

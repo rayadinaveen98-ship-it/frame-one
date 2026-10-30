@@ -10,6 +10,7 @@ import {openLearningBackup} from '../state/backup-navigation';
 import {CinemaArtwork} from './CinemaArtwork';
 import {SceneAnatomy} from './SceneAnatomy';
 import {DirectTheMoment} from './DirectTheMoment';
+import {FilmItYourself} from './FilmItYourself';
 import './cinema-library.css';
 
 const lessons=curriculum.lessons as unknown as Lesson[];
@@ -158,6 +159,7 @@ export function CinemaLibraryHome(){
     <SceneAnatomy/>
     <DirectTheMoment/>
     {cinemaShelves.map(shelf=><CinemaShelfRow key={shelf.id} shelf={shelf} completed={completed}/>)}
+    <FilmItYourself/>
     <section className="cinema-explore-more" aria-label="Explore more learning">
       <div>
         <span className="cinema-overline">KEEP DISCOVERING</span>
