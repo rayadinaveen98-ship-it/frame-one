@@ -4,6 +4,8 @@ import storyboards from '../data/storyboards.json';
 import type { Lesson } from '../data/schema';
 import { completeLesson, navigate, openLab, type LabName } from '../legacy/bridge';
 import {seriesById,seriesLessonPosition} from '../data/cinema-series';
+import {practiceById} from '../data/film-it-yourself';
+import {practiceForLesson,stagePracticeHandoff} from '../state/practice-handoff';
 import { readPractice, readTelugu, safeProgress, savePractice, saveTelugu } from '../state/learning';
 import './lesson-react.css';
 
@@ -106,6 +108,7 @@ export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyI
   const activeActNumber=seriesPosition?seriesPosition.actIndex+1:null;
   const nextActNumber=followingPosition?followingPosition.actIndex+1:null;
   const link = labLinks[lesson.id];
+  const linkedPractice=practiceForLesson(lesson.id);
   const correct = quiz === lesson.answer;
   function finishLesson(){
     if(seriesPosition&&journeyId){
@@ -154,7 +157,18 @@ export function LessonView({ lessonId, journeyId }: { lessonId: string; journeyI
       {lesson.sections.map(([heading, explanation],i)=><section className="lesson-section" key={i}><h3>{heading}</h3><p>{explanation}</p></section>)}
       {board ? <Storyboard key={lesson.id} board={board}/>:null}
       <aside className="key-idea"><strong>THE BIG IDEA</strong><p>{String(lesson.idea)}</p></aside>
-      <aside className="exercise"><strong>✦ TRY THIS YOURSELF</strong><p>{String(lesson.try)}</p>{link ? <button className="btn-secondary lab-deep-link" type="button" onClick={()=>('lab' in link ? openLab(link.lab) : navigate('crafts'))}>{link.label} →</button>:null}</aside>
+      <aside className="exercise"><strong>✦ TRY THIS YOURSELF</strong><p>{String(lesson.try)}</p>
+        <div className="lesson-craft-actions">
+          {link ? <button className="btn-secondary lab-deep-link" type="button"
+            onClick={()=>('lab' in link ? openLab(link.lab) : navigate('crafts'))}>{link.label} →</button>:null}
+          {linkedPractice?<button className="btn-secondary lesson-practice-link" type="button"
+            data-lesson-practice={linkedPractice}
+            onClick={()=>{stagePracticeHandoff(linkedPractice);navigate('home');}}>
+            Film it yourself · {practiceById(linkedPractice).title} →
+          </button>:null}
+        </div>
+        {linkedPractice?<small className="lesson-practice-description">Opens a three-step phone-filming exercise. Your lesson progress stays unchanged.</small>:null}
+      </aside>
       <section className="practice-notes">
         <label htmlFor="lessonPractice">My own filmmaking idea · optional</label>
         <textarea id="lessonPractice" maxLength={240} value={practice} onChange={e=>{const next=e.target.value;setPractice(next);persistPractice(next);}} placeholder="Write one simple example from your life or a film you imagine..." />
