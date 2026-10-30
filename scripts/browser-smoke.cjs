@@ -244,6 +244,41 @@ async function verify() {
   }
   console.log('PASS: new shot size, composition and colour lessons visibly change original SVGs while preserving original notes and quiz');
 
+  // v0.13A13: reveal actual sequential frames, preserve reading, note and quiz.
+  for(const id of ['units','showdonttell','continuity']){
+    await quick.locator('[data-cinema-search-input]').fill(id);
+    await quick.locator('[data-cinema-search-result="lesson:'+id+'"]').click();
+    const sequence=page.locator('[data-scene-sequence="'+id+'"]');
+    await sequence.waitFor();
+    assert.equal(await sequence.locator('[data-sequence-stage]').getAttribute('data-sequence-stage'),'0');
+    assert.equal(await sequence.locator('[data-sequence-finale]').count(),0,
+      'Ending and optional explanation must not appear before final beat');
+    const artwork=[await sequence.locator('.sq-art').innerHTML()];
+    await sequence.locator('[data-sequence-next]').click();
+    assert.equal(await sequence.locator('[data-sequence-stage]').getAttribute('data-sequence-stage'),'1');
+    artwork.push(await sequence.locator('.sq-art').innerHTML());
+    await sequence.locator('[data-sequence-next]').click();
+    assert.equal(await sequence.locator('[data-sequence-stage]').getAttribute('data-sequence-stage'),'2');
+    artwork.push(await sequence.locator('.sq-art').innerHTML());
+    assert.equal(new Set(artwork).size,3,id+' must present three genuinely different story frames');
+    assert.equal(await sequence.locator('[data-sequence-discover]').getAttribute('aria-expanded'),'false');
+    await sequence.locator('[data-sequence-discover]').click();
+    assert.equal(await sequence.locator('[data-sequence-discover]').getAttribute('aria-expanded'),'true');
+    assert.ok((await sequence.locator('.sq-reveal').textContent()).length>85);
+    assert.equal(await page.locator('[data-sequence-deeper]').getAttribute('open'),null,
+      'Original long-form lesson text starts collapsed');
+    await page.locator('[data-sequence-deeper] summary').click();
+    assert.equal(await page.locator('[data-sequence-deeper]').getAttribute('open'),'');
+    assert.equal(await page.locator('.react-lesson .quiz').count(),1);
+    assert.equal(await page.locator('#lessonPractice').count(),1);
+    await sequence.screenshot({path:path.join(shots,'02-scene-sequence-'+id+'-desktop.png'),animations:'disabled'});
+    await sequence.locator('[data-sequence-beat="0"]').click();
+    assert.equal(await sequence.locator('[data-sequence-finale]').count(),0,
+      'Going to the first beat clears the ending and its explanation');
+    await page.locator('.nav-menu [data-page="home"]').click();
+    await page.locator('[data-cinema-quick-find]').waitFor();
+  }
+  console.log('PASS: three interactive scenes tell accurate 3-frame stories, reveal ideas only after the ending and keep old quiz/notes');
   // v0.13A9: contextual lesson → the correct practical phone exercise.
   await quick.locator('[data-cinema-search-input]').fill('lighting');
   await quick.locator('[data-cinema-search-result="lesson:lighting"]').click();
@@ -1008,6 +1043,24 @@ async function verify() {
       const fit=await stage.evaluate(el=>({scroll:el.scrollWidth,width:el.clientWidth}));
       assert.ok(fit.scroll<=fit.width+3,study+' visual experience must fit '+width+'px');
       await stage.screenshot({path:path.join(shots,'02-visual-lesson-'+study+'-'+width+'px.png'),animations:'disabled'});
+      await phone.locator('.mobile-nav [data-page="home"]').click();
+      await phone.locator('[data-cinema-quick-find]').waitFor();
+    }
+
+    // v0.13A13 progressive shot reveal: real mobile browser checks at both widths.
+    for(const id of ['units','showdonttell','continuity']){
+      await mobileSearch.locator('[data-cinema-search-input]').fill(id);
+      await mobileSearch.locator('[data-cinema-search-result="lesson:'+id+'"]').click();
+      const sequence=phone.locator('[data-scene-sequence="'+id+'"]');
+      await sequence.waitFor();
+      await sequence.locator('[data-sequence-beat="2"]').click();
+      assert.equal(await sequence.locator('[data-sequence-stage]').getAttribute('data-sequence-stage'),'2');
+      await sequence.locator('[data-sequence-discover]').click();
+      const fit=await sequence.evaluate(el=>({scroll:el.scrollWidth,width:el.clientWidth}));
+      assert.ok(fit.scroll<=fit.width+3,id+' scene must not overflow '+width+'px phone');
+      const frame=await sequence.boundingBox();
+      assert.ok(frame&&frame.width<=width+2,id+' stage must fit '+width+'px phone');
+      await sequence.screenshot({path:path.join(shots,'02-scene-sequence-'+id+'-'+width+'px.png'),animations:'disabled'});
       await phone.locator('.mobile-nav [data-page="home"]').click();
       await phone.locator('[data-cinema-quick-find]').waitFor();
     }
