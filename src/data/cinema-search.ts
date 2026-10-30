@@ -21,7 +21,7 @@ const additionalTerms:Readonly<Record<string,string>>={
   composition:'framing visual balance camera cinematography',
   camera:'cinematography filming camera work',
   lenses:'focus depth of field camera',
-  editing:'edit cut rhythm pacing montage',
+  editing:'editing edit editor cutting cuts rhythm pacing montage post production',
   rhythm:'pacing editing cuts timing',
   sound:'audio silence quiet natural sound voice sound design',
   ambience:'silence quiet sound atmosphere background noise',
