@@ -46,7 +46,7 @@ function UnitsArt({beat}:{beat:Beat}){
     {!isDetail?<>
       <rect x={x+w*.12} y={y+h*.14} width={w*.19} height={h*.38} fill="#617b83" stroke="#9daeb1" strokeWidth="3"/>
       <Cup x={x+w*.7} y={y+h*.68} scale={beat===0?1.14:.7}/>
-      <Hand x={x+w*(isOutcome?.81:beat===1?.49: .57)} y={y+h*.63}/>
+      <Hand x={x+w*(isOutcome ? 0.81 : beat===1 ? 0.49 : 0.57)} y={y+h*.63}/>
     </>:<>
       <Cup x={x+w*.63} y={y+h*.72} scale={1.5}/>
       <Hand x={x+w*.34} y={y+h*.48}/>
