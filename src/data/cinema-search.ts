@@ -39,7 +39,18 @@ const additionalTerms:Readonly<Record<string,string>>={
   'roles:crafts':'director cinematographer editor actors producer jobs film crew'
 };
 
-export const cinemaSearchIndex:readonly CinemaSearchResult[]=allLibraryEntries.map(entry=>{
+// The editorial Home shelves curate 28 of the 33 lessons. Quick Find also
+// indexes the five remaining real syllabus lessons without adding filler
+// posters to the carefully arranged Home shelves.
+const featuredLessonIds=new Set(allLibraryEntries.filter(entry=>entry.kind==='lesson').map(entry=>entry.id));
+const searchEntries:readonly CinemaEntry[]=[
+  ...allLibraryEntries,
+  ...lessons.filter(lesson=>!featuredLessonIds.has(lesson.id)).map(lesson=>({
+    kind:'lesson' as const,id:lesson.id,art:'studio' as const
+  }))
+];
+
+export const cinemaSearchIndex:readonly CinemaSearchResult[]=searchEntries.map(entry=>{
   if(entry.kind==='lesson'){
     const lesson=byId.get(entry.id);
     if(!lesson)throw Error('Cinema library references missing lesson '+entry.id);
