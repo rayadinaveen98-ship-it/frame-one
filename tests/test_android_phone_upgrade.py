@@ -48,7 +48,7 @@ class PhoneUpgradeTests(unittest.TestCase):
         self.commands.append(command)
         if command == ["adb", "devices", "-l"]:
             return self.devices
-        if command[-4:] == ["shell", "getprop", "ro.kernel.qemu"]:
+        if command[-3:] == ["shell", "getprop", "ro.kernel.qemu"]:
             return "1" if self.emulator else "0"
         if command[-4:] == ["shell", "pm", "path", qa.APP_ID]:
             return "package:/data/app/test/base.apk" if self.present else ""
