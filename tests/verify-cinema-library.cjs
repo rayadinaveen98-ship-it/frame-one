@@ -39,6 +39,19 @@ assert(home.includes('safeProgress(lessonIds)'),'continue lesson derives from or
 assert(home.includes("navigate('lesson',entry.id)"),'lesson tile navigates to original route');
 assert(home.includes('openLab(entry.id)'),'lab tile opens real experiment');
 assert(home.includes("navigate('crafts')"),'roles tile opens original Film Roles');
+assert(!home.includes('YOUR WORK STAYS ON THIS DEVICE'),'Unnecessary backup reminder must be absent from Home');
+assert(!home.includes('data-android-backup-shortcut'),'Home should lead with cinema, not technical warnings');
+assert(home.includes('data-cinema-workshop-details'),'Long interactive workshops remain accessible after shelves');
+assert(home.indexOf('<CinemaQuickFind completed={completed}/>')<home.indexOf('cinemaShelves.map('),
+  'Search precedes catalogue shelves');
+assert(home.indexOf('cinemaShelves.map(')<home.indexOf('<SceneAnatomy/>'),
+  'Netflix-style poster shelves lead before full interactive workshops');
+assert(home.indexOf('cinemaShelves.map(')<home.indexOf('<DirectTheMoment/>'),
+  'Director studio never obstructs poster rails');
+assert(home.indexOf('<DirectTheMoment/>')<home.indexOf('<FilmItYourself/>'),
+  'Existing filming desk remains accessible as a separate post-shelf section');
+assert(style.includes('.cinema-workshop-details>summary:focus-visible'),
+  'Collapsed studio has a keyboard accessible entry');
 assert(home.includes('scrollBy('),'shelves have real previous/next scrolling');
 assert(home.includes('role="group"'),'horizontal rails are accessible');
 assert(home.includes('data-cinema-entry'),'browser tests can exercise actual posters');
