@@ -107,6 +107,42 @@ async function verify() {
   assert.equal(await page.locator('[data-practice-toggle]').getAttribute('aria-expanded'),'false',
     'Progress remains ephemeral; revisiting Home does not fabricate saved shoots');
   console.log('PASS: real film practice opens, tracks session-only steps, resets correctly and links to Lighting Lab');
+  // v0.13A8: real offline quick-find with keyboard and working lesson/lab destinations.
+  const quick=page.locator('[data-cinema-quick-find]');
+  assert.equal(await quick.count(),1);
+  const searchInput=quick.locator('[data-cinema-search-input]');
+  assert.equal(await quick.locator('[data-cinema-search-result]').count(),0,
+    'A blank search must not fill Home with extra cards');
+  await searchInput.fill('lighting');
+  assert.equal(await quick.locator('[data-cinema-search-result]').first().getAttribute('data-cinema-search-result'),'lesson:lighting',
+    'Exact lesson title must rank before broader matches');
+  await searchInput.press('Enter');
+  await page.locator('.react-lesson h1').waitFor();
+  assert.match(await page.locator('.react-lesson h1').textContent(),/lighting/i);
+  await page.locator('.nav-menu [data-page="home"]').click();
+  await page.locator('[data-cinema-quick-find]').waitFor();
+  await quick.locator('[data-cinema-search-input]').fill('silence');
+  assert.ok(await quick.locator('[data-cinema-search-result="lesson:ambience"]').count()===1,
+    'Natural language alias must find a real sound-related lesson');
+  await quick.locator('[data-cinema-search-input]').fill('film roles');
+  assert.equal(await quick.locator('[data-cinema-search-result]').first().getAttribute('data-cinema-search-result'),
+    'roles:crafts','Film roles should be searchable as a real destination');
+  await quick.locator('[data-cinema-search-clear]').click();
+  assert.equal(await quick.locator('[data-cinema-search-result]').count(),0);
+  await quick.locator('[data-cinema-search-input]').fill('xyzunlikelynoresults');
+  assert.match(await quick.locator('[data-cinema-search-status]').textContent(),/No matches/);
+  await quick.locator('[data-cinema-search-input]').press('Escape');
+  assert.equal(await quick.locator('[data-cinema-search-input]').inputValue(),'');
+  await quick.locator('[data-cinema-search-input]').fill('shape the light');
+  assert.equal(await quick.locator('[data-cinema-search-result]').first().getAttribute('data-cinema-search-result'),'lab:light');
+  await quick.locator('[data-cinema-search-result="lab:light"]').click();
+  await page.locator('.react-lighting-lab').waitFor();
+  await page.locator('.nav-menu [data-page="home"]').click();
+  await page.locator('[data-cinema-quick-find]').waitFor();
+  assert.equal(await quick.locator('[data-cinema-search-input]').inputValue(),'',
+    'Search remains ephemeral when leaving/re-entering Home');
+  console.log('PASS: offline Home search finds real lessons, audio aliases and working Labs; Enter, clear, Escape and reset work');
+
   // v0.13: real, illustrated director's-choice comparisons on Home.
   const anatomy=page.locator('[data-scene-anatomy]');
   assert.equal(await anatomy.count(),1,'A single editorial scene study must be mounted');
