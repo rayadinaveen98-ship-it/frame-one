@@ -16,7 +16,7 @@ export const fieldLessons:Readonly<Record<FieldId,FieldLesson>>={
   setup:'Follow someone waiting, then notice what the film can reveal without explanation.',
   beats:[
    {tag:'PERSON',title:'Someone is waiting',observation:'One character sits by the window. We do not know why.'},
-   {tag:'DETAIL',title:'The empty chair',observation:'An unused place becomes a visual question.'},
+   {tag:'DETAIL',title:'The empty chair',observation:'An unused chair becomes a visual question about who might be missing.'},
    {tag:'TIME',title:'Look at the clock',observation:'A repeated look at the time can suggest that the wait matters.'}
   ],
   discovery:'Images, timing and attention can turn an ordinary wait into a story moment.',
