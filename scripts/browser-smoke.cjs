@@ -971,6 +971,18 @@ async function verify() {
     assert.ok(practiceBounds&&practiceBounds.width<=width+2,'Film practice fits '+width+'px phone');
     const practiceOverflow=await mobilePractice.evaluate(el=>({scroll:el.scrollWidth,width:el.clientWidth}));
     assert.ok(practiceOverflow.scroll<=practiceOverflow.width+3,'Practice instructions do not overflow '+width+'px');
+    await mobilePractice.locator('[data-practice-pocket-toggle]').click();
+    await mobilePractice.locator('[data-practice-observation]').fill('I noticed the quicker edit made the action easier to follow.');
+    const phonePlan=await mobilePractice.locator('[data-practice-plan-text]').inputValue();
+    assert(phonePlan.includes('One action. Two rhythms.'));
+    assert(phonePlan.includes('I noticed the quicker edit made the action easier to follow.'));
+    const pocketOverflow=await mobilePractice.locator('[data-practice-pocket]').evaluate(
+      el=>({scroll:el.scrollWidth,width:el.clientWidth}));
+    assert.ok(pocketOverflow.scroll<=pocketOverflow.width+3,
+      'Pocket sheet must not overflow '+width+'px phone');
+    await mobilePractice.locator('[data-practice-pocket]').screenshot({
+      path:path.join(shots,'01-pocket-shoot-plan-'+width+'px.png'),animations:'disabled'});
+    await mobilePractice.locator('[data-practice-pocket-toggle]').click();
     await mobilePractice.screenshot({path:path.join(shots,'01-film-it-yourself-'+width+'px.png'),animations:'disabled'});
     await mobilePractice.locator('[data-practice-toggle]').click();
     assert.equal(await phone.locator('[data-cinema-entry^="lab:"]').count(),7);
