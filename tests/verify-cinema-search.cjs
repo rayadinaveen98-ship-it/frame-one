@@ -14,7 +14,7 @@ function transpile(file,requireFn){
   assert.equal(tree.parseDiagnostics.length,0,file+' has invalid syntax');
   const mod={exports:{}};
   vm.runInNewContext(ts.transpileModule(code,{compilerOptions:{
-    target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS
+    target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS,esModuleInterop:true
   }}).outputText,{exports:mod.exports,module:mod,require:requireFn});
   return mod.exports;
 }
