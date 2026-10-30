@@ -1,10 +1,11 @@
-/** Six original visual-first learning investigations.
+/** Six original A/B studies plus ten Director's Choice investigations.
  * Entirely offline. Descriptions are qualified observations, not promised emotions.
  * Same format can expand to further crafts without changing the lesson renderer.
  */
 import type {LabName} from '../legacy/bridge';
+import {tenChoices} from './visual-choice-ten';
 
-export type VisualPilotId='lighting'|'rhythm'|'ambience'|'shot'|'composition'|'colour';
+export type VisualPilotId='lighting'|'rhythm'|'ambience'|'shot'|'composition'|'colour'|'story'|'script'|'acting'|'character'|'dialogue'|'camera'|'movement'|'lenses'|'music'|'editing';
 export type VisualTake=Readonly<{label:string;cue:string;focus:string;description:string}>;
 export type VisualPilot=Readonly<{
   id:VisualPilotId;index:string;eyebrow:string;question:string;hook:string;
@@ -122,7 +123,8 @@ export const visualPilots:Readonly<Record<VisualPilotId,VisualPilot>>={
   prompt:'Arrange three ordinary objects. Add one item with a noticeably different colour, then photograph the group and compare what catches your eye.',
   lab:'colour',labLabel:'Compare palettes in the Colour Lab',
   footnote:'Original colour-block illustration, not a calibrated grading preview or a promise of a specific emotional reaction.'
- }
+ },
+ ...tenChoices
 };
 
 export function visualPilotForLesson(lessonId:string):VisualPilot|null{
