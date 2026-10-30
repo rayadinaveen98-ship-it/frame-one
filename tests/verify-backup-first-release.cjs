@@ -24,9 +24,11 @@ const home=read('src/components/CinemaLibraryHome.tsx');
 const reader=read('src/components/LearnView.tsx');
 const css=read('src/components/cinema-library.css');
 const learncss=read('src/components/learn-react.css');
-assert(home.includes('data-android-backup-shortcut'));
-assert(home.includes('isAndroidBackupAvailable()?'));
-assert(home.includes('onClick={openLearningBackup}'));
+// A safety feature should remain available in Learn without dominating the cinematic Home.
+assert(!home.includes('data-android-backup-shortcut'));
+assert(!home.includes('cinema-backup-shortcut'));
+assert(!home.includes('YOUR WORK STAYS ON THIS DEVICE'));
+assert(reader.includes('id="learningBackupPanel"'),'Backup panel remains available under Learn');
 assert(reader.includes('consumeLearningBackupRequest()'));
 assert(reader.includes('panel.open=true'));
 assert(reader.includes('panel.scrollIntoView('));
@@ -35,7 +37,8 @@ assert(reader.includes('id="learningBackupPanel" ref={panelRef}'));
 assert(reader.includes('An Android share sheet alone does not mean the file was saved.'));
 assert(reader.includes("shareAndroidLearningBackup(window.frameOneLegacy.getBackupJSON())"),
   'Backup content and external save path are unchanged');
-assert(css.includes('.cinema-backup-shortcut button:focus-visible'));
+assert(!css.includes('.cinema-backup-shortcut'),'Removed Home reminder must not leave dead styling');
+assert(css.includes('.cinema-workshop-details>summary:focus-visible'),'Replacement Home workshop is keyboard accessible');
 assert(learncss.includes('.backup-upgrade-warning'));
 assert(!read('src/state/backup-navigation.ts').includes('localStorage.setItem'),
   'Do not create extra persistence keys for navigation');

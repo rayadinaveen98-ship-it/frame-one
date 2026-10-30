@@ -1,8 +1,14 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.13A15 visual-first learning across all 33 lessons (30 October 2026) · public APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
+**Latest development checkpoint: v0.13A16 clean cinematic Home with Netflix shelves first (30 October 2026) · public APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.13A16 clean, poster-first cinematic Home (30 October 2026)
+
+Refined the Home experience for a more professional Netflix-like browsing flow: **removed** the "Your work stays on this device" Android warning card; moved all six authentic cinema poster collections **above** the extra scene workshops; and placed the full **Scene Anatomy** and **Direct the Moment** experiences inside one compact, optional **Step behind the frame** section below the shelves. The existing **Film it yourself** practice desk remains reachable below the rails and still expands automatically on a lesson handoff. Personal slideshow, original cinematic opening, all 33 visual-first lessons, seven Labs, quizzes, saved notes and progress remain intact. The real backup/export function is still accessible from **Learn**. [Full UI QA and unchanged safety boundaries](docs/QA_V13A16.md).
+
+**APK:** This phase ships as a temporarily signed Android debug test package, not a guaranteed safe update over earlier installed apps. Public stable-preview v0.12A2 remains unchanged.
 
 ## Latest — v0.13A15 visual-first learning across all 33 lessons (30 October 2026)
 

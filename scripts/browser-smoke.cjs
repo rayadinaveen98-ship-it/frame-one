@@ -32,6 +32,11 @@ async function ready() {
   }
   throw Error('Vite preview did not start: ' + logs.slice(-3000));
 }
+async function openHomeWorkshops(page) {
+  const section=page.locator('[data-cinema-workshop-details]');
+  await section.waitFor();
+  if(await section.getAttribute('open')===null) await section.locator('summary').click();
+}
 async function photo(page, name) {
   await page.screenshot({ path: path.join(shots, name), fullPage: true, animations: 'disabled' });
 }
@@ -77,6 +82,23 @@ async function verify() {
     'Do not invent a Continue row for a new learner with zero progress');
   assert.equal(await page.locator('[data-journey-resume]').count(),0,
     'A new learner must never be labelled as having started a film');
+  // v0.13A16: calm, catalogue-first Home with no debug/backup callout.
+  assert.equal(await page.locator('.cinema-backup-shortcut').count(),0);
+  assert.equal(await page.getByText('YOUR WORK STAYS ON THIS DEVICE').count(),0);
+  assert.equal(await page.locator('[data-cinema-shelf]').count(),6);
+  const studioDetails=page.locator('[data-cinema-workshop-details]');
+  assert.equal(await studioDetails.count(),1);
+  assert.equal(await studioDetails.getAttribute('open'),null,
+    'Long interactive studios must not interrupt Netflix-style shelves');
+  assert.equal(await page.locator('[data-scene-anatomy]').isVisible(),false,
+    'Scene Anatomy is reachable on demand below the shelves');
+  const homeOrder=await page.locator('.cinema-discovery').evaluate(node=>{
+    const rails=node.querySelector('[data-cinema-shelves-first]');
+    const studio=node.querySelector('[data-cinema-workshop-zone]');
+    return !!(rails&&studio&&(rails.compareDocumentPosition(studio)&Node.DOCUMENT_POSITION_FOLLOWING));
+  });
+  assert.ok(homeOrder,'Poster shelves must precede the workshop section in document order');
+  await photo(page,'01-home-catalog-first-desktop.png');
   // v0.13A7: offline camera-free practice guidance; only the user can film.
   const practice=page.locator('[data-film-it-yourself]');
   assert.equal(await practice.count(),1);
@@ -376,6 +398,7 @@ async function verify() {
   console.log('PASS: lesson handoff selects/focuses real filming exercise, keeps checkmarks empty and resets on next visit');
 
   // v0.13: real, illustrated director's-choice comparisons on Home.
+  await openHomeWorkshops(page);
   const anatomy=page.locator('[data-scene-anatomy]');
   assert.equal(await anatomy.count(),1,'A single editorial scene study must be mounted');
   assert.equal(await anatomy.locator('[data-anatomy-study]').count(),5);
@@ -420,11 +443,13 @@ async function verify() {
   await anatomy.locator('[data-anatomy-lab="cut"]').click();
   await page.locator('.react-cut-lab').waitFor();
   await page.locator('.nav-menu [data-page="home"]').click();
+  await openHomeWorkshops(page);
   await page.locator('[data-scene-anatomy]').waitFor();
   console.log('PASS: scene anatomy real A/B decisions, lighting relight, edit reveal and functional Cut Lab route');
   await photo(page, '01-home-desktop.png');
 
   // v0.13A2: real combined directing workshop, not a decorative mockup.
+  await openHomeWorkshops(page);
   const director=page.locator('[data-direct-moment]');
   assert.equal(await director.count(),1);
   assert.equal(await director.locator('[data-direct-toggle]').getAttribute('aria-expanded'),'false');
@@ -490,7 +515,9 @@ async function verify() {
   assert.equal(await page.evaluate(()=>localStorage.getItem('frameone-scene-v07')),preImportJSON,
     'Declining import must leave original scene completely unchanged');
   await page.locator('.nav-menu [data-page="home"]').click();
+  await openHomeWorkshops(page);
   await page.locator('[data-direct-moment]').waitFor();
+  await openHomeWorkshops(page);
   await page.locator('[data-direct-toggle]').click();
   await page.locator('[data-direct-preset="uneasy"]').click();
   await page.locator('[data-direct-make-lab]').click();
@@ -519,6 +546,7 @@ async function verify() {
   await handoffLab.locator('#storyNote').fill('My editable imported shot idea.');
   assert.equal((await page.evaluate(()=>window.frameOneLegacy.getStoryboard())).notes[0],'My editable imported shot idea.');
   await page.locator('.nav-menu [data-page="home"]').click();
+  await openHomeWorkshops(page);
   await page.locator('[data-direct-moment]').waitFor();
   console.log('PASS: Director sketch review, old-board byte retention on decline, export-before-replace, explicit import, editable saved Make Lab and JSON backup');
 
@@ -1194,6 +1222,18 @@ async function verify() {
     await phone.locator('[data-film-it-yourself]').waitFor();
     assert.equal(await mobileHandoff.locator('[data-practice-toggle]').getAttribute('aria-expanded'),'false');
 
+    // The poster catalog stays first and studios stay closed on each ordinary Home visit.
+    assert.equal(await phone.locator('.cinema-backup-shortcut').count(),0);
+    assert.equal(await phone.locator('[data-cinema-workshop-details]').getAttribute('open'),null);
+    const mobileOrder=await phone.locator('.cinema-discovery').evaluate(node=>{
+      const rails=node.querySelector('[data-cinema-shelves-first]');
+      const studios=node.querySelector('[data-cinema-workshop-zone]');
+      return !!(rails&&studios&&(rails.compareDocumentPosition(studios)&Node.DOCUMENT_POSITION_FOLLOWING));
+    });
+    assert.ok(mobileOrder,'Poster rails must precede workshops at '+width+'px');
+    await phone.screenshot({path:path.join(shots,'01-cinema-catalog-first-'+width+'px.png'),
+      fullPage:false,animations:'disabled'});
+    await openHomeWorkshops(phone);
     const mobileAnatomy=phone.locator('[data-scene-anatomy]');
     await mobileAnatomy.locator('[data-anatomy-study="light"]').click();
     await mobileAnatomy.locator('[data-anatomy-option="b"]').click();
