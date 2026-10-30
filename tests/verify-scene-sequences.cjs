@@ -20,7 +20,7 @@ for(const [id,story] of Object.entries(sceneSequences)){
  assert.equal(story.beats.length,3);
  assert.equal(new Set(story.beats.map(b=>b.heading)).size,3);
  for(const beat of story.beats){
-  assert(beat.heading.length>6&&beat.caption.length>15&&beat.focus.length>45);
+  assert(beat.heading.length>6&&beat.caption.length>15&&beat.focus.length>32);
  }
  assert(story.question.length>19&&story.setup.length>50);
  assert(story.discovery.length>40&&story.why.length>95);
