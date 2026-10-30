@@ -53,6 +53,7 @@ for(const key of ['completeLesson(lesson.id)','savePractice(lesson.id','showTelu
 assert(!component.includes('localStorage')&&!component.includes('fetch(')&&!component.includes('getUserMedia'));
 assert(!read(paths[0]).includes('localStorage'));
 assert(css.includes('@media(max-width:350px)')&&css.includes('prefers-reduced-motion'));
-assert(read('scripts/browser-smoke.cjs').includes('data-scene-sequence="continuity"'),
- 'Real browser must test the new sequence UI');
+const browser=read('scripts/browser-smoke.cjs');
+assert(browser.includes("['units','showdonttell','continuity']")&&browser.includes('data-scene-sequence'),
+ 'Real browser must test all three dynamically selected sequence routes');
 console.log('PASS: three progressive visual lesson journeys, protected original content and offline state');
