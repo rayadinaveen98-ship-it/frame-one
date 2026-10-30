@@ -312,6 +312,44 @@ async function verify() {
   }
   console.log('PASS: all 10 authored director choices render real A/B artwork, truthful imaginary music and untouched quizzes/notes');
 
+  // v0.13A15: all fourteen remaining real lessons teach through original 3-stage diagrams.
+  const finalVisualIds=['why','history','genres','india','sound','crew','craft24',
+    'teams','pipeline','making','shotlist','shootscene','editminute','review'];
+  for(const id of finalVisualIds){
+    await quick.locator('[data-cinema-search-input]').fill(id);
+    await quick.locator('[data-cinema-search-result="lesson:'+id+'"]').click();
+    const guide=page.locator('[data-visual-field="'+id+'"]');
+    await guide.waitFor();
+    assert.equal(await guide.locator('[data-field-step]').getAttribute('data-field-step'),'0');
+    assert.equal(await guide.locator('[data-field-discovery]').count(),0,
+      'A learner has to reveal the visual sequence before reading the ending');
+    const images=[await guide.locator('.fg-art').innerHTML()];
+    await guide.locator('[data-field-next]').click();
+    assert.equal(await guide.locator('[data-field-step]').getAttribute('data-field-step'),'1');
+    images.push(await guide.locator('.fg-art').innerHTML());
+    await guide.locator('[data-field-next]').click();
+    assert.equal(await guide.locator('[data-field-step]').getAttribute('data-field-step'),'2');
+    images.push(await guide.locator('.fg-art').innerHTML());
+    assert.equal(new Set(images).size,3,id+' has three actual different illustrations');
+    assert.equal(await guide.locator('[data-field-explain]').getAttribute('aria-expanded'),'false');
+    await guide.locator('[data-field-explain]').click();
+    assert.equal(await guide.locator('[data-field-explain]').getAttribute('aria-expanded'),'true');
+    assert.ok((await guide.locator('.fg-insight').textContent()).length>115,
+      'Filmmaking rationale for '+id+' is accessible only on demand');
+    assert.equal(await page.locator('[data-field-deeper]').getAttribute('open'),null);
+    await page.locator('[data-field-deeper] summary').click();
+    assert.equal(await page.locator('[data-field-deeper]').getAttribute('open'),'');
+    assert.equal(await page.locator('.react-lesson .quiz').count(),1);
+    assert.equal(await page.locator('#lessonPractice').count(),1);
+    await guide.screenshot({path:path.join(shots,'02-field-guide-'+id+'-desktop.png'),animations:'disabled'});
+    await guide.locator('[data-field-choice="0"]').click();
+    assert.equal(await guide.locator('[data-field-discovery]').count(),0,
+      'Returning to first stage closes previous lesson insight');
+    await page.locator('.nav-menu [data-page="home"]').click();
+    await page.locator('[data-cinema-quick-find]').waitFor();
+  }
+  console.log('PASS: all 14 remaining lessons have three illustrated stages, optional discovery and preserved quiz/notes');
+
   // v0.13A9: contextual lesson → the correct practical phone exercise.
   await quick.locator('[data-cinema-search-input]').fill('lighting');
   await quick.locator('[data-cinema-search-result="lesson:lighting"]').click();
@@ -1112,6 +1150,25 @@ async function verify() {
       const bounds=await stage.boundingBox();
       assert.ok(bounds&&bounds.width<=width+2,id+' must fit phone viewport');
       await stage.screenshot({path:path.join(shots,'02-director-choice-'+id+'-'+width+'px.png'),animations:'disabled'});
+      await phone.locator('.mobile-nav [data-page="home"]').click();
+      await phone.locator('[data-cinema-quick-find]').waitFor();
+    }
+
+    // v0.13A15: all 14 original field guide illustrations are checked across phone sizes.
+    const fieldOnPhone=width===390?['why','history','genres','india','sound','crew','craft24']:
+      ['teams','pipeline','making','shotlist','shootscene','editminute','review'];
+    for(const id of fieldOnPhone){
+      await mobileSearch.locator('[data-cinema-search-input]').fill(id);
+      await mobileSearch.locator('[data-cinema-search-result="lesson:'+id+'"]').click();
+      const guide=phone.locator('[data-visual-field="'+id+'"]');
+      await guide.waitFor();
+      await guide.locator('[data-field-choice="2"]').click();
+      await guide.locator('[data-field-explain]').click();
+      const box=await guide.boundingBox();
+      const fit=await guide.evaluate(el=>({scroll:el.scrollWidth,width:el.clientWidth}));
+      assert.ok(box&&box.width<=width+2,id+' field guide must fit '+width+'px phone');
+      assert.ok(fit.scroll<=fit.width+3,id+' must have no horizontal scroll at '+width+'px');
+      await guide.screenshot({path:path.join(shots,'02-field-guide-'+id+'-'+width+'px.png'),animations:'disabled'});
       await phone.locator('.mobile-nav [data-page="home"]').click();
       await phone.locator('[data-cinema-quick-find]').waitFor();
     }
