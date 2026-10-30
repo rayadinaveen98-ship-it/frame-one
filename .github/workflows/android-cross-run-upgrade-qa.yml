@@ -111,6 +111,28 @@ jobs:
           emulator-options: -no-window -no-snapshot -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: python3 scripts/android-emulator-upgrade.py
+      - name: Record passing cross-run upgrade proof
+        if: success()
+        shell: bash
+        env:
+          OLD_RUN_ID: ${{ inputs.old_run_id }}
+          NEW_RUN_ID: ${{ inputs.new_run_id }}
+        run: |
+          set -euo pipefail
+          mkdir -p qa/upgrade/proof
+          jq -n --arg old "$OLD_RUN_ID" --arg new "$NEW_RUN_ID" \
+            --argjson old_code "$FRAMEONE_UPGRADE_OLD_CODE" \
+            --argjson new_code "$FRAMEONE_UPGRADE_NEW_CODE" \
+            '{status:"passed",old_run_id:$old,new_run_id:$new,old_version_code:$old_code,new_version_code:$new_code}' \
+            > qa/upgrade/proof/independent-upgrade.json
+      - name: Upload public-only independent upgrade proof
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frame-one-cross-run-upgrade-proof
+          path: qa/upgrade/proof/independent-upgrade.json
+          if-no-files-found: error
+          retention-days: 14
       - name: Upload screenshots only; never upload private keys or QA APKs
         if: always()
         continue-on-error: true
