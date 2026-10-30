@@ -1,8 +1,14 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.13A5 conservative physical Android upgrade QA CLI (30 October 2026) · downloadable APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
+**Latest development checkpoint: v0.13A6 Windows QA signing bootstrap (30 October 2026) · downloadable APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.13A6 safe Windows QA signing setup (30 October 2026)
+
+Added a dedicated local PowerShell setup script to **inspect signing readiness, create a private long-lived Android QA debug keystore outside Git, and explicitly provision the existing GitHub Actions secret** only after the owner confirms an encrypted backup. The script never prints the signing bytes or publishes an APK, and it will not overwrite an existing key. A Windows GitHub CI test checks read-only behavior, refusal cases, and temporary local test-key generation; it never uploads a signing secret. [One-time instructions and limitations](docs/QA_V13A6.md).
+
+**External prerequisite remains:** the repository owner must perform this one-time private setup on their trusted Windows machine. This source milestone does **not** mean the secret was installed, an in-place upgrade was verified, a phone was tested, or a new APK was released. The public preview remains **v0.12A2**.
 
 ## Latest — v0.13A5 no-uninstall physical Android upgrade QA (30 October 2026)
 
