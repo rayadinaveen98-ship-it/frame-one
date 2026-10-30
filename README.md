@@ -1,8 +1,14 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.13A4 manual Android preview release safety (30 October 2026) · downloadable APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
+**Latest development checkpoint: v0.13A5 conservative physical Android upgrade QA CLI (30 October 2026) · downloadable APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.13A5 no-uninstall physical Android upgrade QA (30 October 2026)
+
+The new `scripts/android-phone-upgrade-qa.py` checks two separately compiled, persistent-signed Android APKs and their actual package/signature/receipt provenance before permitting any test-device install. Its read-only preflight and verification phases make no changes; installing the old build requires an **empty test profile**, and upgrading to the new build requires explicit approval plus independently verified backup and saved lesson/storyboard test data. It never runs uninstall or clears local data. Windows PowerShell instructions and regression tests are documented in [v0.13A5 QA](docs/QA_V13A5.md).
+
+**Boundary:** No real device was used and no new APK was published by this milestone. Existing v0.12A2 remains temporary-signed; permanent QA keystore provisioning, two real independently signed CI builds and human physical-phone checks must happen before manual preview publication.
 
 ## Latest — v0.13A4 Android release approval safety (30 October 2026)
 
