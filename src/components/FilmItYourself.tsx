@@ -1,5 +1,6 @@
 import {useEffect,useRef,useState} from 'react';
 import {practiceMissions,type PracticeId} from '../data/film-it-yourself';
+import {formatPracticeSheet} from '../data/practice-sheet';
 import {navigate,openLab} from '../legacy/bridge';
 import {takePracticeHandoff} from '../state/practice-handoff';
 import './film-it-yourself.css';
@@ -12,6 +13,10 @@ export function FilmItYourself(){
   const [expanded,setExpanded]=useState(Boolean(incoming));
   const [selected,setSelected]=useState<PracticeId>(incoming??'three-shots');
   const headlineRef=useRef<HTMLHeadingElement>(null);
+  const planTextRef=useRef<HTMLTextAreaElement>(null);
+  const [showSheet,setShowSheet]=useState(false);
+  const [myObservation,setMyObservation]=useState('');
+  const [copyStatus,setCopyStatus]=useState('');
   // Only an explicit lesson handoff scrolls and focuses the expanded workshop.
   // Ordinary Home visits preserve the compact, closed state.
   useEffect(()=>{
@@ -36,6 +41,21 @@ export function FilmItYourself(){
   function select(id:PracticeId){
     setSelected(id);
     setTried([false,false,false]);
+    setShowSheet(false);
+    setMyObservation('');
+    setCopyStatus('');
+  }
+  async function copySheet(){
+    const text=formatPracticeSheet(mission,myObservation);
+    try{
+      if(!navigator.clipboard?.writeText)throw Error('Clipboard unavailable');
+      await navigator.clipboard.writeText(text);
+      setCopyStatus('Plan copied. Paste it into Notes or a message to keep it.');
+    }catch{
+      setCopyStatus('Automatic copying is unavailable. Select the plan text below and copy it manually.');
+      planTextRef.current?.focus();
+      planTextRef.current?.select();
+    }
   }
   function toggle(index:number){
     setTried(old=>old.map((value,position)=>position===index?!value:value));
@@ -90,6 +110,34 @@ export function FilmItYourself(){
           <span className="practice-overline">WATCH AND THINK</span>
           <p>{mission.observation}</p>
         </div>
+        <section className="practice-pocket" data-practice-pocket aria-label="Pocket filming plan">
+          <div className="practice-pocket-heading">
+            <div><span className="practice-overline">TAKE IT WITH YOU</span>
+              <h4>Pocket shoot plan.</h4>
+              <p>Keep all three shooting steps handy while using your phone camera.</p>
+            </div>
+            <button type="button" data-practice-pocket-toggle
+              aria-expanded={showSheet} aria-controls="practice-pocket-workspace"
+              onClick={()=>{setShowSheet(open=>!open);setCopyStatus('');}}>
+              {showSheet?'Hide plan':'Prepare my plan'}
+            </button>
+          </div>
+          {showSheet?<div id="practice-pocket-workspace" className="practice-pocket-workspace">
+            <label htmlFor="practice-observation">What did you notice? · Optional</label>
+            <textarea id="practice-observation" data-practice-observation maxLength={240}
+              rows={3} value={myObservation}
+              onChange={event=>{setMyObservation(event.target.value);setCopyStatus('');}}
+              placeholder="Example: I understood the action earlier when the detail came first."/>
+            <p className="practice-pocket-privacy">Your note stays only in this open session. Changing exercises or leaving the page clears it. Copy the plan to keep it.</p>
+            <button type="button" className="practice-pocket-copy" data-practice-pocket-copy
+              onClick={copySheet}>Copy the full shot plan</button>
+            <p data-practice-pocket-status role="status" aria-live="polite" className="practice-pocket-status">{copyStatus}</p>
+            <label htmlFor="practice-plan-text">Full plan · Can be selected and copied manually</label>
+            <textarea id="practice-plan-text" ref={planTextRef} className="practice-pocket-text"
+              data-practice-plan-text readOnly rows={12} value={formatPracticeSheet(mission,myObservation)}
+              onFocus={event=>event.currentTarget.select()}/>
+          </div>:null}
+        </section>
         <footer className="practice-studio-footer">
           <p role="status" data-practice-status>
             {count===3?'All three steps marked tried in this session. Your footage stays on your phone.':count+' of 3 steps marked tried · Session only, not saved.'}
