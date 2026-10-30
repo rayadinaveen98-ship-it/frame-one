@@ -1,8 +1,14 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.13A11 visual-first lesson pilot (30 October 2026) · public APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
+**Latest development checkpoint: v0.13A12 visual-first framing, composition & colour (30 October 2026) · public APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.13A12 three more visual-first lessons (30 October 2026)
+
+Three additional lessons now lead with **live A/B illustrated choices**: **Shot size** (wide/close), **Composition** (centred/negative space) and **Colour** (muted/accent object). These three new original SVG studies build on the existing Lighting, Editing Rhythm and Ambience pilots, bringing the total to six cinematic visual-first lessons. Every tap changes actual imagery, not just labels. The original long-form text is retained in an optional disclosure, and quizzes, notes, Telugu summaries and existing progress/backups are unchanged. [Exact scope and test plan](docs/QA_V13A12.md).
+
+**Distribution:** Development test APKs still use temporary debug certificates and are not guaranteed to update older installations safely. Public preview v0.12A2 remains intentionally unchanged.
 
 ## Latest — v0.13A11 visual-first lessons pilot (30 October 2026)
 
