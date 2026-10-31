@@ -132,8 +132,8 @@ def confirm_readonly_backup_inspection():
     """Inspect the real exported JSON in Android without writing learner data."""
     tap_text("Check a backup JSON file",tries=10,scroll=True)
     choose_download_from_android_picker("backup-03a-inspect-system-picker")
-    state.find_text("Checked: 1 completed lessons",tries=12)
-    state.find_text("Nothing was restored.",tries=12)
+    state.find_text("Checked: 1 completed lessons",tries=12,scroll=True)
+    state.find_text("Nothing was restored.",tries=12,scroll=True)
     assert not screen_contains("Restore this backup?"), (
         "Read-only backup check unexpectedly asked to overwrite learning data")
     ui.capture("backup-03b-readonly-inspection")
