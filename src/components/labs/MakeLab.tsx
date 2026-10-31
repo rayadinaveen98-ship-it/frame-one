@@ -1,5 +1,5 @@
 import { useEffect, useState, type MouseEvent } from 'react';
-import type { LabName } from '../../legacy/bridge';
+import type { LabName,StoryProjectsSnapshot } from '../../legacy/bridge';
 import { StoryboardArt } from './StoryboardArt';
 import {peekDirectorHandoff,clearDirectorHandoff,previewDirectorStoryboard} from '../../state/director-handoff';
 import type {DirectorPlan} from '../../data/direct-the-moment';
@@ -17,10 +17,19 @@ function readSavedPlan():StoryPlan{
   // backup serialization, even though React owns this screen.
   return safeStory(window.frameOneLegacy?.getStoryboard() ?? INITIAL_STORY);
 }
+function readProjects():StoryProjectsSnapshot{
+  return window.frameOneLegacy?.getStoryProjects()??{activeId:null,projects:[],error:'Storyboard engine not ready.'};
+}
 export function MakeLab(){
   const [plan,setPlan]=useState<StoryPlan>(readSavedPlan);
   const [step,setStep]=useState(0);
   const [status,setStatus]=useState('');
+  const [library,setLibrary]=useState<StoryProjectsSnapshot>(readProjects);
+  const [newName,setNewName]=useState('');
+  const [renamingId,setRenamingId]=useState<string|null>(null);
+  const [renameDraft,setRenameDraft]=useState('');
+  const [deletingId,setDeletingId]=useState<string|null>(null);
+
   const [directorOffer,setDirectorOffer]=useState<DirectorPlan|null>(peekDirectorHandoff);
   const [savedAtOffer,setSavedAtOffer]=useState<StoryPlan|null>(()=>peekDirectorHandoff()?readSavedPlan():null);
   const directorPreview=directorOffer?previewDirectorStoryboard(directorOffer):null;
@@ -30,11 +39,50 @@ export function MakeLab(){
   const framing=plan.shots[step];
 
   useEffect(()=>{
-    const onRestore=()=>{clearDirectorHandoff();setDirectorOffer(null);setSavedAtOffer(null);setPlan(readSavedPlan());setStep(0);setStatus('Restored storyboard is ready.');};
+    // Entering the editor from a long lesson or lab must never inherit
+    // an unrelated bottom-of-page scroll position in Android WebView.
+    window.scrollTo({top:0,left:0,behavior:'auto'});
+    const onRestore=()=>{clearDirectorHandoff();setDirectorOffer(null);setSavedAtOffer(null);setPlan(readSavedPlan());setLibrary(readProjects());setStep(0);setStatus('Restored storyboard and project library are ready.');};
     window.addEventListener('frameone:story-restored',onRestore);
     return ()=>{window.removeEventListener('frameone:story-restored',onRestore);clearDirectorHandoff();};
   },[]);
 
+  function syncProjectView(message:string){
+    setLibrary(readProjects());setPlan(readSavedPlan());setStep(0);setStatus(message);
+    setRenamingId(null);setDeletingId(null);
+  }
+  function createProject(){
+    const title=newName.trim();
+    if(!title||title.length>60){setStatus('Enter a project title between 1 and 60 characters.');return;}
+    const okay=window.frameOneLegacy?.createStoryProject(title)??false;
+    if(okay){setNewName('');dismissDirectorOffer();syncProjectView('New project created. Your earlier storyboards remain saved.');}
+    else setStatus('Unable to create the project. Check storage or the 20-project limit.');
+  }
+  function switchProject(id:string){
+    if(id===library.activeId)return;
+    const okay=window.frameOneLegacy?.switchStoryProject(id)??false;
+    if(okay){dismissDirectorOffer();syncProjectView('Project opened. Edits now save to this storyboard.');}
+    else setStatus('Project could not be opened; your existing storyboard was kept.');
+  }
+  function renameProject(id:string){
+    if(!renameDraft.trim()||renameDraft.trim().length>60){setStatus('Enter a project title between 1 and 60 characters.');return;}
+    if(window.frameOneLegacy?.renameStoryProject(id,renameDraft.trim())){
+      syncProjectView('Project renamed.');
+    }else setStatus('Project rename failed. Your original project name was kept.');
+  }
+  function removeProject(id:string){
+    if(window.frameOneLegacy?.deleteStoryProject(id)){
+      dismissDirectorOffer();syncProjectView('The selected project was deleted. Other projects are unchanged.');
+    }else setStatus('Project could not be deleted. You must keep at least one storyboard.');
+  }
+  function saveDirectorAsNewProject(){
+    if(!directorPreview)return;
+    const name='The Wait · Director scene';
+    if(window.frameOneLegacy?.createStoryProject(name,directorPreview)){
+      clearDirectorHandoff();setDirectorOffer(null);setSavedAtOffer(null);
+      syncProjectView('Directing choices saved as a new project. Your original storyboard is still available.');
+    }else setStatus('Could not create a separate project. Nothing was replaced; check free space and project limit.');
+  }
   function dismissDirectorOffer(){
     clearDirectorHandoff();setDirectorOffer(null);setSavedAtOffer(null);
     setStatus('Your existing storyboard was kept unchanged.');
@@ -51,7 +99,7 @@ export function MakeLab(){
     }
     const didSave=window.frameOneLegacy?.saveStoryboard(directorPreview)??false;
     if(!didSave){setStatus('Could not save the imported storyboard. Your original board remains available; export your shot list before retrying.');return;}
-    setPlan(directorPreview);setStep(0);
+    setPlan(directorPreview);setLibrary(readProjects());setStep(0);
     clearDirectorHandoff();setDirectorOffer(null);setSavedAtOffer(null);
     setStatus('Your directing choices were saved in the existing storyboard and are ready to edit or export.');
   }
@@ -63,8 +111,9 @@ export function MakeLab(){
   function keep(event:MouseEvent<HTMLButtonElement>){event.stopPropagation();}
   function commit(next:StoryPlan,showStatus=false){
     const sanitized=safeStory(next);
-    setPlan(sanitized);
     const okay=window.frameOneLegacy?.saveStoryboard(sanitized)??false;
+    if(okay){setPlan(sanitized);setLibrary(readProjects());}
+    else setPlan(readSavedPlan());
     if(showStatus)setStatus(okay?'Saved in this browser.':'Unable to save; you can still export the plan.');
     else if(!okay)setStatus('Browser storage unavailable. Export a shot list to keep your work.');
     else setStatus('');
@@ -100,11 +149,63 @@ export function MakeLab(){
       <h1>Plan a tiny scene.</h1>
       <p>Pick a story question, plan three shots and describe the action. Make something you could try filming on a phone.</p>
     </div>
+    <section className="make-project-library" data-story-project-library aria-labelledby="make-project-library-title">
+      <div className="make-project-head">
+        <div><span className="eyebrow">YOUR CREATIVE WORKSPACE</span>
+          <h2 id="make-project-library-title">Your film projects.</h2>
+          <p>Create up to 20 local three-shot storyboards. All are included in Frame One JSON backups.</p>
+        </div>
+        <span className="make-project-count">{library.projects.length} / 20</span>
+      </div>
+      {library.error?<p role="alert" className="make-project-error">{library.error} Do not clear app data.</p>:null}
+      <div className="make-project-list" role="group" aria-label="Saved storyboard projects">
+        {library.projects.map(project=><div className="make-project-row" key={project.id} data-story-project={project.id}
+          data-story-project-active={project.id===library.activeId?'true':'false'}>
+          <button type="button" className="make-project-open" data-project-switch={project.id}
+            aria-current={project.id===library.activeId?'true':undefined}
+            disabled={project.id===library.activeId||Boolean(library.error)}
+            onClick={event=>{keep(event);switchProject(project.id);}}>
+            <strong>{project.name}</strong><small>{project.id===library.activeId?'CURRENT PROJECT':'OPEN PROJECT'} · {project.scene.question.toUpperCase()}</small>
+          </button>
+          <div className="make-project-row-actions">
+            <button type="button" data-project-rename={project.id}
+              onClick={event=>{keep(event);setRenamingId(project.id);setRenameDraft(project.name);setDeletingId(null);}}>Rename</button>
+            <button type="button" data-project-delete={project.id} disabled={library.projects.length===1}
+              onClick={event=>{keep(event);setDeletingId(project.id);setRenamingId(null);}}>Delete</button>
+          </div>
+          {renamingId===project.id?<div className="make-project-inline">
+            <label htmlFor={'rename-project-'+project.id}>Rename this project</label>
+            <input id={'rename-project-'+project.id} maxLength={60} value={renameDraft}
+              onChange={event=>setRenameDraft(event.currentTarget.value)} />
+            <button type="button" data-project-rename-save={project.id}
+              onClick={event=>{keep(event);renameProject(project.id);}}>Save name</button>
+            <button type="button" onClick={()=>setRenamingId(null)}>Cancel</button>
+          </div>:null}
+          {deletingId===project.id?<div className="make-project-inline make-project-danger" role="group"
+            aria-label={'Confirm deletion of '+project.name}>
+            <p>Delete “{project.name}” from this device? This cannot be undone without a previously saved backup.</p>
+            <button type="button" data-project-delete-confirm={project.id}
+              onClick={event=>{keep(event);removeProject(project.id);}}>Delete this project permanently</button>
+            <button type="button" data-project-delete-cancel={project.id}
+              onClick={()=>setDeletingId(null)}>Keep project</button>
+          </div>:null}
+        </div>)}
+      </div>
+      <div className="make-project-create">
+        <label htmlFor="new-project-name">New project name</label>
+        <input id="new-project-name" value={newName} maxLength={60} placeholder="e.g. The empty chair"
+          onChange={event=>setNewName(event.currentTarget.value)} />
+        <button type="button" className="cta" data-project-create
+          disabled={Boolean(library.error)||library.projects.length>=20}
+          onClick={event=>{keep(event);createProject();}}>Create new storyboard</button>
+      </div>
+      <p className="make-project-storage-note">These projects stay on this device until you export a verified JSON backup. Older backups contain only one storyboard and restore as a single project.</p>
+    </section>
     {directorPreview?<section className="make-director-handoff" data-director-handoff
       aria-labelledby="make-handoff-title">
       <span className="eyebrow">UNSAVED DIRECTOR'S SKETCH · REVIEW BEFORE SAVING</span>
       <h2 id="make-handoff-title">Bring this scene into your storyboard?</h2>
-      <p>This is a preview only. Your original Make Lab storyboard has <strong>not</strong> been changed. Make Lab stores one three-beat storyboard, so saving these choices will replace the current board.</p>
+      <p>This is a preview only. Your existing storyboard has <strong>not</strong> been changed. Save this as a separate project to keep both ideas, or explicitly replace the active project.</p>
       <p className="make-handoff-detail">The original six-second scene has {directorOffer?.edit==='hold'?'one planned shot':'two planned shots'}. Remaining storyboard slots are clearly marked for ideas <em>after</em> those six seconds. Make Lab's bus-stop artwork illustrates framing only; the night-room setting, sound and light directions stay in the written shot notes.</p>
       <div className="make-handoff-preview" aria-label="Proposed storyboard shots">
         {directorPreview.notes.map((note,index)=><div key={index} data-director-proposed-shot={index}>
@@ -112,12 +213,14 @@ export function MakeLab(){
           <p>{note}</p>
         </div>)}
       </div>
-      {hasExistingWork?<p className="make-handoff-warning" role="status">You already have a customised storyboard. Replace it only if you've saved a backup or exported its shot list. This app currently has one saved storyboard slot.</p>:null}
+      {hasExistingWork?<p className="make-handoff-warning" role="status">Your current storyboard is customised. You can save this director sketch as a separate project instead of replacing it.</p>:null}
       <div className="make-handoff-actions">
         <button type="button" data-director-keep className="btn-secondary"
           onClick={event=>{keep(event);dismissDirectorOffer();}}>Keep my existing storyboard</button>
         {hasExistingWork?<button type="button" className="btn-secondary" data-director-export-existing
           onClick={exportExistingBeforeReplace}>Export existing shot list</button>:null}
+        <button type="button" data-director-save-new className="cta"
+          onClick={event=>{keep(event);saveDirectorAsNewProject();}}>Save as new project</button>
         <button type="button" data-director-confirm className="cta"
           onClick={event=>{keep(event);applyDirectorOffer();}}>
           {hasExistingWork?'Replace existing storyboard — I understand':'Save this as my storyboard'}
