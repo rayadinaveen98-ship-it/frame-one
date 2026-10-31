@@ -1,8 +1,14 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.13A17 clearer Explore–Decide–Check lesson path (30 October 2026) · public APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
+**Latest development checkpoint: v0.13A18 backup preflight before restore (31 October 2026) · public APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
+
+## Latest — v0.13A18 verify backups before restoring (31 October 2026)
+
+The real **Learn → Keep a copy of your learning** panel now includes a **non-destructive JSON backup check** for both files and pasted text. It uses exactly the same validation rules as the restore engine, shows only the number of recognized completed lessons, saved practice notes and storyboard shots, and never writes existing data while checking. Invalid JSON is rejected; restores still require explicit overwrite approval with a count summary. The original backup format, notes, progress, seven Labs and 33 lessons are unchanged. [Detailed checks and signing boundary](docs/QA_V13A18.md).
+
+**Release blocker remains:** GitHub Actions persistent QA signing key must be privately provisioned by the owner; real-device export/restore and two-build update tests are required. This development debug APK is not automatically an update-safe release, and the public preview remains v0.12A2.
 
 ## Latest — v0.13A17 a clearer journey within every visual lesson (30 October 2026)
 
