@@ -1048,7 +1048,30 @@ async function verify() {
   const newNote = 'Restored safely from a copied JSON backup.';
   portableJSON.notes.why = newNote;
   const copyPayload = JSON.stringify(portableJSON);
+  // v0.13A18: read-only inspection accepts the real exported backup without writing anything.
+  const notesBeforeInspect=await page.evaluate(()=>localStorage.getItem('frameone-practice-v07'));
   await backup.locator('#backupPasteText').fill(copyPayload);
+  await backup.locator('[data-inspect-backup-text]').click();
+  const inspection=backup.locator('[data-backup-inspection]');
+  await inspection.getByText(/Checked pasted backup:/).waitFor();
+  assert.match(await inspection.textContent(),/completed lessons, .* saved lesson notes and 3 storyboard shots/);
+  assert.ok(!(await inspection.textContent()).includes(newNote),
+    'Preview must never print private story or practice-note contents');
+  assert.equal(await page.evaluate(()=>localStorage.getItem('frameone-practice-v07')),notesBeforeInspect,
+    'Previewing a pasted backup must not change existing notes');
+  const inspectFileInput=backup.locator('input[aria-label="Choose a Frame One backup to check without restoring"]');
+  await inspectFileInput.setInputFiles({name:'frame-one-learning-backup.json',
+    mimeType:'application/json',buffer:Buffer.from(copyPayload)});
+  await inspection.getByText(/Checked: .* storyboard shots/).waitFor();
+  assert.equal(await page.evaluate(()=>localStorage.getItem('frameone-practice-v07')),notesBeforeInspect,
+    'Inspecting a backup file must not alter live learner state');
+  await inspectFileInput.setInputFiles({name:'invalid.json',mimeType:'application/json',
+    buffer:Buffer.from('{"format":"bad"}')});
+  await inspection.getByText(/Backup check failed:/).waitFor();
+  assert.equal(await page.evaluate(()=>localStorage.getItem('frameone-practice-v07')),notesBeforeInspect,
+    'Invalid inspection must not alter saved work');
+  await backup.locator('[data-inspect-backup-text]').click();
+  await inspection.getByText(/Checked pasted backup:/).waitFor();
   page.once('dialog',dialog=>dialog.dismiss());
   await backup.getByRole('button',{name:'Restore pasted backup'}).click();
   await page.getByText('Restore cancelled. Your current learning data is unchanged.').waitFor();
