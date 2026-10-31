@@ -41,11 +41,14 @@ def scroll_up():
     time.sleep(0.35)
 
 def scroll_top():
-    # The new film-project library adds substantial height above Make Lab.
-    # Swipe through the safe right gutter rather than over a textarea or
-    # nested button, where Android may scroll that control instead of page.
+    # The actual Android accessibility dump after v0.14 showed every
+    # Make Lab header / storyboard control at [0,0] while the footer was
+    # visible. Swiping x=1010 (outside the 90..990 content scroller) did
+    # not change that position. Gesture inside the scrollable content at
+    # x=540; start between the two action columns, not inside the note box.
+    # This is still a real user swipe, never JS/localStorage navigation.
     for _ in range(14):
-        ui.adb("shell","input","swipe","1010","660","1010","1920","220")
+        ui.adb("shell","input","swipe","540","690","540","1900","250")
     time.sleep(.5)
 
 def control(label,exact=True,tries=19):
