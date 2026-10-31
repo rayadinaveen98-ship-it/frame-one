@@ -41,8 +41,14 @@ def scroll_up():
     time.sleep(0.35)
 
 def scroll_top():
-    for _ in range(6):
-        ui.adb("shell","input","swipe","540","660","540","1920","250")
+    # The actual Android accessibility dump after v0.14 showed every
+    # Make Lab header / storyboard control at [0,0] while the footer was
+    # visible. Swiping x=1010 (outside the 90..990 content scroller) did
+    # not change that position. Gesture inside the scrollable content at
+    # x=540; start between the two action columns, not inside the note box.
+    # This is still a real user swipe, never JS/localStorage navigation.
+    for _ in range(14):
+        ui.adb("shell","input","swipe","540","690","540","1900","250")
     time.sleep(.5)
 
 def control(label,exact=True,tries=19):
@@ -76,7 +82,20 @@ def control(label,exact=True,tries=19):
             ui.adb("shell","input","tap",str((b[0]+b[2])//2),str((b[1]+b[3])//2))
             time.sleep(.7)
             return
-        scroll_up()
+        # The v0.14 project library pushes the tiny story-choice buttons
+        # well below the first screen. A 1300px swipe can skip 'Decision'
+        # entirely (it remains [0,0] in Android accessibility XML until
+        # onscreen). Scan with short, *real user* swipes, not injected JS.
+        # Restart once from the page top if the first scan hit the footer.
+        if label=="Decision":
+            if attempt==13:
+                print("RECHECK: restart short-step Make Lab question scan from top",flush=True)
+                scroll_top()
+            else:
+                ui.adb("shell","input","swipe","540","1600","540","1200","340")
+                time.sleep(.3)
+        else:
+            scroll_up()
     ui.capture("state-missing-"+re.sub(r"[^a-z0-9]+","-",label.lower())[:32])
     raise AssertionError(f"Cannot find enabled visible Android control {label!r}")
 
@@ -101,12 +120,23 @@ def assert_close_framing():
 
 def editor():
     for attempt in range(13):
-        for n in nodes():
+        tree=nodes()
+        # The fixed Android tab bar overlays the lower WebView. A textarea
+        # partly visible *behind* it must not be tapped under the overlay.
+        tab_tops=[b[1] for n in tree
+                  for b in [bounds_of(n)]
+                  if b and ("Mobile navigation" in n.attrib.get("text","")
+                            or "Mobile navigation" in n.attrib.get("content-desc",""))]
+        visible_bottom_limit=min(BOTTOM,min(tab_tops)-55) if tab_tops else BOTTOM
+        for n in tree:
             cls=n.attrib.get("class","")
             b=bounds_of(n)
             if b and ("EditText" in cls or n.attrib.get("editable")=="true"):
-                if b[1]>=TOP and b[3]<=BOTTOM and b[2]-b[0]>=100 and b[3]-b[1]>=35:
-                    return b
+                # Clip to both safe top and actual unobstructed bottom.
+                visible_top=max(b[1],TOP)
+                visible_bottom=min(b[3],visible_bottom_limit)
+                if b[2]-b[0]>=100 and visible_bottom-visible_top>=45:
+                    return (b[0],visible_top,b[2],visible_bottom)
         scroll_up()
     ui.capture("state-editor-not-visible")
     raise AssertionError("Storyboard shot editor inaccessible")
@@ -149,7 +179,7 @@ def make_storyboard():
     # for the Decision control until the user scrolls back to the TOP.
     # The control() helper scrolls downward, so first reset to the top.
     scroll_top()
-    control("Decision")
+    control("Decision",tries=30)
     # Android WebView exposes these as ToggleButton nodes but can leave
     # checked=false despite aria-pressed. Assert rendered story semantics
     # and storyboard HUD instead of the incorrect accessibility boolean.

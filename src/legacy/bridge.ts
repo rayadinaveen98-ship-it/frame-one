@@ -1,4 +1,7 @@
 import type { StoryPlan } from '../components/labs/story-data';
+export interface StoryProject {id:string;name:string;scene:StoryPlan}
+export interface StoryProjectsSnapshot {activeId:string|null;error:string|null;projects:StoryProject[]}
+
 /** Narrow integration boundary while the seven labs continue using the original runtime. */
 export type LegacyPage = 'home' | 'learn' | 'lesson' | 'lab' | 'crafts' | 'collection';
 export type LabName = 'frame' | 'sound' | 'light' | 'cut' | 'story' | 'colour' | 'continuity';
@@ -16,11 +19,16 @@ export interface LegacyBridge {
   /** Same legacy backup schema, exposed as local text for WebViews that block downloads. */
   getBackupJSON: () => string;
   /** Pure backup preflight; returns counts only, never private note content. */
-  inspectBackup: (data: unknown) => {completedLessons:number;practiceNotes:number;storyboardShots:number};
+  inspectBackup: (data: unknown) => {completedLessons:number;practiceNotes:number;storyboardShots:number;storyboardProjects:number};
   importBackup: (data: unknown) => void;
   /** Typed Make Lab adapter: keeps the v0.7 storyboard inside the old backup engine. */
   getStoryboard: () => StoryPlan;
   saveStoryboard: (plan: StoryPlan) => boolean;
+  getStoryProjects: () => StoryProjectsSnapshot;
+  createStoryProject: (name:string,seed?:StoryPlan) => boolean;
+  switchStoryProject: (id:string) => boolean;
+  renameStoryProject: (id:string,name:string) => boolean;
+  deleteStoryProject: (id:string) => boolean;
   exportShotList: () => void;
   illustration: (shape: 'place' | 'person' | 'detail') => string;
 }

@@ -217,3 +217,64 @@
   .react-make-lab .make-handoff-actions{flex-direction:column}
   .react-make-lab .make-handoff-actions button{width:100%;flex:none}
 }
+
+
+/* Frame One v0.14: compact local film-project library. Accessible on Android
+   without resizing the Make Lab's original storyboard and image panels. */
+.react-make-lab .make-project-library{
+  padding:17px 18px;margin:14px 0 23px;border:1px solid #565362;
+  border-radius:16px;background:linear-gradient(148deg,#232731,#191d27);
+  color:#f1e5d9;min-width:0
+}
+.react-make-lab .make-project-head{display:flex;gap:10px;justify-content:space-between;align-items:start}
+.react-make-lab .make-project-head h2{color:#f3e4d7;font-size:clamp(19px,2.2vw,24px);letter-spacing:-.025em;margin:6px 0 4px}
+.react-make-lab .make-project-head p{color:#bfb8b8;font-size:12px;line-height:1.45;margin:0 0 13px}
+.react-make-lab .make-project-count{white-space:nowrap;color:#e7b995;font-size:12px;border:1px solid #726055;
+  border-radius:9px;padding:7px 10px;font-weight:700}
+.react-make-lab .make-project-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.react-make-lab .make-project-row{min-width:0;display:flex;flex-wrap:wrap;gap:5px;
+  padding:8px;background:#242a34;border:1px solid #494e59;border-radius:10px}
+.react-make-lab .make-project-row[data-story-project-active='true']{border-color:#c09977;background:#37302f}
+.react-make-lab .make-project-open{flex:1 1 130px;min-width:0;border:0;background:transparent;text-align:left;color:#f1e4d5;
+  padding:8px;cursor:pointer}
+.react-make-lab .make-project-open:disabled{cursor:default}
+.react-make-lab .make-project-open strong{display:block;font-size:13px;overflow-wrap:anywhere}
+.react-make-lab .make-project-open small{display:block;color:#d2ac8b;font-size:9px;line-height:1.45;
+  margin:5px 0 0;letter-spacing:.06em}
+.react-make-lab .make-project-row-actions{display:flex;gap:4px;align-self:center}
+.react-make-lab .make-project-row-actions button{min-height:39px;padding:7px 8px;
+  border-radius:7px;background:#292c35;border:1px solid #61616b;color:#e4d6c8;
+  font-weight:600;font-size:11px;cursor:pointer}
+.react-make-lab .make-project-row-actions button:disabled{opacity:.45;cursor:not-allowed}
+.react-make-lab .make-project-inline{flex:1 1 100%;display:flex;align-items:center;flex-wrap:wrap;gap:7px;
+  border-top:1px solid #4a4852;padding:10px 2px 2px}
+.react-make-lab .make-project-inline label{font-size:11px;color:#dcc1a9}
+.react-make-lab .make-project-inline input{flex:1 1 125px;min-width:0}
+.react-make-lab .make-project-inline button{min-height:43px;padding:8px 10px;border:1px solid #b48b71;
+  border-radius:8px;background:#45372e;color:#f4d5b7;font-size:11px;font-weight:650;cursor:pointer}
+.react-make-lab .make-project-danger p{flex:1 1 100%;font-size:12px;color:#f6dfce;margin:2px 0;line-height:1.5}
+.react-make-lab .make-project-danger [data-project-delete-confirm]{background:#7a3534;color:#fff1eb;border-color:#ce7672}
+.react-make-lab .make-project-create{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:13px 0 10px}
+.react-make-lab .make-project-create label{font-size:12px;color:#e6c09c;font-weight:650}
+.react-make-lab .make-project-create input,.react-make-lab .make-project-inline input{
+  padding:10px 11px;min-height:45px;border-radius:8px;border:1px solid #696571;
+  background:#1b202a;color:#fff2e6;font-size:12px
+}
+.react-make-lab .make-project-create input{flex:1 1 180px;min-width:0}
+.react-make-lab .make-project-create button{min-height:45px;padding:10px 13px;font-size:12px}
+.react-make-lab .make-project-storage-note{font-size:10.5px;color:#bdb0b2;line-height:1.5;margin:0}
+.react-make-lab .make-project-error{border-left:3px solid #dd926e;background:#48342f;
+  color:#ffe6d0;padding:10px;font-size:12px;line-height:1.5}
+.react-make-lab .make-project-library :is(button,input):focus-visible{outline:3px solid #eab98b;outline-offset:2px}
+@media(max-width:760px){
+  .react-make-lab .make-project-library{padding:14px 11px}
+  .react-make-lab .make-project-list{grid-template-columns:minmax(0,1fr)}
+  .react-make-lab .make-project-create{align-items:stretch}
+  .react-make-lab .make-project-create label{flex:1 1 100%}
+  .react-make-lab .make-project-create button{flex:1 1 100%}
+}
+@media(max-width:350px){
+  .react-make-lab .make-project-row-actions button{padding:8px 6px;font-size:10px}
+  .react-make-lab .make-project-open strong{font-size:12px}
+  .react-make-lab .make-project-open{flex-basis:100%}
+}
