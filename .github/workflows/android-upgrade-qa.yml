@@ -5,6 +5,8 @@ on:
     paths:
       - '.github/workflows/android-upgrade-qa.yml'
       - 'scripts/android-emulator-upgrade.py'
+      - 'scripts/android-emulator-backup.py'
+      - 'tests/test_android_upgrade_projects.py'
       - 'scripts/android-emulator-learning-state.py'
       - 'scripts/android-emulator-smoke.py'
       - 'src/**'
@@ -19,6 +21,8 @@ on:
     paths:
       - '.github/workflows/android-upgrade-qa.yml'
       - 'scripts/android-emulator-upgrade.py'
+      - 'scripts/android-emulator-backup.py'
+      - 'tests/test_android_upgrade_projects.py'
       - 'scripts/android-emulator-learning-state.py'
       - 'scripts/android-emulator-smoke.py'
       - 'src/**'
@@ -60,6 +64,7 @@ jobs:
       - name: Validate scripts before launching emulator
         run: |
           python3 -m py_compile scripts/android-emulator-upgrade.py scripts/android-emulator-learning-state.py scripts/android-emulator-smoke.py
+          python3 tests/test_android_upgrade_projects.py
           npm ci --no-audit --no-fund
           npm test
           npm run build
@@ -114,7 +119,7 @@ jobs:
           emulator-boot-timeout: 600
           emulator-options: -no-window -no-snapshot -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: python3 scripts/android-emulator-upgrade.py
+          script: FRAMEONE_UPGRADE_PROJECTS=1 python3 scripts/android-emulator-upgrade.py
       # GitHub's artifact storage is an external, best-effort evidence sink.
       # A transient CreateArtifact timeout must not invalidate a successful
       # on-device upgrade/data-retention gate; the job log still has assertions.

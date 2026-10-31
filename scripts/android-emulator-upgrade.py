@@ -34,6 +34,78 @@ state = load_learning_state()
 ui = state.ui
 
 
+def load_two_project_qa():
+    """Reuse genuine Android UI interactions from backup acceptance.
+
+    Only the same-source v0.14+ test sets the opt-in. Historical v0.11 APKs
+    intentionally have no multi-project UI and must retain their own
+    single-storyboard migration test.
+    """
+    if os.environ.get("FRAMEONE_UPGRADE_PROJECTS") != "1":
+        return None
+    source = Path(__file__).with_name("android-emulator-backup.py")
+    spec = importlib.util.spec_from_file_location("frameone_upgrade_projects", source)
+    if not spec or not spec.loader:
+        raise RuntimeError("Cannot load existing Android two-project QA actions")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def verify_learning_progress_with_multiple_projects():
+    """Assert original progress independently of which storyboard is active.
+
+    v0.14 intentionally remembers the second project. The older one-project
+    verify_after_restart() assumes the Decision story is already selected,
+    which is incorrect after creating the second project before upgrading.
+    """
+    state.find_text("1/33 lessons")
+    ui.tap_label("Learn")
+    state.find_text("YOUR CINEMA JOURNEY")
+    state.find_text("3 percent complete")
+    state.find_text("1 of 5 lessons finished")
+    print("PASS: original lesson completion and chapter progress retained with two film projects",flush=True)
+
+
+def verify_projects_after_upgrade(project_qa):
+    """Prove both project choices remain functional after package replacement."""
+    # The prior assertion may already be inside Make Lab. Tapping the
+    # selected bottom tab again does not necessarily reset its nested view.
+    # Return Home before entering Lab so the tab-picker is genuinely visible.
+    ui.tap_label("Home")
+    ui.tap_label("Lab")
+    # Re-entering Lab may reopen its previously selected Make tool rather
+    # than the overview. Both routes are correct learner navigation.
+    # Test the actual project library either way, without relying on a
+    # particular tab-reset policy.
+    overview=any("One moment. Many frames." in " ".join(
+        (n.attrib.get("text",""),n.attrib.get("content-desc","")))
+        for n in state.nodes())
+    if overview:
+        state.control("✎ Make")
+    else:
+        state.find_text("Your film projects.",tries=10)
+    state.scroll_top()
+    state.find_text(project_qa.SECOND_PROJECT, tries=12, scroll=True)
+    project_qa.state.scroll_top()
+    project_qa.tap_text("My first scene", tries=16, scroll=True)
+    state.find_text("Will the person stay or leave?", scroll=True)
+    state.assert_close_framing()
+    state.find_text(state.SHOT_NOTE, scroll=True)
+    state.scroll_top()
+    state.find_text(project_qa.SECOND_PROJECT, tries=12, scroll=True)
+    project_qa.tap_text(project_qa.SECOND_PROJECT, tries=16, scroll=True)
+    state.find_text("My first scene", tries=12, scroll=True)
+    # Leave first storyboard selected for the established full offline
+    # persistence assertion, without modifying either project.
+    project_qa.state.scroll_top()
+    project_qa.tap_text("My first scene", tries=16, scroll=True)
+    state.find_text("Will the person stay or leave?", scroll=True)
+    print("PASS: two separate Make Lab projects remain switchable, original note and framing retained after Android APK update", flush=True)
+
+
+
+
 def installed_version() -> int:
     details = ui.adb("shell", "dumpsys", "package", ui.PACKAGE, timeout=45)
     match = re.search(r"\bversionCode=(\d+)", details)
@@ -57,6 +129,7 @@ def main() -> None:
     new_code = int(os.environ.get("FRAMEONE_UPGRADE_NEW_CODE", "2"))
     if old_code < 1 or new_code <= old_code or new_code > 2100000000:
         raise ValueError("Upgrade versionCodes must be increasing positive Android codes")
+    project_qa = load_two_project_qa()
     print(f"UPGRADE QA versionCode {old_code} -> {new_code}", flush=True)
     print("UPGRADE QA: clean-install test v1; no pre-existing data", flush=True)
     # No uninstall between v1 and v2: preserving the app data is the test.
@@ -67,6 +140,11 @@ def main() -> None:
     state.make_storyboard()
     state.restart_offline()
     state.verify_after_restart()
+    if project_qa:
+        project_qa.create_second_storyboard()
+        state.find_text(project_qa.SECOND_PROJECT, tries=12, scroll=True)
+        ui.capture("upgrade-01b-v1-two-storyboards")
+        print("PASS: v1 Android app created two independent storyboards with real UI inputs", flush=True)
     ui.capture("upgrade-01-v1-offline-progress")
     print("PASS: v1 completed lesson, storyboard and note survive an offline cold start", flush=True)
 
@@ -80,12 +158,24 @@ def main() -> None:
         raise AssertionError("Android did not report successful in-place package update")
     assert_version(new_code)
     state.launch()
-    state.verify_after_restart()
+    if project_qa:
+        # The second storyboard is intentionally still active after update.
+        # Verify lessons first, then switch via the real project library and
+        # assert original Decision/Close-up shot and note in the first project.
+        verify_learning_progress_with_multiple_projects()
+        verify_projects_after_upgrade(project_qa)
+    else:
+        state.verify_after_restart()
     ui.capture("upgrade-02-v2-progress-retained")
     print("PASS: saved lesson, act progress, shot framing and authored note survive in-place v2 upgrade", flush=True)
 
     state.restart_offline()
-    state.verify_after_restart()
+    if project_qa:
+        verify_learning_progress_with_multiple_projects()
+        verify_projects_after_upgrade(project_qa)
+        ui.capture("upgrade-03b-v2-two-storyboards-offline")
+    else:
+        state.verify_after_restart()
     ui.capture("upgrade-03-v2-offline-retained")
     ui.adb("shell", "cmd", "connectivity", "airplane-mode", "disable")
     ui.adb("shell", "svc", "wifi", "enable")
