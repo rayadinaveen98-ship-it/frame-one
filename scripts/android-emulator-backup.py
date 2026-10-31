@@ -106,6 +106,40 @@ def export_to_external_download(raw:bytes):
         if p.returncode:raise RuntimeError("ADB could not simulate external backup save: "+p.stderr[-400:])
     print("PASS: actual app-exported JSON preserved outside Frame One app data",flush=True)
 
+def choose_download_from_android_picker(evidence_name):
+    """Pick the real externally held JSON from Android DocumentsUI.
+
+    Shared by read-only inspection and destructive restoration so both are
+    exercised with exactly the same genuine Android document-selection flow.
+    """
+    time.sleep(1.5)
+    ui.capture(evidence_name)
+    if screen_contains(FILE_NAME):
+        tap_text(FILE_NAME,tries=6,scroll=False)
+    else:
+        # Android DocumentsUI commonly opens Recents. Navigate to Downloads.
+        if screen_contains("Downloads"):
+            tap_text("Downloads",tries=6,scroll=False)
+        else:
+            ui.adb("shell","input","tap","65","140")
+            time.sleep(.8)
+            tap_text("Downloads",tries=8,scroll=False)
+        tap_text(FILE_NAME,tries=9,scroll=False)
+    time.sleep(1.5)
+
+
+def confirm_readonly_backup_inspection():
+    """Inspect the real exported JSON in Android without writing learner data."""
+    tap_text("Check a backup JSON file",tries=10,scroll=True)
+    choose_download_from_android_picker("backup-03a-inspect-system-picker")
+    state.find_text("Checked: 1 completed lessons",tries=12,scroll=True)
+    state.find_text("Nothing was restored.",tries=12,scroll=True)
+    assert not screen_contains("Restore this backup?"), (
+        "Read-only backup check unexpectedly asked to overwrite learning data")
+    ui.capture("backup-03b-readonly-inspection")
+    print("PASS: Android DocumentsUI inspection reports real backup contents without restoring",flush=True)
+
+
 def confirm_picker_restore():
     # AOSP ATD can omit DocumentsUI entirely; full AOSP should contain an
     # ACTION_OPEN_DOCUMENT or GET_CONTENT provider. Record capabilities so a
@@ -116,23 +150,9 @@ def confirm_picker_restore():
                     "-a",action,"-t","application/json",check=False))
     (ui.OUTPUT/"backup-picker-capabilities.txt").write_text("\n".join(providers)+"\n",encoding="utf-8")
     print("Android document providers: "+" | ".join(providers),flush=True)
-    # Select from Android's system document picker, not JS injection.
+    # Actual system file selection, never JS injection.
     tap_text("Restore a backup JSON file",tries=10,scroll=True)
-    time.sleep(1.5)
-    ui.capture("backup-03-system-picker")
-    if screen_contains(FILE_NAME):
-        tap_text(FILE_NAME,tries=6,scroll=False)
-    else:
-        # Android DocumentsUI commonly opens Recents. Navigate to Downloads.
-        if screen_contains("Downloads"):
-            tap_text("Downloads",tries=6,scroll=False)
-        else:
-            # Hamburger icon / navigation drawer for SAF providers.
-            ui.adb("shell","input","tap","65","140")
-            time.sleep(.8)
-            tap_text("Downloads",tries=8,scroll=False)
-        tap_text(FILE_NAME,tries=9,scroll=False)
-    time.sleep(1.5)
+    choose_download_from_android_picker("backup-03-system-picker")
     # Browser JavaScript confirm is represented by an Android native WebView
     # dialog; explicitly accept destructive restore only in disposable CI.
     ui.capture("backup-04-restore-confirm")
@@ -204,6 +224,13 @@ def main():
     print("Android app-private storage cleared; external Downloads JSON retained",flush=True)
     state.launch()
     state.find_text("0/33 lessons")
+    ui.tap_label("Learn")
+    open_backup_panel()
+    # Read-only inspection must NOT restore lesson progress just because
+    # Android DocumentsUI returned a valid saved file.
+    confirm_readonly_backup_inspection()
+    ui.tap_label("Home")
+    state.find_text("0/33 lessons",tries=9)
     ui.tap_label("Learn")
     open_backup_panel()
     confirm_picker_restore()
