@@ -75,3 +75,17 @@
 .react-learn-view #learningBackupPanel>summary:focus-visible{
   outline:3px solid #e5b791;outline-offset:3px;
 }
+
+
+/* v0.13A18: concise, read-only backup inspection receipt on Learn, not Home. */
+.react-learn-view .backup-inspection-status{
+  margin:13px 0 5px;padding:11px 13px;min-height:18px;
+  border-left:3px solid #bba085;border-radius:0 8px 8px 0;
+  background:#222a31;color:#e6d6c6;
+  font:510 12px/1.6 system-ui;
+}
+.react-learn-view .backup-inspection-status:empty{
+  display:none;
+}
+.react-learn-view [data-inspect-backup-file],
+.react-learn-view [data-inspect-backup-text]{border-color:#988372}
