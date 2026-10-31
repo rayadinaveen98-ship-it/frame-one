@@ -52,6 +52,21 @@ def load_two_project_qa():
     return module
 
 
+def verify_learning_progress_with_multiple_projects():
+    """Assert original progress independently of which storyboard is active.
+
+    v0.14 intentionally remembers the second project. The older one-project
+    verify_after_restart() assumes the Decision story is already selected,
+    which is incorrect after creating the second project before upgrading.
+    """
+    state.find_text("1/33 lessons")
+    ui.tap_label("Learn")
+    state.find_text("YOUR CINEMA JOURNEY")
+    state.find_text("3 percent complete")
+    state.find_text("1 of 5 lessons finished")
+    print("PASS: original lesson completion and chapter progress retained with two film projects",flush=True)
+
+
 def verify_projects_after_upgrade(project_qa):
     """Prove both project choices remain functional after package replacement."""
     # The prior assertion may already be inside Make Lab. Tapping the
@@ -143,19 +158,24 @@ def main() -> None:
         raise AssertionError("Android did not report successful in-place package update")
     assert_version(new_code)
     state.launch()
-    # Assert the original lesson/shot survival before opening extra projects:
-    # the ordinary lab selector should be reachable from a fresh Home.
-    state.verify_after_restart()
     if project_qa:
+        # The second storyboard is intentionally still active after update.
+        # Verify lessons first, then switch via the real project library and
+        # assert original Decision/Close-up shot and note in the first project.
+        verify_learning_progress_with_multiple_projects()
         verify_projects_after_upgrade(project_qa)
+    else:
+        state.verify_after_restart()
     ui.capture("upgrade-02-v2-progress-retained")
     print("PASS: saved lesson, act progress, shot framing and authored note survive in-place v2 upgrade", flush=True)
 
     state.restart_offline()
-    state.verify_after_restart()
     if project_qa:
+        verify_learning_progress_with_multiple_projects()
         verify_projects_after_upgrade(project_qa)
         ui.capture("upgrade-03b-v2-two-storyboards-offline")
+    else:
+        state.verify_after_restart()
     ui.capture("upgrade-03-v2-offline-retained")
     ui.adb("shell", "cmd", "connectivity", "airplane-mode", "disable")
     ui.adb("shell", "svc", "wifi", "enable")
