@@ -59,8 +59,17 @@ def verify_projects_after_upgrade(project_qa):
     # Return Home before entering Lab so the tab-picker is genuinely visible.
     ui.tap_label("Home")
     ui.tap_label("Lab")
-    state.find_text("One moment. Many frames.")
-    state.control("✎ Make")
+    # Re-entering Lab may reopen its previously selected Make tool rather
+    # than the overview. Both routes are correct learner navigation.
+    # Test the actual project library either way, without relying on a
+    # particular tab-reset policy.
+    overview=any("One moment. Many frames." in " ".join(
+        (n.attrib.get("text",""),n.attrib.get("content-desc","")))
+        for n in state.nodes())
+    if overview:
+        state.control("✎ Make")
+    else:
+        state.find_text("Your film projects.",tries=10)
     state.scroll_top()
     state.find_text(project_qa.SECOND_PROJECT, tries=12, scroll=True)
     project_qa.state.scroll_top()
@@ -134,10 +143,11 @@ def main() -> None:
         raise AssertionError("Android did not report successful in-place package update")
     assert_version(new_code)
     state.launch()
+    # Assert the original lesson/shot survival before opening extra projects:
+    # the ordinary lab selector should be reachable from a fresh Home.
+    state.verify_after_restart()
     if project_qa:
         verify_projects_after_upgrade(project_qa)
-        ui.tap_label("Home")
-    state.verify_after_restart()
     ui.capture("upgrade-02-v2-progress-retained")
     print("PASS: saved lesson, act progress, shot framing and authored note survive in-place v2 upgrade", flush=True)
 
