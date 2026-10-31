@@ -29,6 +29,7 @@ assert practice_spec and practice_spec.loader
 practice=importlib.util.module_from_spec(practice_spec)
 practice_spec.loader.exec_module(practice)
 FILE_NAME="frame-one-learning-backup.json"
+SECOND_PROJECT="AndroidSecondStoryboardQA"
 
 def tap_text(label,tries=24,scroll=True,exact=False):
     """Choose smallest visible matching text/control, never the whole WebView root."""
@@ -71,6 +72,28 @@ def open_backup_panel():
     tap_text("Keep a copy of your learning",tries=30,scroll=True)
     state.find_text("Save / share backup JSON",tries=10,scroll=True)
 
+def create_second_storyboard():
+    """Create a distinct second Make Lab project using only Android UI taps.
+
+    This tests real learner-authored project persistence rather than adding
+    fabricated localStorage or injecting JSON into the app.
+    """
+    state.scroll_top()
+    state.find_text("Your film projects.",tries=10,scroll=True)
+    # The project title input is the FIRST EditText in Make Lab; the shot-note
+    # textarea lives beneath the full storyboard workspace.
+    field=state.editor()
+    ui.adb("shell","input","tap",str((field[0]+field[2])//2),str((field[1]+field[3])//2))
+    ui.adb("shell","input","text",SECOND_PROJECT)
+    ui.adb("shell","input","keyevent","KEYCODE_BACK")
+    time.sleep(.5)
+    tap_text("Create new storyboard",tries=18,scroll=True)
+    state.scroll_top()
+    state.find_text(SECOND_PROJECT,tries=10,scroll=True)
+    ui.capture("backup-00b-two-projects-created")
+    print("PASS: real Android Make Lab created a second storyboard without deleting the first",flush=True)
+
+
 def exported_private_json():
     # Read actual file just written by Capacitor Filesystem on Android.
     command=["adb","exec-out","run-as",ui.PACKAGE,
@@ -85,13 +108,26 @@ def exported_private_json():
     stored_note=payload["notes"].get("why","")
     assert "FrameOneNativeNoteQA20261027" in stored_note,"Export lost original practice note"
     assert len(stored_note)<=240,"Practice note overflowed the original 240-character limit"
-    scene=payload["scene"]
-    assert scene["question"]=="decision" and scene["shots"][0]=="close","Export lost real Make Lab choices"
-    # Android input text appended to the default shot description rather than
-    # replacing it. Preserve both; require the authored marker inside it.
-    assert "FrameOneNativeShotQA20261027" in scene["notes"][0],"Export lost authored first-shot marker"
-    assert len(scene["notes"][0])<=240,"Export bypassed existing storyboard note limit"
-    print("PASS: native Filesystem wrote exact learner practice/progress/storyboard backup bytes",flush=True)
+    projects=payload.get("projects")
+    assert isinstance(projects,dict) and projects.get("version")==1,(
+        "Native v0.14 backup omitted the full project library")
+    members=projects.get("projects",[])
+    assert len(members)==2,"Native backup must contain both Android-created film projects"
+    assert len(set(item["id"] for item in members))==2,"Project IDs must remain distinct"
+    first=next(item for item in members if item["name"]=="My first scene")
+    second=next(item for item in members if item["name"]==SECOND_PROJECT)
+    assert projects["activeId"]==second["id"],"Native backup lost the selected second project"
+    scene=first["scene"]
+    assert scene["question"]=="decision" and scene["shots"][0]=="close",(
+        "Native backup lost original Make Lab choices after creating a second project")
+    assert "FrameOneNativeShotQA20261027" in scene["notes"][0],(
+        "Native backup lost original first-project authored shot")
+    assert len(scene["notes"][0])<=240,"Backup bypassed storyboard note limit"
+    assert second["scene"]["question"]=="mystery",(
+        "New Android storyboard must have its own unmodified starting scene")
+    assert payload["scene"]==second["scene"],(
+        "Legacy active scene mirror must equal selected project's scene")
+    print("PASS: native Filesystem exported two distinct projects, original first shot and exact active scene mirror",flush=True)
     return p.stdout
 
 def export_to_external_download(raw:bytes):
@@ -134,6 +170,7 @@ def confirm_readonly_backup_inspection():
     choose_download_from_android_picker("backup-03a-inspect-system-picker")
     state.find_text("Checked: 1 completed lessons",tries=12,scroll=True)
     state.find_text("Nothing was restored.",tries=12,scroll=True)
+    state.find_text("2 film projects",tries=12,scroll=True)
     assert not screen_contains("Restore this backup?"), (
         "Read-only backup check unexpectedly asked to overwrite learning data")
     ui.capture("backup-03b-readonly-inspection")
@@ -199,6 +236,7 @@ def main():
     ui.tap_label("Home")
     state.complete_first_lesson()
     state.make_storyboard()
+    create_second_storyboard()
     ui.adb("shell","am","force-stop",ui.PACKAGE)
     state.launch()
     # Independent backup export path after completing and saving real work.
@@ -241,11 +279,17 @@ def main():
     ui.tap_label("Lab")
     state.find_text("One moment. Many frames.")
     state.control("✎ Make")
+    state.scroll_top()
+    state.find_text(SECOND_PROJECT,tries=12,scroll=True)
+    # The second project remains selected after restore. Switch to the first
+    # through a real Android UI tap and verify its independent authored shot.
+    state.scroll_top()
+    tap_text("My first scene",tries=16,scroll=True)
     state.find_text("Will the person stay or leave?",scroll=True)
     state.assert_close_framing()
     state.find_text("FrameOneNativeShotQA20261027",scroll=True)
     ui.capture("backup-05-recovered-lesson-story")
-    print("PASS: exported JSON restored completed lesson and Make Lab story after total app data clear",flush=True)
+    print("PASS: exported JSON restored completed lesson and BOTH independent Make Lab projects after total app data clear",flush=True)
     print("FRAME ONE ANDROID BACKUP EXPORT RESTORE: PASS",flush=True)
 
 if __name__=="__main__":

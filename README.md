@@ -1,10 +1,20 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.13A18 backup preflight before restore (31 October 2026) · public APK remains v0.12A2 (28 October), temporarily signed · not app-store released.**
+**Latest development checkpoint: v0.14A2 native two-project recovery acceptance (31 October 2026, test milestone) · v0.14A1 multi-project Make Lab merged · public APK remains v0.12A2, temporarily signed · not app-store released.**
 
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
 
-## Latest — v0.13A18 verify backups before restoring (31 October 2026)
+## Latest — v0.14A2 Android two-project recovery acceptance (31 October 2026)
+
+The Android file-picker recovery test now creates **two independent Make Lab storyboards through genuine screen interactions** before exporting its JSON. It verifies that both original projects survive native export, non-destructive inspection and destructive restore after all app data is cleared. This is a **test enhancement**, not an APK release or storage-schema change. [Android two-project recovery test plan](docs/QA_V14A2_ANDROID_PROJECT_BACKUP.md).
+
+## v0.14A1 — multiple Make Lab film projects (31 October 2026)
+
+Make Lab now supports up to **20 local three-shot storyboards**, with explicit create, switch, rename and confirmed delete. Director's Desk can save a separate project rather than replacing the existing storyboard. A v1 JSON backup includes all projects; the Learn backup inspection reports project count and restore warns before replacing **all film projects**. Previously saved single-scene backups remain importable, but restoring an older backup replaces the current project library. [Multi-project safety and migration](docs/QA_V14_PROJECTS.md).
+
+**Android release boundary:** The new feature is in source, but the public APK is still the temporarily signed v0.12A2. Owner-provisioned permanent signing, separate-build upgrade checks and real-device external backup validation remain necessary.
+
+## v0.13A18 — verify backups before restoring (31 October 2026)
 
 The real **Learn → Keep a copy of your learning** panel now includes a **non-destructive JSON backup check** for both files and pasted text. It uses exactly the same validation rules as the restore engine, shows only the number of recognized completed lessons, saved practice notes and storyboard shots, and never writes existing data while checking. Invalid JSON is rejected; restores still require explicit overwrite approval with a count summary. The original backup format, notes, progress, seven Labs and 33 lessons are unchanged. [Detailed checks and signing boundary](docs/QA_V13A18.md).
 

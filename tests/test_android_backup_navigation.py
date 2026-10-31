@@ -49,4 +49,21 @@ assert "choose_download_from_android_picker(\"backup-03a-inspect-system-picker\"
     "Read-only inspection must exercise actual Android DocumentsUI."
 )
 
-print("PASS: native backup QA follows supported Home -> Learn route and verifies non-destructive file inspection before restore.")
+source_text=SOURCE.read_text(encoding="utf-8")
+assert "def create_second_storyboard():" in source_text, (
+    "v0.14 Android recovery must create an additional real film project."
+)
+assert script.index("create_second_storyboard()") < script.index("exported_private_json()"), (
+    "Both storyboards must exist before the genuine native JSON export."
+)
+assert 'len(members)==2' in source_text, (
+    "Native Filesystem export must preserve both independent storyboards."
+)
+assert 'state.find_text("2 film projects",tries=12,scroll=True)' in source_text, (
+    "Read-only Android backup inspection must report two film projects."
+)
+assert 'tap_text("My first scene",tries=16,scroll=True)' in script, (
+    "After restore, Android must re-open the original storyboard by actual UI."
+)
+
+print("PASS: native backup QA follows supported Home -> Learn route and checks two-project native backup recovery.")
