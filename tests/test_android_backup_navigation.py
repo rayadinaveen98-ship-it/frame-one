@@ -33,4 +33,20 @@ assert "confirm_picker_restore()" in script, "Exercise real Android system file 
 assert 'state.find_text("1/33 lessons"' in script, "Validate restored progress on screen."
 assert 'state.assert_close_framing()' in script, "Validate restored original Make Lab storyboard."
 
-print("PASS: native backup QA follows supported Home -> Learn route without resurrecting removed UI.")
+assert "confirm_readonly_backup_inspection()" in script, (
+    "Android must check the exported file without restoring it first."
+)
+assert script.index("confirm_readonly_backup_inspection()") < script.index("confirm_picker_restore()"), (
+    "Non-destructive inspection must happen before the destructive restore."
+)
+assert 'state.find_text("0/33 lessons",tries=9)' in script.split("confirm_readonly_backup_inspection()",1)[1], (
+    "Android must verify that inspection does not restore completed lessons."
+)
+assert "def choose_download_from_android_picker(evidence_name):" in SOURCE.read_text(encoding="utf-8"), (
+    "Inspection and restore must reuse the same Android file selection."
+)
+assert "choose_download_from_android_picker(\"backup-03a-inspect-system-picker\")" in SOURCE.read_text(encoding="utf-8"), (
+    "Read-only inspection must exercise actual Android DocumentsUI."
+)
+
+print("PASS: native backup QA follows supported Home -> Learn route and verifies non-destructive file inspection before restore.")
