@@ -82,10 +82,18 @@ def control(label,exact=True,tries=19):
             ui.adb("shell","input","tap",str((b[0]+b[2])//2),str((b[1]+b[3])//2))
             time.sleep(.7)
             return
-        # If navigation began below an expanded workspace, do not keep
-        # scrolling in only one direction and miss earlier controls forever.
-        if attempt==6 and label=="Decision":
-            scroll_top()
+        # The v0.14 project library pushes the tiny story-choice buttons
+        # well below the first screen. A 1300px swipe can skip 'Decision'
+        # entirely (it remains [0,0] in Android accessibility XML until
+        # onscreen). Scan with short, *real user* swipes, not injected JS.
+        # Restart once from the page top if the first scan hit the footer.
+        if label=="Decision":
+            if attempt==13:
+                print("RECHECK: restart short-step Make Lab question scan from top",flush=True)
+                scroll_top()
+            else:
+                ui.adb("shell","input","swipe","540","1600","540","1200","340")
+                time.sleep(.3)
         else:
             scroll_up()
     ui.capture("state-missing-"+re.sub(r"[^a-z0-9]+","-",label.lower())[:32])
@@ -171,7 +179,7 @@ def make_storyboard():
     # for the Decision control until the user scrolls back to the TOP.
     # The control() helper scrolls downward, so first reset to the top.
     scroll_top()
-    control("Decision")
+    control("Decision",tries=30)
     # Android WebView exposes these as ToggleButton nodes but can leave
     # checked=false despite aria-pressed. Assert rendered story semantics
     # and storyboard HUD instead of the incorrect accessibility boolean.
