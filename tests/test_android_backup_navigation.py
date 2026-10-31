@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+"""Source guard for the real Android backup/restore test's navigation contract.
+
+Frame One v0.13A16 removed the Home backup teaser on purpose. The actual
+backup export/import lives on Learn. Prevent a native QA false failure
+caused by trying to tap an intentionally removed Home widget again.
+"""
+from __future__ import annotations
+
+import ast
+from pathlib import Path
+
+SOURCE = Path(__file__).resolve().parents[1] / "scripts/android-emulator-backup.py"
+tree = ast.parse(SOURCE.read_text(encoding="utf-8"), filename=str(SOURCE))
+fn = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "main")
+script = ast.get_source_segment(SOURCE.read_text(encoding="utf-8"), fn) or ""
+
+assert 'ui.tap_label("Learn")' in script, "Backup QA must navigate to Learn."
+assert "open_backup_panel()" in script, "Backup QA must open real Learn backup controls."
+assert script.index('ui.tap_label("Learn")') < script.index("practice.open_first_lesson()"), (
+    "Fresh-install UI backup route must be exercised before creating practice data."
+)
+assert 'state.find_text("YOUR WORK STAYS ON THIS DEVICE"' not in script, (
+    "Home backup callout was intentionally removed in v0.13A16."
+)
+assert 'state.control("Back up"' not in script, (
+    "Never tap the removed Home backup shortcut."
+)
+assert 'ui.capture("backup-00-clean-home")' in script, "Capture honest new Home evidence."
+assert 'ui.capture("backup-00-learn-backup-controls")' in script, "Capture actual backup controls."
+assert 'state.control("Save / share backup JSON"' in script, "Exercise actual Android Filesystem + Share flow."
+assert "confirm_picker_restore()" in script, "Exercise real Android system file picker restore."
+assert 'state.find_text("1/33 lessons"' in script, "Validate restored progress on screen."
+assert 'state.assert_close_framing()' in script, "Validate restored original Make Lab storyboard."
+
+print("PASS: native backup QA follows supported Home -> Learn route without resurrecting removed UI.")
