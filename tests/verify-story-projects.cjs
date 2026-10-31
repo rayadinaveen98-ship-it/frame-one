@@ -20,6 +20,11 @@ assert(legacy.includes('const restoredLibrary=importedProjects||firstProject(saf
 assert(legacy.includes("throw new Error('The backup project collection is invalid.')"),'malformed project collection rejected before writes');
 assert(legacy.includes('projects:state.projects?JSON.parse(JSON.stringify(state.projects)):null'),'optional projects bundled into original v1 JSON');
 assert(legacy.includes('return writeProjectAndScene(state.projects,next);'),'legacy Make saver updates active project and v0.7 mirror together');
+const learn=read('src/components/LearnView.tsx');
+assert(legacy.includes('storyboardProjects:parsed.restoredLibrary.projects.length'),'Read-only preflight must show project count from fully validated backup');
+assert(bridge.includes('storyboardProjects:number'),'Typed preflight reports project count');
+assert(learn.includes('ALL film projects currently saved'),'Restore confirmation warns all existing projects will be replaced');
+assert(learn.includes('summary.storyboardProjects'),'Backup preview shows actual project count before any destructive restore');
 for(const m of ['getStoryProjects','createStoryProject','switchStoryProject','renameStoryProject','deleteStoryProject']){
  assert(legacy.includes(m+':'),'bridge implementation '+m);
  assert(bridge.includes(m+':'),'typed bridge contract '+m);

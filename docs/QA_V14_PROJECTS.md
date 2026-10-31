@@ -43,6 +43,10 @@ scene uses the original `question`, three `shots`, three <=240-character
   Deleting an active project selects a surviving one; deleting the last
   one is blocked.
 
+## Read-only backup inspection safety
+
+The existing v0.13A18 preflight validates the optional `projects` collection with the **same function as restore**. It now reports the count of film projects without printing private note text. Before a restore, the confirmation explicitly warns that **all existing projects** will be replaced. Old v1 backups without `projects` preview as one project. An invalid project collection is rejected before any data is overwritten.
+
 ## Backup and restore
 
 The existing **Frame One learning backup format v1** is retained:

@@ -1731,7 +1731,7 @@
     function inspectBackup(payload){
       const parsed=validateBackup(payload);
       return {completedLessons:parsed.nextProgress.length,
-        practiceNotes:Object.keys(parsed.incomingNotes).length,storyboardShots:3};
+        practiceNotes:Object.keys(parsed.incomingNotes).length,storyboardShots:3,storyboardProjects:parsed.restoredLibrary.projects.length};
     }
     function restoreBackup(payload){
       const {nextProgress,incomingNotes,safeScene,restoredLibrary}=validateBackup(payload);

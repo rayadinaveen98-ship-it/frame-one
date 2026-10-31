@@ -57,14 +57,14 @@ function LearningBackup({onRestored}: {onRestored:()=>void}) {
     if(!bridge) throw new Error('Learning engine is not ready yet.');
     return {payload,summary:bridge.inspectBackup(payload)};
   };
-  const describeBackup = (summary:{completedLessons:number;practiceNotes:number;storyboardShots:number}) =>
-    `${summary.completedLessons} completed lessons, ${summary.practiceNotes} saved lesson notes and ${summary.storyboardShots} storyboard shots`;
+  const describeBackup = (summary:{completedLessons:number;practiceNotes:number;storyboardShots:number;storyboardProjects:number}) =>
+    `${summary.completedLessons} completed lessons, ${summary.practiceNotes} saved lesson notes and ${summary.storyboardShots} storyboard shots across ${summary.storyboardProjects} film ${summary.storyboardProjects===1?'project':'projects'}`;
   // Inspect before asking permission to overwrite; never treat inspection as restoration.
   const restoreJSON = (raw:string): boolean => {
     try {
       const {payload,summary}=inspectJSON(raw);
       if (!window.confirm('Restore this backup? It contains '+describeBackup(summary)+
-        '. This will replace the learning progress, practice notes and storyboard currently saved on this device.')) {
+        '. This will replace the learning progress, practice notes and ALL film projects currently saved on this device.')) {
         setMessage('Restore cancelled. Your current learning data is unchanged.');
         return false;
       }
