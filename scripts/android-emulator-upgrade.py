@@ -54,6 +54,10 @@ def load_two_project_qa():
 
 def verify_projects_after_upgrade(project_qa):
     """Prove both project choices remain functional after package replacement."""
+    # The prior assertion may already be inside Make Lab. Tapping the
+    # selected bottom tab again does not necessarily reset its nested view.
+    # Return Home before entering Lab so the tab-picker is genuinely visible.
+    ui.tap_label("Home")
     ui.tap_label("Lab")
     state.find_text("One moment. Many frames.")
     state.control("✎ Make")
@@ -132,6 +136,7 @@ def main() -> None:
     state.launch()
     if project_qa:
         verify_projects_after_upgrade(project_qa)
+        ui.tap_label("Home")
     state.verify_after_restart()
     ui.capture("upgrade-02-v2-progress-retained")
     print("PASS: saved lesson, act progress, shot framing and authored note survive in-place v2 upgrade", flush=True)
