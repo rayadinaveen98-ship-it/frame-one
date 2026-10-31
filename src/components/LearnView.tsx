@@ -30,7 +30,9 @@ function LearningBackup({onRestored}: {onRestored:()=>void}) {
   const [nativeSharing,setNativeSharing] = useState(false);
   const [backupText,setBackupText] = useState('');
   const [restoreText,setRestoreText] = useState('');
+  const [inspectionStatus,setInspectionStatus] = useState('');
   const fileRef=useRef<HTMLInputElement>(null);
+  const inspectionFileRef=useRef<HTMLInputElement>(null);
   const panelRef=useRef<HTMLDetailsElement>(null);
   useEffect(()=>{
     if(!consumeLearningBackupRequest())return;
@@ -46,25 +48,60 @@ function LearningBackup({onRestored}: {onRestored:()=>void}) {
     return ()=>cancelAnimationFrame(frame);
   },[]);
 
-  // One validation/confirmation route for both JSON files and pasted JSON.
-  // The legacy engine owns exact schema validation and saved-data keys.
+  // The same legacy validation powers both inspection and real import.
+  // Inspection never writes, changes completion or reveals private text.
+  const inspectJSON = (raw:string) => {
+    if(raw.length > 2_000_000) throw new Error('Backup is larger than 2 MB.');
+    const payload:unknown=JSON.parse(raw);
+    const bridge=window.frameOneLegacy;
+    if(!bridge) throw new Error('Learning engine is not ready yet.');
+    return {payload,summary:bridge.inspectBackup(payload)};
+  };
+  const describeBackup = (summary:{completedLessons:number;practiceNotes:number;storyboardShots:number}) =>
+    `${summary.completedLessons} completed lessons, ${summary.practiceNotes} saved lesson notes and ${summary.storyboardShots} storyboard shots`;
+  // Inspect before asking permission to overwrite; never treat inspection as restoration.
   const restoreJSON = (raw:string): boolean => {
     try {
-      if(raw.length > 2_000_000) throw new Error('Backup is larger than 2 MB.');
-      const payload:unknown=JSON.parse(raw);
-      const bridge=window.frameOneLegacy;
-      if(!bridge) throw new Error('Learning engine is not ready yet.');
-      if (!window.confirm('Restore this backup? It will replace the learning progress, practice notes and storyboard currently saved in this browser.')) {
+      const {payload,summary}=inspectJSON(raw);
+      if (!window.confirm('Restore this backup? It contains '+describeBackup(summary)+
+        '. This will replace the learning progress, practice notes and storyboard currently saved on this device.')) {
         setMessage('Restore cancelled. Your current learning data is unchanged.');
         return false;
       }
-      bridge.importBackup(payload);
+      window.frameOneLegacy?.importBackup(payload);
       setMessage('Learning backup restored in this browser.');
+      setInspectionStatus('');
       onRestored();
       return true;
     } catch(err) {
       setMessage(`Could not restore: ${err instanceof Error ? err.message : 'Invalid backup'}`);
       return false;
+    }
+  };
+  const onInspectionFile=async(e:ChangeEvent<HTMLInputElement>)=>{
+    const file=e.target.files?.[0];
+    e.target.value='';
+    if(!file)return;
+    try {
+      if(file.size>2_000_000)throw new Error('Backup is larger than 2 MB.');
+      const {summary}=inspectJSON(await file.text());
+      setInspectionStatus('Checked: '+describeBackup(summary)+
+        '. Nothing was restored. Keep the file somewhere outside Frame One.');
+    }catch(err){
+      setInspectionStatus('Backup check failed: '+
+        (err instanceof Error?err.message:'Unreadable backup')+
+        '. Your saved work was not changed.');
+    }
+  };
+  const inspectPastedBackup=()=>{
+    try {
+      const {summary}=inspectJSON(restoreText);
+      setInspectionStatus('Checked pasted backup: '+describeBackup(summary)+
+        '. Nothing was restored.');
+    }catch(err){
+      setInspectionStatus('Backup check failed: '+
+        (err instanceof Error?err.message:'Unreadable backup')+
+        '. Your saved work was not changed.');
     }
   };
   const onFile = async (e:ChangeEvent<HTMLInputElement>) => {
@@ -119,7 +156,12 @@ function LearningBackup({onRestored}: {onRestored:()=>void}) {
             {nativeSharing?'Preparing Android backup...':'Save / share backup JSON'}
           </button>
         : <button className="btn-secondary" type="button" onClick={()=>{ try{if(!window.frameOneLegacy) throw new Error('Learning engine not ready');window.frameOneLegacy.exportBackup();setMessage('Backup download prepared.');}catch{setMessage('Backup download is unavailable here.');}}}>Download learning backup</button>}
+      <button className="btn-secondary" type="button" data-inspect-backup-file
+        onClick={()=>inspectionFileRef.current?.click()}>Check a backup JSON file</button>
       <button className="btn-secondary" type="button" onClick={()=>fileRef.current?.click()}>Restore a backup JSON file</button>
+      <input ref={inspectionFileRef} className="sr-only" type="file"
+        accept=".json,application/json" onChange={e=>void onInspectionFile(e)}
+        aria-label="Choose a Frame One backup to check without restoring" />
       <input ref={fileRef} className="sr-only" type="file" accept=".json,application/json" onChange={onFile} aria-label="Choose a Frame One backup JSON" />
     </div>
     <details className="backup-text-fallback">
@@ -133,9 +175,12 @@ function LearningBackup({onRestored}: {onRestored:()=>void}) {
       <div className="backup-text-field">
         <label htmlFor="backupPasteText">Restore a backup from pasted JSON</label>
         <textarea id="backupPasteText" value={restoreText} onChange={e=>setRestoreText(e.target.value)} maxLength={2_000_000} rows={5} placeholder="Paste a Frame One learning backup JSON here..." />
+        <button className="btn-secondary" type="button" data-inspect-backup-text
+          disabled={!restoreText.trim()} onClick={inspectPastedBackup}>Check pasted backup</button>
         <button className="btn-secondary" type="button" disabled={!restoreText.trim()} onClick={()=>{if(restoreJSON(restoreText))setRestoreText('');}}>Restore pasted backup</button>
       </div>
     </details>
+    <p className="backup-inspection-status" role="status" data-backup-inspection>{inspectionStatus}</p>
     <p className="backup-status" role="status">{message}</p>
     <small>Includes private practice notes and storyboard. Restoring replaces currently saved work. No upload or online account is involved.</small>
   </details>;

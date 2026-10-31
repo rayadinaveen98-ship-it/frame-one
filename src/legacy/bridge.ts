@@ -15,6 +15,8 @@ export interface LegacyBridge {
   exportBackup: () => void;
   /** Same legacy backup schema, exposed as local text for WebViews that block downloads. */
   getBackupJSON: () => string;
+  /** Pure backup preflight; returns counts only, never private note content. */
+  inspectBackup: (data: unknown) => {completedLessons:number;practiceNotes:number;storyboardShots:number};
   importBackup: (data: unknown) => void;
   /** Typed Make Lab adapter: keeps the v0.7 storyboard inside the old backup engine. */
   getStoryboard: () => StoryPlan;

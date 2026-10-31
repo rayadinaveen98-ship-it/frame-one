@@ -49,6 +49,15 @@ const script=fs.readFileSync(path.join(root,'src/legacy/runtime.js'),'utf8');
 const sceneKeys=[...script.matchAll(/\{id:'([^']+)',question:/g)].map(m=>m[1]);
 if(sceneKeys.length)valid.scene.question=sceneKeys[0];
 const storedBefore=JSON.stringify(memory);
+assert.strictEqual(typeof bridge.inspectBackup,'function','Read-only backup inspection must exist');
+const inspection=bridge.inspectBackup(valid);
+assert.strictEqual(inspection.completedLessons,2,'Only unique known lessons count');
+assert.strictEqual(inspection.practiceNotes,1,'Only valid lesson notes count');
+assert.strictEqual(inspection.storyboardShots,3,'Three storyboard slots retained');
+assert.strictEqual(JSON.stringify(memory),storedBefore,'Inspecting a valid backup never writes to storage');
+assert(!JSON.stringify(inspection).includes('A scene of my own'),'Private note content is never exposed in preview');
+assert.throws(()=>bridge.inspectBackup({format:'frameone-learning-backup',version:1,completed:[],notes:{},scene:null}),/Scene in backup is invalid/);
+assert.strictEqual(JSON.stringify(memory),storedBefore,'Inspecting an invalid backup never writes to storage');
 assert.throws(()=>bridge.importBackup({format:'frameone-learning-backup',version:1,completed:[],notes:{},scene:null}),/Scene in backup is invalid/);
 assert.strictEqual(JSON.stringify(memory),storedBefore,'failed import leaves data alone');
 try {bridge.importBackup(valid)} catch(e){ if(/Scene in backup is invalid/.test(e.message)){ // extract allowable IDs via source declared story choices

@@ -1016,9 +1016,17 @@ async function verify() {
   assert.match(download.suggestedFilename(), /\.json$/);
   console.log('PASS: browser generates a downloadable learning backup');
 
+  // Invalid backups must fail before asking for overwrite consent.
+  const restoreInput=backup.locator('input[aria-label="Choose a Frame One backup JSON"]');
+  await restoreInput.setInputFiles({
+    name: 'invalid-backup.json', mimeType: 'application/json', buffer: Buffer.from('{}')
+  });
+  await page.getByText(/Could not restore: Not a Frame One backup/).waitFor();
+  // A valid file still needs an actual user confirmation and may be declined.
+  const validExport=await page.evaluate(()=>window.frameOneLegacy.getBackupJSON());
   const onDialog = page.waitForEvent('dialog');
-  await backup.locator('input[type="file"]').setInputFiles({
-    name: 'demo-backup.json', mimeType: 'application/json', buffer: Buffer.from('{}')
+  await restoreInput.setInputFiles({
+    name: 'demo-backup.json', mimeType: 'application/json', buffer: Buffer.from(validExport)
   });
   const confirmation = await onDialog;
   assert.equal(confirmation.type(), 'confirm');
@@ -1048,7 +1056,30 @@ async function verify() {
   const newNote = 'Restored safely from a copied JSON backup.';
   portableJSON.notes.why = newNote;
   const copyPayload = JSON.stringify(portableJSON);
+  // v0.13A18: read-only inspection accepts the real exported backup without writing anything.
+  const notesBeforeInspect=await page.evaluate(()=>localStorage.getItem('frameone-practice-v07'));
   await backup.locator('#backupPasteText').fill(copyPayload);
+  await backup.locator('[data-inspect-backup-text]').click();
+  const inspection=backup.locator('[data-backup-inspection]');
+  await page.getByText(/Checked pasted backup:/).waitFor();
+  assert.match(await inspection.textContent(),/completed lessons, .* saved lesson notes and 3 storyboard shots/);
+  assert.ok(!(await inspection.textContent()).includes(newNote),
+    'Preview must never print private story or practice-note contents');
+  assert.equal(await page.evaluate(()=>localStorage.getItem('frameone-practice-v07')),notesBeforeInspect,
+    'Previewing a pasted backup must not change existing notes');
+  const inspectFileInput=backup.locator('input[aria-label="Choose a Frame One backup to check without restoring"]');
+  await inspectFileInput.setInputFiles({name:'frame-one-learning-backup.json',
+    mimeType:'application/json',buffer:Buffer.from(copyPayload)});
+  await page.getByText(/Checked: .* storyboard shots/).waitFor();
+  assert.equal(await page.evaluate(()=>localStorage.getItem('frameone-practice-v07')),notesBeforeInspect,
+    'Inspecting a backup file must not alter live learner state');
+  await inspectFileInput.setInputFiles({name:'invalid.json',mimeType:'application/json',
+    buffer:Buffer.from('{"format":"bad"}')});
+  await page.getByText(/Backup check failed:/).waitFor();
+  assert.equal(await page.evaluate(()=>localStorage.getItem('frameone-practice-v07')),notesBeforeInspect,
+    'Invalid inspection must not alter saved work');
+  await backup.locator('[data-inspect-backup-text]').click();
+  await page.getByText(/Checked pasted backup:/).waitFor();
   page.once('dialog',dialog=>dialog.dismiss());
   await backup.getByRole('button',{name:'Restore pasted backup'}).click();
   await page.getByText('Restore cancelled. Your current learning data is unchanged.').waitFor();

@@ -1606,7 +1606,7 @@
 
     // v0.8 portable backup. Every imported field is validated; user-created notes are escaped when rendered.
     function makeBackup(){return {format:'frameone-learning-backup',version:1,exportedAt:new Date().toISOString(),completed:[...finished],notes:{...state.notes},scene:state.story}}
-    function restoreBackup(payload){
+    function validateBackup(payload){
       if(!payload||payload.format!=='frameone-learning-backup'||payload.version!==1)throw new Error('Not a Frame One backup.');
       if(!Array.isArray(payload.completed)||payload.completed.length>500||!payload.notes||typeof payload.notes!=='object'||Array.isArray(payload.notes))throw new Error('Backup fields are incomplete.');
       const allowed=new Set(lessons.map(l=>l.id));
@@ -1614,11 +1614,22 @@
       const incomingNotes={};for(const [key,val] of Object.entries(payload.notes)){if(allowed.has(key)&&typeof val==='string')incomingNotes[key]=val.slice(0,240)}
       const savedScene=payload.scene;if(!savedScene||typeof savedScene!=='object'||!Object.hasOwn(sceneQuestions,savedScene.question)||!Array.isArray(savedScene.shots)||!Array.isArray(savedScene.notes))throw new Error('Scene in backup is invalid.');
       const safeScene={question:savedScene.question,shots:[0,1,2].map(i=>['wide','medium','close'].includes(savedScene.shots[i])?savedScene.shots[i]:'wide'),notes:[0,1,2].map(i=>typeof savedScene.notes[i]==='string'?savedScene.notes[i].slice(0,240):'')};
+      const nextProgress=[...new Set(restoredIds)];
+      return {nextProgress,incomingNotes,safeScene};
+    }
+    // Read-only preflight shares the exact validation rules with the real restore.
+    // Never expose notes or story text in the summary.
+    function inspectBackup(payload){
+      const parsed=validateBackup(payload);
+      return {completedLessons:parsed.nextProgress.length,
+        practiceNotes:Object.keys(parsed.incomingNotes).length,storyboardShots:3};
+    }
+    function restoreBackup(payload){
+      const {nextProgress,incomingNotes,safeScene}=validateBackup(payload);
       // Validate everything BEFORE replacing any in-memory or persisted values.
       // localStorage lacks transactions: snapshot existing values, and try to
       // roll them back if quota/private-mode errors interrupt a multi-key save.
       // Do not mutate live UI state until all three writes have succeeded.
-      const nextProgress=[...new Set(restoredIds)];
       const restoreKeys=[STORAGE_KEY,NOTES_KEY,STORY_KEY];
       const previous=restoreKeys.map(key=>localStorage.getItem(key));
       try {
@@ -1674,6 +1685,7 @@
       setTelugu:(enabled)=>{state.telugu=Boolean(enabled);saveTelugu()},
       exportBackup:()=>downloadBackup(),
       getBackupJSON:()=>JSON.stringify(makeBackup(),null,2),
+      inspectBackup:(payload)=>inspectBackup(payload),
       importBackup:(payload)=>{restoreBackup(payload);window.dispatchEvent(new Event('frameone:story-restored'));render()},
       getStoryboard:()=>JSON.parse(JSON.stringify(state.story)),
       saveStoryboard:(plan)=>{
