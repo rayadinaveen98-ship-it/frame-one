@@ -156,17 +156,19 @@ def main():
     ui.adb("shell","am","force-stop",ui.PACKAGE)
     ui.adb("shell","pm","clear",ui.PACKAGE)
     state.launch()
+    # v0.13A16 removed the old backup warning from the cinematic Home.
+    # Validate the current supported path on a fresh Android installation:
+    # Home -> Learn -> Keep a copy of your learning. The safety workflow is
+    # still available, but no longer interrupts the Netflix-style catalog.
+    # Never look for / tap a deliberately removed Home shortcut.
     if os.environ.get("FRAMEONE_BACKUP_EXPORT_ONLY")!="1":
-        # Verify the brand-new learner's Home shortcut in isolation. This
-        # checks real Android tap navigation before lesson/collection tests
-        # populate browser history or restore a long page scroll position.
-        # It never edits learning data and never needs a fake bridge call.
-        state.find_text("YOUR WORK STAYS ON THIS DEVICE",tries=12)
-        state.control("Back up",exact=False)
-        state.find_text("YOUR LEARNING JOURNEY",tries=10)
-        state.find_text("Save / share backup JSON",tries=10,scroll=True)
-        ui.capture("backup-00-home-shortcut-opened")
-        print("PASS: fresh Android Home backup shortcut opens actual learning backup tools",flush=True)
+        assert not screen_contains("YOUR WORK STAYS ON THIS DEVICE"), (
+            "Removed Home backup warning unexpectedly reappeared")
+        ui.capture("backup-00-clean-home")
+        ui.tap_label("Learn")
+        open_backup_panel()
+        ui.capture("backup-00-learn-backup-controls")
+        print("PASS: clean cinematic Home and real Learn backup controls reachable on fresh Android install",flush=True)
         ui.tap_label("Home")
     practice.open_first_lesson()
     practice.type_and_verify()
@@ -180,7 +182,7 @@ def main():
     ui.adb("shell","am","force-stop",ui.PACKAGE)
     state.launch()
     # Independent backup export path after completing and saving real work.
-    # The Home-shortcut route was already validated on a clean Home screen.
+    # The supported Learn backup route was already validated on a clean launch.
     # Do not depend on restored collection scroll state when testing backup
     # bytes, the system share sheet, clearing app data and DocumentsUI restore.
     ui.tap_label("Learn")
