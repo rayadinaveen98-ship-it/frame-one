@@ -1017,7 +1017,7 @@ async function verify() {
   console.log('PASS: browser generates a downloadable learning backup');
 
   const onDialog = page.waitForEvent('dialog');
-  await backup.locator('input[type="file"]').setInputFiles({
+  await backup.locator('input[aria-label="Choose a Frame One backup JSON"]').setInputFiles({
     name: 'demo-backup.json', mimeType: 'application/json', buffer: Buffer.from('{}')
   });
   const confirmation = await onDialog;
