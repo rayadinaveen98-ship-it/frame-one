@@ -1016,9 +1016,17 @@ async function verify() {
   assert.match(download.suggestedFilename(), /\.json$/);
   console.log('PASS: browser generates a downloadable learning backup');
 
+  // Invalid backups must fail before asking for overwrite consent.
+  const restoreInput=backup.locator('input[aria-label="Choose a Frame One backup JSON"]');
+  await restoreInput.setInputFiles({
+    name: 'invalid-backup.json', mimeType: 'application/json', buffer: Buffer.from('{}')
+  });
+  await page.getByText(/Could not restore: Not a Frame One backup/).waitFor();
+  // A valid file still needs an actual user confirmation and may be declined.
+  const validExport=await page.evaluate(()=>window.frameOneLegacy.getBackupJSON());
   const onDialog = page.waitForEvent('dialog');
-  await backup.locator('input[aria-label="Choose a Frame One backup JSON"]').setInputFiles({
-    name: 'demo-backup.json', mimeType: 'application/json', buffer: Buffer.from('{}')
+  await restoreInput.setInputFiles({
+    name: 'demo-backup.json', mimeType: 'application/json', buffer: Buffer.from(validExport)
   });
   const confirmation = await onDialog;
   assert.equal(confirmation.type(), 'confirm');
