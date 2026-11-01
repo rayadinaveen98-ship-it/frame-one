@@ -234,7 +234,7 @@ export function LearnView() {
   const searched = query.trim()!==''||filter!=='All';
   return <div className="page react-learn-view" data-revision={revision} data-clear-chapters>
     <header className="learn-clear-intro">
-      <span className="eyebrow-secondary">THE FILMMAKING PATH</span>
+      <span className="eyebrow-secondary">YOUR LEARNING JOURNEY</span>
       <h1>Learn cinema, one choice at a time.</h1>
       <p>Six chapters. Thirty-three short lessons. Start anywhere.</p>
     </header>
