@@ -19,10 +19,18 @@ assert(launch.includes("RETURN_MS=1200"),'shorter return after prolonged backgro
 assert(launch.includes("RETURN_AFTER_MS=45000"),'brief picker/background pauses are not interrupted');
 assert(launch.includes("prefers-reduced-motion: reduce"),'respect motion preference');
 assert(launch.includes("aria-hidden=\"true\""),'launch is decorative and not a screenreader trap');
+assert(launch.includes('data-launch-skip'),'accessible optional skip control exists on cold launch');
+assert(launch.includes('onClick={()=>setSequence(null)}'),'skip immediately ends the sequence');
+assert(launch.includes("sequence==='cold' ?"),'brief return animation does not show a skip control');
+assert(launch.includes('launch-stage" aria-hidden="true"'),'only decorative stage is hidden from screen readers');
 assert(app.includes('<LaunchExperience />'),'mount before main content');
 assert(app.includes('frame-one-icon.svg'),'in-app icon uses consistent brand');
 assert(css.includes('pointer-events:none'),'no blocked native Back or learner taps');
 assert(css.includes('launch-exit'),'title dissolves at end of sequence');
+assert(css.includes('pointer-events:auto'),'the Skip control must be clickable while the stage remains nonblocking');
+assert(css.includes('launch-line-draw'),'original vector monogram has a staged cinematic line reveal');
+assert(css.includes('.launch-gate'),'premium film-gate treatment exists without image downloads');
+assert(css.includes('min-height:44px'),'Skip remains a usable touch target');
 assert(css.includes('@media(prefers-reduced-motion:reduce)'),'no animation when user prefers less motion');
 assert(vector.includes('<svg')&&vector.includes('FRAME')===false&&vector.includes('url(#gold)'),'original logo vector artwork');
 assert(read('index.html').includes('frame-one-icon.svg'),'favicon uses vector icon');

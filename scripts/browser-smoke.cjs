@@ -62,6 +62,22 @@ async function verify() {
   await launchScreen.waitFor({state:'detached',timeout:7000});
   assert.equal(await launchPage.locator('.home-greeting').count(),1);
   console.log('PASS: branded mobile title displays, uses exactly four seconds and yields to Home');
+  const skipPage=await launchContext.newPage();
+  skipPage.on('pageerror',error=>record('Premium skip control error: '+error.message));
+  await skipPage.goto(base,{waitUntil:'domcontentloaded'});
+  const skipLaunch=skipPage.locator('[data-launch-sequence="cold"]');
+  await skipLaunch.waitFor({timeout:10000});
+  const skip=skipLaunch.locator('[data-launch-skip]');
+  assert.equal(await skip.count(),1,'cold start has one labelled Skip intro control');
+  assert.equal(await skip.getAttribute('aria-label'),'Skip Frame One opening animation');
+  const skipRect=await skip.boundingBox();
+  assert.ok(skipRect&&skipRect.height>=44&&skipRect.width>=44,'Skip must be touch-friendly');
+  await skip.click();
+  await skipLaunch.waitFor({state:'detached',timeout:1200});
+  assert.equal(await skipPage.locator('.home-greeting').count(),1,
+    'skipping only removes decorative intro, never removes the actual Home');
+  await skipPage.close();
+  console.log('PASS: premium ident remains skippable and touch-accessible on Android-sized browser');
   await launchContext.close();
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, acceptDownloads: true, reducedMotion: 'reduce' });
   const page = await context.newPage();

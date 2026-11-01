@@ -1,8 +1,12 @@
 # Frame One — Learn the art of filmmaking
 
-**Latest development checkpoint: v0.14A2 native two-project recovery acceptance (31 October 2026, test milestone) · v0.14A1 multi-project Make Lab merged · public APK remains v0.12A2, temporarily signed · not app-store released.**
+**Latest merged development: v0.15A1 clear six-chapter Learn interface · v0.15A2 premium launch in testing · public APK remains v0.12A2, temporarily signed · not app-store released.**
 
-## In development — v0.15A1: a calmer Learn experience (1 November 2026)
+## In development — v0.15A2: The First Frame (1 November 2026)
+
+A more cinematic four-second opening retains the original F1 mark and offline assets. A projector-like slit, drawn vector monogram, restrained gold wordmark and real accessible Skip control accompany mobile-safe transitions. The Home screen stays interactive, the return animation stays brief, and reduced-motion preferences are respected. [Release and accessibility checks](docs/QA_V15A2_PREMIUM_LAUNCH.md).
+
+## v0.15A1: a calmer Learn experience (merged 1 November 2026)
 
 Six clearly explained chapters now use one expanded chapter at a time, a compact learning compass, concrete practice outcomes and searchable lessons behind an optional disclosure. All original 33 lessons and saved progress, labs, film projects and backup/restore formats are preserved. This is a source/QA milestone: **not a new public APK**. [Design and compatibility notes](docs/QA_V15A1_CLEAR_CHAPTERS.md).
 
