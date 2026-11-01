@@ -1350,15 +1350,13 @@ async function verify() {
   const allDone = await sweep.evaluate(() => JSON.parse(localStorage.getItem('frameone-progress-v01') || '[]').length);
   assert.equal(allDone, 33);
   console.log('PASS: all 33 lesson pages, correct quiz answers and completed progress');
-  await lessonContext.close();
-
   // v0.15A8: each existing camera A/B study offers three practical decisions.
   for(const cameraLesson of ['camera','movement','lenses']){
-    await page.evaluate(id=>window.frameOneLegacy.navigate('lesson',id),cameraLesson);
-    const cameraBoard=page.locator('[data-camera-decision="'+cameraLesson+'"]');
+    await sweep.evaluate(id=>window.frameOneLegacy.navigate('lesson',id),cameraLesson);
+    const cameraBoard=sweep.locator('[data-camera-decision="'+cameraLesson+'"]');
     await cameraBoard.waitFor();
     assert.equal(await cameraBoard.locator('details').getAttribute('open'),null,'Camera option stays collapsed until chosen');
-    assert.equal(await page.locator('[data-visual-lesson="'+cameraLesson+'"]').count(),1,'Original A/B study remains');
+    assert.equal(await sweep.locator('[data-visual-lesson="'+cameraLesson+'"]').count(),1,'Original A/B study remains');
     await cameraBoard.locator('summary').click();
     assert.equal(await cameraBoard.locator('[data-camera-choice]').count(),3);
     assert.equal(await cameraBoard.locator('[data-camera-illustration]').getAttribute('data-camera-view'),'0');
@@ -1376,10 +1374,9 @@ async function verify() {
     await cameraBoard.locator('[data-camera-discuss]').click();
     assert.equal(await cameraBoard.locator('[data-camera-insight]').count(),1);
     assert.equal(await cameraBoard.locator('[data-camera-illustration]').getAttribute('data-camera-view'),'2');
-    await photo(page,'25-camera-decision-'+cameraLesson+'-desktop.png');
+    await photo(sweep,'25-camera-decision-'+cameraLesson+'-desktop.png');
   }
-  await page.evaluate(()=>window.frameOneLegacy.navigate('home'));
-  await page.locator('.cinema-discovery').waitFor();
+  await lessonContext.close();
 
   for (const width of [390, 320]) {
     const mobile = await browser.newContext({ viewport: { width, height: 800 }, isMobile: true, deviceScaleFactor: 2, hasTouch: true, acceptDownloads: true });
