@@ -1,0 +1,31 @@
+/* v0.15A5: keep the main Sound Lab uncluttered; story choices are optional. */
+.react-sound-lab .sound-brief{min-width:0;margin:17px 0 21px;background:#1d222b;border:1px solid #4b4b55;border-radius:15px;overflow:hidden;}
+.react-sound-lab .sound-brief summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;padding:17px 18px;min-height:70px;}
+.react-sound-lab .sound-brief summary::-webkit-details-marker{display:none;}
+.react-sound-lab .sound-brief-summary{display:grid;gap:5px;min-width:0;}
+.react-sound-lab .sound-brief-summary strong{font-size:clamp(17px,2vw,21px);line-height:1.25;color:#f6e9d8;letter-spacing:-.025em;}
+.react-sound-lab .sound-brief-summary small{font-size:12px;line-height:1.5;color:#c4c1be;}
+.react-sound-lab .sound-brief-chevron{font-size:26px;line-height:1;color:#e5b48c;}
+.react-sound-lab .sound-brief[open] .sound-brief-chevron{transform:rotate(180deg);}
+.react-sound-lab .sound-brief-body{border-top:1px solid #43434b;padding:16px 18px 18px;min-width:0;}
+.react-sound-lab .sound-brief-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+.react-sound-lab .sound-brief-choices button{min-width:0;min-height:48px;border:1px solid #62616a;border-radius:9px;padding:10px;color:#e8dccf;background:#282c35;font:inherit;font-size:12px;line-height:1.4;text-align:left;cursor:pointer;}
+.react-sound-lab .sound-brief-choices button[aria-pressed="true"]{border-color:#e8b48f;background:#47352e;color:#ffdec5;}
+.react-sound-lab .sound-brief-scene{margin:17px 0 7px;color:#f0e4d8;line-height:1.55;font-size:13px;}
+.react-sound-lab .sound-brief-scene strong{font-size:10px;letter-spacing:.08em;color:#e4b28f;margin-right:5px;}
+.react-sound-lab .sound-brief-question{font-weight:650;color:#f8eee0;font-size:14px;line-height:1.5;margin:0 0 9px;}
+.react-sound-lab .sound-brief-instruction{font-size:12px;color:#c5c0bf;line-height:1.55;margin:0;}
+.react-sound-lab .sound-brief-actions{display:flex;flex-wrap:wrap;gap:9px;margin:15px 0 0;}
+.react-sound-lab .sound-brief-actions button{min-height:44px;white-space:normal;flex:1 1 155px;font-size:12px;}
+.react-sound-lab .sound-brief-review{border-color:#bb926f;color:#f7d6b9;}
+.react-sound-lab .sound-brief-feedback{margin-top:14px;padding:14px 15px;background:#292e37;border-left:3px solid #d4a47b;border-radius:8px;}
+.react-sound-lab .sound-brief-feedback strong{font-size:10px;letter-spacing:.08em;color:#edbb95;}
+.react-sound-lab .sound-brief-feedback p{margin:9px 0;font-size:12px;line-height:1.6;color:#e9e2dc;}
+.react-sound-lab .sound-brief-feedback small{font-size:11px;line-height:1.5;color:#d0c1b7;display:block;}
+.react-sound-lab .sound-brief :is(summary,button):focus-visible{outline:3px solid #edb88e;outline-offset:3px;}
+@media(max-width:600px){
+ .react-sound-lab .sound-brief summary{padding:14px;}
+ .react-sound-lab .sound-brief-body{padding:13px;}
+ .react-sound-lab .sound-brief-choices{grid-template-columns:minmax(0,1fr);}
+}
+@media(prefers-reduced-motion:reduce){.react-sound-lab .sound-brief-chevron{transition:none;}}
