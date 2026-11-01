@@ -867,6 +867,7 @@ async function verify() {
   assert.ok(Math.abs(lightingGeometry.previewTop-lightingGeometry.panelTop) < 40, 'Lighting preview aligns with the top of the control panel');
   // v0.15A3: verify an optional scene brief uses actual current React lighting,
   // lets the learner change their mind, and sets a real SVG preset.
+  await lighting.locator('[data-light="front"]').click();
   const lightingBrief = lighting.locator('.lighting-brief');
   assert.equal(await lightingBrief.locator('[data-light-feedback]').count(), 0, 'No premature director verdict');
   await lightingBrief.locator('summary').click();
