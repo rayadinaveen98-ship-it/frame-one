@@ -653,7 +653,12 @@ async function verify() {
 
   await page.locator('.sidebar [data-page="learn"]').click();
   await page.locator('.react-learn-view h1').waitFor();
-  assert.match(await page.locator('.react-learn-view h1').textContent(), /film starts with curiosity/i);
+  assert.match(await page.locator('.react-learn-view h1').textContent(), /learn cinema, one choice at a time/i);
+  assert.equal(await page.locator('[data-chapter-library] [data-chapter-index]').count(),6);
+  assert.equal(await page.locator('.chapter-body.is-expanded').count(),1,
+    'Desktop Learn must show only one expanded chapter, avoiding a wall of 33 cards');
+  assert.equal(await page.locator('.learn-tools').getAttribute('open'),null,
+    'Search and filters must be available but tucked away by default');
   assert.equal(await page.locator('.react-lesson-card').count(), 33);
   assert.equal(await page.locator('.journey-chapter-segment').count(),6,
     'All six course chapters have a clickable progress marker');
@@ -662,6 +667,10 @@ async function verify() {
   await page.getByRole('button',{name:/View chapter 2:/}).click();
   assert.equal(await page.getByRole('button',{name:/View chapter 2:/}).getAttribute('aria-pressed'),'true');
   assert.equal(await page.locator('#reactChapter1').textContent(),'Tell a human story');
+  assert.equal(await page.locator('.chapter-body.is-expanded').count(),1,
+    'Selecting a different chapter closes the previous lessons on desktop');
+  assert.match(await page.locator('[data-chapter-index="1"] .chapter-purpose').textContent(),
+    /human story/i);
   await page.getByRole('button',{name:/View chapter 1:/}).click();
   await photo(page, '02-chapters-desktop.png');
   console.log('PASS: React renders all 33 lessons and six chapters');
