@@ -865,6 +865,26 @@ async function verify() {
   console.log('Lighting desktop geometry:', JSON.stringify(lightingGeometry));
   assert.ok(lightingGeometry.previewHeight > 180 && lightingGeometry.previewHeight < 480, 'Lighting desktop preview must wrap the illustration instead of stretching');
   assert.ok(Math.abs(lightingGeometry.previewTop-lightingGeometry.panelTop) < 40, 'Lighting preview aligns with the top of the control panel');
+  // v0.15A3: verify an optional scene brief uses actual current React lighting,
+  // lets the learner change their mind, and sets a real SVG preset.
+  await lighting.locator('[data-light="front"]').click();
+  const lightingBrief = lighting.locator('.lighting-brief');
+  assert.equal(await lightingBrief.locator('[data-light-feedback]').count(), 0, 'No premature director verdict');
+  await lightingBrief.locator('summary').click();
+  await lightingBrief.locator('[data-light-brief="separation"]').click();
+  assert.equal(await lightingBrief.locator('[data-light-brief="separation"]').getAttribute('aria-pressed'), 'true');
+  await lightingBrief.locator('[data-light-review]').click();
+  assert.match(await lightingBrief.locator('[data-light-feedback]').textContent(), /Front light shows the person/i, 'Feedback reflects the current front-light scene');
+  await lighting.locator('[data-light="back"]').click();
+  assert.match(await lightingBrief.locator('[data-light-feedback]').textContent(), /Back light draws a rim/i, 'Feedback follows updated back light live');
+  await lightingBrief.locator('[data-light-brief="secrecy"]').click();
+  assert.equal(await lightingBrief.locator('[data-light-feedback]').count(), 0, 'New brief hides old notes');
+  await lightingBrief.locator('[data-light-preset]').click();
+  assert.equal(await lighting.locator('[data-light="side"]').getAttribute('aria-pressed'), 'true', 'Preset selects actual scene direction');
+  assert.equal(await lighting.locator('#lightPowerValue').textContent(), '65%', 'Preset changes actual brightness');
+  assert.equal(await lighting.locator('#lightSoftValue').textContent(), '20% soft', 'Preset changes actual edge');
+  await lightingBrief.locator('[data-light-review]').click();
+  assert.match(await lightingBrief.locator('[data-light-feedback]').textContent(), /Side light lets you balance/i);
   await photo(page, '13-react-lighting-desktop.png');
   console.log('PASS: React Lighting Lab owns markup and responds to all directions, brightness and shadow softness');
 
@@ -1723,6 +1743,13 @@ async function verify() {
     assert.equal(await mobileLighting.locator('#lightSoftValue').textContent(),'100% soft');
     const lightOverflow=await phone.evaluate(() => ({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
     if(lightOverflow.scroll>lightOverflow.viewport+3)record('React Lighting Lab overflow at '+width+'px: '+lightOverflow.scroll+'/'+lightOverflow.viewport);
+    const mobileBrief = mobileLighting.locator('.lighting-brief');
+    await mobileBrief.locator('summary').click();
+    await mobileBrief.locator('[data-light-brief="reaction"]').click();
+    await mobileBrief.locator('[data-light-review]').click();
+    assert.match(await mobileBrief.locator('[data-light-feedback]').textContent(), /Side light adds shape/i, 'Phone review reflects existing side light');
+    const briefOverflow=await phone.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
+    if(briefOverflow.scroll>briefOverflow.viewport+3)record('Lighting brief overflow at '+width+'px: '+briefOverflow.scroll+'/'+briefOverflow.viewport);
     await photo(phone,'14-react-lighting-'+width+'px.png');
     await mobileLighting.locator('[data-lab="cut"]').click();
     const mobileCut=phone.locator('.react-cut-lab');

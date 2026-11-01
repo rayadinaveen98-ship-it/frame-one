@@ -1,6 +1,7 @@
 import type { Dispatch, MouseEvent, SetStateAction } from 'react';
 import type { LabName } from '../../legacy/bridge';
 import { LightingScene, lightingOptions, type LightingMode } from './LightingScene';
+import { LightingBrief } from './LightingBrief';
 
 /** v0.9D fourth React Creative Lab. A drawn brightness/shadow study,
  * not physical light falloff, camera exposure or a calibrated reference.
@@ -73,6 +74,10 @@ export function LightingLab({mode,setMode,power,setPower,softness,setSoftness}:P
         <div className="light-question"><strong>DIRECTOR'S QUESTION</strong><p>{selected.question}</p></div>
       </div>
     </div>
+    <LightingBrief mode={mode} power={power} softness={softness}
+      onPreset={(direction, brightness, edge) => {
+        setMode(direction); setPower(brightness); setSoftness(edge);
+      }} />
     <div className="light-practice">
       <strong>TRY IT IN THE REAL WORLD</strong>
       <p>Photograph a still object with a safely positioned household lamp in front, beside and behind it. Keep the camera and object in place. Note how shadows and visible details change. Avoid overheating lights and never look directly at bright bulbs.</p>
