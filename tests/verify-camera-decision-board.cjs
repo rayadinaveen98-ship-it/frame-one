@@ -17,6 +17,8 @@ assert(component.includes('data-camera-view={choice}')&&component.includes('data
 assert(component.includes('setSelected(index);setDiscussed(false);'),'Choosing a new option clears previous why explanation');
 assert(component.includes('data-camera-insight role="region"')&&component.includes('aria-expanded={discussed}'),'Director insight revealed on request');
 assert(component.includes('not calibrated camera optics')&&component.includes('No app camera access'),'No fabricated physical camera measurements');
+assert(component.includes('scale(${isThird?1.18:1} 1)'),'Cropping from the same viewpoint must not change foreground relative to background');
+assert(component.includes('isSecond?<rect x="176"'),'Crop choice shows a tighter frame boundary instead of falsifying perspective');
 assert(!component.includes('localStorage')&&!component.includes('fetch(')&&!component.includes('getUserMedia'),'No saved data, network or camera permission');
 assert(css.includes('@media(max-width:600px)')&&css.includes('prefers-reduced-motion'),'Responsive and reduced-motion safe');
 assert(lesson.includes('completeLesson(lesson.id)')&&lesson.includes('savePractice(lesson.id'),'Original quiz and notes intact');
