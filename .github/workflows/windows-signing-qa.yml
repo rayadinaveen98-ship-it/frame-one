@@ -55,7 +55,24 @@ jobs:
             & keytool -list -keystore $key -storepass android -alias androiddebugkey 2>&1 | Out-Null
             if ($LASTEXITCODE -ne 0) { throw 'Generated local test key lacks expected alias' }
             Assert-Blocked @('-CreateKey','-KeystorePath',$key) 'Will not overwrite'
-            Write-Host 'PASS: Windows signing script parses, inspects read-only, generates a local debug test key and refuses unsafe operations.'
+            # A user downloading the single .ps1 into Downloads must not
+            # accidentally treat the parent profile folder as a Git checkout.
+            $portableDir = Join-Path $env:RUNNER_TEMP 'frameone-signing-portable'
+            $portableScript = Join-Path $portableDir 'setup-frameone-qa-signing.ps1'
+            $portableKey = Join-Path $testDir 'portable-debug.keystore'
+            New-Item -ItemType Directory -Force -Path $portableDir | Out-Null
+            Copy-Item -LiteralPath $scriptPath -Destination $portableScript
+            try {
+              & pwsh -NoProfile -File $portableScript -CreateKey -KeystorePath $portableKey
+              if ($LASTEXITCODE -ne 0 -or -not (Test-Path -LiteralPath $portableKey -PathType Leaf)) {
+                throw 'Single-file portable signing helper must generate a QA key outside its folder'
+              }
+              & keytool -list -keystore $portableKey -storepass android -alias androiddebugkey 2>&1 | Out-Null
+              if ($LASTEXITCODE -ne 0) { throw 'Portable test key is invalid' }
+            } finally {
+              Remove-Item -LiteralPath $portableDir -Force -Recurse -ErrorAction SilentlyContinue
+            }
+            Write-Host 'PASS: Windows signing helper also works as a single downloaded file without entering any Git repo.'
           } finally {
             Remove-Item -LiteralPath $testDir -Force -Recurse -ErrorAction SilentlyContinue
           }
