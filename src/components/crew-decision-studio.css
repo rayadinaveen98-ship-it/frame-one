@@ -1,0 +1,28 @@
+/* v0.15A6 — compact, practical craft collaboration inside Meet Film Roles. */
+.crew-decision{min-width:0;margin:16px 0 29px;background:#1d232d;border:1px solid #57515a;border-radius:16px;color:#eee4da;overflow:hidden;}
+.crew-decision summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;min-height:76px;padding:18px 20px;}
+.crew-decision summary::-webkit-details-marker{display:none;}
+.crew-decision-summary{display:grid;gap:5px;min-width:0;}
+.crew-decision-summary strong{font-size:clamp(18px,2.3vw,23px);color:#f7eade;line-height:1.25;letter-spacing:-.025em;}
+.crew-decision-summary small{color:#ccc1bc;font-size:12px;line-height:1.5;}
+.crew-decision-chevron{font-size:26px;color:#e9b990;}
+.crew-decision details[open] .crew-decision-chevron{transform:rotate(180deg);}
+.crew-decision-body{padding:16px 20px 20px;border-top:1px solid #4d4a50;min-width:0;}
+.crew-decision-problems{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;}
+.crew-decision :is(.crew-decision-problems,.crew-decision-roles) button{cursor:pointer;min-height:46px;min-width:0;border-radius:9px;border:1px solid #626670;background:#2a303b;color:#eee1d5;padding:10px 9px;text-align:left;font-size:12px;line-height:1.4;font-weight:630;overflow-wrap:anywhere;}
+.crew-decision :is(.crew-decision-problems,.crew-decision-roles) button[aria-pressed=true]{background:#49382f;border-color:#e4b589;color:#ffe7ce;}
+.crew-decision-situation{font-size:13px;color:#e9dfd6;line-height:1.6;margin:17px 0 12px;}
+.crew-decision-situation strong{font-size:10px;letter-spacing:.08em;color:#edb98f;margin-right:6px;}
+.crew-decision-art{display:block;width:100%;height:auto;max-height:330px;border-radius:12px;background:#15212d;}
+.crew-decision-question{font-size:15px;font-weight:650;color:#f8eadd;line-height:1.5;margin:17px 0 10px;}
+.crew-decision-roles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+.crew-decision-feedback{margin-top:15px;border-left:3px solid #d4a47b;border-radius:7px;background:#2d3039;padding:15px;min-width:0;}
+.crew-decision-feedback>strong,.crew-decision-handshake>strong{font-size:10px;letter-spacing:.085em;color:#edbd96;}
+.crew-decision-feedback p{color:#ece1d6;font-size:12.5px;line-height:1.65;margin:8px 0;}
+.crew-decision-handshake{border-top:1px solid #59545a;padding-top:12px;margin:11px 0;}
+.crew-decision-feedback small{display:block;font-size:11px;color:#d0c2b8;line-height:1.5;}
+.crew-decision-invite{color:#c9bbb0;font-size:12px;line-height:1.55;margin:12px 0 0;}
+.crew-decision :is(summary,button):focus-visible{outline:3px solid #edbd96;outline-offset:3px;}
+@media(max-width:600px){.crew-decision summary{padding:15px;}.crew-decision-body{padding:13px;}.crew-decision-problems{grid-template-columns:minmax(0,1fr);}.crew-decision-roles{grid-template-columns:repeat(2,minmax(0,1fr));}.crew-decision-art{max-height:none;}.crew-decision-situation{margin-top:14px;}}
+@media(max-width:350px){.crew-decision-roles{grid-template-columns:minmax(0,1fr);}}
+@media(prefers-reduced-motion:reduce){.crew-decision *{transition:none!important;animation:none!important;}}

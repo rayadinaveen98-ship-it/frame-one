@@ -667,6 +667,28 @@ async function verify() {
   assert.equal(new URL(page.url()).hash,'#home','collection back returns Home');
   console.log('PASS: real cinema library and first collection journey navigate with working history');
 
+  // v0.15A6: visual crew problem-solving lives on the real film roles route.
+  await page.locator('.sidebar [data-page="crafts"]').click();
+  await page.locator('#content .crafts-grid').waitFor();
+  assert.equal(await page.locator('#content .craft-card').count(),9,'Existing nine film roles stay visible');
+  const crewWorkshop=page.locator('[data-crew-decision-studio]');
+  await crewWorkshop.waitFor();
+  assert.equal(await crewWorkshop.locator('details').getAttribute('open'),null,'Craft workshop is closed by default');
+  await crewWorkshop.locator('summary').click();
+  assert.equal(await crewWorkshop.locator('[data-crew-problem]').count(),3,'Three practical film-set problems');
+  assert.equal(await crewWorkshop.locator('[data-crew-role]').count(),4,'Four real collaboration choices');
+  await crewWorkshop.locator('[data-crew-problem="dialogue"]').click();
+  await crewWorkshop.locator('[data-crew-role="sound"]').click();
+  assert.match(await crewWorkshop.locator('[data-crew-feedback]').textContent(),/location sound team can move the microphone closer/i);
+  assert.equal(await crewWorkshop.locator('.crew-decision-art').getAttribute('role'),'img','Original diagram has accessible illustration role');
+  assert.match(await crewWorkshop.locator('.crew-decision-art').getAttribute('aria-label'),/selected department: Location sound/i);
+  await crewWorkshop.locator('[data-crew-role="camera"]').click();
+  assert.match(await crewWorkshop.locator('[data-crew-feedback]').textContent(),/Camera placement and framing affect/i,'Different role gives different collaboration advice');
+  await crewWorkshop.locator('[data-crew-problem="reaction"]').click();
+  assert.equal(await crewWorkshop.locator('[data-crew-feedback]').count(),0,'Changing scene clears stale answer');
+  await crewWorkshop.locator('[data-crew-role="editing"]').click();
+  assert.match(await crewWorkshop.locator('[data-crew-feedback]').textContent(),/Try holding the reaction before cutting/i);
+  await photo(page,'24-crew-decision-desktop.png');
   await page.locator('.sidebar [data-page="learn"]').click();
   await page.locator('.react-learn-view h1').waitFor();
   assert.match(await page.locator('.react-learn-view h1').textContent(), /learn cinema, one choice at a time/i);
@@ -1847,7 +1869,17 @@ async function verify() {
     const soundBriefOverflow=await phone.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
     if(soundBriefOverflow.scroll>soundBriefOverflow.viewport+3)record('Sound brief overflow at '+width+'px: '+soundBriefOverflow.scroll+'/'+soundBriefOverflow.viewport);
     await photo(phone,'20-react-sound-'+width+'px.png');
-    console.log('PASS: mobile ' + width + 'px navigates all seven native React Labs (Sound overflow: ' + soundOverflow.scroll + '/' + soundOverflow.viewport + ')');
+    await phone.locator('.mobile-nav [data-page="crafts"]').click();
+    const phoneCrew=phone.locator('[data-crew-decision-studio]');
+    await phoneCrew.waitFor();
+    await phoneCrew.locator('summary').click();
+    await phoneCrew.locator('[data-crew-problem="face"]').click();
+    await phoneCrew.locator('[data-crew-role="camera"]').click();
+    assert.match(await phoneCrew.locator('[data-crew-feedback]').textContent(),/cinematographer and lighting crew can test exposure/i);
+    const crewOverflow=await phone.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
+    if(crewOverflow.scroll>crewOverflow.viewport+3)record('Crew Decision Studio overflow at '+width+'px: '+crewOverflow.scroll+'/'+crewOverflow.viewport);
+    await photo(phone,'24-crew-decision-'+width+'px.png');
+    console.log('PASS: mobile ' + width + 'px navigates all seven native React Labs and Craft crew scenarios (Sound overflow: ' + soundOverflow.scroll + '/' + soundOverflow.viewport + ')');
     await mobile.close();
   }
   if (failures.length) throw Error(failures.join('\n'));
