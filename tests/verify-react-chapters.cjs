@@ -21,7 +21,7 @@ for(const needle of ['setFilter','setQuery','setGlossaryQuery','safeProgress','c
 assert(tsx.includes("window.confirm('Restore this backup?"),'restoring local learning data requires explicit consent');
 assert(tsx.includes("if(!window.frameOneLegacy) throw new Error('Learning engine not ready')"),'backup download must not claim success when engine is unavailable');
 assert(app.includes("heading.focus({ preventScroll: true })"), 'page navigation must restore accessible focus');
-assert(tsx.includes('chapter-mobile-toggle') && tsx.includes('aria-expanded={expandedChapters.has(i)}'), 'mobile chapter disclosure is accessible');
+assert(tsx.includes('chapter-mobile-toggle') && tsx.includes('aria-expanded={open}') && tsx.includes('aria-controls={'), 'chapter disclosure remains accessible on desktop and mobile');
 assert(tsx.includes('previous.has(i)?[]:[i]'), 'only one chapter expands on narrow screens');
 assert(app.includes("route.page==='learn' ? <LearnView />"));
 assert(app.includes("route.page==='lesson'||route.page==='learn'"));

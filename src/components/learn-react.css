@@ -89,3 +89,155 @@
 }
 .react-learn-view [data-inspect-backup-file],
 .react-learn-view [data-inspect-backup-text]{border-color:#988372}
+
+/* v0.15 — quiet six-chapter course library. The existing progress, lesson,
+   backup and glossary data remain untouched. Chapter bodies are disclosed
+   one at a time on ALL screen sizes, not only on phones. */
+.react-learn-view { min-width:0; }
+.react-learn-view .learn-clear-intro { margin:4px 0 14px; }
+.react-learn-view .learn-clear-intro .eyebrow-secondary { letter-spacing:.12em; }
+.react-learn-view .learn-clear-intro h1 {
+  margin:6px 0 5px; max-width:680px; color:#f4e8dd;
+  font:500 clamp(25px,3vw,34px)/1.18 Georgia,"Times New Roman",serif;
+  letter-spacing:-.028em;
+}
+.react-learn-view .learn-clear-intro p {
+  margin:0; max-width:530px; font-size:13px; line-height:1.6; color:#b5b8c0;
+}
+.react-learn-view .learn-chapter-heading{
+  display:flex;align-items:end;justify-content:space-between;gap:15px;
+  margin:24px 0 12px;
+}
+.react-learn-view .learn-chapter-heading h2{
+  font:500 clamp(20px,2.2vw,25px)/1.2 Georgia,serif;color:#f2e7da;
+  letter-spacing:-.02em;margin:5px 0 0;
+}
+.react-learn-view .learn-chapter-total{
+  color:#a7acb5;font-size:11px;white-space:nowrap;line-height:1.8;
+}
+.react-learn-view .learn-tools{
+  border:1px solid #303944;border-radius:12px;background:#171e27;
+  margin:0 0 13px;padding:0;overflow:hidden;
+}
+.react-learn-view .learn-tools>summary {
+  min-height:46px; padding:12px 16px; cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  color:#e8d8c8;font-size:13px;font-weight:650;list-style-position:inside;
+}
+.react-learn-view .learn-tools>summary span {color:#9ca5b1;font-size:11px;font-weight:500;}
+.react-learn-view .learn-tools .search-row{padding:11px 14px 8px;gap:10px;}
+.react-learn-view .learn-tools .filter-row{padding:4px 14px 13px;}
+.react-learn-view .learn-tools .filter-chip{min-height:40px;}
+.react-learn-view .learn-search-results{margin:12px 0 22px;}
+.react-learn-view .chapter-list{
+  display:grid;grid-template-columns:minmax(0,1fr);gap:10px;
+  padding:0;margin:0 0 24px;
+}
+.react-learn-view .chapter-panel{
+  display:block;min-width:0;contain:layout style;
+  padding:0;border:1px solid #343d47;border-radius:15px;
+  background:linear-gradient(120deg,#1c232c,#171d26);
+  overflow:hidden;box-shadow:none;margin:0;
+}
+.react-learn-view .chapter-panel.is-active{border-color:#8e7057;}
+.react-learn-view .chapter-panel .chapter-mobile-toggle{
+  display:flex;width:100%;min-height:91px;margin:0;padding:15px 17px;
+  gap:17px;align-items:center;justify-content:stretch;cursor:pointer;
+  background:transparent;border:0;border-radius:0;color:inherit;text-align:left;
+}
+.react-learn-view .chapter-panel .chapter-mobile-toggle:hover{background:#ffffff06;}
+.react-learn-view .chapter-panel .chapter-mobile-toggle:focus-visible{
+  outline:3px solid #edb88e;outline-offset:-4px;
+}
+.react-learn-view .chapter-panel .chapter-number{
+  flex:none;width:47px;height:54px;display:grid;place-items:center;
+  font:500 26px/1 Georgia,serif;letter-spacing:-.05em;color:#e1b38c;
+  border:1px solid #49444a;border-radius:10px;background:#292830;
+}
+.react-learn-view .chapter-panel .chapter-identity{
+  display:flex;flex:1;flex-direction:column;align-items:flex-start;
+  min-width:0;gap:3px;
+}
+.react-learn-view .chapter-panel .chapter-identity .eyebrow-secondary{
+  font-size:9px;letter-spacing:.10em;color:#bca48e;
+}
+.react-learn-view .chapter-panel .chapter-identity h2{
+  font:500 clamp(17px,2vw,20px)/1.25 Georgia,serif;letter-spacing:-.02em;
+  color:#f4e8dc;margin:0;
+}
+.react-learn-view .chapter-panel .chapter-purpose{
+  font-size:12px;line-height:1.45;color:#b6bac3;
+}
+.react-learn-view .chapter-panel .chapter-action{
+  display:flex;flex:none;flex-direction:column;align-items:center;gap:9px;
+  color:#b8bfca;
+}
+.react-learn-view .chapter-panel .chapter-count{
+  font-size:11px;font-weight:650;font-variant-numeric:tabular-nums;
+}
+.react-learn-view .chapter-panel .chapter-chevron{
+  font-size:21px;font-weight:400;line-height:1;
+  color:#e9c2a1;
+}
+.react-learn-view .chapter-panel>.chapter-meter{
+  width:100%;height:2px;margin:0;padding:0;border:0;border-radius:0;
+  background:#363c47;overflow:hidden;
+}
+.react-learn-view .chapter-panel>.chapter-meter>div{
+  height:100%;background:#d5a27b;border-radius:0;
+}
+.react-learn-view .chapter-panel .chapter-body{display:none;margin:0;padding:0;}
+.react-learn-view .chapter-panel .chapter-body.is-expanded{
+  display:block;padding:10px 16px 16px;
+  border-top:1px solid #333b45;
+}
+.react-learn-view .chapter-practice{
+  display:flex;gap:10px;align-items:baseline;
+  margin:0 0 12px;padding:9px 10px;
+  background:#252c35;border-radius:8px;color:#d9d0c8;
+  font-size:12px;line-height:1.5;
+}
+.react-learn-view .chapter-practice span{
+  flex:none;font-size:9px;font-weight:700;letter-spacing:.09em;color:#d9ab87;
+}
+.react-learn-view .chapter-panel .chapter-lessons{display:grid;gap:7px;}
+.react-learn-view .chapter-panel .react-lesson-card{
+  min-height:64px;margin:0;padding:10px 12px;
+  border:1px solid #353d46;border-radius:9px;background:#1b232c;
+  box-shadow:none;
+}
+.react-learn-view .chapter-panel .react-lesson-card .list-icon{font-size:16px;}
+.react-learn-view .chapter-panel .react-lesson-card h3{
+  margin:3px 0;line-height:1.32;font-size:15px;
+}
+.react-learn-view .chapter-panel .react-lesson-card p{line-height:1.4;margin:0;color:#aeb6be;font-size:11px;}
+.react-learn-view .chapter-panel .react-lesson-card .eyebrow-secondary{font-size:9px;}
+.react-learn-view .learn-resources-label{
+  margin:25px 0 10px;color:#a9adb8;font-size:11px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+}
+.react-learn-view .backup-panel,.react-learn-view .glossary-block{
+  margin-bottom:9px;border-color:#343c47;background:#1a222b;
+}
+@media(max-width:760px){
+  .react-learn-view .learn-clear-intro{margin:0 0 11px;}
+  .react-learn-view .learn-clear-intro h1{font-size:26px;}
+  .react-learn-view .learn-chapter-heading{margin:18px 0 10px;}
+  .react-learn-view .learn-chapter-total{font-size:10px;}
+  .react-learn-view .chapter-panel .chapter-mobile-toggle{
+    min-height:87px;padding:13px 12px;gap:11px;
+  }
+  .react-learn-view .chapter-panel .chapter-number{height:47px;width:41px;font-size:22px;}
+  .react-learn-view .chapter-panel .chapter-identity h2{font-size:17px;}
+  .react-learn-view .chapter-panel .chapter-purpose{font-size:11px;line-height:1.4;}
+  .react-learn-view .chapter-panel .chapter-body.is-expanded{padding:10px 11px 13px;}
+  .react-learn-view .chapter-practice{display:block;font-size:11px;}
+  .react-learn-view .chapter-practice span{display:block;margin-bottom:4px;}
+}
+@media(max-width:350px){
+  .react-learn-view .learn-chapter-total{display:none;}
+  .react-learn-view .chapter-panel .chapter-mobile-toggle{gap:9px;padding:12px 9px;}
+  .react-learn-view .chapter-panel .chapter-number{width:35px;height:42px;font-size:19px;}
+  .react-learn-view .chapter-panel .chapter-identity h2{font-size:16px;}
+  .react-learn-view .chapter-panel .chapter-count{font-size:10px;}
+}

@@ -186,16 +186,28 @@ function LearningBackup({onRestored}: {onRestored:()=>void}) {
   </details>;
 }
 
+// One concise promise and practical outcome per existing curriculum chapter.
+// These are presentation-only descriptions; lesson IDs and progress stay unchanged.
+const chapterFocus = [
+  {promise:'Understand what cinema is and how it began.',practice:'Spot the difference between a frame, a shot and a scene.'},
+  {promise:'Turn an everyday moment into a human story.',practice:'Build a character, an obstacle and a filmable choice.'},
+  {promise:'Use framing, light and movement with intention.',practice:'Choose a shot that guides the audience\'s attention.'},
+  {promise:'Feel how sound and cuts change a moment.',practice:'Compare timing, ambience and music in a scene.'},
+  {promise:'See how the people on a film set work together.',practice:'Connect a creative decision to the team who makes it.'},
+  {promise:'Take one small film from idea to finished scene.',practice:'Plan, shoot, edit and reflect on your own work.'},
+] as const;
+
 export function LearnView() {
   const [filter,setFilter] = useState('All');
   const [query,setQuery] = useState('');
   const [glossaryQuery,setGlossaryQuery] = useState('');
   const [revision,setRevision] = useState(0);
-  // Begin inside the chapter that contains the next lesson, without creating any new saved data.
+  // Open only the chapter containing the next unfinished lesson.
+  // No new progress data or stored UI settings.
   const [expandedChapters,setExpandedChapters] = useState<Set<number>>(()=>{
     const progress=safeProgress(ids);
     const upcoming=lessons.find(lesson=>!progress.has(lesson.id));
-    const chapter=chapters.findIndex(item=>upcoming?item.ids.includes(upcoming.id):item.ids.includes(lessons[0].id));
+    const chapter=chapters.findIndex(item=>item.ids.includes(upcoming?.id??lessons[0].id));
     return new Set([Math.max(0,chapter)]);
   });
   const pendingChapterFocus=useRef<number|null>(null);
@@ -215,35 +227,60 @@ export function LearnView() {
     setFilter('All');
     setExpandedChapters(new Set([chapter]));
   };
-  // Read on render: completed lessons are stored in the same original progress key.
   const completed = safeProgress(ids);
-  const completedCount=completed.size;
   const next=lessons.find(l=>!completed.has(l.id))??lessons[0];
   const filtered = useMemo(()=>lessons.filter(l=>(filter==='All'||l.unit===filter) && `${l.title} ${l.subtitle} ${l.unit}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())),[filter,query]);
   const matchedGlossary = useMemo(()=>glossary.filter(t=>`${t.term} ${t.te} ${t.meaning}`.toLocaleLowerCase().includes(glossaryQuery.trim().toLocaleLowerCase())),[glossaryQuery]);
   const searched = query.trim()!==''||filter!=='All';
-  return <div className="page react-learn-view" data-revision={revision}>
-    <div className="page-intro"><div className="eyebrow">YOUR LEARNING JOURNEY</div><h1>Every great film starts with curiosity.</h1><p>33 beginner lessons in six chapters. Explore in any order, or follow a simple path.</p></div>
+  return <div className="page react-learn-view" data-revision={revision} data-clear-chapters>
+    <header className="learn-clear-intro">
+      <span className="eyebrow-secondary">YOUR LEARNING JOURNEY</span>
+      <h1>Learn cinema, one choice at a time.</h1>
+      <p>Six chapters. Thirty-three short lessons. Start anywhere.</p>
+    </header>
     <LearningJourney chapters={chapters} completed={completed} totalLessons={lessons.length}
       nextLesson={next} onNext={()=>navigate('lesson',next.id)}
       activeChapter={[...expandedChapters][0]??0} onChapterSelect={jumpToChapter}/>
-    <div className="search-row"><label className="sr-only" htmlFor="reactLessonSearch">Search lessons</label><input className="learn-search" id="reactLessonSearch" type="search" placeholder="Search: frames, sound, dialogue..." value={query} onChange={e=>setQuery(e.target.value)} /><small>{filtered.length} of {lessons.length} lessons</small></div>
-    <div className="filter-row" aria-label="Filter lessons by chapter topic">{filters.map(c=><button type="button" className="filter-chip" key={c} aria-pressed={filter===c} onClick={()=>setFilter(c)}>{c}</button>)}</div>
-    {searched ? <div className="list-grid" aria-live="polite">{filtered.length ? filtered.map(l=><LessonRow key={l.id} lesson={l} completed={completed.has(l.id)}/>) : <p className="empty">No matching lessons. Try another word or choose All.</p>}</div>
-    : <div className="chapter-list">{chapters.map((c,i)=>{
+    <div className="learn-chapter-heading">
+      <div><span className="eyebrow-secondary">THE COURSE</span><h2>Explore six chapters</h2></div>
+      <span className="learn-chapter-total">{chapters.length} chapters · {lessons.length} lessons</span>
+    </div>
+    <details className="learn-tools" open={searched||undefined}>
+      <summary>Find a lesson <span>Search and filters</span></summary>
+      <div className="search-row"><label className="sr-only" htmlFor="reactLessonSearch">Search lessons</label><input className="learn-search" id="reactLessonSearch" type="search" placeholder="Search frames, dialogue, sound..." value={query} onChange={e=>setQuery(e.target.value)} /><small>{filtered.length} of {lessons.length} lessons</small></div>
+      <div className="filter-row" aria-label="Filter lessons by chapter topic">{filters.map(c=><button type="button" className="filter-chip" key={c} aria-pressed={filter===c} onClick={()=>setFilter(c)}>{c}</button>)}</div>
+    </details>
+    {searched ? <div className="list-grid learn-search-results" aria-live="polite">{filtered.length ? filtered.map(l=><LessonRow key={l.id} lesson={l} completed={completed.has(l.id)}/>) : <p className="empty">No matching lessons. Try a different term or choose All.</p>}</div>
+    : <div className="chapter-list" data-chapter-library>{chapters.map((c,i)=>{
       const count=c.ids.filter(id=>completed.has(id)).length;
-      return <section key={c.name} className="chapter-panel" aria-labelledby={`reactChapter${i}`}>
-        <div className="chapter-head"><div className="chapter-number">{String(i+1).padStart(2,'0')}</div><div><span className="eyebrow-secondary">CHAPTER {i+1} · {count}/{c.ids.length} COMPLETE</span><h2 id={`reactChapter${i}`}>{c.name.replace(/^\d+\s*[·.\-]\s*/, '')}</h2><p>{c.strap}</p></div><div className="chapter-meter" role="progressbar" aria-label={`Chapter ${i+1} lessons finished`} aria-valuenow={count} aria-valuemin={0} aria-valuemax={c.ids.length}><div style={{width:`${Math.round(count/c.ids.length*100)}%`}} /></div></div>
-        <button className="chapter-mobile-toggle" type="button" aria-expanded={expandedChapters.has(i)} aria-controls={`chapterLessons${i}`} onClick={()=>setExpandedChapters(previous=>new Set(previous.has(i)?[]:[i]))}>
-          <span>{expandedChapters.has(i)?'Hide lessons':`Explore ${c.ids.length} lessons`}</span>
-          <span aria-hidden="true">{expandedChapters.has(i)?'−':'+'}</span>
+      const open=expandedChapters.has(i);
+      const focus=chapterFocus[i];
+      return <section key={c.name} className={'chapter-panel'+(open?' is-active':'')} aria-labelledby={`reactChapter${i}`} data-chapter-index={i}>
+        <button className="chapter-mobile-toggle" type="button"
+          aria-label={`${open?'Close':'Open'} chapter ${i+1}: ${c.name.replace(/^\d+\s*[·.\-]\s*/, '')}, ${count} of ${c.ids.length} lessons complete`}
+          aria-expanded={open} aria-controls={`chapterLessons${i}`}
+          onClick={()=>setExpandedChapters(previous=>new Set(previous.has(i)?[]:[i]))}>
+          <span className="chapter-number" aria-hidden="true">{String(i+1).padStart(2,'0')}</span>
+          <span className="chapter-identity">
+            <span className="eyebrow-secondary">CHAPTER {String(i+1).padStart(2,'0')} · {c.ids.length} LESSONS</span>
+            <h2 id={`reactChapter${i}`}>{c.name.replace(/^\d+\s*[·.\-]\s*/, '')}</h2>
+            <span className="chapter-purpose">{focus.promise}</span>
+          </span>
+          <span className="chapter-action" aria-hidden="true">
+            <span className="chapter-count">{count}/{c.ids.length}</span>
+            <span className="chapter-chevron">{open?'−':'+'}</span>
+          </span>
         </button>
-        <div id={`chapterLessons${i}`} className={`chapter-body ${expandedChapters.has(i)?'is-expanded':''}`}>
+        <div className="chapter-meter" role="progressbar" aria-label={`Chapter ${i+1} lessons finished`} aria-valuenow={count} aria-valuemin={0} aria-valuemax={c.ids.length}>
+          <div style={{width:`${Math.round(count/c.ids.length*100)}%`}}/>
+        </div>
+        <div id={`chapterLessons${i}`} className={`chapter-body ${open?'is-expanded':''}`} aria-hidden={!open}>
+          <p className="chapter-practice"><span>YOU'LL TRY</span>{focus.practice}</p>
           <div className="chapter-lessons">{c.ids.map(id=>byId.get(id)).filter((l):l is Lesson=>Boolean(l)).map(l=><LessonRow key={l.id} lesson={l} completed={completed.has(l.id)}/>)}</div>
-          {c.later.length ? <details className="coming-chapters"><summary>Future topics · {c.later.length}</summary><div>{c.later.map(x=><span key={x}>{x}</span>)}</div></details> : <div className="chapter-finished">✓ All lessons in this chapter are available</div>}
         </div>
       </section>;
     })}</div>}
+    <div className="learn-resources-label">Your learning resources</div>
     <LearningBackup onRestored={()=>setRevision(n=>n+1)}/>
     <details className="glossary-block"><summary>Film words, explained simply <span>{glossary.length} terms · English + తెలుగు</span></summary>
       <div className="glossary-search"><label className="sr-only" htmlFor="reactGlossarySearch">Search glossary</label><input className="learn-search" id="reactGlossarySearch" type="search" value={glossaryQuery} onChange={e=>setGlossaryQuery(e.target.value)} placeholder="Find a film word..." /></div>

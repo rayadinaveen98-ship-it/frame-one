@@ -2,6 +2,10 @@
 
 **Latest development checkpoint: v0.14A2 native two-project recovery acceptance (31 October 2026, test milestone) · v0.14A1 multi-project Make Lab merged · public APK remains v0.12A2, temporarily signed · not app-store released.**
 
+## In development — v0.15A1: a calmer Learn experience (1 November 2026)
+
+Six clearly explained chapters now use one expanded chapter at a time, a compact learning compass, concrete practice outcomes and searchable lessons behind an optional disclosure. All original 33 lessons and saved progress, labs, film projects and backup/restore formats are preserved. This is a source/QA milestone: **not a new public APK**. [Design and compatibility notes](docs/QA_V15A1_CLEAR_CHAPTERS.md).
+
 Beginner-first, interactive education about what films are, how filmmakers tell stories, the crafts of cinema and practical visual/sound choices. The curriculum currently includes **33 drafted lessons, 6 chapters, 7 creative labs, 47 glossary terms, 9 introductory roles**, optional Telugu summaries, quizzes, storyboards, progress and local backups.
 
 ## Latest — v0.14A2 Android two-project recovery acceptance (31 October 2026)

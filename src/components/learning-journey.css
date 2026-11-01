@@ -112,3 +112,83 @@
 @media(prefers-reduced-motion:reduce){
   .react-learn-view .journey-dashboard *{scroll-behavior:auto;transition:none}
 }
+
+/* v0.15: one quiet course compass instead of two oversized feature cards.
+   The six accessible chapter shortcuts and existing progress semantics stay. */
+.react-learn-view .journey-dashboard{
+  grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+  gap:8px;margin:14px 0 16px;
+}
+.react-learn-view .journey-progress-panel,
+.react-learn-view .journey-next-panel{
+  border:1px solid #35404b;border-radius:13px;
+  padding:14px 17px;background:#1c232d;box-shadow:none;
+}
+.react-learn-view .journey-next-panel{
+  background:#202832;border-color:#3c454e;
+}
+.react-learn-view .journey-progress-panel .eyebrow-secondary,
+.react-learn-view .journey-next-panel .eyebrow-secondary{
+  font-size:10px;letter-spacing:.09em;
+}
+.react-learn-view .journey-percent{font-size:14px;color:#e0af8b;}
+.react-learn-view .journey-count{gap:7px;margin:3px 0 8px;align-items:baseline;}
+.react-learn-view .journey-count strong{font:600 26px/1.1 system-ui,sans-serif;letter-spacing:-.04em;}
+.react-learn-view .journey-count span{font-size:11px;color:#b3b8bf;}
+.react-learn-view .journey-count span br{display:none;}
+.react-learn-view .journey-dashboard .journey-meter{height:3px;margin:0 0 10px;background:#3b444f;}
+.react-learn-view .journey-chapter-label{margin:0 0 4px;font-size:9px;color:#aeb4bf;}
+.react-learn-view .journey-chapter-segments{gap:4px;overflow-x:auto;padding:2px 0;}
+.react-learn-view .journey-chapter-segment{
+  min-width:44px;height:30px;padding:5px 6px;gap:4px;
+  border-radius:7px;border-color:#424852;background:#252d37;
+  flex:1 0 44px;
+}
+.react-learn-view .journey-chapter-segment.is-current{background:#49372d;border-color:#9a765a;}
+.react-learn-view .journey-segment-track{height:2px;}
+.react-learn-view .journey-segment-number{font-size:10px;}
+.react-learn-view .journey-caption{margin:3px 0 0;font-size:10px;}
+.react-learn-view .journey-next-panel{justify-content:space-between;}
+.react-learn-view .journey-next-topline{gap:8px;}
+.react-learn-view .journey-next-index{margin-top:10px;font-size:9px;}
+.react-learn-view .journey-next-title{
+  margin:3px 0 3px;font:500 clamp(18px,2vw,23px)/1.18 Georgia,serif;
+}
+.react-learn-view .journey-next-description{
+  font-size:11px;line-height:1.35;margin:0 0 8px;color:#adb7c2;
+}
+.react-learn-view .journey-next-cta{
+  margin-top:auto;min-height:42px;padding:9px 16px;
+  font-size:12px;
+}
+@media(max-width:760px){
+  .react-learn-view .journey-dashboard{gap:7px;margin:11px 0 14px;}
+  .react-learn-view .journey-progress-panel,.react-learn-view .journey-next-panel{padding:11px 13px;}
+  .react-learn-view .journey-count{margin:1px 0 7px;}
+  .react-learn-view .journey-count strong{font-size:24px;}
+  .react-learn-view .journey-dashboard .journey-meter{margin-bottom:8px;}
+  .react-learn-view .journey-next-index{margin-top:6px;}
+  .react-learn-view .journey-next-title{font-size:19px;}
+  .react-learn-view .journey-next-description{order:0;margin-bottom:6px;}
+  .react-learn-view .journey-next-cta{order:0;margin-top:5px;}
+}
+
+/* v0.15A1 screenshot review: the compact two-column desktop compass must
+   explicitly become one column on real 320px and 390px Android viewports.
+   The general v0.15 rule is later than the original mobile rule. */
+.react-learn-view .journey-count span br{display:block;}
+@media(max-width:760px){
+  .react-learn-view .journey-dashboard{
+    grid-template-columns:minmax(0,1fr);gap:7px;
+  }
+  .react-learn-view .journey-next-panel{order:-1;}
+  .react-learn-view .journey-progress-panel,
+  .react-learn-view .journey-next-panel{min-width:0;}
+  .react-learn-view .journey-next-panel .journey-next-topline{
+    align-items:center;
+  }
+  .react-learn-view .journey-next-title{font-size:20px;max-width:100%;}
+  .react-learn-view .journey-count span br{display:block;}
+  .react-learn-view .journey-count span{font-size:11px;word-spacing:.05em;}
+  .react-learn-view .journey-chapter-segments{overflow-x:auto;}
+}
