@@ -172,3 +172,23 @@
   .react-learn-view .journey-next-description{order:0;margin-bottom:6px;}
   .react-learn-view .journey-next-cta{order:0;margin-top:5px;}
 }
+
+/* v0.15A1 screenshot review: the compact two-column desktop compass must
+   explicitly become one column on real 320px and 390px Android viewports.
+   The general v0.15 rule is later than the original mobile rule. */
+.react-learn-view .journey-count span br{display:block;}
+@media(max-width:760px){
+  .react-learn-view .journey-dashboard{
+    grid-template-columns:minmax(0,1fr);gap:7px;
+  }
+  .react-learn-view .journey-next-panel{order:-1;}
+  .react-learn-view .journey-progress-panel,
+  .react-learn-view .journey-next-panel{min-width:0;}
+  .react-learn-view .journey-next-panel .journey-next-topline{
+    align-items:center;
+  }
+  .react-learn-view .journey-next-title{font-size:20px;max-width:100%;}
+  .react-learn-view .journey-count span br{display:none;}
+  .react-learn-view .journey-count span{font-size:11px;word-spacing:.05em;}
+  .react-learn-view .journey-chapter-segments{overflow-x:auto;}
+}
