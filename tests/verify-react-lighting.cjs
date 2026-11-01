@@ -31,7 +31,7 @@ for(const key of ['reaction','secrecy','separation']) assert(brief.includes("id:
 for(const key of ["outcomes: Record<LightingMode, string>",'brief.outcomes[mode]','power <= 40','softness <= 30','softness >= 70'])
   assert(brief.includes(key), 'live feedback uses actual light settings: '+key);
 assert(brief.includes('<details>') && brief.includes('data-light-feedback role="status"') && brief.includes('aria-pressed={active === item.id}'), 'disclosure, status and pressed-state accessible');
-assert(brief.includes('There is no single correct answer.') && !brief.includes('localStorage'), 'uns cored, ephemeral creative learning');
+assert(brief.includes('There is no single correct answer.') && !brief.includes('localStorage'), 'unscored, ephemeral creative learning');
 assert(browser.includes('[data-light-brief="separation"]') && browser.includes('data-light-feedback'), 'actual browser exercises brief and live response');
 for(const cls of ['lighting-stage','lighting-badge','light-question','light-practice','cinematic-lab-shell']) assert(css.includes('.'+cls),'original lighting styles kept: '+cls);
 for(const key of ['frameone-progress-v01','frameone-practice-v07','frameone-scene-v07'])assert(old.includes(key),'data key unchanged: '+key);
