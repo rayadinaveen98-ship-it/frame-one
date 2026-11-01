@@ -925,6 +925,23 @@ async function verify() {
     return root?.querySelector('.cut-illustration.person') && root.querySelector('[data-cut-play="play"]');
   },null,{timeout:7000});
   assert.equal(await cut.locator('[data-cut-play="stop"]').count(),0,'Playback stops automatically after the third shot');
+  // v0.15A4 story-first editing exercise: use real shot order and durations.
+  const cutBrief=cut.locator('.cut-brief');
+  await cutBrief.locator('summary').click();
+  await cutBrief.locator('[data-cut-brief="question"]').click();
+  await cutBrief.locator('[data-cut-review]').click();
+  assert.match(await cutBrief.locator('[data-cut-feedback]').textContent(),/location offers the audience immediate geography/i,'Initial feedback reflects place-first edit');
+  await cutBrief.locator('[data-cut-preset]').click();
+  assert.match(await cut.locator('.timeline-clip').first().textContent(),/Clock/i,'Suggested edit reorders actual first shot');
+  assert.match(await cut.locator('.timeline-clip').first().textContent(),/4s/i,'Suggested edit changes actual hold time');
+  assert.equal(await cut.locator('.cut-illustration.detail').count(),1,'Suggested edit changes the actual illustrated first shot');
+  await cutBrief.locator('[data-cut-review]').click();
+  assert.match(await cutBrief.locator('[data-cut-feedback]').textContent(),/clock-first edit presents a potential clue/i,'Discussion follows clock-first order');
+  assert.match(await cutBrief.locator('[data-cut-feedback]').textContent(),/Clock 4s/i,'Comparison includes true first duration');
+  await cut.locator('#shotDuration').focus();await cut.locator('#shotDuration').press('Home');
+  assert.match(await cutBrief.locator('[data-cut-feedback]').textContent(),/quick glimpse/i,'Feedback updates when duration changes');
+  await cutBrief.locator('[data-cut-brief="character"]').click();
+  assert.equal(await cutBrief.locator('[data-cut-feedback]').count(),0,'Switching prompt removes previous analysis');
   await photo(page,'15-react-cut-desktop.png');
   // Navigating away must unmount and cancel the timer (no hidden playback).
   await cut.locator('[data-cut-play="play"]').click();
@@ -1758,6 +1775,15 @@ async function verify() {
     assert.equal(await mobileCut.locator('.timeline-clip').count(),3);
     const cutOverflow=await phone.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
     if(cutOverflow.scroll>cutOverflow.viewport+3)record('React Cut Lab overflow at '+width+'px: '+cutOverflow.scroll+'/'+cutOverflow.viewport);
+    const mobileEditBrief=mobileCut.locator('.cut-brief');
+    await mobileEditBrief.locator('summary').click();
+    await mobileEditBrief.locator('[data-cut-brief="character"]').click();
+    await mobileEditBrief.locator('[data-cut-preset]').click();
+    assert.match(await mobileCut.locator('.timeline-clip').first().textContent(),/Person/i);
+    await mobileEditBrief.locator('[data-cut-review]').click();
+    assert.match(await mobileEditBrief.locator('[data-cut-feedback]').textContent(),/Beginning with the person/i);
+    const cutBriefOverflow=await phone.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
+    if(cutBriefOverflow.scroll>cutBriefOverflow.viewport+3)record('Editing brief overflow at '+width+'px: '+cutBriefOverflow.scroll+'/'+cutBriefOverflow.viewport);
     await photo(phone,'16-react-cut-'+width+'px.png');
     await mobileCut.locator('[data-lab="story"]').click();
     const mobileMake=phone.locator('.react-make-lab');
