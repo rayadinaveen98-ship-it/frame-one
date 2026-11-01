@@ -1352,6 +1352,35 @@ async function verify() {
   console.log('PASS: all 33 lesson pages, correct quiz answers and completed progress');
   await lessonContext.close();
 
+  // v0.15A8: each existing camera A/B study offers three practical decisions.
+  for(const cameraLesson of ['camera','movement','lenses']){
+    await page.evaluate(id=>window.frameOneLegacy.navigate('lesson',id),cameraLesson);
+    const cameraBoard=page.locator('[data-camera-decision="'+cameraLesson+'"]');
+    await cameraBoard.waitFor();
+    assert.equal(await cameraBoard.locator('details').getAttribute('open'),null,'Camera option stays collapsed until chosen');
+    assert.equal(await page.locator('[data-visual-lesson="'+cameraLesson+'"]').count(),1,'Original A/B study remains');
+    await cameraBoard.locator('summary').click();
+    assert.equal(await cameraBoard.locator('[data-camera-choice]').count(),3);
+    assert.equal(await cameraBoard.locator('[data-camera-illustration]').getAttribute('data-camera-view'),'0');
+    const originalDiagram=await cameraBoard.locator('[data-camera-illustration]').innerHTML();
+    await cameraBoard.locator('[data-camera-choice]').nth(1).click();
+    assert.equal(await cameraBoard.locator('[data-camera-illustration]').getAttribute('data-camera-view'),'1');
+    assert.notEqual(await cameraBoard.locator('[data-camera-illustration]').innerHTML(),originalDiagram,
+      'Camera choice must change the actual authored SVG, not only the copy');
+    assert.equal(await cameraBoard.locator('[data-camera-choice]').nth(1).getAttribute('aria-pressed'),'true');
+    await cameraBoard.locator('[data-camera-discuss]').click();
+    assert.equal(await cameraBoard.locator('[data-camera-insight]').count(),1);
+    assert.match(await cameraBoard.locator('[data-camera-insight]').textContent(),/TRY WITH YOUR PHONE/);
+    await cameraBoard.locator('[data-camera-choice]').nth(2).click();
+    assert.equal(await cameraBoard.locator('[data-camera-insight]').count(),0,'Switching camera setup clears outdated explanation');
+    await cameraBoard.locator('[data-camera-discuss]').click();
+    assert.equal(await cameraBoard.locator('[data-camera-insight]').count(),1);
+    assert.equal(await cameraBoard.locator('[data-camera-illustration]').getAttribute('data-camera-view'),'2');
+    await photo(page,'25-camera-decision-'+cameraLesson+'-desktop.png');
+  }
+  await page.evaluate(()=>window.frameOneLegacy.navigate('home'));
+  await page.locator('.cinema-discovery').waitFor();
+
   for (const width of [390, 320]) {
     const mobile = await browser.newContext({ viewport: { width, height: 800 }, isMobile: true, deviceScaleFactor: 2, hasTouch: true, acceptDownloads: true });
     const phone = await mobile.newPage();
@@ -1919,6 +1948,20 @@ async function verify() {
     const crewOverflow=await phone.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
     if(crewOverflow.scroll>crewOverflow.viewport+3)record('Crew Decision Studio overflow at '+width+'px: '+crewOverflow.scroll+'/'+crewOverflow.viewport);
     await photo(phone,'24-crew-decision-'+width+'px.png');
+    // Original perspective diagrams must work on narrow real touch layouts.
+    for(const cameraLesson of ['camera','movement','lenses']){
+      await phone.evaluate(id=>window.frameOneLegacy.navigate('lesson',id),cameraLesson);
+      const phoneCameraBoard=phone.locator('[data-camera-decision="'+cameraLesson+'"]');
+      await phoneCameraBoard.waitFor();
+      await phoneCameraBoard.locator('summary').click();
+      await phoneCameraBoard.locator('[data-camera-choice]').nth(2).click();
+      assert.equal(await phoneCameraBoard.locator('[data-camera-illustration]').getAttribute('data-camera-view'),'2');
+      await phoneCameraBoard.locator('[data-camera-discuss]').click();
+      assert.equal(await phoneCameraBoard.locator('[data-camera-insight]').count(),1);
+      const boardWidth=await phone.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
+      if(boardWidth.scroll>boardWidth.viewport+3)record('Camera Decision Board overflow at '+width+'px / '+cameraLesson+': '+boardWidth.scroll+'/'+boardWidth.viewport);
+      await photo(phone,'25-camera-decision-'+cameraLesson+'-'+width+'px.png');
+    }
     console.log('PASS: mobile ' + width + 'px navigates all seven native React Labs and Craft crew scenarios (Sound overflow: ' + soundOverflow.scroll + '/' + soundOverflow.viewport + ')');
     await mobile.close();
   }
