@@ -3,6 +3,7 @@ import {visualPilotForLesson,type VisualPilotId} from '../data/visual-lessons';
 import {openLab} from '../legacy/bridge';
 import {ShotSizeFrames,CompositionFrames,ColourFrames} from './VisualFramesNext';
 import {TenVisualFrame} from './TenVisualFrames';
+import {CameraDecisionBoard} from './CameraDecisionBoard';
 import './visual-lessons.css';
 
 function LightingFrame({take}:{take:0|1}){
@@ -168,6 +169,8 @@ export function VisualLessonPilot({lessonId}:{lessonId:string}){
         </div>:null}
       </div>
     </div>
+    {(pilot.id==='camera'||pilot.id==='movement'||pilot.id==='lenses')
+      ?<CameraDecisionBoard key={pilot.id} lesson={pilot.id}/>:null}
     <footer className="vl-footer">
       <div className="vl-takeaway"><span>THE FRAME TO REMEMBER</span><p>{pilot.takeaway}</p></div>
       <div className="vl-practice"><span>TRY WITH YOUR PHONE</span><p>{pilot.prompt}</p>
