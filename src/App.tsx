@@ -3,6 +3,7 @@ import { LessonView } from './components/LessonView';
 import { LearnView } from './components/LearnView';
 import { PersonalFrames } from './components/PersonalFrames';
 import { CinemaLibraryHome } from './components/CinemaLibraryHome';
+import { CrewDecisionStudio } from './components/CrewDecisionStudio';
 import { CollectionJourney } from './components/CollectionJourney';
 import { LaunchExperience } from './components/LaunchExperience';
 import { ContinuityLab, type ContinuityMode } from './components/labs/ContinuityLab';
@@ -191,6 +192,7 @@ export default function App() {
       {route.page==='home' ? <PersonalFrames /> : null}
       <div id="content" aria-live="off" hidden={route.page==='lesson'||route.page==='learn'||route.page==='collection'||(route.page==='lab'&&(route.lab==='continuity'||route.lab==='colour'||route.lab==='frame'||route.lab==='light'||route.lab==='cut'||route.lab==='story'||route.lab==='sound'))} />
       {route.page==='home' ? <CinemaLibraryHome /> : null}
+      {route.page==='crafts' ? <CrewDecisionStudio /> : null}
       {route.page==='collection' && route.collection ? <CollectionJourney key={route.collection} collectionId={route.collection} /> : null}
       {route.page==='lab' && route.lab==='continuity' ? <ContinuityLab mode={continuityMode} setMode={setContinuityMode} /> : null}
       {route.page==='lab' && route.lab==='colour' ? <ColourLab mode={colourMode} setMode={setColourMode} strength={colourStrength} setStrength={setColourStrength} /> : null}
