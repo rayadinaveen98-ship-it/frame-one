@@ -1,6 +1,7 @@
 import {useEffect,useRef,useState,type ChangeEvent,type CSSProperties,type Dispatch,type MouseEvent,type SetStateAction} from 'react';
 import type {LabName} from '../../legacy/bridge';
 import {CinemaScene} from './CinemaScene';
+import {SoundBrief} from './SoundBrief';
 import {createSoundSession,soundOptions,SOUND_SECONDS,type SoundMode,type SoundSession} from './sound-audio';
 
 /** Seventh React Creative Lab. Synthesized audio starts from an explicit
@@ -107,6 +108,12 @@ export function SoundLab({mode,setMode,ambience,setAmbience}:Props){
         <p className="studio-fact">“No music” does not necessarily mean silence. Dialogue and environmental sounds can still be present. These are illustrative synthesized sounds, not real film scores.</p>
       </div>
     </div>
+    <SoundBrief mode={mode} ambience={ambience} onApply={(nextMode,nextAmbience)=>{
+      stop();
+      setMode(nextMode);
+      setAmbience(nextAmbience);
+      setStatus('Press Play to compare');
+    }} />
     <div className="studio-next"><span>KEEP EXPLORING</span>
       <button className="btn-secondary" type="button" data-lab="cut">03 · Build an edit →</button>
       <button className="btn-secondary" type="button" data-lesson="sound">Read the connected lesson →</button>
