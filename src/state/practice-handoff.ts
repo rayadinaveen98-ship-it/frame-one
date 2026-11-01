@@ -10,6 +10,9 @@ export const lessonPracticeMatches:Readonly<Record<string,PracticeId>>={
   shotlist:'three-shots',
   making:'three-shots',
   shootscene:'three-shots',
+  acting:'performance',
+  character:'performance',
+  camera:'camera-height',
   lighting:'light',
   colour:'light',
   sound:'silence',
@@ -22,7 +25,7 @@ export const lessonPracticeMatches:Readonly<Record<string,PracticeId>>={
 };
 
 let pending:PracticeId|null=null;
-const allMissions:readonly PracticeId[]=['three-shots','light','silence','rhythm'];
+const allMissions:readonly PracticeId[]=['three-shots','light','silence','rhythm','performance','camera-height'];
 
 export function practiceForLesson(lessonId:string):PracticeId|null{
   return Object.prototype.hasOwnProperty.call(lessonPracticeMatches,lessonId)

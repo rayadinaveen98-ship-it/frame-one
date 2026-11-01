@@ -1,6 +1,7 @@
 import {useEffect,useRef,useState} from 'react';
 import {practiceMissions,type PracticeId} from '../data/film-it-yourself';
 import {formatPracticeSheet} from '../data/practice-sheet';
+import {PracticeVisual} from './PracticeVisual';
 import {navigate,openLab} from '../legacy/bridge';
 import {takePracticeHandoff} from '../state/practice-handoff';
 import './film-it-yourself.css';
@@ -66,7 +67,7 @@ export function FilmItYourself(){
       <div>
         <span className="practice-overline">THE PRACTICE DESK · PHONE-FRIENDLY</span>
         <h2 ref={headlineRef} id="practice-studio-title">Film it yourself.</h2>
-        <p>Four small exercises you can try with a phone and everyday objects. Learn by comparing what changes.</p>
+        <p>Six small exercises you can try with a phone and everyday objects. Learn by comparing what changes.</p>
       </div>
       <button type="button" className="practice-open" data-practice-toggle
         aria-expanded={expanded} aria-controls="practice-studio-workspace"
@@ -90,6 +91,8 @@ export function FilmItYourself(){
           <h3>{mission.title}</h3>
           <p>{mission.tagline}</p>
         </div>
+        {mission.id==='performance'||mission.id==='camera-height'
+          ?<PracticeVisual key={mission.id} mission={mission.id}/>:null}
         <div className="practice-step-list" aria-label="Three practical shooting steps">
           {mission.steps.map((step,index)=><div className="practice-step" key={index}
             data-practice-step={index} data-practice-done={tried[index]?'true':'false'}>

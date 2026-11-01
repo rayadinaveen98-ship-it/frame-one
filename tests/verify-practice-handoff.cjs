@@ -8,9 +8,9 @@ const compiled=ts.transpileModule(read(source),{compilerOptions:{module:ts.Modul
 const moduleValue={exports:{}};
 vm.runInNewContext(compiled,{module:moduleValue,exports:moduleValue.exports});
 const {lessonPracticeMatches,practiceForLesson,stagePracticeHandoff,takePracticeHandoff}=moduleValue.exports;
-const missions=['three-shots','light','silence','rhythm'];
+const missions=['three-shots','light','silence','rhythm','performance','camera-height'];
 const lessons=new Set(curriculum.lessons.map(lesson=>lesson.id));
-assert.equal(Object.keys(lessonPracticeMatches).length,15);
+assert.equal(Object.keys(lessonPracticeMatches).length,18);
 assert.deepEqual(new Set(Object.values(lessonPracticeMatches)),new Set(missions));
 for(const [id,mission] of Object.entries(lessonPracticeMatches)){
   assert(lessons.has(id),'All matched lessons exist: '+id);
@@ -18,6 +18,9 @@ for(const [id,mission] of Object.entries(lessonPracticeMatches)){
   assert.equal(practiceForLesson(id),mission);
 }
 assert.equal(practiceForLesson('why'),null,'Not every lesson needs a filming task');
+assert.equal(practiceForLesson('acting'),'performance','Acting connects to the actual direction exercise');
+assert.equal(practiceForLesson('character'),'performance','Character study connects to directed gesture');
+assert.equal(practiceForLesson('camera'),'camera-height','Camera lesson opens camera-height assignment');
 assert.equal(practiceForLesson('__proto__'),null,'Inherited JS keys cannot become lesson routes');
 assert.equal(takePracticeHandoff(),null);
 stagePracticeHandoff('light');
@@ -50,4 +53,4 @@ assert(!read(source).includes('localStorage')&&!read(source).includes('sessionSt
 assert(styles.includes('@media(max-width:500px)'));
 assert(practiceCss.includes('.practice-arrival'));
 assert(browser.includes('data-lesson-practice="light"'),'Real-browser handoff coverage required');
-console.log('PASS: fifteen real lessons link to all four offline practice missions; one-shot routing, focus and no saved state.');
+console.log('PASS: eighteen real lessons link to all six offline practice missions; one-shot routing, focus and no saved state.');

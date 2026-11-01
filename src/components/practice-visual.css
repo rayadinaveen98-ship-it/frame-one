@@ -1,0 +1,14 @@
+/* v0.15A7: compact, optional two-take storyboard for directing/camera exercises. */
+.practice-visual{margin:3px 0 15px;min-width:0;border:1px solid #5a5757;border-radius:12px;background:#202831;padding:13px;color:#efe2d5;}
+.practice-visual-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:10px;}
+.practice-visual-head>div:first-child{min-width:0;}
+.practice-visual-head h4{font-size:14px;line-height:1.35;color:#f6e7d8;margin:4px 0 0;font-weight:650;}
+.practice-visual-switch{display:flex;gap:5px;flex-shrink:0;}
+.practice-visual-switch button{cursor:pointer;min-height:44px;padding:8px 12px;border:1px solid #7d7169;border-radius:9px;background:#2f3641;color:#e6d8ca;font-size:12px;font-weight:650;}
+.practice-visual-switch button[aria-pressed="true"]{border-color:#e3b48c;background:#594333;color:#ffead5;}
+.practice-visual-switch button:focus-visible{outline:3px solid #edbd96;outline-offset:3px;}
+.practice-visual-art{display:block;width:100%;height:auto;aspect-ratio:640/270;border-radius:9px;overflow:hidden;}
+.practice-visual>p{font-size:12px;line-height:1.55;color:#f0decf;margin:11px 0 4px;}
+.practice-visual>small{display:block;font-size:10.5px;color:#c7b9ac;line-height:1.5;}
+@media(max-width:520px){.practice-visual-head{flex-direction:column;align-items:stretch;gap:10px;}.practice-visual-switch{align-self:flex-start;}.practice-visual{padding:10px;}}
+@media(prefers-reduced-motion:reduce){.practice-visual *{transition:none!important;animation:none!important;}}

@@ -1,4 +1,4 @@
-/* Practical beginner filmmaking exercise contract — 4 real phone-only plans. */
+/* Practical beginner filmmaking exercise contract — 6 real phone-only plans. */
 const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),
   ts=require('typescript'),vm=require('node:vm');
 const root=path.resolve(__dirname,'..'),read=p=>fs.readFileSync(path.join(root,p),'utf8');
@@ -16,8 +16,8 @@ vm.runInNewContext(ts.transpileModule(read(dataPath),{compilerOptions:{
 const {practiceMissions,practiceById}=moduleObj.exports;
 const curriculum=JSON.parse(read('src/data/curriculum.v08b.json'));
 const lessonIds=new Set(curriculum.lessons.map(lesson=>lesson.id));
-assert.equal(practiceMissions.length,4,'Exactly four real practice plans');
-assert.equal(new Set(practiceMissions.map(item=>item.id)).size,4,'Every exercise is distinct');
+assert.equal(practiceMissions.length,6,'Exactly six real practice plans');
+assert.equal(new Set(practiceMissions.map(item=>item.id)).size,6,'Every exercise is distinct');
 for(const item of practiceMissions){
   assert(item.title.length>=10&&item.tagline.length>=20,'Meaningful mission title and goal');
   assert(item.steps.length===3,'Three achievable stages');
@@ -51,4 +51,12 @@ assert(styles.includes('@media(max-width:350px)')&&styles.includes('@media(max-w
   '320px and small mobile layout included');
 assert(styles.includes('prefers-reduced-motion'));
 assert(qa.includes('data-film-it-yourself'),'Real-browser smoke must exercise practice');
-console.log('PASS: four complete beginner filmmaking missions, real lesson/lab routes, session-only access and 320px layout.');
+const visual=read('src/components/PracticeVisual.tsx'),visualStyle=read('src/components/practice-visual.css');
+assert(source.includes('<PracticeVisual key={mission.id} mission={mission.id}/>'),'Two newest missions display the original A/B storyboard');
+assert(visual.includes('data-practice-take={n}')&&visual.includes('data-practice-frame={take}'),'Real A/B view changes a drawn storyboard');
+assert(visual.includes("role=\"img\"")&&visual.includes('aria-pressed={take===n}'),'Accessible drawing and pressed states');
+assert(visual.includes('not real footage')&&!visual.includes('getUserMedia')&&!visual.includes('localStorage'),'No fake footage, camera or saved progress');
+assert(visualStyle.includes('@media(max-width:520px)'),'A/B storyboard fits phone layouts');
+for(const mission of ['performance','camera-height'])assert(practiceById(mission).steps.length===3,'New filming assignment: '+mission);
+assert(qa.includes('[data-practice-choice="performance"]')&&qa.includes('[data-practice-choice="camera-height"]'),'Browser exercises both new assignments');
+console.log('PASS: six complete phone-only filmmaking missions, original A/B storyboard, lesson/lab routes, session-only state and narrow screens.');

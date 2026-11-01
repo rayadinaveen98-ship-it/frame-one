@@ -17,7 +17,7 @@ function load(file){
 }
 const {practiceMissions}=load(dataFile);
 const {formatPracticeSheet}=load(sheetFile);
-assert.equal(practiceMissions.length,4);
+assert.equal(practiceMissions.length,6);
 for(const mission of practiceMissions){
   const txt=formatPracticeSheet(mission);
   assert(txt.includes('FRAME ONE — POCKET SHOOT PLAN'));
@@ -55,4 +55,4 @@ assert(!ui.includes('localStorage')&&!ui.includes('fetch(')&&!ui.includes('getUs
 assert(!read(sheetFile).includes('fetch(')&&!read(sheetFile).includes('localStorage'));
 assert(css.includes('@media(max-width:350px)')&&css.includes('.practice-pocket-text'));
 assert(browser.includes('[data-practice-pocket-copy]'),'Browser must exercise pocket card');
-console.log('PASS: four pocket film guides, 3 steps each, bounded notes, manual-copy fallback, offline and unchanged storage.');
+console.log('PASS: six pocket film guides, 3 steps each, bounded notes, manual-copy fallback, offline and unchanged storage.');

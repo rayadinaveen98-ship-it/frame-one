@@ -123,7 +123,7 @@ async function verify() {
     'Practical studio stays compact until deliberately opened');
   await practice.locator('[data-practice-toggle]').click();
   assert.equal(await practice.locator('[data-practice-step]').count(),3);
-  assert.equal(await practice.locator('[data-practice-choice]').count(),4);
+  assert.equal(await practice.locator('[data-practice-choice]').count(),6);
   assert.equal(await practice.locator('[data-practice-plan]').getAttribute('data-practice-plan'),'three-shots');
   await practice.locator('[data-practice-check="0"]').click();
   assert.equal(await practice.locator('[data-practice-check="0"]').getAttribute('aria-pressed'),'true');
@@ -163,6 +163,32 @@ async function verify() {
   await practice.locator('[data-practice-pocket-toggle]').click();
   await practice.locator('[data-practice-choice="light"]').click();
   await practice.screenshot({path:path.join(shots,'01-film-it-yourself-desktop.png'),animations:'disabled'});
+  // v0.15A7: directing a gesture and changing camera height are real phone plans,
+  // with original A/B illustrations instead of another block of theory.
+  await practice.locator('[data-practice-choice="performance"]').click();
+  assert.equal(await practice.locator('[data-practice-plan]').getAttribute('data-practice-plan'),'performance');
+  assert.equal(await practice.locator('[data-practice-step]').count(),3);
+  const actionVisual=practice.locator('[data-practice-visual="performance"]');
+  assert.equal(await actionVisual.locator('[data-practice-frame]').getAttribute('data-practice-frame'),'0');
+  const firstGesture=await actionVisual.locator('svg').innerHTML();
+  await actionVisual.locator('[data-practice-take="1"]').click();
+  assert.equal(await actionVisual.locator('[data-practice-take="1"]').getAttribute('aria-pressed'),'true');
+  assert.notEqual(await actionVisual.locator('svg').innerHTML(),firstGesture,'The director A/B drawing actually changes');
+  assert.match(await actionVisual.locator('[data-practice-visual-note]').textContent(),/hover, withdraw, then reach again/i);
+  await practice.locator('[data-practice-pocket-toggle]').click();
+  const actingPlan=await practice.locator('[data-practice-plan-text]').inputValue();
+  assert(actingPlan.includes('One action. Two intentions.')&&actingPlan.includes('Direct Take B'));
+  await practice.locator('[data-practice-choice="camera-height"]').click();
+  assert.equal(await practice.locator('[data-practice-plan]').getAttribute('data-practice-plan'),'camera-height');
+  const cameraVisual=practice.locator('[data-practice-visual="camera-height"]');
+  assert.equal(await cameraVisual.locator('[data-practice-take="0"]').getAttribute('aria-pressed'),'true','New mission starts on its own first take');
+  const highView=await cameraVisual.locator('svg').innerHTML();
+  await cameraVisual.locator('[data-practice-take="1"]').click();
+  assert.notEqual(await cameraVisual.locator('svg').innerHTML(),highView,'Camera-height A/B actually changes artwork');
+  assert.match(await cameraVisual.locator('[data-practice-visual-note]').textContent(),/lower, level view/i);
+  await practice.locator('[data-practice-pocket-toggle]').click();
+  assert.match(await practice.locator('[data-practice-plan-text]').inputValue(),/One subject. Two viewpoints/);
+  await practice.locator('[data-practice-choice="light"]').click();
   await practice.locator('[data-practice-open-lab="light"]').click();
   await page.locator('.react-lighting-lab').waitFor();
   await page.locator('.nav-menu [data-page="home"]').click();
@@ -1545,6 +1571,20 @@ async function verify() {
       'Pocket sheet must not overflow '+width+'px phone');
     await mobilePractice.locator('[data-practice-pocket]').screenshot({
       path:path.join(shots,'01-pocket-shoot-plan-'+width+'px.png'),animations:'disabled'});
+    await mobilePractice.locator('[data-practice-pocket-toggle]').click();
+    await mobilePractice.locator('[data-practice-choice="performance"]').click();
+    const phoneActing=mobilePractice.locator('[data-practice-visual="performance"]');
+    await phoneActing.locator('[data-practice-take="1"]').click();
+    assert.match(await phoneActing.locator('[data-practice-visual-note]').textContent(),/hover, withdraw/i);
+    await mobilePractice.locator('[data-practice-choice="camera-height"]').click();
+    const phoneCamera=mobilePractice.locator('[data-practice-visual="camera-height"]');
+    await phoneCamera.locator('[data-practice-take="1"]').click();
+    assert.equal(await phoneCamera.locator('[data-practice-frame]').getAttribute('data-practice-frame'),'1');
+    const newPracticeOverflow=await mobilePractice.evaluate(el=>({scroll:el.scrollWidth,width:el.clientWidth}));
+    assert.ok(newPracticeOverflow.scroll<=newPracticeOverflow.width+3,
+      'A/B directing and camera diagrams must fit '+width+'px without horizontal overflow');
+    await mobilePractice.locator('[data-practice-pocket-toggle]').click();
+    assert.match(await mobilePractice.locator('[data-practice-plan-text]').inputValue(),/One subject. Two viewpoints/);
     await mobilePractice.locator('[data-practice-pocket-toggle]').click();
     await mobilePractice.screenshot({path:path.join(shots,'01-film-it-yourself-'+width+'px.png'),animations:'disabled'});
     await mobilePractice.locator('[data-practice-toggle]').click();
