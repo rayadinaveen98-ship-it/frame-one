@@ -1,5 +1,6 @@
 import { useEffect, useState, type CSSProperties, type Dispatch, type MouseEvent, type SetStateAction } from 'react';
 import type { LabName } from '../../legacy/bridge';
+import { CutBrief } from './CutBrief';
 
 /** Cut Lab v0.9D — timed illustrations, not actual film footage.
  * Playback owns one cancellable timer that is cleaned up on unmount and
@@ -143,6 +144,12 @@ export function CutLab({order,setOrder,durations,setDurations,step,setStep}:Prop
         <div className="editor-help"><strong>Try this:</strong> Move the clock to the first position. Then increase its duration. Compare the two versions. How much time does the viewer have to notice it?</div>
       </div>
     </div>
+    <CutBrief order={order} durations={durations} onApply={preset => {
+      setPlaying(false);
+      setOrder(preset.order);
+      setDurations(preset.durations);
+      setStep(0);
+    }} />
     <div className="cut-learning">
       <strong>What you just explored</strong>
       <p>A cut changes between shots. Shot <b>order</b> changes when viewers receive information. Shot <b>duration</b> changes how long they can look. Neither guarantees a particular emotion.</p>
