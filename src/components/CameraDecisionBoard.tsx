@@ -106,7 +106,7 @@ function Diagram({lesson,choice}:{lesson:CameraLesson;choice:number}){
       <rect x="80" y="73" width="470" height="162" rx="9" fill="#465c66" stroke="#8c9fa5" strokeWidth="3"/>
       <rect x="360" y="99" width="127" height="90" fill="#78929a" stroke="#c7b8a8" strokeWidth="4"/>
       <path d="M422 99V189M360 143H487" stroke="#c7b8a8" strokeWidth="3"/>
-      <g transform={`translate(${isThird?236:240} 0) scale(${isThird?1.18:isSecond?1.27:1} 1)`}>
+      <g transform={`translate(${isThird?236:240} 0) scale(${isThird?1.18:1} 1)`}>
         <path d="M-55 146H55L45 215H-46Z" fill="#bd987a" stroke="#ecd2b0" strokeWidth="5"/>
         <ellipse cy="146" rx="56" ry="14" fill="#64554d" stroke="#e6c5a8" strokeWidth="5"/>
         <path d="M55 165Q91 160 79 190Q69 205 47 199" stroke="#dfbd9d" strokeWidth="9" fill="none"/>
