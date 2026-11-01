@@ -1,0 +1,29 @@
+/* v0.15A8: optional, compact cinematic camera decision study. */
+.camera-decision{margin:15px 19px 0;border:1px solid #66554b;border-radius:13px;background:#1d2630;overflow:hidden;min-width:0;}
+.camera-decision summary{list-style:none;display:flex;align-items:center;justify-content:space-between;cursor:pointer;gap:12px;padding:16px;min-height:74px;}
+.camera-decision summary::-webkit-details-marker{display:none;}
+.camera-decision-summary{display:grid;gap:5px;min-width:0;}
+.camera-decision-summary strong{font:580 clamp(17px,2vw,21px)/1.22 var(--cinema-type,system-ui);color:#f7e5d4;letter-spacing:-.025em;}
+.camera-decision-summary small{font-size:11.5px;line-height:1.5;color:#c4beb9;}
+.camera-decision-chevron{font-size:25px;color:#e6b994;}
+.camera-decision details[open] .camera-decision-chevron{transform:rotate(180deg);}
+.camera-decision-body{border-top:1px solid #554b48;padding:14px 16px 18px;min-width:0;}
+.camera-decision-setup,.camera-decision-question{font-size:12.5px;line-height:1.6;color:#ddd3cb;margin:0 0 10px;}
+.camera-decision-setup strong{font-size:10px;color:#e9b993;letter-spacing:.085em;margin-right:6px;}
+.camera-decision-question{font-size:14px;font-weight:660;color:#f6e8d9;margin:0 0 12px;}
+.camera-decision-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px;}
+.camera-decision-options button{cursor:pointer;border:1px solid #63626a;background:#29333e;color:#eadfd5;border-radius:8px;padding:9px;min-height:46px;min-width:0;text-align:left;font-size:11.5px;line-height:1.4;font-weight:650;display:flex;align-items:center;gap:7px;}
+.camera-decision-options button span{flex:0 0 25px;display:grid;place-items:center;border-radius:5px;background:#434b55;color:#f4d0ab;height:25px;font-size:11px;}
+.camera-decision-options button[aria-pressed="true"]{background:#4e3b34;border-color:#e3b48d;color:#ffe9d4;}
+.camera-decision-art{display:block;width:100%;height:auto;border-radius:10px;}
+.camera-decision-effect{color:#f3e1cc;font-size:13px;line-height:1.58;padding:11px 0 3px;margin:0;min-height:42px;}
+.camera-decision-discuss{display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;width:100%;border:0;border-top:1px solid #665750;background:transparent;color:#f0c8a2;min-height:44px;cursor:pointer;font:700 12.5px/1.5 system-ui;padding:11px 0;}
+.camera-decision-discuss span{font-size:22px;}
+.camera-decision-insight{background:#2b3038;border-radius:9px;padding:14px;border-left:3px solid #d7a57d;}
+.camera-decision-insight p{color:#e4dbd2;font-size:12px;line-height:1.65;margin:0 0 12px;}
+.camera-decision-insight strong{color:#e8b994;font-size:10px;letter-spacing:.09em;}
+.camera-decision-insight small,.camera-decision-note{display:block;color:#c2b6ab;font-size:10.5px;line-height:1.6;}
+.camera-decision-note{margin-top:12px;}
+.camera-decision :is(summary,button):focus-visible{outline:3px solid #f5c79d;outline-offset:2px;}
+@media(max-width:600px){.camera-decision{margin:12px 10px 0;}.camera-decision-body{padding:12px;}.camera-decision-options{grid-template-columns:1fr;}.camera-decision-options button{min-height:44px;}}
+@media(prefers-reduced-motion:reduce){.camera-decision *{transition:none!important;animation:none!important;}}
