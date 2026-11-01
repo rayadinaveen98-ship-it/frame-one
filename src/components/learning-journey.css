@@ -188,7 +188,7 @@
     align-items:center;
   }
   .react-learn-view .journey-next-title{font-size:20px;max-width:100%;}
-  .react-learn-view .journey-count span br{display:none;}
+  .react-learn-view .journey-count span br{display:block;}
   .react-learn-view .journey-count span{font-size:11px;word-spacing:.05em;}
   .react-learn-view .journey-chapter-segments{overflow-x:auto;}
 }
