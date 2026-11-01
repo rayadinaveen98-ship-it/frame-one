@@ -930,7 +930,7 @@ async function verify() {
   await cutBrief.locator('summary').click();
   await cutBrief.locator('[data-cut-brief="question"]').click();
   await cutBrief.locator('[data-cut-review]').click();
-  assert.match(await cutBrief.locator('[data-cut-feedback]').textContent(),/location offers the audience immediate geography/i,'Initial feedback reflects place-first edit');
+  assert.match(await cutBrief.locator('[data-cut-feedback]').textContent(),/location-first edit gives context/i,'Initial feedback reflects place-first edit for the time-pressure brief');
   await cutBrief.locator('[data-cut-preset]').click();
   assert.match(await cut.locator('.timeline-clip').first().textContent(),/Clock/i,'Suggested edit reorders actual first shot');
   assert.match(await cut.locator('.timeline-clip').first().textContent(),/4s/i,'Suggested edit changes actual hold time');
