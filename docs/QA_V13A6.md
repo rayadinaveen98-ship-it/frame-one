@@ -57,6 +57,38 @@ If Windows script execution is blocked by local policy, open a trusted
 PowerShell window and check `Get-ExecutionPolicy -List` rather than
 permanently weakening system-wide execution policy.
 
+## Simpler option: download only the PowerShell helper (v0.15A10)
+
+You **do not have to clone the Frame One Git repository** for signing.
+Download the reviewed [single PowerShell setup script](https://github.com/rayadinaveen98-ship-it/frame-one/raw/refs/heads/main/scripts/setup-frameone-qa-signing.ps1) and place it in your Windows **Downloads** folder. Check that its filename is `setup-frameone-qa-signing.ps1` (not a renamed HTML page).
+
+Open **Windows PowerShell**, not Command Prompt or cmd.exe, and run:
+
+```powershell
+cd "$env:USERPROFILE\Downloads"
+.\setup-frameone-qa-signing.ps1
+```
+
+The first command is read-only: it checks for a local key, JDK `keytool.exe`, and GitHub CLI `gh.exe`. If the tools are missing, install JDK 21 and GitHub CLI from their official publishers and run `gh auth login` locally.
+
+Only after checking the script and the requirements:
+
+```powershell
+.\setup-frameone-qa-signing.ps1 -CreateKey
+```
+
+**STOP** and make a verified, **encrypted** backup of the key at the location printed by the script, on separately protected storage. Keep the original key private: never post it, paste its base64 into chat, or upload it to the repo. Do not say that you made a backup unless you actually checked it.
+
+Finally, only after the backup and local `gh auth login`:
+
+```powershell
+.\setup-frameone-qa-signing.ps1 -ProvisionSecret -BackupConfirmed
+```
+
+The helper uploads the key directly to GitHub Actions' encrypted secret through GitHub CLI standard input, without revealing it here. On a Windows computer whose execution policy prevents downloaded scripts, consult `Get-ExecutionPolicy -List` and the organization's policy rather than permanently disabling Windows protection.
+
+This creates **only a private QA debug signing identity**, not a Play Store production key. It does not publish an APK. The repository still requires two independent stable-signer builds, Android upgrade QA, real-phone backup/restore acceptance, and deliberate owner approval.
+
 ## Acceptance after provisioning
 
 1. Manually run [Frame One Android debug APK](../.github/workflows/android-debug.yml)
