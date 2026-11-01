@@ -40,7 +40,12 @@ if ([string]::IsNullOrWhiteSpace($KeystorePath)) {
   $KeystorePath = Join-Path $env:LOCALAPPDATA 'FrameOne\QA\frameone-qa-debug.keystore'
 }
 $ResolvedKeyPath = [IO.Path]::GetFullPath($KeystorePath)
-$RepoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..')).TrimEnd([IO.Path]::DirectorySeparatorChar)
+# When run from a clone, protect the entire Git checkout. When the owner
+# downloads ONLY this reviewed script to Downloads, do not mistake their entire
+# Windows home directory for the Git repository.
+$parentDirectory = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..')).TrimEnd([IO.Path]::DirectorySeparatorChar)
+$gitMarker = Join-Path $parentDirectory '.git'
+$RepoRoot = if (Test-Path -LiteralPath $gitMarker) { $parentDirectory } else { [IO.Path]::GetFullPath($PSScriptRoot).TrimEnd([IO.Path]::DirectorySeparatorChar) }
 $repoPrefix = $RepoRoot + [IO.Path]::DirectorySeparatorChar
 if ($ResolvedKeyPath.StartsWith($repoPrefix, [StringComparison]::OrdinalIgnoreCase) -or
     [string]::Equals($ResolvedKeyPath, $RepoRoot, [StringComparison]::OrdinalIgnoreCase)) {
