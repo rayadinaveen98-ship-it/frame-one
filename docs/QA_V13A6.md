@@ -18,15 +18,18 @@ separate-build upgrade QA, physical-phone acceptance and backup confirmation.
   Java keystore with alias `androiddebugkey` and conventional Android debug
   passwords. Its default location is under Windows `%LOCALAPPDATA%\FrameOne\QA`,
   **outside the repository**. Refuses to overwrite an existing key.
-- `-ProvisionSecret -BackupConfirmed`: checks the already existing debug
-  key, verifies `gh` authentication and uploads only its base64 bytes
+- `-VerifyBackup -BackupPath <copy>`: compares a separate local keystore
+  to the original by SHA-256 without uploading it or displaying private hashes.
+  Matching bytes do not prove encrypted or independently protected storage.
+- `-ProvisionSecret -BackupConfirmed -BackupPath <copy>`: requires the same
+  successful backup check, verifies `gh` authentication and uploads only its base64 bytes
   over GitHub CLI **standard input** into the encrypted repository Actions
   secret `FRAMEONE_QA_DEBUG_KEYSTORE_B64`. No byte string is printed,
   copied into the source tree, stored as a GitHub artifact or put on the
   command line. The script has no mode to retrieve a GitHub secret.
-- It refuses to create and provision in the same invocation: first make
-  and verify a separate encrypted copy of the keystore. Do not use the
-  `-BackupConfirmed` flag until that external backup actually exists.
+- It refuses to create and provision in the same invocation, and blocks
+  missing, identical-path or nonmatching backup files. Do not use
+  `-BackupConfirmed` until the external copy is verified and encrypted.
 
 ## One-time owner steps (Windows PowerShell)
 
@@ -45,12 +48,16 @@ From the **cloned repository root**:
 # 2. Create a brand-new dedicated QA key locally:
 .\scripts\setup-frameone-qa-signing.ps1 -CreateKey
 
-# 3. STOP: privately back up and verify this local file outside the repo:
-# $env:LOCALAPPDATA\FrameOne\QA\frameone-qa-debug.keystore
-# Keep an encrypted offline copy. Never commit, email or share it.
+# 3. STOP: copy the keystore to separately protected encrypted storage.
+# Original: $env:LOCALAPPDATA\FrameOne\QA\frameone-qa-debug.keystore
+# Never commit, email or share the key. Ensure the backup storage is encrypted.
 
-# 4. Only after verifying the encrypted backup, provision the GitHub secret:
-.\scripts\setup-frameone-qa-signing.ps1 -ProvisionSecret -BackupConfirmed
+# 4. Verify that the protected local backup is byte-for-byte identical:
+$backup = 'D:\EncryptedBackups\frameone-qa-debug.keystore' # replace with your real backup path
+.\scripts\setup-frameone-qa-signing.ps1 -VerifyBackup -BackupPath $backup
+
+# 5. Only after that check and independently confirming encryption:
+.\scripts\setup-frameone-qa-signing.ps1 -ProvisionSecret -BackupConfirmed -BackupPath $backup
 ```
 
 If Windows script execution is blocked by local policy, open a trusted
@@ -77,12 +84,17 @@ Only after checking the script and the requirements:
 .\setup-frameone-qa-signing.ps1 -CreateKey
 ```
 
-**STOP** and make a verified, **encrypted** backup of the key at the location printed by the script, on separately protected storage. Keep the original key private: never post it, paste its base64 into chat, or upload it to the repo. Do not say that you made a backup unless you actually checked it.
-
-Finally, only after the backup and local `gh auth login`:
+**STOP** and make an **encrypted, separately protected** backup of the key at the location printed by the script. Never post the key or its base64 into chat, Git or a shared folder. Verify that your actual backup matches the original:
 
 ```powershell
-.\setup-frameone-qa-signing.ps1 -ProvisionSecret -BackupConfirmed
+$backup = 'D:\EncryptedBackups\frameone-qa-debug.keystore' # replace with your actual protected location
+.\setup-frameone-qa-signing.ps1 -VerifyBackup -BackupPath $backup
+```
+
+This check verifies matching bytes but **cannot prove encryption or independent recovery**; check both yourself. Finally, only after verifying those and completing local `gh auth login`:
+
+```powershell
+.\setup-frameone-qa-signing.ps1 -ProvisionSecret -BackupConfirmed -BackupPath $backup
 ```
 
 The helper uploads the key directly to GitHub Actions' encrypted secret through GitHub CLI standard input, without revealing it here. On a Windows computer whose execution policy prevents downloaded scripts, consult `Get-ExecutionPolicy -List` and the organization's policy rather than permanently disabling Windows protection.

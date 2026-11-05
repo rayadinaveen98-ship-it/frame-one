@@ -20,7 +20,7 @@ Since **v0.13A4**, a passing Android build no longer triggers automatic replacem
 
 ## Windows one-time setup helper (v0.13A6)
 
-The owner can now use the private, opt-in PowerShell helper `scripts/setup-frameone-qa-signing.ps1` to inspect prerequisites, generate a dedicated QA debug keystore **outside** the Git repository, and provision the existing GitHub Actions secret after confirming a securely verified backup. This does not change or publish any APK. Read the [full v0.13A6 Windows setup procedure](QA_V13A6.md) before using it; never share the key or its base64 encoding in chat.
+The owner can now use the private, opt-in PowerShell helper `scripts/setup-frameone-qa-signing.ps1` to inspect prerequisites, generate a dedicated QA debug keystore **outside** the Git repository, **verify a distinct backup copy against the original locally**, and provision the existing GitHub Actions secret only after confirming encrypted, independently protected storage. Since v0.15A11, `-ProvisionSecret` requires `-BackupPath` and rechecks the copied bytes before GitHub access. [Verified backup procedure](QA_V15A11_VERIFIED_SIGNING_BACKUP.md). This does not change or publish any APK. Read the [full v0.13A6 Windows setup procedure](QA_V13A6.md) before using it; never share the key or its base64 encoding in chat.
 
 ## The secure one-time provision (not yet performed)
 
