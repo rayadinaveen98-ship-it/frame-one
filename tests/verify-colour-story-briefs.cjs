@@ -25,6 +25,6 @@ assert(scene.includes('Original storyboard image showing the same person at a bu
 assert(css.includes('grid-template-columns:minmax(0,1fr)'),'mobile choices stack at small sizes');
 assert(css.includes(':focus-visible'),'focus styles present');
 assert(css.includes('prefers-reduced-motion'),'reduced motion respected');
-assert(app.includes("const [colourMode,setColourMode]")&&app.includes("const [colourStrength,setColourStrength]"),'lab's established state remains intact');
+assert(app.includes("const [colourMode,setColourMode]")&&app.includes("const [colourStrength,setColourStrength]") ,"lab state remains intact");
 assert(browser.includes('colour-story-briefs')&&browser.includes('data-colour-brief-starter'),'compiled browser QA checks live scene handoff');
 console.log('PASS: three story-first colour briefs, accessible interaction, original art, local session-only and mobile safety.');
