@@ -38,3 +38,9 @@ PR acceptance requires green web source/TypeScript, compiled browser, Android de
 ## Release boundary
 
 Public preview v0.12A2 is signed with an old temporary debug identity. Persistent private QA signing, independent two-build upgrade verification, real-phone backup/recovery and the owner's manual approval are still required for a public update. Do not replace the public preview with a temporary-signed artifact.
+
+## Native backup acceptance — Make Lab viewport RCA (5 Nov 2026)
+
+The initial PR run failed at the Android `Decision` button while creating the original Make Lab storyboard before exporting the external JSON backup. The failure screenshot and UIAutomator XML showed the button **present, enabled and clickable** at `[522,1909][726,2033]`; the fixed mobile navigation began at `y=2028`. The old automation refused it because the button's *full* bounds extended below its conservative `2028 - 55` safe limit. This was a **test automation false negative** (not evidence of lost data or a broken button), but backup success is **not claimed** until the updated real-device emulator workflow actually passes.
+
+The shared native control helper now clips candidate button bounds to the unobstructed viewport and taps the center of at least 45 visible vertical pixels. A target wholly under the tab bar, a tiny visible sliver, and an empty `[0,0]` virtual node are still blocked. A Python regression reproduces the exact public screenshot coordinates and verifies safe clicking above the nav bar. The Android backup workflow runs this regression before its real device/emulator backup test. No application, learner or storage schema is changed by the test-helper fix.
