@@ -1,6 +1,7 @@
 import type { Dispatch, MouseEvent, SetStateAction } from 'react';
 import type { LabName } from '../../legacy/bridge';
 import { CinemaScene } from './CinemaScene';
+import { ColourStoryBriefs } from './ColourStoryBriefs';
 
 /** v0.9D second native-React Creative Lab, preserving the v0.8B visual
  * experiment. A tint overlay is NOT colour grading or a lens simulation.
@@ -75,5 +76,10 @@ export function ColourLab({mode,setMode,strength,setStrength}:Props) {
         <button className="btn-secondary" type="button" data-lesson="colour">Read the colour lesson →</button>
       </div>
     </div>
+    <ColourStoryBriefs mode={mode} strength={strength}
+      onApply={(nextMode,nextStrength) => {
+        setMode(nextMode);
+        setStrength(nextStrength);
+      }} />
   </div>;
 }
