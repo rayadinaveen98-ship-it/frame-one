@@ -1,0 +1,78 @@
+/* Story-first Colour Lab extension. It stays closed by default so the main
+   illustrated comparison keeps visual priority on desktop and narrow phones. */
+.react-colour-lab .colour-story-briefs {
+  margin:18px 0 20px;min-width:0;border:1px solid #4b4a53;border-radius:16px;
+  background:#1d232d;overflow:hidden;
+}
+.react-colour-lab .colour-story-briefs summary{
+  list-style:none;display:flex;align-items:center;justify-content:space-between;
+  gap:12px;min-height:70px;padding:16px 18px;cursor:pointer;
+}
+.react-colour-lab .colour-story-briefs summary::-webkit-details-marker{display:none;}
+.react-colour-lab .colour-brief-summary{min-width:0;display:grid;gap:5px;}
+.react-colour-lab .colour-brief-summary strong{
+  color:#f5e9d9;font-size:clamp(17px,2vw,21px);letter-spacing:-.02em;line-height:1.3;
+}
+.react-colour-lab .colour-brief-summary small{font-size:12px;line-height:1.5;color:#c8c2bb;}
+.react-colour-lab .colour-brief-chevron{font-size:26px;color:#e7b38d;line-height:1;}
+.react-colour-lab .colour-story-briefs[open] .colour-brief-chevron{transform:rotate(180deg);}
+.react-colour-lab .colour-brief-body{min-width:0;border-top:1px solid #44454f;padding:16px 18px 18px;}
+.react-colour-lab .colour-brief-options{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;
+}
+.react-colour-lab .colour-brief-options button{
+  min-width:0;min-height:48px;text-align:left;border:1px solid #64616c;
+  border-radius:10px;background:#282f38;color:#f2e1d0;
+  font:inherit;font-size:12px;line-height:1.4;padding:10px;cursor:pointer;
+}
+.react-colour-lab .colour-brief-options button[aria-pressed="true"]{
+  border-color:#f4c2a2;background:#49382f;color:#ffe3cd;
+}
+.react-colour-lab .colour-brief-scene{
+  margin:17px 0 8px;font-size:13px;line-height:1.6;color:#f0e4d9;
+}
+.react-colour-lab .colour-brief-scene strong{
+  font-size:10px;letter-spacing:.09em;color:#e7b38d;margin-right:5px;
+}
+.react-colour-lab .colour-brief-question{
+  margin:0 0 10px;font-size:14px;font-weight:650;line-height:1.55;color:#fff0e2;
+}
+.react-colour-lab .colour-brief-instruction{
+  font-size:12px;line-height:1.6;color:#cbc4bd;margin:0;
+}
+.react-colour-lab .colour-brief-actions{display:flex;flex-wrap:wrap;gap:10px;margin:15px 0 0;}
+.react-colour-lab .colour-brief-actions button{
+  flex:1 1 175px;min-width:0;min-height:44px;white-space:normal;font-size:12px;
+}
+.react-colour-lab .colour-brief-feedback{
+  background:#2b313a;border-left:3px solid #e2b18d;border-radius:8px;
+  margin-top:15px;padding:14px 16px;
+}
+.react-colour-lab .colour-brief-feedback strong{
+  font-size:10px;letter-spacing:.09em;color:#f1c19a;
+}
+.react-colour-lab .colour-brief-feedback p{
+  font-size:12px;line-height:1.65;color:#ede5dc;margin:9px 0;
+}
+.react-colour-lab .colour-brief-feedback small{
+  display:block;color:#d1c5bb;font-size:11px;line-height:1.6;
+}
+.react-colour-lab .colour-brief-prompt{
+  display:flex;gap:12px;align-items:flex-start;
+  margin:14px 0 0;border-top:1px solid #424650;padding-top:13px;
+}
+.react-colour-lab .colour-brief-prompt>span{font-size:23px;color:#e9b68c;line-height:1.3;}
+.react-colour-lab .colour-brief-prompt p{
+  margin:0;color:#d7c9bf;font-size:12px;line-height:1.65;
+}
+.react-colour-lab .colour-story-briefs :is(summary,button):focus-visible{
+  outline:3px solid #edb88e;outline-offset:3px;
+}
+@media(max-width:600px){
+  .react-colour-lab .colour-story-briefs summary{padding:14px;}
+  .react-colour-lab .colour-brief-body{padding:13px;}
+  .react-colour-lab .colour-brief-options{grid-template-columns:minmax(0,1fr);}
+}
+@media(prefers-reduced-motion:reduce){
+  .react-colour-lab .colour-brief-chevron{transition:none;}
+}
