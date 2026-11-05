@@ -1,0 +1,46 @@
+/* v0.16A2: story-first framing without an extra home banner or visual noise. */
+.react-frame-lab .framing-intention {
+  min-width:0;margin:17px 0 21px;background:#1d232c;border:1px solid #4b4b55;
+  border-radius:16px;overflow:hidden;
+}
+.react-frame-lab .framing-intention summary {
+  list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+  gap:12px;min-height:70px;padding:16px 18px;
+}
+.react-frame-lab .framing-intention summary::-webkit-details-marker {display:none;}
+.react-frame-lab .framing-intention-summary {display:grid;gap:5px;min-width:0;}
+.react-frame-lab .framing-intention-summary strong {
+  font-size:clamp(17px,2vw,21px);line-height:1.3;color:#f6e9da;letter-spacing:-.025em;
+}
+.react-frame-lab .framing-intention-summary small {font-size:12px;line-height:1.5;color:#c7c0b9;}
+.react-frame-lab .framing-intention-chevron {font-size:26px;line-height:1;color:#e7b48e;}
+.react-frame-lab .framing-intention[open] .framing-intention-chevron {transform:rotate(180deg);}
+.react-frame-lab .framing-intention-body {min-width:0;padding:16px 18px 18px;border-top:1px solid #44464e;}
+.react-frame-lab .framing-intention-options {
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;
+}
+.react-frame-lab .framing-intention-options button {
+  min-width:0;min-height:48px;text-align:left;border:1px solid #62616b;border-radius:10px;
+  padding:10px;background:#29303a;color:#f0e0d1;font:inherit;font-size:12px;line-height:1.4;cursor:pointer;
+}
+.react-frame-lab .framing-intention-options button[aria-pressed="true"] {
+  border-color:#edb88e;background:#49372f;color:#ffdfc6;
+}
+.react-frame-lab .framing-intention-scene {color:#f0e3d7;font-size:13px;line-height:1.6;margin:17px 0 8px;}
+.react-frame-lab .framing-intention-scene strong {font-size:10px;letter-spacing:.09em;color:#ebba93;margin-right:6px;}
+.react-frame-lab .framing-intention-question {font-size:14px;font-weight:650;line-height:1.5;color:#f8ebdc;margin:0 0 12px;}
+.react-frame-lab .framing-intention-actions {display:flex;gap:9px;flex-wrap:wrap;margin:12px 0 0;}
+.react-frame-lab .framing-intention-actions button {min-height:44px;flex:1 1 175px;min-width:0;white-space:normal;font-size:12px;}
+.react-frame-lab .framing-intention-feedback {margin-top:15px;padding:14px 16px;background:#2b313a;border-radius:8px;border-left:3px solid #dab08e;}
+.react-frame-lab .framing-intention-feedback strong {font-size:10px;letter-spacing:.08em;color:#f1c29f;}
+.react-frame-lab .framing-intention-feedback p {font-size:12px;line-height:1.65;color:#eae1d7;margin:9px 0;}
+.react-frame-lab .framing-intention-feedback small {font-size:11px;line-height:1.6;color:#d0c4bb;display:block;}
+.react-frame-lab .framing-intention-practice {margin:14px 0 0;padding-top:13px;border-top:1px solid #44464e;font-size:12px;line-height:1.65;color:#d6c8bd;}
+.react-frame-lab .framing-intention-practice strong {color:#f1c29f;}
+.react-frame-lab .framing-intention :is(summary,button):focus-visible {outline:3px solid #edb88e;outline-offset:3px;}
+@media(max-width:600px) {
+ .react-frame-lab .framing-intention summary {padding:14px;}
+ .react-frame-lab .framing-intention-body {padding:13px;}
+ .react-frame-lab .framing-intention-options {grid-template-columns:minmax(0,1fr);}
+}
+@media(prefers-reduced-motion:reduce) {.react-frame-lab .framing-intention-chevron {transition:none;}}
