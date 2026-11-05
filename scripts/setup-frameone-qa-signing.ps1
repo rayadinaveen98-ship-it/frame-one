@@ -4,9 +4,11 @@
   Prepare Frame One's dedicated Android QA debug signing key on a trusted Windows PC.
 .DESCRIPTION
   Default mode is read-only. -CreateKey generates a NEW local key (never in the repo).
-  -ProvisionSecret sends its BASE64 encoding via STDIN to an encrypted GitHub
-  Actions secret using GitHub CLI. Neither private bytes nor encoded bytes are
-  printed or passed on the command line. Never use for Play Store signing.
+  -VerifyBackup compares a separate protected local copy to the original key
+  without transmitting its bytes or printing any private hashes.
+  -ProvisionSecret requires the verified copy and a user-confirmed encrypted
+  backup, then sends BASE64 bytes via STDIN to an encrypted GitHub Actions
+  secret. Neither private bytes nor hashes are printed. Never use for Play signing.
   Public APK publication remains MANUAL and needs real upgrade/phone evidence.
 #>
 [CmdletBinding()]
@@ -14,6 +16,8 @@ param(
   [switch] $CreateKey,
   [switch] $ProvisionSecret,
   [switch] $BackupConfirmed,
+  [switch] $VerifyBackup,
+  [string] $BackupPath = "",
   [string] $KeystorePath = ""
 )
 
@@ -32,8 +36,17 @@ if ($env:OS -ne 'Windows_NT') { Stop-Safely 'This signing setup is Windows-only.
 if ($CreateKey -and $ProvisionSecret) {
   Stop-Safely 'Generate first, make and verify a private encrypted backup, then provision in a separate command.'
 }
+if ($CreateKey -and $VerifyBackup -or $ProvisionSecret -and $VerifyBackup) {
+  Stop-Safely 'VerifyBackup is a separate read-only step; do not combine it with creating or provisioning.'
+}
 if ($ProvisionSecret -and -not $BackupConfirmed) {
   Stop-Safely 'Before provisioning, independently back up the key. Re-run with -BackupConfirmed only after doing so.'
+}
+if (($ProvisionSecret -or $VerifyBackup) -and [string]::IsNullOrWhiteSpace($BackupPath)) {
+  Stop-Safely 'Provide -BackupPath to verify a separate backup file before proceeding.'
+}
+if (-not ($ProvisionSecret -or $VerifyBackup) -and -not [string]::IsNullOrWhiteSpace($BackupPath)) {
+  Stop-Safely 'BackupPath is only accepted with -VerifyBackup or -ProvisionSecret.'
 }
 if ([string]::IsNullOrWhiteSpace($KeystorePath)) {
   if ([string]::IsNullOrWhiteSpace($env:LOCALAPPDATA)) { Stop-Safely 'LOCALAPPDATA is missing.' }
@@ -56,7 +69,7 @@ $Gh = Find-Executable 'gh.exe'
 
 # Read-only inspection can be used before installing tools. It never connects
 # to GitHub, asks for a key password or alters a local file.
-if (-not $CreateKey -and -not $ProvisionSecret) {
+if (-not $CreateKey -and -not $ProvisionSecret -and -not $VerifyBackup) {
   Write-Host 'Frame One QA signing readiness (read-only)'
   Write-Host "Local key present: $(Test-Path -LiteralPath $ResolvedKeyPath -PathType Leaf)"
   Write-Host "JDK keytool available: $($null -ne $Keytool)"
@@ -83,7 +96,7 @@ if ($CreateKey) {
   }
   Write-Host 'PASS: created the dedicated Android QA test key locally.'
   Write-Host "Location: $ResolvedKeyPath"
-  Write-Host 'NEXT: Make and VERIFY an encrypted backup on a different secure location.'
+  Write-Host 'NEXT: Copy to separately protected encrypted storage, then run -VerifyBackup -BackupPath <your-copy>.'
   Write-Host 'Do not paste the key, its base64, or its bytes into chat or the repository.'
   exit 0
 }
@@ -94,6 +107,36 @@ if (-not (Test-Path -LiteralPath $ResolvedKeyPath -PathType Leaf)) {
 & $Keytool -list -keystore $ResolvedKeyPath -storetype JKS -storepass android `
   -alias androiddebugkey 2>&1 | Out-Null
 if ($LASTEXITCODE -ne 0) { Stop-Safely 'Existing key does not have the expected Android QA debug alias or password.' }
+
+# Verify a distinct byte-for-byte matching keystore copy before any secret
+# provisioning. The backing medium must be encrypted and independently
+# protected by the owner; a file hash alone cannot prove safe storage.
+$ResolvedBackupPath = [IO.Path]::GetFullPath($BackupPath)
+if ([string]::Equals($ResolvedBackupPath, $ResolvedKeyPath, [StringComparison]::OrdinalIgnoreCase)) {
+  Stop-Safely 'BackupPath must be different from the original keystore path.'
+}
+if ($ResolvedBackupPath.StartsWith($repoPrefix, [StringComparison]::OrdinalIgnoreCase) -or
+    [string]::Equals($ResolvedBackupPath, $RepoRoot, [StringComparison]::OrdinalIgnoreCase)) {
+  Stop-Safely 'A private backup must never be stored inside the Git repository.'
+}
+if (-not (Test-Path -LiteralPath $ResolvedBackupPath -PathType Leaf)) {
+  Stop-Safely 'The specified backup file does not exist.'
+}
+if ((Get-Item -LiteralPath $ResolvedBackupPath).Length -eq 0) {
+  Stop-Safely 'The backup file is empty.'
+}
+$keyHash = (Get-FileHash -LiteralPath $ResolvedKeyPath -Algorithm SHA256).Hash
+$backupHash = (Get-FileHash -LiteralPath $ResolvedBackupPath -Algorithm SHA256).Hash
+if (-not [string]::Equals($keyHash, $backupHash, [StringComparison]::OrdinalIgnoreCase)) {
+  Stop-Safely 'Backup bytes do not match the original signing key.'
+}
+Remove-Variable keyHash, backupHash -ErrorAction SilentlyContinue
+Write-Host 'PASS: separate backup file matches the original signing key (SHA-256).'
+Write-Host 'IMPORTANT: File matching does not prove encryption or independent storage; verify those yourself.'
+if ($VerifyBackup) {
+  Write-Host 'Read-only backup verification complete. No GitHub secret was changed.'
+  exit 0
+}
 if ($null -eq $Gh) { Stop-Safely 'GitHub CLI gh.exe not found in PATH; install GitHub CLI.' }
 & $Gh auth status --hostname github.com 1>$null 2>$null
 if ($LASTEXITCODE -ne 0) { Stop-Safely 'GitHub CLI not signed in. Run gh auth login on this PC.' }
