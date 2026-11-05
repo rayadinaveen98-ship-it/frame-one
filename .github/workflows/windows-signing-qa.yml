@@ -55,6 +55,20 @@ jobs:
             & keytool -list -keystore $key -storepass android -alias androiddebugkey 2>&1 | Out-Null
             if ($LASTEXITCODE -ne 0) { throw 'Generated local test key lacks expected alias' }
             Assert-Blocked @('-CreateKey','-KeystorePath',$key) 'Will not overwrite'
+            Assert-Blocked @('-VerifyBackup','-KeystorePath',$key) 'BackupPath'
+            Assert-Blocked @('-ProvisionSecret','-BackupConfirmed','-KeystorePath',$key) 'BackupPath'
+            Assert-Blocked @('-VerifyBackup','-KeystorePath',$key,'-BackupPath',$key) 'different from'
+            Assert-Blocked @('-VerifyBackup','-KeystorePath',$key,'-BackupPath',(Join-Path $testDir 'missing.keystore')) 'does not exist'
+            Assert-Blocked @('-VerifyBackup','-KeystorePath',$key,'-BackupPath',(Join-Path $env:GITHUB_WORKSPACE 'never-copy-here.keystore')) 'must never be stored inside'
+            $backup = Join-Path $testDir 'separate-verified-test-copy.keystore'
+            Copy-Item -LiteralPath $key -Destination $backup
+            & pwsh -NoProfile -File $scriptPath -VerifyBackup -KeystorePath $key -BackupPath $backup
+            if ($LASTEXITCODE -ne 0) { throw 'Read-only byte verification of valid backup failed' }
+            Add-Content -LiteralPath $backup -Value 'tampered-copy'
+            Assert-Blocked @('-VerifyBackup','-KeystorePath',$key,'-BackupPath',$backup) 'do not match'
+            Copy-Item -LiteralPath $key -Destination $backup -Force
+            & pwsh -NoProfile -File $scriptPath -VerifyBackup -KeystorePath $key -BackupPath $backup
+            if ($LASTEXITCODE -ne 0) { throw 'Valid backup did not pass after replacing tampered copy' }
             # A user downloading the single .ps1 into Downloads must not
             # accidentally treat the parent profile folder as a Git checkout.
             $portableDir = Join-Path $env:RUNNER_TEMP 'frameone-signing-portable'
