@@ -51,6 +51,25 @@ def scroll_top():
         ui.adb("shell","input","swipe","540","690","540","1900","250")
     time.sleep(.5)
 
+def visible_control_bounds(bounds, viewport_bottom):
+    """Clip a real control to the unobstructed content viewport.
+
+    A WebView button may cross behind the fixed tab bar while its upper
+    portion is fully visible and tappable. Requiring the *entire* button
+    above the bar produces false negatives even when the user can tap it.
+    Demand at least 45 unobstructed vertical pixels and tap their center;
+    never tap under the bottom navigation or a 0x0 virtual accessibility node.
+    """
+    if not bounds:
+        return None
+    x1,y1,x2,y2=bounds
+    visible_top=max(y1,TOP)
+    visible_bottom=min(y2,viewport_bottom)
+    if x2-x1<=20 or visible_bottom-visible_top<45:
+        return None
+    return (x1,visible_top,x2,visible_bottom)
+
+
 def control(label,exact=True,tries=19):
     """Find only real clickable controls *in the content viewport*.
 
@@ -73,9 +92,9 @@ def control(label,exact=True,tries=19):
             value=" ".join((n.attrib.get("text",""),n.attrib.get("content-desc",""))).strip()
             if not (value==label if exact else label.lower() in value.lower()):
                 continue
-            b=bounds_of(n)
-            if b and b[1]>=TOP and b[3]<=bottom and (b[2]-b[0])>20 and (b[3]-b[1])>20:
-                choices.append((n,b,value))
+            clipped=visible_control_bounds(bounds_of(n),bottom)
+            if clipped:
+                choices.append((n,clipped,value))
         if choices:
             n,b,value=choices[0]
             print(f"TAP CONTROL {value!r} at {(b[0]+b[2])//2},{(b[1]+b[3])//2}",flush=True)
