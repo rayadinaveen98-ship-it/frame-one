@@ -39,7 +39,7 @@ assert(screens.includes("useState(production||resumeChapter!==null)")&&
  screens.includes('production?productionNavigate(id)'),
  'Production nav must never route Home or Progress into prototype views');
 assert(css.includes('.site[data-v2-production="true"]')&&
- css.includes('max-width:390px')&&css.includes('max-width:720px'),
+ css.includes('max-width:390px')&&css.includes('min-width:720px'),
  'Full-width desktop and phone art style required; no fake phone mockup bezel');
 assert(shared.includes('body.frameone-option-b-open .launch-experience{z-index:10001}'),
  'Original cinematic opening must be visible in front of the immersive real course');
