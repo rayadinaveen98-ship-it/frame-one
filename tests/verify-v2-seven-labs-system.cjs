@@ -52,7 +52,8 @@ for(const id of ['story','frame','light','cut','sound','colour','continuity']){
 }
 assert(source.includes('frameone-progress-v01')&&source.includes('frameone-scene-v07')&&
  source.includes('frameone-practice-v07'),'Original saved user records preserved');
-assert(source.includes('getBackupJSON')&&source.includes('restoreBackupJSON'),
+assert(source.includes('getBackupJSON')&&source.includes('function restoreBackup(payload)')&&
+ source.includes('importBackup:(payload)'),
  'Existing central export and import must remain the one backup owner');
 const color=read('src/components/labs/ColourLab.tsx');
 const continuity=read('src/components/labs/ContinuityLab.tsx');
