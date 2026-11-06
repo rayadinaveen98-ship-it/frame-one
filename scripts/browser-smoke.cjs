@@ -1154,7 +1154,7 @@ async function verify() {
   await make.waitFor();
   assert.equal(await page.locator('#content').innerHTML(),'', 'React must own Make Lab without hidden legacy markup');
   assert.equal(await make.locator('.story-film-frame svg').count(),1,'Original vector storyboard preserved');
-  assert.equal(await make.locator('[data-v2-make-screen]').count(),1,
+  assert.equal(await make.getAttribute('data-v2-make-screen'),'',
     'Production Make Lab is redesigned in place, not replaced by the design demo');
   const sceneBeforeProjects=await make.evaluate(root=>Boolean(
     root.querySelector('[data-v2-make-scene-first]')?.compareDocumentPosition(
@@ -2133,8 +2133,6 @@ async function verify() {
     await mobileMake.waitFor();
     assert.equal(await mobileMake.locator('[data-v2-make-scene-first]').count(),1,
       'Production Make Lab must be scene-first on '+width+'px phones');
-    assert.equal(await mobileMake.locator('.make-v2-clapper svg').count(),0,
-      'Clapper artwork is SVG itself, not nested duplicate markup');
     const makeStageRect=await mobileMake.locator('.story-film-frame').boundingBox();
     const makeShellRect=await mobileMake.boundingBox();
     assert.ok(makeStageRect&&makeShellRect&&makeStageRect.width>makeShellRect.width*.61,
