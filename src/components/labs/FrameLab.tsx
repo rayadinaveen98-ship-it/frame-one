@@ -33,6 +33,10 @@ const frameForZoom = (value:number):FrameMode => value<1.5?'wide':value<2.5?'med
 export function FrameLab({mode,setMode,zoom,setZoom,guides,setGuides,compare,setCompare}:Props) {
   const bounded = Math.max(1,Math.min(3,zoom));
   const selected = frameOptions[mode];
+  // Comparing a 3× crop with another 3× crop teaches nothing. Show the
+  // opposite extreme instead so the two *real* SVG viewBoxes differ.
+  const referenceZoom=bounded>=2.5?1:3;
+  const referenceLabel=referenceZoom===1?'Wide shot':'Close-up';
   function choose(event:MouseEvent<HTMLButtonElement>,next:FrameMode) {
     event.stopPropagation(); // the legacy click handler must never re-render React-owned content
     setMode(next);
@@ -73,8 +77,8 @@ export function FrameLab({mode,setMode,zoom,setZoom,guides,setGuides,compare,set
         {compare?<div className="frame-comparison">
           <div><span className="compare-tag">YOUR CROP · {Number(bounded.toFixed(2))}×</span>
             <CinemaScene variant="frame" zoom={bounded} guides={guides} shotLabel={selected.label}/></div>
-          <div><span className="compare-tag">REFERENCE · TIGHT CROP</span>
-            <CinemaScene variant="reference" zoom={3} guides={guides} shotLabel="Close-up"/></div>
+          <div><span className="compare-tag">{referenceZoom===1?'REFERENCE · WIDE CROP':'REFERENCE · TIGHT CROP'}</span>
+            <CinemaScene variant="reference" zoom={referenceZoom} guides={guides} shotLabel={referenceLabel}/></div>
         </div>:<CinemaScene variant="frame" zoom={bounded} guides={guides} shotLabel={selected.label}/>}
         <div className="lab-hint">Original illustrated bus-stop scene · A digital crop, not a physical camera move or lens simulation.</div>
       </div>
