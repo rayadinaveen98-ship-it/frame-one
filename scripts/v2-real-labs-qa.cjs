@@ -7,7 +7,7 @@ const {screenshotPhone}=require('./option-b-pixel-parity.cjs');
 const LAB_IDS=['story','frame','light','cut','sound','colour','continuity'];
 async function verifyRealLabsBridge(page,reference,shots,label){
  const native=page.locator('[data-v2-native-react]');
- const backupBefore=await page.evaluate(()=>window.frameOneLegacy.getBackupJSON());
+ const backupBefore=await page.evaluate(()=>JSON.parse(window.frameOneLegacy.getBackupJSON()));
  const demoBefore=await page.evaluate(()=>localStorage.getItem('frameone-option-b-prototype-v1'));
  await page.locator('[data-option-b-compare="react"]').click();
  await native.locator('[data-v2-native-nav="home"]').click();
@@ -45,7 +45,14 @@ async function verifyRealLabsBridge(page,reference,shots,label){
   await native.locator('[data-v2-native-nav="lab"]').click();
   await studio.waitFor();
  }
- assert.equal(await page.evaluate(()=>window.frameOneLegacy.getBackupJSON()),backupBefore,
+ // Every export generates a fresh exportedAt timestamp. Compare the actual
+ // content and schema, never a timestamp that correctly changes on export.
+ const backupAfter=await page.evaluate(()=>JSON.parse(window.frameOneLegacy.getBackupJSON()));
+ const {exportedAt:beforeExportedAt,...savedBefore}=backupBefore;
+ const {exportedAt:afterExportedAt,...savedAfter}=backupAfter;
+ assert.equal(typeof beforeExportedAt,'string');
+ assert.equal(typeof afterExportedAt,'string');
+ assert.deepEqual(savedAfter,savedBefore,
   'Opening and returning from real labs must not change progress, projects, notes or backup schema');
  assert.equal(await page.evaluate(()=>localStorage.getItem('frameone-option-b-prototype-v1')),
   demoBefore,'Real production lab launches cannot award prototype points');
