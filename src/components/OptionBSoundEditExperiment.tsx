@@ -96,8 +96,8 @@ function ContinuityFrames({selected}:{selected:number}){
      <circle cx="69" cy="77" r="24" fill="#f3c083" stroke="#b48561" strokeWidth="2"/>
      <path d="M52 68Q68 43 86 68" fill="#33576c"/>
      <path d="M52 112q19-29 35 0" stroke="#33576c" strokeWidth="15" strokeLinecap="round"/>
-     <rect x={i===0?89:selected===1?18:69} y="92" width="19" height="16" rx="3" fill="#fff0bb" stroke="#c69457" strokeWidth="2"/>
-     <path d={'M'+(i===0?108:selected===1?37:88)+' 95q11-2 9 7t-9 2'} fill="none" stroke="#c69457" strokeWidth="3"/>
+     <rect x={i===0?89:selected===1?18:selected===2?69:89} y="92" width="19" height="16" rx="3" fill="#fff0bb" stroke="#c69457" strokeWidth="2"/>
+     <path d={'M'+(i===0?108:selected===1?37:selected===2?88:108)+' 95q11-2 9 7t-9 2'} fill="none" stroke="#c69457" strokeWidth="3"/>
      <text x="23" y="22" fontSize="10" fontWeight="850" fill="#407f71">SHOT {i+1}</text>
    </g>)}
    {selected===2&&<path d="M259 70q25-16 40 6" stroke="#278d76" strokeWidth="4" fill="none" strokeLinecap="round" strokeDasharray="5 4"/>}
