@@ -87,8 +87,8 @@ function ArrowIcon(){
     <path d="M5 12h14m-6-6 6 6-6 6"/>
   </svg>;
 }
-function Scene({mode='medium',value=1.3,kind='neutral',guides=false}:{
-  mode?:string;value?:number;kind?:string;guides?:boolean;
+export function OptionBReactScene({mode='medium',value=1.3,kind='neutral',guides=false,lab=false}:{
+  mode?:string;value?:number;kind?:string;guides?:boolean;lab?:boolean;
 }){
   const filter=kind==='warm'?'sepia(.05) saturate(1.05)'
     :kind==='cool'?'hue-rotate(20deg) saturate(.84) brightness(.99)'
@@ -98,13 +98,15 @@ function Scene({mode='medium',value=1.3,kind='neutral',guides=false}:{
     '--scene-filter':filter,
     '--guides':guides?'1':'0'
   } as CSSProperties;
-  return <div className="scene-card" style={vars}>
+  return <div className={'scene-card'+(lab?' lab-scene':'')} style={vars}>
     <img src={ART_SCENE} alt="A filmmaker checking a phone on a village street"/>
-    <span className="scene-hud">{mode.toUpperCase()+' · ORIGINAL ILLUSTRATION'}</span>
+    <span className="scene-hud">{lab?'LIVE STORYBOARD':mode.toUpperCase()+' · ORIGINAL ILLUSTRATION'}</span>
     <span className="frame-grid" aria-hidden="true"/>
     <span className="corners" aria-hidden="true"/>
   </div>;
 }
+
+const Scene=OptionBReactScene;
 
 function MissionTop({mission,index,step,onBack}:{
   mission:MissionCopy;index:number;step:number;onBack:()=>void;
