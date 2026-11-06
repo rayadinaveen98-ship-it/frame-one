@@ -13,7 +13,7 @@ export interface LegacyBridge {
   openLab: (lab: LabName) => void;
   openCollection: (collectionId: string) => void;
   completeLesson: (id: string, continuation?: {nextLessonId?:string;returnCollectionId?:string}) => void;
-  /** Guided lessons (Chapters 1–4) use original progress and backup, no route changes. */
+  /** Guided lessons (Chapters 1–5) use original progress and backup, no route changes. */
   completeGuidedFoundation: (id:string) => boolean;
   savePractice: (id: string, note: string) => boolean;
   setTelugu: (enabled: boolean) => void;
