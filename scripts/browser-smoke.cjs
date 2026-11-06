@@ -14,6 +14,7 @@ const {verifyStudioParity}=require('./option-b-studio-parity.cjs');
 const {verifyRealChapterOne}=require('./v2-real-chapter-qa.cjs');
 const {verifyRealChapterTwo}=require('./v2-real-story-qa.cjs');
 const {verifyRealChapterThree}=require('./v2-real-visual-qa.cjs');
+const {verifyRealChapterFour}=require('./v2-real-sound-qa.cjs');
 const base = 'http://127.0.0.1:4173';
 const shots = path.resolve(__dirname, '../qa/screenshots');
 fs.mkdirSync(shots, { recursive: true });
@@ -67,8 +68,9 @@ async function verifyRealChapterIsolated(width,label){
     const result=await verifyRealChapterOne(fresh,source,shots,label);
     const storyResult=await verifyRealChapterTwo(fresh,source,shots,label);
     const visualResult=await verifyRealChapterThree(fresh,source,shots,label);
+    const soundResult=await verifyRealChapterFour(fresh,source,shots,label);
     await fresh.locator('[data-option-b-exit]').click();
-    return {...result,storyLessonsValidated:storyResult.validatedLessons,visualLessonsValidated:visualResult.validated};
+    return {...result,storyLessonsValidated:storyResult.validatedLessons,visualLessonsValidated:visualResult.validated,soundLessonsValidated:soundResult.validated};
   }finally{await isolated.close();}
 }
 async function verify() {
