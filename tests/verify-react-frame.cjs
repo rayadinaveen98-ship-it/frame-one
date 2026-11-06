@@ -19,7 +19,7 @@ assert(frame.includes('data-frame={key}') && frame.includes('aria-pressed={mode=
 assert(frame.includes('data-guides aria-pressed={guides}')&&frame.includes('data-compare aria-pressed={compare}'),'guides and comparison toggles accessible');
 assert(frame.includes('event.stopPropagation()'), 'React frame controls do not run legacy delegates');
 assert(frame.includes('onInput={event=>{event.stopPropagation()'),'crop slider React controlled');
-assert(frame.includes('zoom={bounded}') && frame.includes('zoom={3}'),'comparison shows current and tightly cropped variants');
+assert(frame.includes('zoom={bounded}') && frame.includes('zoom={referenceZoom}') && frame.includes('referenceZoom=bounded>=2.5?1:3'),'comparison adapts between real current crop and opposite wide/tight reference');
 assert(frame.includes('data-lesson="shot"') && frame.includes('data-lab="sound"'),'original next links retained');
 assert(frame.includes('A camera move or a different lens could produce different perspective'),'content accuracy preserved');
 assert(scene.includes("zoom?: number") && scene.includes('viewBox="0 0 640 360"'),'shared original vector supports dynamic crop');
