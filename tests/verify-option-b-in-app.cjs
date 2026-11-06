@@ -28,7 +28,7 @@ assert(viewer.includes("element.inert=inert")&&viewer.includes("element.removeAt
   'old UI state restored on exit');
 assert(viewer.includes("window.addEventListener('frameone:option-b-close'")&&
        viewer.includes("event.key==='Escape'"),'physical Back and keyboard Escape safely close preview');
-assert(back.indexOf("const pilot=document.querySelector")<back.indexOf("const hash ="),
+assert(back.indexOf("const pilot=typeof document.querySelector")<back.indexOf("const hash ="),
   'Android Back intercepts the preview before any old route/minimize operation');
 assert(back.includes("childInput.blur()"),'Android Back lets embedded input dismiss soft keyboard');
 assert(offline.includes("caches.match(event.request)"),'offline navigation reuses exact precached pilot rather than main shell');
