@@ -72,6 +72,31 @@ def open_backup_panel():
     tap_text("Keep a copy of your learning",tries=30,scroll=True)
     state.find_text("Save / share backup JSON",tries=10,scroll=True)
 
+def project_name_editor(tries=22):
+    """Find the *labelled project-name input*, not the storyboard shot note.
+
+    The approved scene-first layout intentionally moved the project library
+    below the shot editor. UIAutomator does not expose React input IDs, so
+    inspect the real accessible document in DOM order: 'New project name'
+    must be followed by its own EditText. Require a physically tappable
+    rectangle in the content viewport, not an offscreen [0,0] virtual node.
+    """
+    for _ in range(tries):
+        tree=state.nodes()
+        label_index=next((i for i,n in enumerate(tree)
+                          if n.attrib.get("text","").strip()=="New project name"),-1)
+        if label_index>=0:
+            for n in tree[label_index+1:]:
+                if n.attrib.get("class","").endswith("EditText"):
+                    bounds=state.bounds_of(n)
+                    clipped=state.visible_control_bounds(bounds,1850)
+                    if clipped and clipped[2]-clipped[0]>=100:
+                        return clipped
+                    break
+        state.scroll_up()
+    ui.capture("backup-project-name-input-not-visible")
+    raise AssertionError("The labelled New project name input is not reachable on Android")
+
 def create_second_storyboard():
     """Create a distinct second Make Lab project using only Android UI taps.
 
@@ -80,9 +105,9 @@ def create_second_storyboard():
     """
     state.scroll_top()
     state.find_text("Your film projects.",tries=10,scroll=True)
-    # The project title input is the FIRST EditText in Make Lab; the shot-note
-    # textarea lives beneath the full storyboard workspace.
-    field=state.editor()
+    # The shot-notes textarea appears FIRST in the scene-first Make Lab.
+    # Target the actual labelled project-name input, never the first EditText.
+    field=project_name_editor()
     ui.adb("shell","input","tap",str((field[0]+field[2])//2),str((field[1]+field[3])//2))
     ui.adb("shell","input","text",SECOND_PROJECT)
     ui.adb("shell","input","keyevent","KEYCODE_BACK")
@@ -94,9 +119,12 @@ def create_second_storyboard():
     state.scroll_top()
     tap_text("Create new storyboard",tries=18,scroll=True)
     state.scroll_top()
+    # Require a confirmed increase in the real active project count. A name
+    # typed into a storyboard note must NEVER pass for project creation.
+    state.find_text("2 of 20 local projects",tries=12)
     state.find_text(SECOND_PROJECT,tries=10,scroll=True)
     ui.capture("backup-00b-two-projects-created")
-    print("PASS: real Android Make Lab created a second storyboard without deleting the first",flush=True)
+    print("PASS: real Android Make Lab shows two projects and the new active storyboard",flush=True)
 
 
 def exported_private_json():
