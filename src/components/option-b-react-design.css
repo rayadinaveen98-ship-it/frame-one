@@ -179,3 +179,21 @@
  .sound-layer-bars i{width:2px}
  .sound-rhythm-row{grid-template-columns:62px minmax(0,1fr) 26px;gap:6px}
 }
+
+
+/* Guided course only: prevent the brand title wrapping at 320px without
+ * altering any of the pixel-locked original Option B pilot/reference screens. */
+@media(max-width:360px){
+ .site[data-v2-real-course="true"] .topbar{padding-left:9px;padding-right:9px}
+ .site[data-v2-real-course="true"] .wordmark{
+  gap:7px;font-size:17px;white-space:nowrap;flex-shrink:0
+ }
+ .site[data-v2-real-course="true"] .brand-symbol{
+  width:30px;height:30px;flex:0 0 30px
+ }
+ .site[data-v2-real-course="true"] .head-actions{gap:4px;flex-shrink:0}
+ .site[data-v2-real-course="true"] .head-pill{
+  padding:6px 6px;font-size:10px;white-space:nowrap
+ }
+ .site[data-v2-real-course="true"] .avatar{width:29px;height:29px;font-size:16px}
+}
