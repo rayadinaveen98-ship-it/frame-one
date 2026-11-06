@@ -225,7 +225,8 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
             ? <JourneyScreen finished={saved.finished} onMission={startMission}/>
             : <OptionBReactMission key={missionId+'-'+missionAttempt}
                 missionId={missionId} onBack={backToJourney}
-                onRestart={()=>startMission(missionId)} onComplete={completeMission}/>}
+                onRestart={()=>startMission(missionId)} onComplete={completeMission}
+                onStepChange={()=>{if(viewport.current)viewport.current.scrollTop=0;}}/>}
       </main>
       <nav className="navbar" aria-label="Primary navigation">
         {NAV_ITEMS.map(([id,label,icon])=><button type="button" key={id}
