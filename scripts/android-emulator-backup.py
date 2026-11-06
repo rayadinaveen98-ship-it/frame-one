@@ -87,6 +87,11 @@ def create_second_storyboard():
     ui.adb("shell","input","text",SECOND_PROJECT)
     ui.adb("shell","input","keyevent","KEYCODE_BACK")
     time.sleep(.5)
+    # Android WebView scrolls the focused text input into view. On some AOSP
+    # emulators this leaves the page at the footer after the IME closes.
+    # Return to the page top as a real user would before tapping its Create
+    # control; do not inject storage or bypass the Android accessibility UI.
+    state.scroll_top()
     tap_text("Create new storyboard",tries=18,scroll=True)
     state.scroll_top()
     state.find_text(SECOND_PROJECT,tries=10,scroll=True)
