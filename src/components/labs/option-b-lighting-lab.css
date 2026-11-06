@@ -36,7 +36,7 @@
 .react-lighting-lab.lighting-v2 .lab-shell.cinematic-lab-shell{display:grid;
   grid-template-columns:minmax(0,1.15fr) minmax(285px,.85fr);gap:13px;align-items:start;
   overflow:visible;background:transparent;border:0;box-shadow:none}
-.react-lighting-lab.lighting-v2 .lab-preview{min-width:0;align-self:start;position:sticky;top:15px;
+.react-lighting-lab.lighting-v2 .lab-preview{min-width:0;align-self:start;position:relative;top:auto;
   border:1px solid #d3e8dd;background:#fff;box-shadow:0 4px 0 #dcece4;
   border-radius:20px;padding:12px;min-height:0}
 .react-lighting-lab.lighting-v2 .lighting-v2-stage-head{display:flex;justify-content:space-between;align-items:center;
