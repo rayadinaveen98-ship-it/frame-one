@@ -102,7 +102,7 @@ export function CutLab({order,setOrder,durations,setDurations,step,setStep}:Prop
       </div>
     </div>
     <div className="cut-v2-intro-note"><span aria-hidden="true">✂</span>
-      <p><strong>WATCH THE ORDER</strong> — Your original three drawings become a sequence. Dragging footage is not required: use the move buttons and hear how the timing *might* feel.</p>
+      <p><strong>WATCH THE ORDER</strong> — Your original three drawings become a sequence. No recorded footage is used: use the move buttons and see how the pacing changes.</p>
     </div>
     <div className="cut-shell" data-v2-cut-workshop>
       <div className="cut-preview" data-v2-cut-stage>
