@@ -28,7 +28,7 @@ self.addEventListener('fetch',event=>{
   const url=new URL(event.request.url);
   if(url.origin!==self.location.origin)return;
   if(event.request.mode==='navigate'){
-    event.respondWith(fetch(event.request).then(res=>res.ok?res:Promise.reject(Error('offline'))).catch(()=>caches.match('./index.html').then(r=>r||caches.match('./'))));
+    event.respondWith(fetch(event.request).then(res=>res.ok?res:Promise.reject(Error('offline'))).catch(()=>caches.match(event.request).then(r=>r||caches.match('./index.html').then(shell=>shell||caches.match('./')))));
     return;
   }
   event.respondWith(caches.match(event.request).then(cached=>cached||fetch(event.request).then(res=>{
