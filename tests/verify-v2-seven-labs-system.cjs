@@ -9,13 +9,13 @@ const bridge=read('src/legacy/bridge.ts');
 const studio=read('src/components/OptionBRealLabs.tsx');
 const smoke=read('scripts/browser-smoke.cjs');
 const individual=[
- ['story','MakeLab','make-v2','src/components/labs/option-b-make-lab.css','data-v2-make-screen','data-v2-make-scene-first','data-story-project-library','28-real-option-b-frame-desktop.png'],
- ['frame','FrameLab','frame-v2','src/components/labs/option-b-frame-lab.css','data-v2-frame-screen','data-v2-frame-stage','data-v2-frame-controls','29-real-option-b-frame-320px.png'],
- ['light','LightingLab','lighting-v2','src/components/labs/option-b-lighting-lab.css','data-v2-lighting-screen','data-v2-lighting-stage','data-v2-lighting-controls','31-real-option-b-lighting-320px.png'],
- ['cut','CutLab','cut-v2','src/components/labs/option-b-cut-lab.css','data-v2-cut-screen','data-v2-cut-stage','data-v2-cut-controls','33-real-option-b-cut-320px.png'],
- ['sound','SoundLab','sound-v2','src/components/labs/option-b-sound-lab.css','data-v2-sound-screen','data-v2-sound-stage','data-v2-sound-controls','35-real-option-b-sound-320px.png'],
- ['colour','ColourLab','colour-v2','src/components/labs/option-b-colour-lab.css','data-v2-colour-screen','data-v2-colour-stage','data-v2-colour-controls','37-real-option-b-colour-320px.png'],
- ['continuity','ContinuityLab','continuity-v2','src/components/labs/option-b-continuity-lab.css','data-v2-continuity-screen','data-v2-continuity-stage','data-v2-continuity-controls','39-real-option-b-continuity-320px.png']
+ ['story','MakeLab','make-v2','src/components/labs/option-b-make-lab.css','data-v2-make-screen','data-v2-make-scene-first','data-story-project-library','18-react-make-'],
+ ['frame','FrameLab','frame-v2','src/components/labs/option-b-frame-lab.css','data-v2-frame-screen','data-v2-frame-stage','data-v2-frame-controls','29-real-option-b-frame-'],
+ ['light','LightingLab','lighting-v2','src/components/labs/option-b-lighting-lab.css','data-v2-lighting-screen','data-v2-lighting-stage','data-v2-lighting-controls','31-real-option-b-lighting-'],
+ ['cut','CutLab','cut-v2','src/components/labs/option-b-cut-lab.css','data-v2-cut-screen','data-v2-cut-stage','data-v2-cut-controls','33-real-option-b-cut-'],
+ ['sound','SoundLab','sound-v2','src/components/labs/option-b-sound-lab.css','data-v2-sound-screen','data-v2-sound-stage','data-v2-sound-controls','35-real-option-b-sound-'],
+ ['colour','ColourLab','colour-v2','src/components/labs/option-b-colour-lab.css','data-v2-colour-screen','data-v2-colour-stage','data-v2-colour-controls','37-real-option-b-colour-'],
+ ['continuity','ContinuityLab','continuity-v2','src/components/labs/option-b-continuity-lab.css','data-v2-continuity-screen','data-v2-continuity-stage','data-v2-continuity-controls','39-real-option-b-continuity-']
 ];
 const seen=new Set();
 for(const [id,name,styleClass,cssPath,root,stage,control,screenshot] of individual){
