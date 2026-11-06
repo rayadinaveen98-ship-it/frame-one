@@ -934,10 +934,19 @@ async function verify() {
   assert.equal(await framing.locator('.scene-stage.without-guides').count(), 1);
   await framing.locator('[data-compare]').click();
   assert.equal(await framing.locator('.frame-comparison svg').count(), 2);
+  assert.match(await framing.locator('.frame-comparison .compare-tag').last().textContent(),/TIGHT CROP/,
+    'Wide crop must compare to an actual tight original picture');
   assert.equal(await framing.locator('.frame-comparison .scene-stage.without-guides').count(), 2);
   await photo(page, '11-react-frame-desktop.png');
   await framing.locator('[data-frame="close"]').click();
   assert.equal(await framing.locator('#frameZoomValue').textContent(), '3.0×');
+  assert.match(await framing.locator('.frame-comparison .compare-tag').last().textContent(),/WIDE CROP/,
+    'Close-up must compare to wide shot rather than an identical 3× crop');
+  const comparedViewBoxes=await framing.locator('.frame-comparison svg').evaluateAll(
+    elements=>elements.map(svg=>svg.getAttribute('viewBox')));
+  assert.equal(comparedViewBoxes.length,2);
+  assert.notEqual(comparedViewBoxes[0],comparedViewBoxes[1],
+    'Actual SVG viewBoxes must differ even at maximum crop');
   await framing.locator('[data-compare]').click();
   assert.equal(await framing.locator('.frame-comparison').count(), 0);
   const framingBrief = framing.locator('.framing-intention');
