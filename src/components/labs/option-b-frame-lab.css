@@ -62,7 +62,7 @@
 .react-frame-lab.frame-v2 .lab-preview.cinematic-preview{
  padding:12px;background:#fff;border:1px solid #d4e7dd;
  border-radius:20px;box-shadow:0 4px 0 #dcece4;
- top:15px;position:sticky;min-width:0;min-height:0
+ top:auto;position:relative;min-width:0;min-height:0
 }
 .react-frame-lab.frame-v2 .frame-v2-stage-head{display:flex;
  align-items:center;justify-content:space-between;gap:8px;
