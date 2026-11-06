@@ -1118,8 +1118,26 @@ async function verify() {
   await lighting.waitFor({ state:'detached' });
   const cut = page.locator('.react-cut-lab');
   await cut.waitFor();
+  assert.equal(await cut.getAttribute('data-v2-cut-screen'),'true',
+    'The real Cut Lab must display the redesigned production editor');
+  const cutStageFirst=await cut.evaluate(root=>Boolean(
+    root.querySelector('[data-v2-cut-stage]')?.compareDocumentPosition(
+      root.querySelector('[data-v2-cut-controls]'))&Node.DOCUMENT_POSITION_FOLLOWING));
+  assert.equal(cutStageFirst,true,'Original timed storyboard must precede working controls');
+  assert.equal(await cut.locator('[data-v2-cut-stage] .cut-illustration').count(),1);
+  assert.match(await cut.locator('.cut-v2-live-status strong').textContent(),/place/i);
+  await photo(page,'32-real-option-b-cut-desktop.png');
   assert.equal(await page.locator('#content').innerHTML(), '', 'React must own Cut Lab without hidden legacy markup');
   assert.equal(await cut.locator('.timeline-clip').count(), 3);
+  const clipContainment=await cut.locator('.timeline-clip').first().evaluate(clip=>{
+    const head=clip.querySelector('.clip-playhead');
+    if(!head)return false;
+    const a=clip.getBoundingClientRect(),b=head.getBoundingClientRect();
+    return b.width>0&&b.height>0&&b.left>=a.left-2&&b.right<=a.right+2&&
+      b.top>=a.top-2&&b.bottom<=a.bottom+2;
+  });
+  assert.equal(clipContainment,true,
+    'Animated clip progress must stay INSIDE its card instead of spanning the whole screen');
   assert.equal(await cut.locator('.cut-illustration.place').count(), 1, 'Original drawn establishing shot retained');
   // Give the first shot its own duration, then move it. The 4-second hold
   // belongs to that shot, not to an arbitrary timeline position.
@@ -2162,6 +2180,12 @@ async function verify() {
     await mobileLighting.locator('[data-lab="cut"]').click();
     const mobileCut=phone.locator('.react-cut-lab');
     await mobileCut.waitFor();
+    assert.equal(await mobileCut.getAttribute('data-v2-cut-screen'),'true');
+    const realCutArt=await mobileCut.locator('[data-v2-cut-stage] .cut-illustration').boundingBox();
+    const realCutShell=await mobileCut.boundingBox();
+    assert.ok(realCutArt&&realCutShell&&realCutArt.width>realCutShell.width*.62,
+      'Original scene must be prominent at '+width+'px in the real Cut Lab');
+    await photo(phone,'33-real-option-b-cut-'+width+'px.png');
     await mobileCut.locator('[data-move="0:right"]').click();
     assert.equal(await mobileCut.locator('.timeline-clip').count(),3);
     const cutOverflow=await phone.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
