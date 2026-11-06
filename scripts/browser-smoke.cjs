@@ -718,6 +718,37 @@ async function verify() {
   await page.locator('.sidebar [data-page="learn"]').click();
   await page.locator('.react-learn-view h1').waitFor();
   assert.match(await page.locator('.react-learn-view h1').textContent(), /learn cinema, one choice at a time/i);
+  // Frame One 2.0 approved design enters as a complete working offline pilot.
+  const classicProgressBefore=await page.locator('#progressLabel').textContent();
+  await page.locator('[data-option-b-open]').click();
+  const newJourney=page.locator('[data-frameone-option-b]');
+  await newJourney.waitFor();
+  assert.equal(await page.locator('.app > .main').getAttribute('aria-hidden'),'true',
+    'Old interactive course is inaccessible behind the immersive pilot');
+  const pilot=page.frameLocator('[data-option-b-frame]');
+  await pilot.locator('.home-hero h1').waitFor();
+  await pilot.locator('.navbar [data-screen="journey"]').click();
+  await pilot.locator('.journey-node').first().click();
+  await pilot.locator('[data-next-step]').click();
+  await pilot.locator('[data-choice="1"]').click();
+  assert.equal(await pilot.locator('[data-choice="1"]').getAttribute('aria-pressed'),'true');
+  await pilot.locator('[data-next-step]').click();
+  await pilot.locator('#missionZoom').fill('1.8');
+  await pilot.locator('[data-next-step]').click();
+  await pilot.locator('[data-next-step]').click();
+  await pilot.locator('.celebrate h1').waitFor();
+  await pilot.locator('.navbar [data-screen="progress"]').click();
+  assert.match(await pilot.locator('.progress-card').textContent(),/1/);
+  await pilot.locator('.navbar [data-screen="lab"]').click();
+  await pilot.locator('[data-lab="light"]').click();
+  assert.equal(await pilot.locator('[data-lab="light"]').getAttribute('aria-selected'),'true');
+  await photo(page,'28-option-b-pilot-desktop.png');
+  await newJourney.locator('[data-option-b-exit]').click();
+  await newJourney.waitFor({state:'detached'});
+  assert.equal(await page.locator('#progressLabel').textContent(),classicProgressBefore,
+    'Prototype completion never changes real lesson progress');
+  assert.equal(await page.locator('.app > .main').getAttribute('aria-hidden'),null,
+    'Existing course accessibility is restored on Exit');
   assert.equal(await page.locator('[data-chapter-library] [data-chapter-index]').count(),6);
   assert.equal(await page.locator('.chapter-body.is-expanded').count(),1,
     'Desktop Learn must show only one expanded chapter, avoiding a wall of 33 cards');
@@ -1858,6 +1889,18 @@ async function verify() {
     const horizontal = await phone.evaluate(() => ({ scroll: document.documentElement.scrollWidth, viewport: document.documentElement.clientWidth }));
     if (horizontal.scroll > horizontal.viewport + 3) record('Horizontal overflow at ' + width + 'px: ' + horizontal.scroll + ' vs ' + horizontal.viewport);
     await photo(phone, '05-chapters-' + width + 'px.png');
+    await phone.locator('[data-option-b-open]').click();
+    const mobilePilot=phone.frameLocator('[data-option-b-frame]');
+    await mobilePilot.locator('.home-hero h1').waitFor();
+    await mobilePilot.locator('.navbar [data-screen="journey"]').click();
+    const pilotOverflow=await phone.evaluate(()=>({
+      scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth
+    }));
+    if(pilotOverflow.scroll>pilotOverflow.viewport+3)
+      record('Option B pilot overlay overflow at '+width+'px');
+    await photo(phone,'28-option-b-pilot-'+width+'px.png');
+    await phone.locator('[data-option-b-exit]').click();
+    assert.equal(await phone.locator('[data-frameone-option-b]').count(),0,'Pilot exits on '+width+'px phone');
     await phone.locator('.mobile-nav [data-page="lab"]').click();
     await phone.locator('.lab-tabs').waitFor();
     const mobileFrame = phone.locator('.react-frame-lab');
