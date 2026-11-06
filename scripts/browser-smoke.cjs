@@ -17,6 +17,7 @@ const {verifyRealChapterThree}=require('./v2-real-visual-qa.cjs');
 const {verifyRealChapterFour}=require('./v2-real-sound-qa.cjs');
 const {verifyRealChapterFive}=require('./v2-real-people-qa.cjs');
 const {verifyRealChapterSix}=require('./v2-real-first-film-qa.cjs');
+const {verifyRealLabsBridge}=require('./v2-real-labs-qa.cjs');
 const base = 'http://127.0.0.1:4173';
 const shots = path.resolve(__dirname, '../qa/screenshots');
 fs.mkdirSync(shots, { recursive: true });
@@ -73,8 +74,9 @@ async function verifyRealChapterIsolated(width,label){
     const soundResult=await verifyRealChapterFour(fresh,source,shots,label);
     const peopleResult=await verifyRealChapterFive(fresh,source,shots,label);
     const firstFilmResult=await verifyRealChapterSix(fresh,source,shots,label);
+    const labsResult=await verifyRealLabsBridge(fresh,source,shots,label);
     await fresh.locator('[data-option-b-exit]').click();
-    return {...result,storyLessonsValidated:storyResult.validatedLessons,visualLessonsValidated:visualResult.validated,soundLessonsValidated:soundResult.validated,peopleLessonsValidated:peopleResult.validated,firstFilmLessonsValidated:firstFilmResult.validated};
+    return {...result,storyLessonsValidated:storyResult.validatedLessons,visualLessonsValidated:visualResult.validated,soundLessonsValidated:soundResult.validated,peopleLessonsValidated:peopleResult.validated,firstFilmLessonsValidated:firstFilmResult.validated,realLabsChecked:labsResult.labsChecked};
   }finally{await isolated.close();}
 }
 async function verify() {

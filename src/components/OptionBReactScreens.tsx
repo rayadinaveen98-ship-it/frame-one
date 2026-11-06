@@ -11,6 +11,8 @@ import {PEOPLE_BEHIND_FILM,PEOPLE_IDS} from '../data/people-guided';
 import {FIRST_FILM,FIRST_FILM_IDS} from '../data/first-film-guided';
 import {safeProgress} from '../state/learning';
 import {OptionBFoundationMission} from './OptionBFoundationMission';
+import {OptionBRealLabs} from './OptionBRealLabs';
+import type {LabName} from '../legacy/bridge';
 
 /** The same six story prompts and node identities in the approved Option B prototype. */
 type MissionIcon='eye'|'frame'|'clapper'|'sun'|'sound'|'film';
@@ -436,8 +438,8 @@ function PeopleJourney({completed,onMission,onExit,onNext}:{
 const FIRST_FILM_NODE_POSITIONS:[number,number][]=[
   [36,12],[70,30],[32,49],[70,68],[37,86]
 ];
-function FirstFilmJourney({completed,onMission,onExit}:{
-  completed:Set<string>;onMission:(id:string)=>void;onExit:()=>void;
+function FirstFilmJourney({completed,onMission,onExit,onLabs}:{
+  completed:Set<string>;onMission:(id:string)=>void;onExit:()=>void;onLabs:()=>void;
 }){
   const next=FIRST_FILM.find(m=>!completed.has(m.id))?.id??FIRST_FILM[0].id;
   const icons:MissionIcon[]=['clapper','frame','film','clapper','eye'];
@@ -482,6 +484,7 @@ function FirstFilmJourney({completed,onMission,onExit}:{
       <h2>You're ready to put the lessons to work.</h2>
       <p>You've completed {total} of 33 real Frame One lessons. These exercises prepare you to make a film; they do not claim you've recorded or finished one.</p>
       <p>Choose a small scene, create a shot plan in Make Lab, record safely on your phone, and review the result.</p>
+      <button type="button" className="btn btn-primary btn-wide" data-v2-firstfilm-open-labs onClick={onLabs}>Open your seven working Creative Labs</button>
     </section>}
   </div>;
 }
@@ -525,13 +528,18 @@ function ProgressScreen({saved,onMission,onReset}:{
 }
 
 const NAV_ITEMS=[['home','Home','home'],['journey','Journey','map'],['lab','Create','lab'],['progress','Progress','progress']] as const;
-function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
+function ReactScreenShell({onOpenReference,onActive,onNativeComplete,onOpenProductionLab,resumeChapter}:{
   onOpenReference:(screen:string,missionId?:string)=>void;
   onActive:boolean;onNativeComplete:()=>void;
+  onOpenProductionLab:(lab:LabName,chapterIndex:number)=>void;
+  resumeChapter:number|null;
 }){
-  const [screen,setScreen]=useState<'home'|'journey'|'mission'|'lab'|'progress'>('home');
-  const [realChapter,setRealChapter]=useState(false);
-  const [realChapterIndex,setRealChapterIndex]=useState<0|1|2|3|4|5>(0);
+  // Return from a real production lab to the chapter the learner left.
+  // A normal prototype launch still starts on its original Home screen.
+  const [screen,setScreen]=useState<'home'|'journey'|'mission'|'lab'|'progress'>(resumeChapter===null?'home':'journey');
+  const [realChapter,setRealChapter]=useState(resumeChapter!==null);
+  const [realChapterIndex,setRealChapterIndex]=useState<0|1|2|3|4|5>(
+    resumeChapter===null?0:Math.max(0,Math.min(5,Math.trunc(resumeChapter))) as 0|1|2|3|4|5);
   const [realLessonId,setRealLessonId]=useState(FOUNDATION_IDS[0]);
   const [realAttempt,setRealAttempt]=useState(0);
   const [realFinished,setRealFinished]=useState<Set<string>>(()=>safeProgress([...FOUNDATION_IDS,...STORYTELLING_IDS,...VISUAL_IDS,...SOUND_EDIT_IDS,...PEOPLE_IDS,...FIRST_FILM_IDS]));
@@ -638,7 +646,10 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
       </header>
       <main id="viewport" ref={viewport} tabIndex={-1} aria-live="off">
         {realChapter
-          ? screen==='mission'
+          ? screen==='lab'
+            ? <OptionBRealLabs onOpen={lab=>onOpenProductionLab(lab,realChapterIndex)}
+                onBack={()=>{setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}/>
+            : screen==='mission'
             ? <OptionBFoundationMission key={realLessonId+'-'+realAttempt}
                 lessonId={realLessonId}
                 onBack={()=>{refreshReal();setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}
@@ -664,7 +675,8 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
                           onExit={()=>{setRealChapterIndex(3);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}
                           onNext={()=>{setRealChapterIndex(5);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}/>
                       : <FirstFilmJourney completed={realFinished} onMission={startRealMission}
-                          onExit={()=>{setRealChapterIndex(4);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}/>
+                          onExit={()=>{setRealChapterIndex(4);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}
+                          onLabs={()=>{setScreen('lab');if(viewport.current)viewport.current.scrollTop=0;}}/>
           : screen==='home'
             ? <HomeScreen finished={saved.finished} onMission={startMission} onScreen={openScreen} onStartReal={startReal}/>
             : screen==='journey'
@@ -681,10 +693,10 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
       </main>
       <nav className="navbar" aria-label="Primary navigation">
         {NAV_ITEMS.map(([id,label,icon])=><button type="button" key={id}
-          className={'nav-item'+(realChapter? (id==='journey'?' is-active':'') : ((screen==='mission'?'journey':screen)===id?' is-active':''))}
-          aria-current={(realChapter? id==='journey':(screen==='mission'?'journey':screen)===id)?'page':undefined}
+          className={'nav-item'+(realChapter? ((screen==='lab'?'lab':'journey')===id?' is-active':'') : ((screen==='mission'?'journey':screen)===id?' is-active':''))}
+          aria-current={(realChapter?(screen==='lab'?'lab':'journey')===id:(screen==='mission'?'journey':screen)===id)?'page':undefined}
           data-v2-native-nav={id}
-          onClick={()=>realChapter? (id==='journey'?setScreen('journey'):exitReal()) : changeScreen(id)}>
+          onClick={()=>realChapter? (id==='journey'||id==='lab' ? (setScreen(id),viewport.current?.scrollTo(0,0)):exitReal()) : changeScreen(id)}>
           <Icon name={icon}/><span>{label}</span>
         </button>)}
       </nav>
@@ -694,9 +706,11 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
 }
 
 /** Shadow DOM contains exact approved CSS without leaking styles into the old app. */
-export function OptionBReactScreens({onOpenReference,active,onNativeComplete}:{
+export function OptionBReactScreens({onOpenReference,active,onNativeComplete,onOpenProductionLab,resumeChapter}:{
   onOpenReference:(screen:string,missionId?:string)=>void;
   active:boolean;onNativeComplete:()=>void;
+  onOpenProductionLab:(lab:LabName,chapterIndex:number)=>void;
+  resumeChapter:number|null;
 }){
   const slot=useRef<HTMLDivElement>(null);
   const [shadow,setShadow]=useState<ShadowRoot|null>(null);
@@ -708,6 +722,6 @@ export function OptionBReactScreens({onOpenReference,active,onNativeComplete}:{
   },[]);
   return <div className="frameone-option-b-native-slot" data-v2-react-slot
     ref={slot} aria-label="Native React port of all five approved Frame One Option B screens">
-    {shadow?createPortal(<><style>{approvedStyles}</style><ReactScreenShell onOpenReference={onOpenReference} onActive={active} onNativeComplete={onNativeComplete}/></>,shadow):null}
+    {shadow?createPortal(<><style>{approvedStyles}</style><ReactScreenShell onOpenReference={onOpenReference} onActive={active} onNativeComplete={onNativeComplete} onOpenProductionLab={onOpenProductionLab} resumeChapter={resumeChapter}/></>,shadow):null}
   </div>;
 }

@@ -363,3 +363,65 @@
  .first-film-three-beats{gap:4px}
  .first-film-beat strong{font-size:8px}
 }
+
+
+/* Production Creative Labs entry: scoped Option B extension only.
+ * The approved demo Lab and original pixel-parity scenes remain unchanged. */
+.real-labs-screen{background:#f7fbf9}
+.real-labs-intro{padding:23px 20px 13px}
+.real-labs-intro .foundation-return{margin-bottom:17px}
+.real-labs-intro .eyebrow{color:#29897a}
+.real-labs-intro h1{margin:8px 0 10px;font-size:27px;line-height:1.15;max-width:300px}
+.real-labs-intro p{font-size:12px;line-height:1.65;color:#5d7e7c;max-width:330px}
+.real-labs-collection{padding:0 14px 15px}
+.real-labs-featured{width:100%;border:1px solid #aedacf;border-radius:20px;
+ display:block;text-align:left;overflow:hidden;padding:12px;
+ background:linear-gradient(140deg,#e7f8ec,#d7f0e7);
+ box-shadow:0 5px 0 #c5e4d7}
+.real-labs-featured-head{display:flex;justify-content:space-between;align-items:center;
+ font-size:10px;font-weight:900;color:#318777;letter-spacing:.055em;margin:0 3px 8px}
+.real-labs-open-arrow{display:grid;place-items:center;width:28px;height:28px;
+ border-radius:9px;background:#fff;color:#2a8b71;font-size:18px}
+.real-labs-featured>.real-lab-art{width:100%;height:auto;max-height:160px;display:block;
+ border-radius:13px;overflow:hidden}
+.real-labs-featured-copy{padding:11px 3px 11px;display:flex;flex-direction:column;gap:5px}
+.real-labs-featured-copy strong{font-size:18px;color:#224957;letter-spacing:-.04em}
+.real-labs-featured-copy span{color:#527c77;font-size:11px;line-height:1.6}
+.real-labs-featured-footer{display:flex;justify-content:space-between;align-items:center;
+ font-size:10px;font-weight:950;color:#24795b;letter-spacing:.055em;
+ border-top:1px solid #a9d8c8;padding:12px 4px 3px}
+.real-labs-divider{display:flex;align-items:center;justify-content:space-between;
+ padding:20px 4px 10px}
+.real-labs-divider>span:last-child{font-size:9px;color:#8aa7a1;font-weight:900}
+.real-labs-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.real-lab-card{padding:8px;text-align:left;min-width:0;border-radius:16px;background:#fff;
+ border:1px solid #dcebe5;box-shadow:0 4px 0 #e3eee8;display:flex;flex-direction:column;
+ transition:transform .15s,box-shadow .15s}
+.real-lab-card:active{transform:translateY(2px);box-shadow:0 2px 0 #e3eee8}
+.real-lab-card-art{border-radius:11px;overflow:hidden;background:#e8f6ef;
+ width:100%;height:95px}
+.real-lab-card-art svg{display:block;width:100%;height:100%;object-fit:cover}
+.real-lab-card-copy{padding:10px 4px;min-height:79px}
+.real-lab-card-copy strong{display:block;color:#2a515d;font-size:14px;line-height:1.2}
+.real-lab-card-copy span{display:block;margin-top:5px;color:#6d8a87;
+ font-size:10px;line-height:1.4}
+.real-lab-card-open{display:flex;justify-content:space-between;align-items:center;
+ margin:auto 4px 3px;padding-top:9px;border-top:1px solid #e3efe9;
+ color:#248568;font-size:9px;font-weight:950;letter-spacing:.035em}
+.real-lab-card-open span{font-size:16px;line-height:1}
+.real-labs-integrity{display:flex;align-items:flex-start;gap:9px;margin:7px 15px 16px;
+ padding:13px 12px;background:#ebf7f1;border:1px solid #d1e9db;border-radius:13px;
+ color:#547976;font-size:10px;line-height:1.55}
+.real-labs-integrity-icon{border-radius:50%;height:21px;width:21px;display:grid;
+ place-items:center;flex:0 0 21px;color:#fff;background:#52af84;font-weight:900}
+@media(max-width:360px){
+ .real-labs-intro{padding-left:16px;padding-right:16px}
+ .real-labs-collection{padding-left:10px;padding-right:10px}
+ .real-labs-grid{gap:7px}
+ .real-lab-card{padding:6px}
+ .real-lab-card-art{height:77px}
+ .real-lab-card-copy{min-height:86px;padding:9px 3px}
+ .real-lab-card-copy strong{font-size:12px}
+ .real-lab-card-copy span{font-size:9px}
+ .real-lab-card-open{font-size:8px}
+}

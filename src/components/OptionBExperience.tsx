@@ -1,5 +1,6 @@
 import {useCallback,useEffect,useRef,useState} from 'react';
 import {OptionBReactScreens} from './OptionBReactScreens';
+import type {LabName} from '../legacy/bridge';
 import './option-b-experience.css';
 
 /**
@@ -11,12 +12,16 @@ import './option-b-experience.css';
  * The old React/legacy application stays mounted behind the overlay so its
  * boot-owned elements, navigation listeners, backups and lessons survive exit.
  */
-export function OptionBExperience({onExit}:{onExit:()=>void}){
+export function OptionBExperience({onExit,onOpenProductionLab,resumeChapter}:{
+  onExit:()=>void;
+  onOpenProductionLab:(lab:LabName,chapterIndex:number)=>void;
+  resumeChapter:number|null;
+}){
   const exitRef=useRef<HTMLButtonElement>(null);
   const frameRef=useRef<HTMLIFrameElement>(null);
   const [loaded,setLoaded]=useState(false);
   const [failed,setFailed]=useState(false);
-  const [presentation,setPresentation]=useState<'approved'|'react'>('approved');
+  const [presentation,setPresentation]=useState<'approved'|'react'>(resumeChapter===null?'approved':'react');
   const openApproved=useCallback((screen:string,missionId?:string)=>{
     // Same-origin frame owns the already-reviewed interactive mission engine.
     // The React port now owns Home, Journey and the four-step mission.
@@ -99,7 +104,8 @@ export function OptionBExperience({onExit}:{onExit:()=>void}){
       referrerPolicy="no-referrer"/>
     <div className="frameone-option-b-native-wrap" data-option-b-native-wrap
       style={{display:presentation==='react'?'block':'none'}} aria-hidden={presentation!=='react'}>
-      <OptionBReactScreens active={presentation==='react'} onOpenReference={openApproved} onNativeComplete={syncReferenceProgress}/>
+      <OptionBReactScreens active={presentation==='react'} onOpenReference={openApproved} onNativeComplete={syncReferenceProgress}
+        onOpenProductionLab={onOpenProductionLab} resumeChapter={resumeChapter}/>
     </div>
     <p className="frameone-option-b-disclaimer">Design pilot only. Demo missions use separate local progress; existing 33 lessons, seven Labs and backups are unchanged.</p>
   </section>;

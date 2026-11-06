@@ -22,6 +22,7 @@ import './legacy/legacy.css';
 import './components/labs/react-labs.css';
 import './native-safe-area.css';
 import './pwa-update.css';
+import './components/real-labs-return.css';
 import './cinematic-v10.css';
 import './minimal-cinema-v10.css';
 
@@ -106,12 +107,22 @@ export default function App() {
   const [updateReady, setUpdateReady] = useState(false);
   const [route, setRoute] = useState<AppRoute>({page:'home',lesson:null});
   const [optionBOpen,setOptionBOpen] = useState(false);
+  // Chapter-only return location, not a new persistence store.
+  const [realLabReturnChapter,setRealLabReturnChapter]=useState<number|null>(null);
   const closeOptionB=useCallback(()=>{
+    setRealLabReturnChapter(null);
     setOptionBOpen(false);
     window.requestAnimationFrame(()=>document.querySelector<HTMLButtonElement>('[data-option-b-open]')?.focus({preventScroll:true}));
   },[]);
+  const openProductionLabFromOptionB=useCallback((lab:LabName,chapterIndex:number)=>{
+    if(!window.frameOneLegacy?.openLab)return;
+    setRealLabReturnChapter(Math.max(0,Math.min(5,Math.trunc(chapterIndex))));
+    // Reuse the existing typed bridge: this emits the original React lab route.
+    // No duplicated lab state, fake editors, new saves or backup schema.
+    window.frameOneLegacy.openLab(lab);
+  },[]);
   useEffect(()=>{
-    const open=()=>setOptionBOpen(true);
+    const open=()=>{setRealLabReturnChapter(null);setOptionBOpen(true);};
     window.addEventListener('frameone:option-b-open',open);
     return ()=>window.removeEventListener('frameone:option-b-open',open);
   },[]);
@@ -172,6 +183,7 @@ export default function App() {
       // It leaves #content empty when either React-owned lab owns the screen.
       const lab = custom.detail.page === 'lab' ? custom.detail.lab : undefined;
       setOptionBOpen(false);
+      if(custom.detail.page!=='lab')setRealLabReturnChapter(null);
       setRoute({ ...custom.detail, lab });
     };
     window.addEventListener('frameone:route',onRoute);
@@ -196,6 +208,12 @@ export default function App() {
     </aside>
     <main className={route.page==='home'?'main cinema-library-active':'main'} id="main-content">
       <ProgressTopbar page={route.page} />
+      {route.page==='lab'&&realLabReturnChapter!==null ? <div className="real-lab-return-bar" data-v2-real-lab-return-bar>
+        <span><b>YOUR FRAME ONE JOURNEY</b> Working Creative Lab · all original projects stay here</span>
+        <button type="button" data-v2-return-to-journey onClick={()=>setOptionBOpen(true)}>
+          ← Return to Chapter {String(realLabReturnChapter+1).padStart(2,'0')}
+        </button>
+      </div> : null}
       {updateReady ? <div className="pwa-update-notice" role="status">
         <span><strong>New version available.</strong> Finish what you're doing, then refresh to see the latest changes.</span>
         <button type="button" onClick={() => window.location.reload()}>Refresh now</button>
@@ -218,6 +236,7 @@ export default function App() {
       <footer className="footer"><span>FRAME ONE · React lessons + chapters + 7 Creative Labs v0.9D</span><span>Made for curious minds <span className="heart">♥</span></span></footer>
     </main>
     <Navigation mobile />
-    {optionBOpen ? <OptionBExperience onExit={closeOptionB} /> : null}
+    {optionBOpen ? <OptionBExperience onExit={closeOptionB}
+      onOpenProductionLab={openProductionLabFromOptionB} resumeChapter={realLabReturnChapter}/> : null}
   </div>;
 }
