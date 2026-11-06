@@ -42,8 +42,12 @@ async function verifyRealChapterThree(page,reference,shots,label){
     for(let i=0;i<3;i++){
       await mission.locator('[data-v2-foundation-explore="'+i+'"]').click();
       assert.equal(await mission.locator('[data-v2-visual-selection="'+i+'"]').count(),1);
+      if(id==='lenses'&&i<2){
+        assert.equal(await mission.locator('.visual-experiment .scene-card').count(),1,
+          'The first two lens states show a visibly labelled crop, not a fabricated perspective change');
+      }
     }
-    if(['camera','lighting','movement'].includes(id)){
+    if(['camera','lighting','movement','lenses'].includes(id)){
       assert.equal(await mission.locator('.visual-diagram svg').count(),1,
         'Camera physics should be a conceptual rig diagram, not a false photo render');
     }else{
