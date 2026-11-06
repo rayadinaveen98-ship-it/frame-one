@@ -1,0 +1,22 @@
+/* Seamless return from an original working Creative Lab to the redesigned
+ * learning journey. Does not restyle or interfere with the production lab UI. */
+.real-lab-return-bar{
+ display:flex;align-items:center;justify-content:space-between;gap:12px;
+ padding:13px 17px;margin:0 0 12px;border:1px solid #cde6dd;border-radius:15px;
+ background:linear-gradient(125deg,#effaf3,#e4f4f2);box-shadow:0 3px 0 #d4e9e0;
+ color:#315c61;
+}
+.real-lab-return-bar>span{font-size:11px;line-height:1.5;color:#5c7f7b}
+.real-lab-return-bar>span>b{display:block;font-size:10px;letter-spacing:.08em;color:#287c72}
+.real-lab-return-bar button{
+ flex:0 0 auto;border:0;border-radius:11px;padding:11px 13px;
+ font-weight:850;font-size:12px;color:#fff;background:#228c74;
+ box-shadow:0 3px 0 #13654e;min-height:42px;cursor:pointer;
+}
+.real-lab-return-bar button:focus-visible{outline:3px solid #174dc8;outline-offset:3px}
+.real-lab-return-bar button:active{transform:translateY(2px);box-shadow:0 1px 0 #13654e}
+@media(max-width:620px){
+ .real-lab-return-bar{margin:0 9px 12px;gap:8px;padding:10px;align-items:center}
+ .real-lab-return-bar>span{font-size:10px;max-width:46%}
+ .real-lab-return-bar button{font-size:11px;padding:10px}
+}
