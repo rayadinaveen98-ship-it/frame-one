@@ -21,16 +21,17 @@ const explanations:Record<VisualTopic,string>={
  colour:'Illustrative filters only. Physical lighting, art direction and professional colour grading are different tools.'
 };
 
-function FilmSetDiagram({topic,index}:{topic:'camera'|'lighting'|'movement';index:number}){
+function FilmSetDiagram({topic,index}:{topic:'camera'|'lighting'|'movement'|'lenses';index:number}){
  const isCam=topic==='camera',isLight=topic==='lighting';
- const cameraPos=isCam?(index===0?[60,144]:index===1?[74,144]:[60,166])
-   :index===2?[58,132]:[58,148];
+ const cameraPos=isCam?(index===1?[74,144]:[60,144])
+   :topic==='lenses'?[85,135]:index===2?[58,132]:[58,148];
  const [cameraX,cameraY]=cameraPos;
  const directionAngle=(isCam&&index===1)?-23:topic==='movement'&&index===1?-38:0;
  const sourcePosition=isLight?(index===0?[80,62]:index===1?[174,96]:[110,137]):[162,44];
  return <div className="visual-diagram" role="img"
    aria-label={isCam?labels.camera[index]+' camera setup shown on a top-down film set':
      isLight?labels.lighting[index]+' conceptual lighting positions on a film set':
+       topic==='lenses'?'Camera position change shown on a top-down floor plan, not a crop':
        labels.movement[index]+' camera blocking movement shown on a floor plan'}>
    <svg viewBox="0 0 320 200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
      <defs>
@@ -58,7 +59,7 @@ function FilmSetDiagram({topic,index}:{topic:'camera'|'lighting'|'movement';inde
        <text x="13" y="35" fill="#5a807f" fontSize="8">{index===0?'DIRECTION':index===1?'LARGER APPARENT SOURCE':'LIGHT INTENSITY'}</text>
      </>}
      {!isLight&&<>
-       {topic==='movement'&&index===2&&<path d="M49 153 Q74 119 105 97" stroke="#278f79" strokeWidth="4"
+       {(topic==='movement'&&index===2||topic==='lenses')&&<path d="M49 164 Q70 133 99 114" stroke="#278f79" strokeWidth="4"
          strokeDasharray="7 5" fill="none" markerEnd="url(#visual-arrow)"/>}
        <g transform={'translate('+cameraX+' '+cameraY+') rotate('+directionAngle+')'}>
          <path d="M0 0L58 -32L58 6Z" fill="#8ad7c2" fillOpacity=".55" stroke="#62a899" strokeWidth="1.5"/>
@@ -68,8 +69,16 @@ function FilmSetDiagram({topic,index}:{topic:'camera'|'lighting'|'movement';inde
        </g>
        {topic==='movement'&&index===1&&<path d="M52 114Q39 83 72 72" stroke="#248874"
          fill="none" strokeWidth="4" strokeDasharray="6 5" markerEnd="url(#visual-arrow)"/>}
-       <text x="13" y="23" fill="#287b71" fontSize="10" fontWeight="850">{isCam?'CAMERA PLAN':'CAMERA MOVEMENT'}</text>
-       <text x="13" y="36" fill="#5a807f" fontSize="8">{labels[topic][index].toUpperCase()}</text>
+       {isCam&&index===2&&<g>
+         <rect x="231" y="62" width="76" height="98" rx="9" fill="#fff" stroke="#acd4c7" strokeWidth="2"/>
+         <text x="269" y="78" fill="#256d6b" fontSize="8" fontWeight="800" textAnchor="middle">SIDE VIEW</text>
+         <path d="M242 139H296M242 93H296M270 87V142" stroke="#a5d2c2" strokeWidth="2" strokeDasharray="3 4"/>
+         <circle cx="270" cy="93" r="7" fill="#f0ae63" stroke="#bc874d" strokeWidth="2"/>
+         <path d="M267 136H273L277 141H263Z" fill="#356b79"/>
+         <text x="269" y="154" fill="#417b78" fontSize="8" textAnchor="middle">HEIGHT</text>
+       </g>}
+       <text x="13" y="23" fill="#287b71" fontSize="10" fontWeight="850">{isCam?'CAMERA PLAN':topic==='lenses'?'CAMERA POSITION':'CAMERA MOVEMENT'}</text>
+       <text x="13" y="36" fill="#5a807f" fontSize="8">{topic==='lenses'?'MOVE ≠ CROP':labels[topic][index].toUpperCase()}</text>
      </>}
    </svg>
  </div>;
@@ -81,7 +90,7 @@ function FilmSetDiagram({topic,index}:{topic:'camera'|'lighting'|'movement';inde
 export function OptionBVisualExperiment({lessonId,selected}:{lessonId:string;selected:number}){
  if(!(['shot','camera','lighting','composition','movement','lenses','colour'] as string[]).includes(lessonId))return null;
  const topic=lessonId as VisualTopic;
- const isDiagram=topic==='camera'||topic==='lighting'||topic==='movement';
+ const isDiagram=topic==='camera'||topic==='lighting'||topic==='movement'||(topic==='lenses'&&selected===2);
  const zoom=topic==='shot'||topic==='lenses'?crop[selected]:
   topic==='composition'?[1.3,1.3,1][selected]:1.35;
  const filter=topic==='colour'?(['neutral','warm','cool'] as const)[selected]:'neutral';
@@ -95,6 +104,8 @@ export function OptionBVisualExperiment({lessonId,selected}:{lessonId:string;sel
    {isDiagram
      ? <FilmSetDiagram topic={topic} index={selected}/>
      : <OptionBReactScene mode={topic.toUpperCase()} value={zoom} kind={filter} guides={guides}/>}
-   <p className="visual-experiment-honesty">{explanations[topic]}</p>
+   <p className="visual-experiment-honesty">{topic==='lenses'&&selected===2
+     ? 'This map shows the camera moving through space. A new viewpoint changes perspective; the artwork is not an optical simulation.'
+     : explanations[topic]}</p>
  </section>;
 }
