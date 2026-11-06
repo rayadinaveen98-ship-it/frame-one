@@ -200,6 +200,16 @@ export default function App() {
         realLabOrigin.current=null;
       }
       setRoute({ ...custom.detail, lab });
+      // The Classic page is longer than the immersive course. Switching back
+      // must reset its document scroll; otherwise Android reuses the previous
+      // hidden scroll offset and buries "Continue learning" offscreen.
+      if(custom.detail.page==='home'||custom.detail.page==='learn'){
+        window.requestAnimationFrame(()=>{
+          window.scrollTo(0,0);
+          document.scrollingElement?.scrollTo({top:0,behavior:'instant'});
+          document.querySelector<HTMLElement>('#main-content')?.scrollTo({top:0,behavior:'instant'});
+        });
+      }
     };
     window.addEventListener('frameone:route',onRoute);
     // Run after React mounts all DOM targets. The legacy engine never edits
@@ -260,7 +270,12 @@ export default function App() {
     </main>
     <Navigation mobile />
     {productionOpen ? <FrameOneV2Production
-      onClassic={()=>{setProductionOpen(false);window.frameOneLegacy?.navigate('home');}}
+      onClassic={()=>{
+        setProductionOpen(false);
+        window.frameOneLegacy?.navigate('home');
+        // A visible Classic fallback must always start on its actual Home.
+        window.requestAnimationFrame(()=>window.scrollTo(0,0));
+      }}
       onOpenLab={openProductionLabFromOptionB}
       resumeChapter={realLabReturnChapter}/> : null}
     {optionBOpen ? <OptionBExperience onExit={closeOptionB}
