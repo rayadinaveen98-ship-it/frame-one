@@ -87,6 +87,13 @@ async function verifyProductionDefault(browser,url,shots){
    await page.locator(classicNav).click();
    await page.locator('.react-learn-view').waitFor();
    await page.waitForFunction(()=>window.scrollY<5,null,{timeout:3000});
+   const lessonCTA=await page.locator('.react-learn-view .learn-continue').count()
+      ? page.locator('.react-learn-view .learn-continue').first().boundingBox()
+      : page.getByRole('button',{name:/Continue learning/}).first().boundingBox();
+   const bottomNav=width<=760
+     ? await page.locator('.mobile-nav').boundingBox() : null;
+   assert.ok(lessonCTA&&(!bottomNav||lessonCTA.y+lessonCTA.height<bottomNav.y-8),
+     'Real Classic lesson CTA must be ABOVE the fixed Android bottom bar after the production cutover');
    assert.equal(await page.locator('.react-learn-view [data-option-b-open]').count(),1,
      'Classic learning/backup tools must remain mounted after production cutover');
    await page.locator('[data-v2-open-default-experience]').click();
