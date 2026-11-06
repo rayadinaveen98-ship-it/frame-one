@@ -1,6 +1,7 @@
 import { useEffect, useState, type CSSProperties, type Dispatch, type MouseEvent, type SetStateAction } from 'react';
 import type { LabName } from '../../legacy/bridge';
 import { CutBrief } from './CutBrief';
+import './option-b-cut-lab.css';
 
 /** Cut Lab v0.9D — timed illustrations, not actual film footage.
  * Playback owns one cancellable timer that is cleaned up on unmount and
@@ -81,18 +82,32 @@ export function CutLab({order,setOrder,durations,setDurations,step,setStep}:Prop
     if(playing){setPlaying(false);return;}
     setStep(0);setPlaying(true);
   }
-  return <div className="page react-cut-lab">
-    <div className="page-intro">
-      <div className="eyebrow">THE CREATIVE LAB · EDITOR'S DESK</div>
-      <h1>You're editing the scene.</h1>
-      <p>Three illustrated shots, one simple moment. Rearrange the timeline and set each shot’s duration. Then play your version.</p>
+  return <div className="page react-cut-lab cut-v2" data-v2-cut-screen="true">
+    <div className="page-intro cut-v2-intro">
+      <div className="cut-v2-kicker"><span className="eyebrow">YOUR CINEMATIC EDITING STUDIO</span>
+        <span className="cut-v2-course-tag">✦ REAL CUT LAB</span></div>
+      <div className="cut-v2-hero"><div>
+        <h1>You're editing the scene.</h1>
+        <p>Three shots, one moment. Change the order and pacing to tell a different story.</p>
+      </div>
+      <svg className="cut-v2-clapper" viewBox="0 0 100 90" aria-hidden="true">
+        <rect x="9" y="34" width="82" height="48" rx="10" fill="#24485a"/>
+        <rect x="8" y="12" width="78" height="20" rx="5" fill="#397a7c" transform="rotate(-9 8 12)"/>
+        <path d="M24 13l11 17M48 8l11 18M72 4l11 17" stroke="#ffd38c" strokeWidth="7"/>
+        <path d="M43 46l22 12-22 12Z" fill="#a4edca"/>
+      </svg></div>
+      <div className="cut-v2-live-status"><span className="cut-v2-status-dot" aria-hidden="true"></span>
+        <strong>{cutShots[order[step]].title}</strong>
+        <span>{total}s timeline · shot {step+1}/3 · {playing?'Playing now':'Ready to preview'}</span>
+      </div>
     </div>
-    <div className="lab-tabs" role="group" aria-label="Choose a creative experiment">
-      {tabs.map(tab=><button className="lab-tab" type="button" key={tab.id}
-        data-lab={tab.id} aria-pressed={tab.id==='cut'}>{tab.label}</button>)}
+    <div className="cut-v2-intro-note"><span aria-hidden="true">✂</span>
+      <p><strong>WATCH THE ORDER</strong> — Your original three drawings become a sequence. Dragging footage is not required: use the move buttons and hear how the timing *might* feel.</p>
     </div>
-    <div className="cut-shell">
-      <div className="cut-preview">
+    <div className="cut-shell" data-v2-cut-workshop>
+      <div className="cut-preview" data-v2-cut-stage>
+        <div className="cut-v2-stage-head"><div><span className="eyebrow">YOUR LIVE EDIT</span>
+          <strong>Watch the story change</strong></div><span>ORIGINAL STORYBOARD · 3 SHOTS</span></div>
         <div className="cinema-window">
           <div className="cinema-window-head"><span className="on-air-dot"/> SCENE 01 · YOUR CUT <span>{total}s TOTAL</span></div>
           <CutIllustration shot={order[step]}/>
@@ -104,6 +119,7 @@ export function CutLab({order,setOrder,durations,setDurations,step,setStep}:Prop
           <button type="button" className="btn-secondary" data-cut-next disabled={step===2}
             onClick={event=>{stopDelegation(event);select(step+1);}}>Next →</button>
         </div>
+        <div className="cut-v2-timeline-head"><div><span className="eyebrow">THE THREE SHOT TIMELINE</span><strong>Rearrange the story</strong></div><span>MOVE SHOTS LEFT OR RIGHT</span></div>
         <div className="editor-timeline" aria-label="Editable storyboard timeline">
           {order.map((id,index)=><div key={id} className={`timeline-clip ${playing&&index===step?'clip-playing':''}`}
             style={{'--weight':durations[index],'--clip-time':`${durations[index]}s`} as CSSProperties}
@@ -129,10 +145,11 @@ export function CutLab({order,setOrder,durations,setDurations,step,setStep}:Prop
           <span>No video footage · Timed storyboard preview</span>
         </div>
       </div>
-      <div className="cut-explain">
-        <span className="eyebrow">YOUR EDITING DECISIONS</span>
+      <div className="cut-explain" data-v2-cut-controls>
+        <span className="eyebrow">STEP 01 · EDITING DECISIONS</span>
         <h3>{shot.title}</h3><p>{shot.why}</p>
         <div className="result-box"><strong>WHAT THE FIRST SHOT MAY DO</strong><p>{openings[order[0]]}</p></div>
+        <div className="cut-v2-duration-head"><span className="eyebrow">SHOT RHYTHM</span><span>1–5 SECONDS</span></div>
         <div className="duration-control">
           <label htmlFor="shotDuration">Hold selected shot: <strong>{durations[step]} seconds</strong></label>
           <input type="range" min="1" max="5" step="1" value={durations[step]} id="shotDuration"
@@ -156,5 +173,12 @@ export function CutLab({order,setOrder,durations,setDurations,step,setStep}:Prop
       <button className="btn-secondary" type="button" data-lesson="editing">Read: Why do filmmakers cut? →</button>
     </div>
     <p className="demo-disclaimer">Original storyboard drawings; this is a teaching model of shot order and timing, not a fully featured video editor.</p>
+    <div className="cut-v2-other-tools"><span className="eyebrow">NEXT · EXPLORE THE OTHER CRAFTS</span>
+      <p>Every tab opens its original working Frame One lab, not a simulated copy.</p>
+      <div className="lab-tabs" role="group" aria-label="Choose a creative experiment">
+        {tabs.map(tab=><button className="lab-tab" type="button" key={tab.id}
+          data-lab={tab.id} aria-pressed={tab.id==='cut'}>{tab.label}</button>)}
+      </div>
+    </div>
   </div>;
 }
