@@ -3,6 +3,8 @@ import {completeGuidedFoundation,saveGuidedPracticeNote} from '../legacy/bridge'
 import {readPractice} from '../state/learning';
 import {foundationById} from '../data/foundations-guided';
 import {STORYTELLING_IDS,storytellingById} from '../data/storytelling-guided';
+import {VISUAL_IDS,visualLanguageById} from '../data/visual-language-guided';
+import {OptionBVisualExperiment} from './OptionBVisualExperiment';
 import {OptionBReactScene} from './OptionBReactMission';
 
 type ViewMode='wide'|'medium'|'close';
@@ -17,7 +19,7 @@ function NextIcon(){
 export function OptionBFoundationMission({lessonId,onBack,onComplete,onStepChange}:{
  lessonId:string;onBack:()=>void;onComplete:(id:string)=>void;onStepChange:()=>void;
 }){
- const data=foundationById(lessonId)??storytellingById(lessonId);
+ const data=foundationById(lessonId)??storytellingById(lessonId)??visualLanguageById(lessonId);
  const [step,setStep]=useState(0);
  const [chosen,setChosen]=useState<number|null>(null);
  const [explore,setExplore]=useState(0);
@@ -35,7 +37,7 @@ export function OptionBFoundationMission({lessonId,onBack,onComplete,onStepChang
    if(step===1&&chosen===null)return;
    if(step===2&&!correct)return;
    if(step===3){
-      // The bridge only accepts the eleven real lessons currently enabled.
+      // The bridge only accepts the eighteen original lessons currently enabled.
       // A marked completion uses exactly frameone-progress-v01, the old backup.
       if(!correct){setError('Finish the knowledge check before completing this lesson.');return;}
       const ok=completeGuidedFoundation(lessonId);
@@ -60,10 +62,10 @@ export function OptionBFoundationMission({lessonId,onBack,onComplete,onStepChang
    <div className="mission-top">
      <button type="button" className="back" onClick={onBack} aria-label="Back to the real chapter">‹</button>
      <div className="mission-meta">
-       <span className="eyebrow">REAL CHAPTER {data.chapterId===0?'01 · FOUNDATIONS':'02 · STORYTELLING'}</span>
+       <span className="eyebrow">REAL CHAPTER {data.chapterId===0?'01 · FOUNDATIONS':data.chapterId===1?'02 · STORYTELLING':'03 · VISUAL LANGUAGE'}</span>
        <h2>{lesson.title}</h2>
      </div>
-     <span className="head-pill">{data.chapterId===0?lesson.num:String(STORYTELLING_IDS.indexOf(lessonId)+1).padStart(2,'0')} / {data.chapterId===0?'05':'06'}</span>
+     <span className="head-pill">{data.chapterId===0?lesson.num:String((data.chapterId===1?STORYTELLING_IDS:VISUAL_IDS).indexOf(lessonId)+1).padStart(2,'0')} / {data.chapterId===0?'05':data.chapterId===1?'06':'07'}</span>
    </div>
    <div className="lesson-step-track" aria-label={'Learning stage '+(step+1)+' of 4'}>
      {[0,1,2,3].map(i=><span key={i} className={i<=step?'filled':''}/>)}
@@ -119,7 +121,9 @@ export function OptionBFoundationMission({lessonId,onBack,onComplete,onStepChang
            <p className="note-honest">Creative choices have trade-offs; there is no automatic right camera choice.</p>
          </>}
          {step===2&&<>
-           <OptionBReactScene mode="concept" value={[1,1.35,1.85][explore]}/>
+           {data.chapterId===2
+             ? <OptionBVisualExperiment lessonId={lessonId} selected={explore}/>
+             : <OptionBReactScene mode="concept" value={[1,1.35,1.85][explore]}/>}
            <div className="foundation-concept-switch" role="group" aria-label={data.explorerLabel}>
              {data.explorer.map((item,i)=><button key={item.label} type="button"
                data-v2-foundation-explore={i} aria-pressed={explore===i}
