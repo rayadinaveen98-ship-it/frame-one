@@ -1154,7 +1154,7 @@ async function verify() {
   await make.waitFor();
   assert.equal(await page.locator('#content').innerHTML(),'', 'React must own Make Lab without hidden legacy markup');
   assert.equal(await make.locator('.story-film-frame svg').count(),1,'Original vector storyboard preserved');
-  assert.equal(await make.getAttribute('data-v2-make-screen'),'',
+  assert.equal(await make.getAttribute('data-v2-make-screen'),'true',
     'Production Make Lab is redesigned in place, not replaced by the design demo');
   const sceneBeforeProjects=await make.evaluate(root=>Boolean(
     root.querySelector('[data-v2-make-scene-first]')?.compareDocumentPosition(
