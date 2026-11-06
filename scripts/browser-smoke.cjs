@@ -744,7 +744,15 @@ async function verify() {
   await pilot.locator('.navbar [data-screen="lab"]').click();
   await pilot.locator('[data-lab="light"]').click();
   assert.equal(await pilot.locator('[data-lab="light"]').getAttribute('aria-selected'),'true');
-  await photo(page,'28-option-b-pilot-desktop.png');
+  const pilotRect=await newJourney.evaluate(el=>{
+    const rect=el.getBoundingClientRect();
+    return {x:rect.x,y:rect.y,width:rect.width,height:rect.height,screenWidth:window.innerWidth,screenHeight:window.innerHeight};
+  });
+  assert.ok(Math.abs(pilotRect.x)<3&&Math.abs(pilotRect.y)<3,
+    'Option B covers the actual viewport from the top-left, not a scrolled parent');
+  assert.ok(pilotRect.width>=pilotRect.screenWidth-3&&pilotRect.height>=pilotRect.screenHeight-3,
+    'No old learning content remains visible in the actual viewport');
+  await page.screenshot({path:path.join(shots,'28-option-b-pilot-desktop.png'),animations:'disabled',fullPage:false});
   await newJourney.locator('[data-option-b-exit]').click();
   await newJourney.waitFor({state:'detached'});
   assert.equal(await page.locator('#progressLabel').textContent(),classicProgressBefore,
@@ -1925,7 +1933,16 @@ async function verify() {
     }));
     if(pilotOverflow.scroll>pilotOverflow.viewport+3)
       record('Option B pilot overlay overflow at '+width+'px');
-    await photo(phone,'28-option-b-pilot-'+width+'px.png');
+    const mobilePilotRect=await phone.locator('[data-frameone-option-b]').evaluate(el=>{
+      const rect=el.getBoundingClientRect();
+      return {x:rect.x,y:rect.y,width:rect.width,height:rect.height,screenWidth:window.innerWidth,screenHeight:window.innerHeight};
+    });
+    assert.ok(Math.abs(mobilePilotRect.x)<3&&Math.abs(mobilePilotRect.y)<3,
+      'Pilot overlay must cover the visible phone viewport at '+width+'px');
+    assert.ok(mobilePilotRect.width>=mobilePilotRect.screenWidth-3&&mobilePilotRect.height>=mobilePilotRect.screenHeight-3,
+      'No classic Frame One UI may show behind the mobile pilot at '+width+'px');
+    await phone.screenshot({path:path.join(shots,'28-option-b-pilot-'+width+'px.png'),
+      animations:'disabled',fullPage:false});
     await phone.locator('[data-option-b-exit]').click();
     assert.equal(await phone.locator('[data-frameone-option-b]').count(),0,'Pilot exits on '+width+'px phone');
     await phone.locator('.mobile-nav [data-page="lab"]').click();
