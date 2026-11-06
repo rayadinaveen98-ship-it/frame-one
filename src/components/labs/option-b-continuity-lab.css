@@ -1,0 +1,211 @@
+/* Frame One 2.0 — original React Continuity/Match Lab, approved Option B.
+ * The real second-frame cup moves with state; no replacement picture or storage. */
+.react-continuity-lab.continuity-v2{
+ --co-ink:#1c3442;--co-mint:#55b97b;
+ max-width:1150px;margin:0 auto;padding:clamp(10px,2.6vw,26px);
+ color:var(--co-ink);background:#f7fbf9;border-radius:24px;
+ box-shadow:0 8px 32px #14363b1b;
+ font-family:ui-rounded,"Avenir Next","Segoe UI",system-ui,sans-serif;
+}
+.react-continuity-lab.continuity-v2 :is(h1,h2,h3){
+ font-family:ui-rounded,"Avenir Next","Segoe UI",system-ui,sans-serif;
+ color:#254e5c;letter-spacing:-.045em;font-weight:900
+}
+.react-continuity-lab.continuity-v2 .eyebrow{
+ color:#308675;letter-spacing:.12em;font-weight:900;font-size:10px
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-intro{
+ margin:0 0 13px;padding:22px 25px 17px;border-radius:22px;
+ border:1px solid #c3e6d7;
+ background:radial-gradient(ellipse at 91% 15%,#b8eedc,transparent 54%),
+  linear-gradient(135deg,#e8f9ee,#d9f2e8);
+ box-shadow:0 5px 0 #d5e9df;overflow:hidden;
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-kicker{
+ display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-course-tag{
+ color:#297e6c;border:1px solid #b5decb;border-radius:22px;
+ background:#ffffffc6;padding:7px 10px;font-size:9px;font-weight:900;letter-spacing:.04em
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-hero{
+ display:flex;align-items:center;justify-content:space-between;gap:10px
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-hero h1{
+ color:#264d5c;font-size:clamp(27px,3.6vw,43px);line-height:1.12;margin:12px 0 8px
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-hero p{
+ max-width:595px;color:#567a71;font-size:13px;line-height:1.6;margin:0
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-art{
+ width:93px;flex:0 0 93px;height:auto;filter:drop-shadow(0 8px 10px #28695123)
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-live-status{
+ display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding:11px 13px;
+ background:#ffffffd8;border:1px solid #b9ddcb;border-radius:13px
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-status-dot{
+ flex:0 0 10px;width:10px;height:10px;border-radius:50%;
+ background:#54b980;box-shadow:0 0 0 4px #d7f5e5
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-live-status strong{
+ color:#2b765f;font-size:13px;overflow-wrap:anywhere
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-live-status>span:last-child{
+ color:#5e8478;font-size:10px;margin-left:auto
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-quick-jump{
+ display:flex;justify-content:space-between;align-items:center;gap:9px;
+ border:1px solid #d7e9dd;border-radius:12px;background:#fff;
+ padding:8px 11px;margin:13px 0 8px
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-quick-jump>span{
+ font-size:9px;white-space:nowrap
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-quick-jump>div{
+ display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-quick-jump button{
+ background:#ecf8f0;color:#2b7667;border:1px solid #bedfcb;border-radius:10px;
+ padding:10px 12px;min-height:44px;font-size:11px;font-weight:850
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-observe{
+ background:#fff;border:1px solid #dcece0;border-radius:12px;
+ display:flex;align-items:center;gap:9px;padding:10px 13px;margin-bottom:11px
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-observe>span{
+ display:grid;place-items:center;width:27px;height:27px;flex:0 0 27px;
+ background:#e4f6e9;color:#287e6c;border-radius:8px;font-size:17px
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-observe p{
+ font-size:11px;line-height:1.5;margin:0;color:#638377
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-observe strong{color:#307d6a}
+.react-continuity-lab.continuity-v2 .continuity-shell{
+ display:grid;grid-template-columns:minmax(0,1.18fr) minmax(285px,.82fr);
+ gap:13px;align-items:start;min-width:0;
+ margin:0;padding:0;overflow:visible;border:0;box-shadow:none;background:none
+}
+.react-continuity-lab.continuity-v2 .continuity-grid{
+ display:grid;grid-template-columns:minmax(0,1fr);min-width:0;gap:12px;
+ background:#fff;border:1px solid #d6e8df;box-shadow:0 5px 0 #e0eee6;
+ border-radius:20px;padding:15px
+}
+.react-continuity-lab.continuity-v2 .continuity-shot{
+ min-width:0;border:1px solid #dae9de;background:#f8fcfa;
+ padding:12px;border-radius:15px;box-shadow:0 2px 0 #e6f0e9
+}
+.react-continuity-lab.continuity-v2 .continuity-shot .eyebrow{
+ display:block;font-size:10px;margin:0 2px 9px;line-height:1.45
+}
+.react-continuity-lab.continuity-v2 .continuity-desk{
+ width:100%;aspect-ratio:16/9;min-height:0;overflow:hidden;
+ background:linear-gradient(115deg,#8d6d52,#c99f75 54%,#8c6b55);
+ border-radius:11px;border:3px solid #f0f6ed;box-shadow:0 3px 0 #dae9de
+}
+.react-continuity-lab.continuity-v2 .continuity-letter{background:#fff0d8}
+.react-continuity-lab.continuity-v2 .continuity-pencil{background:#e5d3b5}
+.react-continuity-lab.continuity-v2 .continuity-controls{
+ min-width:0;margin:0;background:#fff;border:1px solid #d6e9df;
+ color:#2e5861;border-radius:20px;padding:17px;
+ box-shadow:0 5px 0 #e0eee6
+}
+.react-continuity-lab.continuity-v2 .continuity-controls h3{
+ color:#2a4d5d;font-size:clamp(22px,2.5vw,29px);margin:8px 0
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-control-intro{
+ color:#638279;font-size:12px;line-height:1.6;margin:0 0 12px
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-control-label{
+ display:flex;align-items:center;justify-content:space-between;gap:10px;
+ margin:16px 0 10px
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-control-label>span:last-child{
+ color:#96aca1;font-size:9px;font-weight:900
+}
+.react-continuity-lab.continuity-v2 .continuity-controls .lab-choices{
+ display:grid;grid-template-columns:minmax(0,1fr);gap:9px;margin:0 0 14px
+}
+.react-continuity-lab.continuity-v2 .continuity-controls .lab-choice{
+ background:#f7fbf7;color:#3e766b;border:1px solid #d4e8dd;
+ border-radius:12px;min-height:68px;display:flex;flex-direction:column;gap:6px;
+ text-align:left;padding:13px;box-shadow:0 2px 0 #e7efe9
+}
+.react-continuity-lab.continuity-v2 .continuity-controls .lab-choice strong{
+ color:#2c6264;font-size:12px;line-height:1.3
+}
+.react-continuity-lab.continuity-v2 .continuity-controls .lab-choice span{
+ color:#6d8a80;font-size:10px;line-height:1.5
+}
+.react-continuity-lab.continuity-v2 .continuity-controls .lab-choice[aria-pressed=true]{
+ background:#dcf5e6;border-color:#5fbd8f;box-shadow:0 2px 0 #c7e6d4,inset 0 0 0 1px #9bd8af
+}
+.react-continuity-lab.continuity-v2 .continuity-controls .result-box{
+ border:1px solid #c9e7d4;border-radius:14px;padding:14px;margin:13px 0;
+ background:linear-gradient(135deg,#f1faf3,#e7f8ed);
+}
+.react-continuity-lab.continuity-v2 .continuity-controls .result-box strong{
+ color:#2b8069;font-size:10px
+}
+.react-continuity-lab.continuity-v2 .continuity-controls .result-box p{
+ margin:7px 0 0;color:#547c70;font-size:12px;line-height:1.62
+}
+.react-continuity-lab.continuity-v2 .studio-fact{
+ border-left:3px solid #8bceab;background:#f7faf7;border-radius:9px;
+ padding:11px;color:#647e73;font-size:11px;line-height:1.58
+}
+.react-continuity-lab.continuity-v2 .continuity-controls .btn-secondary{
+ color:#2c7c66;background:#fff;border:1px solid #bedfcc;
+ border-radius:11px;min-height:44px;padding:10px 13px;font-size:11px;font-weight:850
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-other-tools{
+ background:#fff;border:1px solid #d7e9dc;border-radius:16px;
+ padding:14px 17px;margin-top:15px
+}
+.react-continuity-lab.continuity-v2 .continuity-v2-other-tools p{
+ color:#69887c;font-size:11px;margin:5px 0 12px;line-height:1.5
+}
+.react-continuity-lab.continuity-v2 .lab-tabs{
+ display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0
+}
+.react-continuity-lab.continuity-v2 .lab-tab{
+ color:#36796b;background:#f6faf7;border:1px solid #d1e7d9;
+ min-height:44px;border-radius:10px;padding:10px 6px;font-size:11px;font-weight:850
+}
+.react-continuity-lab.continuity-v2 .lab-tab[aria-pressed=true]{
+ background:#daf4e5;color:#267657;border-color:#62bb8d
+}
+.react-continuity-lab.continuity-v2 :is(button,summary):focus-visible{
+ outline:3px solid #29739a;outline-offset:3px
+}
+@media(max-width:900px){
+ .react-continuity-lab.continuity-v2 .continuity-shell{grid-template-columns:minmax(0,1fr)}
+ .react-continuity-lab.continuity-v2 .continuity-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:600px){
+ .react-continuity-lab.continuity-v2{padding:12px;border-radius:18px}
+ .react-continuity-lab.continuity-v2 .continuity-v2-intro{padding:16px}
+ .react-continuity-lab.continuity-v2 .continuity-v2-hero h1{font-size:clamp(27px,7.5vw,35px)}
+ .react-continuity-lab.continuity-v2 .continuity-v2-art{width:62px;flex-basis:62px}
+ .react-continuity-lab.continuity-v2 .continuity-v2-live-status>span:last-child{margin-left:20px}
+ .react-continuity-lab.continuity-v2 .continuity-grid{grid-template-columns:minmax(0,1fr);padding:11px}
+ .react-continuity-lab.continuity-v2 .continuity-controls{padding:13px}
+ .react-continuity-lab.continuity-v2 .lab-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:360px){
+ .react-continuity-lab.continuity-v2{padding:9px}
+ .react-continuity-lab.continuity-v2 .continuity-v2-intro{padding:12px}
+ .react-continuity-lab.continuity-v2 .continuity-v2-hero h1{font-size:26px}
+ .react-continuity-lab.continuity-v2 .continuity-v2-art{width:46px;flex-basis:46px}
+ .react-continuity-lab.continuity-v2 .continuity-v2-course-tag{padding:6px;font-size:8px}
+ .react-continuity-lab.continuity-v2 .continuity-v2-quick-jump{flex-wrap:wrap;gap:6px}
+ .react-continuity-lab.continuity-v2 .continuity-v2-quick-jump>div{width:100%;justify-content:space-between;gap:4px}
+ .react-continuity-lab.continuity-v2 .continuity-v2-quick-jump button{
+ flex:1;min-width:0;padding:10px 5px;font-size:10px
+ }
+ .react-continuity-lab.continuity-v2 .lab-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){
+ .react-continuity-lab.continuity-v2 *,.react-continuity-lab.continuity-v2 *::before,
+ .react-continuity-lab.continuity-v2 *::after{animation:none!important;transition:none!important}
+}

@@ -1354,12 +1354,24 @@ async function verify() {
   await page.locator('.lab-tabs:visible [data-lab="continuity"]').click();
   const continuity = page.locator('.react-continuity-lab');
   await continuity.waitFor();
+  assert.equal(await continuity.getAttribute('data-v2-continuity-screen'),'true',
+    'Real working Match Lab must be styled in approved Option B visual language');
+  const sceneBeforeControls=await continuity.evaluate(root=>Boolean(
+    root.querySelector('[data-v2-continuity-stage]')?.compareDocumentPosition(
+      root.querySelector('[data-v2-continuity-controls]'))&Node.DOCUMENT_POSITION_FOLLOWING));
+  assert.equal(sceneBeforeControls,true,'Original two desk frames must precede matching choices');
+  assert.equal(await continuity.locator('[data-v2-continuity-stage] .continuity-desk').count(),2);
+  assert.match(await continuity.locator('.continuity-v2-live-status strong').textContent(),/positions match/i);
+  assert.equal(await continuity.locator('.continuity-v2-quick-jump [data-lab="story"]').count(),1);
+  await photo(page,'38-real-option-b-continuity-desktop.png');
   assert.equal(await page.locator('#content').innerHTML(), '', 'React must own continuity markup, without duplicated legacy content');
   await continuity.locator('[data-continuity="changed"]').click();
   assert.equal(await continuity.locator('[data-continuity="changed"]').getAttribute('aria-pressed'), 'true');
+  assert.match(await continuity.locator('.continuity-v2-live-status strong').textContent(),/position changed/i,
+    'Changing second shot prop position updates the live studio title');
   assert.equal(await continuity.locator('.continuity-cup.moved').count(), 1);
   assert.match(await continuity.locator('.result-box p').textContent(), /continuity mismatch/i);
-  await continuity.locator('[data-lab="frame"]').click();
+  await continuity.locator('.continuity-v2-quick-jump [data-lab="frame"]').click();
   await continuity.waitFor({ state: 'detached' });
   await page.locator('.react-frame-lab #frameZoom').waitFor();
   await page.locator('.lab-tabs:visible [data-lab="continuity"]').click();
@@ -2155,12 +2167,18 @@ async function verify() {
     await phone.locator('.lab-tabs:visible [data-lab="continuity"]').click();
     const mobileContinuity = phone.locator('.react-continuity-lab');
     await mobileContinuity.waitFor();
+    assert.equal(await mobileContinuity.getAttribute('data-v2-continuity-screen'),'true');
+    const continuityArt=await mobileContinuity.locator('[data-v2-continuity-stage] .continuity-desk').first().boundingBox();
+    const continuityShell=await mobileContinuity.boundingBox();
+    assert.ok(continuityArt&&continuityShell&&continuityArt.width>continuityShell.width*.64,
+      'Original desk comparison should be large at '+width+'px phone widths');
+    await photo(phone,'39-real-option-b-continuity-'+width+'px.png');
     await mobileContinuity.locator('[data-continuity="changed"]').click();
     assert.equal(await mobileContinuity.locator('.continuity-cup.moved').count(), 1);
     const continuityOverflow = await phone.evaluate(() => ({ scroll: document.documentElement.scrollWidth, viewport: document.documentElement.clientWidth }));
     if (continuityOverflow.scroll > continuityOverflow.viewport + 3) record('Continuity Lab overflow at ' + width + 'px: ' + continuityOverflow.scroll + ' vs ' + continuityOverflow.viewport);
     await photo(phone, '08-continuity-' + width + 'px.png');
-    await mobileContinuity.locator('[data-lab="colour"]').click();
+    await mobileContinuity.locator('.continuity-v2-quick-jump [data-lab="colour"]').click();
     const mobileColour = phone.locator('.react-colour-lab');
     await mobileColour.waitFor();
     assert.equal(await mobileColour.getAttribute('data-v2-colour-screen'),'true');
