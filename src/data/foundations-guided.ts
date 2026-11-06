@@ -19,7 +19,7 @@ export interface GuidedFoundation{
  * All creative choices, comparisons and feedback below are original authoring.
  * Choices explore trade-offs; only the existing curriculum quiz is graded.
  */
-const byId=new Map((curriculum.lessons as Lesson[]).map(lesson=>[lesson.id,lesson]));
+const byId=new Map((curriculum.lessons as unknown as Lesson[]).map(lesson=>[lesson.id,lesson]));
 const chapter=curriculum.chapters[0] as {ids:string[]};
 export const FOUNDATION_IDS=chapter.ids as readonly string[];
 const guide:Record<string,Omit<GuidedFoundation,'id'|'legacyId'|'lesson'|'chapterId'>>={
