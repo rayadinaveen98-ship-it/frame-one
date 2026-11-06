@@ -20,6 +20,10 @@ async function verifyRealChapterFour(page,reference,shots,label){
  await native.locator('[data-v2-sound-open]').click();
  const journey=native.locator('[data-v2-sound-screen="journey"]');
  await journey.waitFor();
+ if(label==='320px'){
+   const nowrap=await native.locator('.site .wordmark').evaluate(node=>getComputedStyle(node).whiteSpace);
+   assert.equal(nowrap,'nowrap','Real course wordmark must stay on one line on a narrow phone');
+ }
  assert.equal(await journey.locator('[data-v2-sound-node]').count(),6,
     'Real Chapter 4 must expose exactly the six original curriculum lessons');
  await screenshotPhone(native.locator('.phone'),'real-sound-journey-'+label+'.png',shots);
