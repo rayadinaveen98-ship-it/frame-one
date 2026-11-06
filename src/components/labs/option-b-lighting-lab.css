@@ -71,7 +71,8 @@
 .react-lighting-lab.lighting-v2 .studio-slider{background:#f5fbf7;border:1px solid #d8e8db;
   border-radius:13px;padding:12px;margin:9px 0 12px}
 .react-lighting-lab.lighting-v2 .studio-slider label{color:#346967;font-weight:850;font-size:12px}
-.react-lighting-lab.lighting-v2 .studio-slider output{color:#298a6b;font-size:14px;font-weight:950}
+.react-lighting-lab.lighting-v2 .studio-slider output{color:#206d54;background:#d7f4e4;border:1px solid #b2ddc5;
+ font-size:14px;font-weight:950;padding:4px 8px;border-radius:9px}
 .react-lighting-lab.lighting-v2 .studio-slider input[type=range]{width:100%;min-height:32px;accent-color:#319b7c}
 .react-lighting-lab.lighting-v2 .slider-ends{display:flex;justify-content:space-between;gap:6px}
 .react-lighting-lab.lighting-v2 .slider-ends span{font-size:9px;color:#7a998b}
