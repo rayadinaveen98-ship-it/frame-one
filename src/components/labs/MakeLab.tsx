@@ -160,7 +160,7 @@ export function MakeLab(){
       <svg className="make-v2-clapper" viewBox="0 0 92 84" aria-hidden="true"><rect x="10" y="31" width="72" height="47" rx="10" fill="#22465c"/><rect x="12" y="12" width="72" height="19" rx="5" fill="#315e6e" transform="rotate(-9 12 12)"/><path d="M23 14l11 15M47 9l12 16M70 5l10 14" stroke="#fbd79f" strokeWidth="7"/><path d="M41 43l21 12-21 12Z" fill="#8ee0c2"/><circle cx="24" cy="45" r="3" fill="#ffcb82"/></svg></div>
       <div className="make-v2-active-project" aria-label="Current storyboard and project library">
         <div><span>NOW DIRECTING</span><strong>{activeProject?.name||'Your first storyboard'}</strong>
-          <small>{library.projects.length} of 20 local projects · auto-saved changes</small></div>
+          <small>{library.projects.length} of 20 local projects · export a JSON backup to protect your work</small></div>
         <button type="button" data-v2-make-manage onClick={openProjects}>Manage projects <span aria-hidden="true">↗</span></button>
       </div>
     </div>
