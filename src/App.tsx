@@ -130,7 +130,7 @@ export default function App() {
     window.frameOneLegacy.openLab(lab);
   },[productionOpen]);
   useEffect(()=>{
-    const open=()=>{setRealLabReturnChapter(null);setOptionBOpen(true);};
+    const open=()=>{setRealLabReturnChapter(null);setProductionOpen(false);setOptionBOpen(true);};
     window.addEventListener('frameone:option-b-open',open);
     return ()=>window.removeEventListener('frameone:option-b-open',open);
   },[]);
@@ -260,7 +260,7 @@ export default function App() {
     </main>
     <Navigation mobile />
     {productionOpen ? <FrameOneV2Production
-      onClassic={()=>setProductionOpen(false)}
+      onClassic={()=>{setProductionOpen(false);window.frameOneLegacy?.navigate('home');}}
       onOpenLab={openProductionLabFromOptionB}
       resumeChapter={realLabReturnChapter}/> : null}
     {optionBOpen ? <OptionBExperience onExit={closeOptionB}
