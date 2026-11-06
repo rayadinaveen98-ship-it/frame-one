@@ -121,7 +121,7 @@ def create_second_storyboard():
     state.scroll_top()
     # Require a confirmed increase in the real active project count. A name
     # typed into a storyboard note must NEVER pass for project creation.
-    state.find_text("2 of 20 local projects",tries=12)
+    state.find_one_of_text(("2 of 20 local projects","2 / 20"),tries=12)
     state.find_text(SECOND_PROJECT,tries=10,scroll=True)
     ui.capture("backup-00b-two-projects-created")
     print("PASS: real Android Make Lab shows two projects and the new active storyboard",flush=True)
