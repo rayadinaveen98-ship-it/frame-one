@@ -14,6 +14,7 @@ const {verifyStudioParity}=require('./option-b-studio-parity.cjs');
 const {verifyRealChapterOne}=require('./v2-real-chapter-qa.cjs');
 const {verifyRealChapterTwo}=require('./v2-real-story-qa.cjs');
 const {verifyRealChapterThree}=require('./v2-real-visual-qa.cjs');
+const {verifyRealChapterFour}=require('./v2-real-sound-qa.cjs');
 const base = 'http://127.0.0.1:4173';
 const shots = path.resolve(__dirname, '../qa/screenshots');
 fs.mkdirSync(shots, { recursive: true });
@@ -67,8 +68,9 @@ async function verifyRealChapterIsolated(width,label){
     const result=await verifyRealChapterOne(fresh,source,shots,label);
     const storyResult=await verifyRealChapterTwo(fresh,source,shots,label);
     const visualResult=await verifyRealChapterThree(fresh,source,shots,label);
+    const soundResult=await verifyRealChapterFour(fresh,source,shots,label);
     await fresh.locator('[data-option-b-exit]').click();
-    return {...result,storyLessonsValidated:storyResult.validatedLessons,visualLessonsValidated:visualResult.validated};
+    return {...result,storyLessonsValidated:storyResult.validatedLessons,visualLessonsValidated:visualResult.validated,soundLessonsValidated:soundResult.validated};
   }finally{await isolated.close();}
 }
 async function verify() {
@@ -1079,8 +1081,12 @@ async function verify() {
   assert.equal(await cut.locator('.cut-illustration.place').count(), 1, 'Original drawn establishing shot retained');
   // Give the first shot its own duration, then move it. The 4-second hold
   // belongs to that shot, not to an arbitrary timeline position.
-  await cut.locator('#shotDuration').focus();
-  await cut.locator('#shotDuration').press('End');
+  const cutDurationSlider=cut.locator('#shotDuration');
+  await cutDurationSlider.focus();
+  await cutDurationSlider.press('Home');
+  assert.equal(await cutDurationSlider.inputValue(),'1','Cut Lab range responds to keyboard Home');
+  for(let k=0;k<4;k++)await cutDurationSlider.press('ArrowRight');
+  assert.equal(await cutDurationSlider.inputValue(),'5','Four arrow steps move the actual slider to five seconds');
   assert.match(await cut.locator('.duration-control label').textContent(), /5 seconds/);
   await cut.locator('[data-move="0:right"]').click();
   assert.match(await cut.locator('.timeline-clip').nth(1).textContent(), /5s/);
