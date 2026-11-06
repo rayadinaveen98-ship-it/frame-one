@@ -43,7 +43,7 @@ async function photo(page, name) {
 }
 async function verify() {
   await ready();
-  browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
+  browser = await chromium.launch({ headless: true, args: ['--no-sandbox'], ...(process.env.FRAMEONE_BROWSER_CHANNEL==='chrome'?{channel:'chrome'}:{}) });
   // Premium 4-second boot is measured on a real compiled, non-reduced viewport.
   // Existing learning-flow contexts intentionally prefer reduced motion.
   const launchContext=await browser.newContext({
