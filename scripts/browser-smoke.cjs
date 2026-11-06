@@ -8,6 +8,7 @@ const path = require('node:path');
 const { spawn } = require('node:child_process');
 const { chromium } = require('playwright');
 const curriculum = require('../src/data/curriculum.v08b.json');
+const {screenshotPhone,comparePixels}=require('./option-b-pixel-parity.cjs');
 const base = 'http://127.0.0.1:4173';
 const shots = path.resolve(__dirname, '../qa/screenshots');
 fs.mkdirSync(shots, { recursive: true });
@@ -42,7 +43,7 @@ async function photo(page, name) {
 }
 async function verify() {
   await ready();
-  browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
+  browser = await chromium.launch({ headless: true, args: ['--no-sandbox'], ...(process.env.FRAMEONE_BROWSER_CHANNEL==='chrome'?{channel:'chrome'}:{}) });
   // Premium 4-second boot is measured on a real compiled, non-reduced viewport.
   // Existing learning-flow contexts intentionally prefer reduced motion.
   const launchContext=await browser.newContext({
@@ -727,6 +728,28 @@ async function verify() {
     'Old interactive course is inaccessible behind the immersive pilot');
   const pilot=page.frameLocator('[data-option-b-frame]');
   await pilot.locator('.home-hero h1').waitFor();
+  // Native React Home/Journey MUST render like the approved HTML, not merely
+  // share its colour names. Compare actual screenshot pixel buffers in CI.
+  const approvedHome=await screenshotPhone(pilot.locator('.phone'),'native-vs-approved-home-desktop-reference.png',shots);
+  await page.locator('[data-option-b-compare="react"]').click();
+  await page.locator('[data-v2-native-screen="home"]').waitFor();
+  const reactHome=await screenshotPhone(page.locator('[data-v2-native-react] .phone'),'native-vs-approved-home-desktop-react.png',shots);
+  const homeParity=await comparePixels(page,approvedHome,reactHome,'native-vs-approved-home-desktop');
+  console.log('VISUAL PARITY: React Home desktop',homeParity);
+  await page.locator('[data-v2-native-nav="journey"]').click();
+  await page.locator('[data-v2-native-screen="journey"]').waitFor();
+  const reactJourney=await screenshotPhone(page.locator('[data-v2-native-react] .phone'),'native-vs-approved-journey-desktop-react.png',shots);
+  await page.locator('[data-option-b-compare="approved"]').click();
+  await pilot.locator('.navbar [data-screen="journey"]').click();
+  const approvedJourney=await screenshotPhone(pilot.locator('.phone'),'native-vs-approved-journey-desktop-reference.png',shots);
+  const journeyParity=await comparePixels(page,approvedJourney,reactJourney,'native-vs-approved-journey-desktop');
+  console.log('VISUAL PARITY: React Journey desktop',journeyParity);
+  // Working bridge: selecting a native node opens the REAL reference mission
+  // until the native lesson earns the same design/interaction quality.
+  await page.locator('[data-option-b-compare="react"]').click();
+  await page.locator('[data-v2-native-mission="frame"]').click();
+  await pilot.locator('.mission-top').waitFor();
+  assert.match(await pilot.locator('.mission-top').textContent(),/choose the frame/i);
   await pilot.locator('.navbar [data-screen="journey"]').click();
   await pilot.locator('.journey-node').first().click();
   await pilot.locator('[data-next-step]').click();
@@ -1927,7 +1950,25 @@ async function verify() {
     await phone.locator('[data-option-b-open]').click();
     const mobilePilot=phone.frameLocator('[data-option-b-frame]');
     await mobilePilot.locator('.home-hero h1').waitFor();
+    const approvedMobile=await screenshotPhone(mobilePilot.locator('.phone'),
+      'native-vs-approved-home-'+width+'px-reference.png',shots);
+    await phone.locator('[data-option-b-compare="react"]').click();
+    await phone.locator('[data-v2-native-screen="home"]').waitFor();
+    const nativeMobile=await screenshotPhone(phone.locator('[data-v2-native-react] .phone'),
+      'native-vs-approved-home-'+width+'px-react.png',shots);
+    const nativeHomeParity=await comparePixels(phone,approvedMobile,nativeMobile,
+      'native-vs-approved-home-'+width+'px');
+    console.log('VISUAL PARITY: React Home '+width+'px',nativeHomeParity);
+    await phone.locator('[data-v2-native-nav="journey"]').click();
+    const reactMobileJourney=await screenshotPhone(phone.locator('[data-v2-native-react] .phone'),
+      'native-vs-approved-journey-'+width+'px-react.png',shots);
+    await phone.locator('[data-option-b-compare="approved"]').click();
     await mobilePilot.locator('.navbar [data-screen="journey"]').click();
+    const approvedMobileJourney=await screenshotPhone(mobilePilot.locator('.phone'),
+      'native-vs-approved-journey-'+width+'px-reference.png',shots);
+    const mobileJourneyParity=await comparePixels(phone,approvedMobileJourney,reactMobileJourney,
+      'native-vs-approved-journey-'+width+'px');
+    console.log('VISUAL PARITY: React Journey '+width+'px',mobileJourneyParity);
     const pilotOverflow=await phone.evaluate(()=>({
       scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth
     }));

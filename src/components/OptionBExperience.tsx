@@ -1,4 +1,5 @@
-import {useEffect,useRef,useState} from 'react';
+import {useCallback,useEffect,useRef,useState} from 'react';
+import {OptionBReactScreens} from './OptionBReactScreens';
 import './option-b-experience.css';
 
 /**
@@ -15,6 +16,19 @@ export function OptionBExperience({onExit}:{onExit:()=>void}){
   const frameRef=useRef<HTMLIFrameElement>(null);
   const [loaded,setLoaded]=useState(false);
   const [failed,setFailed]=useState(false);
+  const [presentation,setPresentation]=useState<'approved'|'react'>('approved');
+  const openApproved=useCallback((screen:string,missionId?:string)=>{
+    // Same-origin frame owns the already-reviewed interactive mission engine.
+    // The first React port only owns Home and Journey; all other surfaces
+    // deliberately use the ORIGINAL rather than a cheap substitute.
+    type ReviewedWindow=Window&{go?:(id:string)=>void;startMission?:(id:string)=>void};
+    const target=frameRef.current?.contentWindow as ReviewedWindow|undefined;
+    try{
+      if(loaded&&missionId)target?.startMission?.(missionId);
+      else if(loaded)target?.go?.(screen);
+    }catch{/* A restricted origin simply returns to the approved Home. */}
+    setPresentation('approved');
+  },[loaded]);
 
   useEffect(()=>{
     const hidden=[...document.querySelectorAll<HTMLElement>('.app > .sidebar,.app > .main,.app > .mobile-nav')];
@@ -56,6 +70,13 @@ export function OptionBExperience({onExit}:{onExit:()=>void}){
         data-option-b-exit onClick={onExit}>
         <span aria-hidden="true">←</span> Back to Frame One
       </button>
+
+      <div className="option-b-view-switch" role="group" aria-label="Compare the React port against the approved prototype">
+        <button type="button" data-option-b-compare="approved"
+          aria-pressed={presentation==='approved'} onClick={()=>setPresentation('approved')}>Reference</button>
+        <button type="button" data-option-b-compare="react" disabled={!loaded}
+          aria-pressed={presentation==='react'} onClick={()=>setPresentation('react')}>React preview</button>
+      </div>
       <span className="frameone-option-b-version">OPTION B · DESIGN PILOT</span>
     </header>
     {!loaded&&!failed?<p className="frameone-option-b-loading" role="status">Opening your filmmaking journey…</p>:null}
@@ -65,9 +86,14 @@ export function OptionBExperience({onExit}:{onExit:()=>void}){
     </div>:null}
     <iframe ref={frameRef} title="Frame One 2.0: Home, Journey, Lesson, Creative Lab and Progress"
       className="frameone-option-b-frame" data-option-b-frame src="./option-b-v1.html"
+      style={{display:presentation==='approved'?'block':'none'}} aria-hidden={presentation!=='approved'} tabIndex={presentation==='approved'?0:-1}
       onLoad={()=>{setLoaded(true);setFailed(false);}}
       onError={()=>{setFailed(true);setLoaded(false);}}
       referrerPolicy="no-referrer"/>
+    <div className="frameone-option-b-native-wrap" data-option-b-native-wrap
+      style={{display:presentation==='react'?'block':'none'}} aria-hidden={presentation!=='react'}>
+      <OptionBReactScreens active={presentation==='react'} onOpenReference={openApproved}/>
+    </div>
     <p className="frameone-option-b-disclaimer">Design pilot only. Demo missions use separate local progress; existing 33 lessons, seven Labs and backups are unchanged.</p>
   </section>;
 }

@@ -25,3 +25,25 @@
 body.frameone-option-b-open{overflow:hidden!important;}
 @media(max-width:390px){.frameone-option-b-version{font-size:8px}.frameone-option-b-exit{font-size:12px}.frameone-option-b-disclaimer{font-size:9px;}}
 @media(prefers-reduced-motion:reduce){.frameone-option-b-overlay *{animation:none!important;transition:none!important;}}
+
+/* The native React slice sits in the EXACT same viewport as its approved
+ * reference iframe. Switching is reversible and keeps both mounted. */
+.frameone-option-b-native-wrap{flex:1 1 auto;min-height:0;width:100%;position:relative;overflow:hidden;background:#f7fbf9;}
+.frameone-option-b-native-slot{display:block;width:100%;height:100%;overflow:hidden;}
+.option-b-view-switch{display:flex;gap:3px;align-items:center;background:#e1eeeb;border-radius:11px;padding:3px;flex:0 0 auto;}
+.option-b-view-switch button{border:0;border-radius:8px;background:transparent;color:#547b76;
+  min-height:34px;padding:8px 10px;font-size:11px;line-height:1.1;font-weight:850;white-space:nowrap;cursor:pointer;}
+.option-b-view-switch button[aria-pressed="true"]{background:white;color:#177461;box-shadow:0 2px 6px #225b5220;}
+.option-b-view-switch button:focus-visible{outline:3px solid #15846e;outline-offset:1px;}
+.option-b-view-switch button:disabled{opacity:.52;cursor:wait;}
+@media(max-width:600px){
+ .frameone-option-b-header{gap:6px;padding-left:9px;padding-right:9px;min-height:54px;}
+ .frameone-option-b-version{display:none;}
+ .frameone-option-b-exit{padding:7px 9px;min-height:40px;font-size:11px;}
+ .option-b-view-switch button{padding:8px 7px;font-size:10px;}
+}
+@media(max-width:345px){
+ .frameone-option-b-header{gap:4px;}
+ .option-b-view-switch button{padding:8px 6px;font-size:10px;}
+ .frameone-option-b-exit{font-size:10px;}
+}

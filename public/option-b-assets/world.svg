@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 980" width="420" height="980" role="img" aria-label="Illustrated film-making journey through green valleys, peach mountains, blue rivers and studio cabins">
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="0.18" y2="1"><stop stop-color="#c9efff"/><stop offset="0.6" stop-color="#e5f8f1"/><stop offset="1" stop-color="#fdf1cf"/></linearGradient>
+  <linearGradient id="far" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#a6d6d4"/><stop offset="1" stop-color="#78b9af"/></linearGradient>
+  <linearGradient id="middle" x1="0" y1="0" x2="0.9" y2="1"><stop stop-color="#b1e8aa"/><stop offset="1" stop-color="#60b7a3"/></linearGradient>
+  <linearGradient id="front" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#9cd880"/><stop offset="1" stop-color="#57b88d"/></linearGradient>
+  <linearGradient id="path" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff7d5"/><stop offset="1" stop-color="#e8ca99"/></linearGradient>
+  <linearGradient id="river" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#75cfd2"/><stop offset="1" stop-color="#45aaba"/></linearGradient>
+  <filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="10"/></filter>
+  <filter id="shadow" x="-70%" y="-70%" width="250%" height="250%"><feDropShadow dx="0" dy="5" stdDeviation="5" flood-color="#286879" flood-opacity=".22"/></filter>
+  <g id="pine"><path d="M0 -23L-16 -1L-7 -2L-20 16L0 9L20 16L7 -2L16 -1Z" fill="#348e75" stroke="#2a8a72" stroke-width="1" stroke-linejoin="round"/><path d="M0 -19L-12 -1L-3 -3L-16 10L0 5Z" fill="#6fc49c"/><path d="M-1 7V20" stroke="#796653" stroke-width="4"/></g>
+  <g id="bush"><ellipse cx="0" cy="0" rx="18" ry="10" fill="#3d9e77"/><ellipse cx="-8" cy="-5" rx="10" ry="7" fill="#79c68d"/><ellipse cx="6" cy="-3" rx="10" ry="8" fill="#62bc85"/></g>
+  <g id="star"><path d="M0 -8L2.2 -2.2L8 0L2.2 2.2L0 8L-2.2 2.2L-8 0L-2.2 -2.2Z" fill="#fff6c4"/></g>
+  <g id="rock"><ellipse rx="16" ry="8" fill="#7babb0"/><path d="M-15 0L-8 -10L8 -11L15 0Z" fill="#b6ccca"/><path d="M-8 -10L-2 -3L-6 0L-15 0Z" fill="#dbe1d4"/></g>
+</defs>
+<rect width="420" height="980" fill="url(#sky)"/>
+<circle cx="360" cy="78" r="40" fill="#fff4c5" opacity=".82"/><circle cx="360" cy="78" r="60" fill="#fffae0" opacity=".45" filter="url(#soft)"/>
+<path d="M-30 210L40 124L83 167L147 76L204 174L277 105L342 166L399 107L450 194V335H-30Z" fill="#b3dada"/><path d="M60 153L147 76L180 130L151 114L140 134L125 110Z" fill="#e5f6ee" opacity=".8"/><path d="M-20 231L55 179L126 217L209 152L298 214L364 163L450 222V377H-20Z" fill="url(#far)"/>
+<path d="M-60 323Q40 254 128 312T312 287T480 311V980H-60Z" fill="#82c3a7"/>
+<path d="M-70 400Q25 325 115 402T275 377T470 384V980H-70Z" fill="url(#middle)"/>
+<path d="M-35 524Q86 435 192 518T458 493V980H-35Z" fill="#9bd799"/>
+<path d="M-45 621Q62 531 166 602T446 591V980H-45Z" fill="url(#front)"/>
+<path d="M-70 766Q43 670 162 739T460 728V980H-70Z" fill="#77c59a"/>
+<path d="M-20 930Q100 836 239 898T450 873V1000H-20Z" fill="#5ba980"/>
+<!-- river snakes behind the mission road -->
+<path d="M-30 307C90 338 63 419 18 446S-12 563 102 570S259 638 174 724S65 839 230 921S380 951 460 926" fill="none" stroke="#cbf4e4" stroke-width="58" opacity=".5"/>
+<path d="M-30 307C90 338 63 419 18 446S-12 563 102 570S259 638 174 724S65 839 230 921S380 951 460 926" fill="none" stroke="url(#river)" stroke-width="43" opacity=".78"/>
+<path d="M-30 307C90 338 63 419 18 446S-12 563 102 570S259 638 174 724S65 839 230 921S380 951 460 926" fill="none" stroke="#d5fffc" stroke-width="4" stroke-dasharray="11 48" opacity=".8"/>
+<!-- winding cream mission road -->
+<path d="M154 112C270 165 343 231 291 301S96 369 135 450S350 511 302 576S91 652 138 733S370 817 286 891" fill="none" stroke="#539b76" stroke-width="51" opacity=".18" transform="translate(0 11)"/>
+<path d="M154 112C270 165 343 231 291 301S96 369 135 450S350 511 302 576S91 652 138 733S370 817 286 891" fill="none" stroke="#dabb8a" stroke-width="35"/>
+<path d="M154 112C270 165 343 231 291 301S96 369 135 450S350 511 302 576S91 652 138 733S370 817 286 891" fill="none" stroke="url(#path)" stroke-width="27"/>
+<path d="M154 112C270 165 343 231 291 301S96 369 135 450S350 511 302 576S91 652 138 733S370 817 286 891" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-dasharray="4 14" opacity=".65"/>
+<!-- tiny site: cinematography hut -->
+<g filter="url(#shadow)" transform="translate(46 290)"><path d="M0 36L25 5L54 35V68H3Z" fill="#b87858"/><path d="M-5 38L24 0L61 37L53 41L24 13L2 42Z" fill="#70496a"/><rect x="17" y="41" width="17" height="27" rx="2" fill="#4e6675"/><rect x="39" y="43" width="10" height="11" rx="1" fill="#ffe3a5"/><path d="M13 69H60" stroke="#7a9d76" stroke-width="5"/></g>
+<!-- a camera tower on hill -->
+<g transform="translate(318 438)" filter="url(#shadow)"><path d="M-16 11H20" stroke="#567b7c" stroke-width="4"/><path d="M-12 11L-25 56M14 11L32 56M0 11V56" stroke="#526875" stroke-width="5"/><rect x="-20" y="-17" width="36" height="28" rx="5" fill="#335c70"/><rect x="13" y="-11" width="16" height="14" rx="3" fill="#27465a"/><circle cx="-8" cy="-24" r="10" fill="#547c91"/><circle cx="10" cy="-24" r="8" fill="#547c91"/><circle cx="-8" cy="-24" r="4" fill="#263f53"/><circle cx="10" cy="-24" r="3" fill="#263f53"/></g>
+<!-- village set near end -->
+<g transform="translate(19 813)"><ellipse cx="44" cy="53" rx="62" ry="12" fill="#437c68" opacity=".17"/><rect x="13" y="19" width="62" height="48" rx="4" fill="#e5ab76"/><path d="M4 23L46 -3L86 23Z" fill="#a56667"/><path d="M33 29H51V67H33Z" fill="#59687e"/><path d="M58 30H70V45H58Z" fill="#ffe3ad"/></g>
+<!-- ground decor -->
+<use href="#pine" transform="translate(30 237) scale(.95)"/><use href="#pine" transform="translate(396 274) scale(1.05)"/><use href="#pine" transform="translate(347 328) scale(.85)"/>
+<use href="#pine" transform="translate(35 384) scale(.7)"/><use href="#pine" transform="translate(78 422) scale(1.15)"/><use href="#pine" transform="translate(385 460) scale(.8)"/><use href="#pine" transform="translate(13 527) scale(.95)"/>
+<use href="#pine" transform="translate(385 532) scale(.85)"/><use href="#pine" transform="translate(22 641) scale(1.1)"/><use href="#pine" transform="translate(396 664) scale(1.05)"/>
+<use href="#pine" transform="translate(64 720) scale(.8)"/><use href="#pine" transform="translate(362 730) scale(.85)"/><use href="#pine" transform="translate(404 821) scale(1.15)"/><use href="#pine" transform="translate(126 885) scale(1.1)"/>
+<use href="#bush" transform="translate(330 207) scale(.7)"/><use href="#bush" transform="translate(42 467) scale(.9)"/><use href="#bush" transform="translate(359 605) scale(1.1)"/><use href="#bush" transform="translate(38 758) scale(.9)"/><use href="#bush" transform="translate(349 862) scale(.8)"/>
+<use href="#rock" transform="translate(87 233) scale(.7)"/><use href="#rock" transform="translate(390 369) scale(.65)"/><use href="#rock" transform="translate(30 690) scale(.75)"/><use href="#rock" transform="translate(258 947) scale(.8)"/>
+<use href="#star" transform="translate(103 174) scale(.8)"/><use href="#star" transform="translate(372 354) scale(.6)"/><use href="#star" transform="translate(104 642) scale(.8)"/>
+</svg>
