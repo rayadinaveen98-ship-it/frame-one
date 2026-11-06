@@ -903,10 +903,24 @@ async function verify() {
   await page.locator('.react-continuity-lab').waitFor({ state: 'detached' });
   const framing = page.locator('.react-frame-lab');
   await framing.waitFor();
+  assert.equal(await framing.getAttribute('data-v2-frame-screen'),'true',
+    'The working Frame Lab, not the preview prototype, owns the new Option B design');
+  assert.equal(await framing.locator('[data-v2-frame-stage]').count(),1,
+    'The real SVG must be in the first large visual stage');
+  assert.equal(await framing.locator('[data-v2-frame-controls]').count(),1,
+    'The original functional inspector must remain in the real editor');
+  const frameSceneFirst=await framing.evaluate(root=>Boolean(
+    root.querySelector('[data-v2-frame-stage]')?.compareDocumentPosition(
+      root.querySelector('[data-v2-frame-controls]')) & Node.DOCUMENT_POSITION_FOLLOWING));
+  assert.equal(frameSceneFirst,true,'Original live picture must precede controls');
+  assert.match(await framing.locator('.frame-v2-status-text strong').textContent(),/Wide shot/);
+  await photo(page,'28-real-option-b-frame-desktop.png');
   assert.equal(await page.locator('#content').innerHTML(), '', 'React must own Frame Lab without hidden legacy markup');
   assert.equal(await framing.locator('.react-cinema-scene svg').count(), 1, 'Original illustration is retained');
   await framing.locator('[data-frame="medium"]').click();
   assert.equal(await framing.locator('[data-frame="medium"]').getAttribute('aria-pressed'), 'true');
+  assert.match(await framing.locator('.frame-v2-status-text strong').textContent(),/Medium shot/,
+    'Frame Lab hero reflects original working crop mode');
   assert.match(await framing.locator('.react-cinema-scene svg').getAttribute('viewBox'), /160\.00 90\.00 320\.00 180\.00/);
   const framingSlider = framing.locator('#frameZoom');
   await framingSlider.focus();
@@ -2053,6 +2067,12 @@ async function verify() {
     assert.equal(comparisonPlacement.length, 2);
     assert.ok(comparisonPlacement[1].y > comparisonPlacement[0].y + 20, 'Frame comparisons must stack vertically on narrow phones');
     assert.equal(await mobileFrame.locator('.frame-comparison .monitor-hud:visible').count(), 0, 'Compact comparison hides crowded illustration HUD');
+    assert.equal(await mobileFrame.getAttribute('data-v2-frame-screen'),'true');
+    const frameArt=await mobileFrame.locator('[data-v2-frame-stage] .scene-stage').first().boundingBox();
+    const frameOuter=await mobileFrame.boundingBox();
+    assert.ok(frameArt&&frameOuter&&frameArt.width>frameOuter.width*.62,
+      'Real illustrated crop must remain prominent on '+width+'px phones');
+    await photo(phone,'29-real-option-b-frame-'+width+'px.png');
     const mobileFramingBrief = mobileFrame.locator('.framing-intention');
     await mobileFramingBrief.locator('summary').click();
     await mobileFramingBrief.locator('[data-framing-intention="conversation"]').click();
