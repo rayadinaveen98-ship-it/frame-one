@@ -1,0 +1,334 @@
+/* Frame One 2.0 — Option B visual lock, REAL Make Lab.
+ * Only applies to the working storyboard editor. Existing component state,
+ * SVG framing, multiple projects, Director Handoff and backup engine remain.
+ */
+.react-make-lab.make-v2{
+ --mk-ink:#1c3442;--mk-muted:#536f76;--mk-teal:#1e8b82;
+ --mk-leaf:#55b97b;--mk-line:#dbe9e7;--mk-paper:#fff;--mk-sun:#ffd36f;
+ border-radius:26px;background:#f7fbf9;color:var(--mk-ink);
+ padding:clamp(12px,2.6vw,28px);max-width:1150px;margin-inline:auto;
+ overflow:visible;box-shadow:0 8px 32px #122b3620;
+ font-family:ui-rounded,"Avenir Next","Segoe UI",system-ui,sans-serif;
+}
+.react-make-lab.make-v2 :is(h1,h2,h3){
+ font-family:ui-rounded,"Avenir Next","Segoe UI",system-ui,sans-serif;
+ letter-spacing:-.043em;font-weight:900;
+}
+.react-make-lab.make-v2 .eyebrow{font-size:10px;letter-spacing:.13em;font-weight:900;color:#328b7c}
+.react-make-lab.make-v2 .make-v2-intro{
+ margin:0 0 16px;border-radius:23px;border:1px solid #c5e7db;
+ background:radial-gradient(ellipse at 90% 16%,#b6efdd 0,transparent 54%),
+  linear-gradient(130deg,#e9f9ec,#d7f2e7);
+ padding:23px 26px 18px;box-shadow:0 5px 0 #daebe1;overflow:hidden;
+}
+.react-make-lab.make-v2 .make-v2-intro:after{display:none}
+.react-make-lab.make-v2 .make-v2-kicker{
+ display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap
+}
+.react-make-lab.make-v2 .make-v2-stamp{
+ font-size:9px;font-weight:950;color:#287e70;letter-spacing:.045em;
+ border:1px solid #b1dacf;border-radius:30px;background:#ffffffaf;padding:7px 10px
+}
+.react-make-lab.make-v2 .make-v2-hero-line{
+ display:flex;justify-content:space-between;gap:8px;align-items:center
+}
+.react-make-lab.make-v2 .make-v2-intro h1{
+ color:#234756;font-size:clamp(28px,3.4vw,45px);line-height:1.13;
+ margin:11px 0 7px;letter-spacing:-.065em
+}
+.react-make-lab.make-v2 .make-v2-intro p{
+ color:#4f7774;font-size:13px;line-height:1.6;max-width:610px;
+ margin:0 0 7px
+}
+.react-make-lab.make-v2 .make-v2-clapper{
+ flex:0 0 auto;width:85px;height:85px;filter:drop-shadow(0 8px 12px #6ba9a82f)
+}
+.react-make-lab.make-v2 .make-v2-active-project{
+ border-radius:15px;border:1px solid #b5dfcd;background:#ffffffc9;
+ padding:11px 12px;margin-top:13px;display:flex;align-items:center;
+ justify-content:space-between;gap:12px
+}
+.react-make-lab.make-v2 .make-v2-active-project>div{min-width:0}
+.react-make-lab.make-v2 .make-v2-active-project>div>span{
+ display:block;color:#548c84;font-size:9px;letter-spacing:.12em;font-weight:950
+}
+.react-make-lab.make-v2 .make-v2-active-project strong{
+ display:block;font-size:15px;color:#234a58;margin:3px 0;overflow-wrap:anywhere
+}
+.react-make-lab.make-v2 .make-v2-active-project small{
+ display:block;font-size:10px;color:#668982
+}
+.react-make-lab.make-v2 [data-v2-make-manage]{
+ flex:0 0 auto;border-radius:12px;border:1px solid #a9d3c6;
+ background:#fff;color:#237d68;font-size:11px;font-weight:850;
+ padding:10px 12px;min-height:44px
+}
+.react-make-lab.make-v2 [data-v2-make-manage] span{margin-left:5px}
+.react-make-lab.make-v2 .story-lead{
+ display:grid;grid-template-columns:minmax(0,1.25fr) minmax(305px,.8fr);
+ gap:14px;align-items:start;margin:17px 0 13px
+}
+.react-make-lab.make-v2 :is(.story-workspace,.story-inspector){
+ background:var(--mk-paper);color:var(--mk-ink);min-width:0;
+ border:1px solid #d9e9e4;border-radius:21px;
+ padding:17px;box-shadow:0 5px 0 #e1eee8,0 16px 32px #2c5c5f12
+}
+.react-make-lab.make-v2 .story-workspace>h2{
+ font-size:clamp(21px,2.3vw,28px);color:#234959;margin:9px 0 8px
+}
+.react-make-lab.make-v2 .make-v2-scene-caption{
+ max-width:690px;margin:0 0 13px;color:#60827e;
+ font-size:12px;line-height:1.55
+}
+.react-make-lab.make-v2 .story-film-frame{
+ border:5px solid #f2f7ed;border-radius:18px;
+ box-shadow:0 2px 0 #c1dcd1,0 10px 24px #2249541c;
+ background:#253e53;aspect-ratio:16/9;overflow:hidden
+}
+.react-make-lab.make-v2 .story-frame-hud{
+ left:9px;top:9px;letter-spacing:.04em;
+ background:#183747c9;color:#f8f1dc;border-radius:7px;
+ font-size:10px;padding:6px 8px
+}
+.react-make-lab.make-v2 .story-caption{
+ color:#78948c;font-size:10px;margin:9px 3px 14px
+}
+.react-make-lab.make-v2 .make-v2-story-questions{
+ border:1px solid #e0ece6;border-radius:15px;background:#f4faf6;
+ padding:12px 12px 9px;margin:8px 0 14px
+}
+.react-make-lab.make-v2 .make-v2-story-head{
+ display:flex;gap:8px;align-items:baseline;justify-content:space-between;flex-wrap:wrap
+}
+.react-make-lab.make-v2 .make-v2-story-head strong{
+ font-size:13px;color:#2a5461
+}
+.react-make-lab.make-v2 .scene-prompt-grid{gap:6px;margin:9px 0 7px}
+.react-make-lab.make-v2 .scene-prompt-grid button{
+ color:#336f6b;border:1px solid #bbdfd2;background:#fff;
+ border-radius:12px;font-size:11px;font-weight:800;line-height:1.3;
+ min-height:44px;padding:9px 11px
+}
+.react-make-lab.make-v2 .scene-prompt-grid button[aria-pressed=true]{
+ background:#d1f2df;border:1px solid #48ad7f;color:#1a6b54;
+ box-shadow:inset 0 0 0 1px #58b98a
+}
+.react-make-lab.make-v2 .make-v2-current-question{
+ font-size:11px;color:#5e827a;line-height:1.55;margin:8px 1px 0
+}
+.react-make-lab.make-v2 .make-v2-beat-heading{
+ display:flex;align-items:end;justify-content:space-between;gap:8px;
+ margin:13px 1px 9px
+}
+.react-make-lab.make-v2 .make-v2-beat-heading strong{
+ display:block;color:#274f5c;font-size:16px;margin-top:2px
+}
+.react-make-lab.make-v2 .make-v2-beat-heading>span{
+ color:#91a9a2;font-size:9px;font-weight:900;text-align:right
+}
+.react-make-lab.make-v2 .story-panel-steps{margin:0;gap:7px}
+.react-make-lab.make-v2 .story-panel-steps button{
+ background:#f5faf6;border:1px solid #d6e8de;color:#244d58;
+ min-height:112px;border-radius:12px;padding:11px 9px;
+ box-shadow:0 3px 0 #e4eee8
+}
+.react-make-lab.make-v2 .story-panel-steps button[aria-current=step]{
+ border:1px solid #58b988;background:#e7f9ee;
+ box-shadow:inset 0 0 0 1px #82d2a9,0 3px 0 #c9e8d6
+}
+.react-make-lab.make-v2 .story-panel-steps span{color:#3d9a83;font-size:9px}
+.react-make-lab.make-v2 .story-panel-steps strong{color:#2f5760;font-size:12px}
+.react-make-lab.make-v2 .story-panel-steps small{
+ color:#638780;font-size:10px;line-height:1.35;
+ display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+ overflow:hidden;overflow-wrap:anywhere
+}
+.react-make-lab.make-v2 .story-inspector>.eyebrow{
+ display:block;margin:2px 0 10px
+}
+.react-make-lab.make-v2 .story-inspector h3{
+ font-size:25px;color:#274d5b;margin:0 0 7px
+}
+.react-make-lab.make-v2 .story-inspector>p{font-size:12px;color:#60817d;line-height:1.6}
+.react-make-lab.make-v2 .story-inspector label{
+ color:#2f5965;font-size:12px;font-weight:850
+}
+.react-make-lab.make-v2 .story-inspector .story-control-label{
+ margin-bottom:6px;font-weight:850;color:#2c6268
+}
+.react-make-lab.make-v2 .story-shot-buttons{gap:6px;margin:9px 0 18px}
+.react-make-lab.make-v2 .story-shot-buttons button{
+ border:1px solid #c7e0d2;background:#f3faf6;
+ border-radius:12px;color:#356b6a;font-size:11px;
+ font-weight:800;min-height:48px
+}
+.react-make-lab.make-v2 .story-shot-buttons button[aria-pressed=true]{
+ background:#d8f3e1;color:#1b7358;border-color:#55b881;
+ box-shadow:inset 0 0 0 1px #70c896
+}
+.react-make-lab.make-v2 .story-inspector textarea{
+ background:#f8fcfa;border:1px solid #c5ded4;
+ color:#244657;border-radius:12px;min-height:126px;
+ font-size:13px;line-height:1.6;resize:vertical
+}
+.react-make-lab.make-v2 .story-inspector textarea::placeholder{color:#8ca9a2}
+.react-make-lab.make-v2 .story-help{
+ font-size:10.5px!important;color:#718e87!important;line-height:1.5!important
+}
+.react-make-lab.make-v2 .story-actions{gap:8px;margin-top:13px}
+.react-make-lab.make-v2 .story-actions button{min-height:46px;min-width:0;font-size:11px;font-weight:850}
+.react-make-lab.make-v2 :is(.story-actions,.make-project-create,.make-handoff-actions) .cta{
+ background:#43ba7a;border:1px solid #2ea969;color:#fff;
+ border-radius:12px;box-shadow:0 3px 0 #1d955a
+}
+.react-make-lab.make-v2 :is(.story-actions,.make-handoff-actions) .btn-secondary,
+.react-make-lab.make-v2 .studio-next .btn-secondary{
+ background:#fff;color:#2b7468;border:1px solid #b4dbcd;
+ border-radius:12px;box-shadow:0 2px 0 #dcece4
+}
+.react-make-lab.make-v2 .story-confirm{color:#218162;font-size:11px}
+.react-make-lab.make-v2 .make-project-library{
+ background:#fff;border:1px solid #d5e8df;color:#244956;
+ border-radius:20px;padding:19px;margin:22px 0 17px;
+ box-shadow:0 5px 0 #e2eee7;
+ scroll-margin-top:20px
+}
+.react-make-lab.make-v2 .make-project-head h2{
+ color:#294b5a;font-size:clamp(20px,2.3vw,28px);margin:6px 0 5px
+}
+.react-make-lab.make-v2 .make-project-head p{
+ color:#66847e;line-height:1.55;font-size:12px
+}
+.react-make-lab.make-v2 .make-project-count{
+ color:#277f68;background:#e4f7ec;border:1px solid #c5e7d6;
+ border-radius:10px;font-size:12px;flex:0 0 auto
+}
+.react-make-lab.make-v2 .make-project-list{gap:9px}
+.react-make-lab.make-v2 .make-project-row{
+ background:#f6faf8;border:1px solid #d9e9e3;
+ border-radius:13px;padding:9px
+}
+.react-make-lab.make-v2 .make-project-row[data-story-project-active=true]{
+ background:#e7f7ef;border-color:#75c6a1
+}
+.react-make-lab.make-v2 .make-project-open{color:#2e535f}
+.react-make-lab.make-v2 .make-project-open small{color:#61988a}
+.react-make-lab.make-v2 .make-project-row-actions button{
+ background:#fff;border:1px solid #c7e2d8;color:#3e726f;
+ min-height:44px;border-radius:10px
+}
+.react-make-lab.make-v2 .make-project-inline{
+ border-top:1px solid #d7e7df;padding-top:11px
+}
+.react-make-lab.make-v2 .make-project-inline label,
+.react-make-lab.make-v2 .make-project-create label{color:#386e69}
+.react-make-lab.make-v2 :is(.make-project-create,.make-project-inline) input{
+ background:#fafffb;border:1px solid #c3ded1;color:#284e55;
+ border-radius:11px;min-height:46px
+}
+.react-make-lab.make-v2 .make-project-inline button{
+ background:#fff;color:#2d726a;border:1px solid #b6ddc9;
+ min-height:44px;border-radius:10px
+}
+.react-make-lab.make-v2 .make-project-danger p{color:#81504f}
+.react-make-lab.make-v2 .make-project-danger [data-project-delete-confirm]{
+ background:#b34545;border-color:#b34545;color:#fff
+}
+.react-make-lab.make-v2 .make-project-storage-note{color:#718c87}
+.react-make-lab.make-v2 .make-project-error{
+ background:#ffede4;color:#914f45;border-left-color:#dc9a72
+}
+.react-make-lab.make-v2 .make-director-handoff{
+ background:linear-gradient(138deg,#fff9e7,#f0f8ee);
+ border:1px solid #e0caa3;border-radius:18px;
+ box-shadow:0 5px 0 #e8ead9;margin:14px 0;color:#294b56
+}
+.react-make-lab.make-v2 .make-director-handoff h2{color:#294e5b}
+.react-make-lab.make-v2 .make-director-handoff p{color:#577a76}
+.react-make-lab.make-v2 .make-director-handoff .make-handoff-detail{color:#65837e}
+.react-make-lab.make-v2 .make-handoff-preview>div{
+ background:#fff;border:1px solid #e5ddcb;border-radius:12px
+}
+.react-make-lab.make-v2 .make-handoff-preview strong{color:#957036}
+.react-make-lab.make-v2 .make-handoff-preview p{color:#68807a}
+.react-make-lab.make-v2 .make-handoff-warning{
+ color:#87563b;background:#fff0d6;border-left-color:#d4a45f
+}
+.react-make-lab.make-v2 .make-handoff-actions [data-director-confirm]{
+ background:#225a65;color:#fff;border:1px solid #225a65;
+ box-shadow:0 3px 0 #173e48
+}
+.react-make-lab.make-v2 .story-footnote{
+ background:#eef8f3;border:1px solid #d5e9df;color:#557c76;
+ font-size:11px;line-height:1.65;border-radius:14px;margin:18px 0 10px
+}
+.react-make-lab.make-v2 .story-footnote strong{color:#2c6c62}
+.react-make-lab.make-v2 .make-v2-other-tools{
+ background:#fff;border:1px solid #d8e9e3;border-radius:15px;
+ padding:14px 17px;margin-top:16px
+}
+.react-make-lab.make-v2 .make-v2-other-tools>p{
+ font-size:11px;color:#6c8a83;margin:5px 0 8px
+}
+.react-make-lab.make-v2 .lab-tabs{margin:10px 0 0;gap:7px}
+.react-make-lab.make-v2 .lab-tab{
+ background:#f1f9f5;border:1px solid #d1e9dc;color:#386f6b;
+ border-radius:11px;min-height:44px;padding:10px 13px;
+ font-size:11px
+}
+.react-make-lab.make-v2 .lab-tab[aria-pressed=true]{
+ background:#d7f4e2;border-color:#65ba91;color:#1c7058
+}
+.react-make-lab.make-v2 .studio-next{
+ border:1px solid #d7e8e1;background:#f3faf7;
+ border-radius:14px;padding:13px;margin-top:12px
+}
+.react-make-lab.make-v2 .studio-next>span{color:#54867b}
+.react-make-lab.make-v2 :is(button,input,textarea):focus-visible{
+ outline:3px solid #2472a4;outline-offset:3px
+}
+@media(max-width:1030px){
+ .react-make-lab.make-v2 .story-lead{grid-template-columns:minmax(0,1fr)}
+ .react-make-lab.make-v2 .make-v2-intro{padding:19px}
+ .react-make-lab.make-v2 .story-workspace,
+ .react-make-lab.make-v2 .story-inspector{padding:15px}
+}
+@media(max-width:760px){
+ .react-make-lab.make-v2{padding:12px;border-radius:18px}
+ .react-make-lab.make-v2 .make-v2-intro{padding:16px}
+ .react-make-lab.make-v2 .make-v2-clapper{width:59px;height:59px}
+ .react-make-lab.make-v2 .make-v2-intro h1{font-size:31px}
+ .react-make-lab.make-v2 .make-v2-intro p{font-size:12px}
+ .react-make-lab.make-v2 .make-project-list{grid-template-columns:minmax(0,1fr)}
+ .react-make-lab.make-v2 .story-panel-steps{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .react-make-lab.make-v2 .story-panel-steps button{
+  min-height:94px;padding:9px 7px
+ }
+ .react-make-lab.make-v2 .story-actions{flex-wrap:wrap}
+}
+@media(max-width:360px){
+ .react-make-lab.make-v2{padding:9px}
+ .react-make-lab.make-v2 .make-v2-intro{padding:12px}
+ .react-make-lab.make-v2 .make-v2-intro h1{font-size:27px}
+ .react-make-lab.make-v2 .make-v2-stamp{font-size:8px;padding:6px}
+ .react-make-lab.make-v2 .make-v2-clapper{width:47px;height:47px}
+ .react-make-lab.make-v2 .make-v2-active-project{padding:9px;gap:7px}
+ .react-make-lab.make-v2 [data-v2-make-manage]{font-size:10px;padding:9px}
+ .react-make-lab.make-v2 .story-workspace,
+ .react-make-lab.make-v2 .story-inspector{padding:10px}
+ .react-make-lab.make-v2 .story-panel-steps{
+  grid-template-columns:repeat(3,minmax(0,1fr));gap:4px
+ }
+ .react-make-lab.make-v2 .story-panel-steps button{padding:8px 5px;min-height:95px}
+ .react-make-lab.make-v2 .story-panel-steps strong{font-size:10px}
+ .react-make-lab.make-v2 .story-panel-steps small{font-size:9px;-webkit-line-clamp:2}
+ .react-make-lab.make-v2 .story-shot-buttons button{padding:6px 4px;font-size:10px}
+ .react-make-lab.make-v2 .make-project-library{padding:12px}
+ .react-make-lab.make-v2 .lab-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){
+ .react-make-lab.make-v2,
+ .react-make-lab.make-v2 :is(button,.react-storyboard-art svg){
+  animation:none!important;transition:none!important
+ }
+}
