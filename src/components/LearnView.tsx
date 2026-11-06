@@ -238,6 +238,12 @@ export function LearnView() {
       <h1>Learn cinema, one choice at a time.</h1>
       <p>Six chapters. Thirty-three short lessons. Start anywhere.</p>
     </header>
+    <LearningJourney chapters={chapters} completed={completed} totalLessons={lessons.length}
+      nextLesson={next} onNext={()=>navigate('lesson',next.id)}
+      activeChapter={[...expandedChapters][0]??0} onChapterSelect={jumpToChapter}/>
+    {/* The Classic first-lesson CTA must be reachable ABOVE the Android bottom
+        navigation. Keep the legacy prototype reference below genuine learning
+        and retain its exact data-option-b-open QA entry. */}
     <section className="option-b-entry" aria-label="Try the new Frame One 2.0 design">
       <div className="option-b-entry-art" aria-hidden="true">
         <span className="option-b-entry-orbit">✦</span>
@@ -253,9 +259,6 @@ export function LearnView() {
         </button>
       </div>
     </section>
-    <LearningJourney chapters={chapters} completed={completed} totalLessons={lessons.length}
-      nextLesson={next} onNext={()=>navigate('lesson',next.id)}
-      activeChapter={[...expandedChapters][0]??0} onChapterSelect={jumpToChapter}/>
     <div className="learn-chapter-heading">
       <div><span className="eyebrow-secondary">THE COURSE</span><h2>Explore six chapters</h2></div>
       <span className="learn-chapter-total">{chapters.length} chapters · {lessons.length} lessons</span>
