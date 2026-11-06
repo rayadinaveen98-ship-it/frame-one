@@ -46,7 +46,7 @@ assert(returnCss.includes('.real-lab-return-bar')&&
  returnCss.includes('focus-visible'),'Lab return button must be visible and keyboard accessible');
 assert(smoke.includes('verifyRealLabsBridge')&&
  qa.includes('getBackupJSON()')&&qa.includes('getStoryProjects')&&
- qa.includes('realLabsChecked'),
+ smoke.includes('realLabsChecked'),
  'QA must preserve original story data while opening real labs and returning');
 assert(!studio.includes('getStoryboard(')&&!studio.includes('saveStoryboard('),
  'Directory cannot duplicate the real Make Lab or its backup owner');
