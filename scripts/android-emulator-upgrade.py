@@ -79,6 +79,14 @@ def open_real_project_row(name,tries=22):
     for _ in range(tries):
         for n in state.nodes():
             value=" ".join((n.attrib.get("text",""),n.attrib.get("content-desc",""))).strip()
+            # After a cold restart the first project may already be selected.
+            # In that case the real row reads CURRENT PROJECT and its button
+            # is disabled; refusing that truth produces a false QA failure.
+            if (n.attrib.get("class","").endswith("Button")
+                    and name.lower() in value.lower()
+                    and "CURRENT PROJECT" in value.upper()):
+                print(f"PASS: project {name!r} is already current",flush=True)
+                return
             if (n.attrib.get("class","").endswith("Button")
                     and name.lower() in value.lower()
                     and "OPEN PROJECT" in value.upper()
