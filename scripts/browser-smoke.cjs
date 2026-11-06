@@ -1347,6 +1347,13 @@ async function verify() {
   await page.locator('.lab-tabs:visible [data-lab="sound"]').click();
   const sound=page.locator('.react-sound-lab');
   await sound.waitFor();
+  assert.equal(await sound.getAttribute('data-v2-sound-screen'),'true',
+    'The real Web Audio Sound Lab must use the Option B redesign');
+  const soundSceneFirst=await sound.evaluate(root=>Boolean(
+    root.querySelector('[data-v2-sound-stage]')?.compareDocumentPosition(
+      root.querySelector('[data-v2-sound-controls]'))&Node.DOCUMENT_POSITION_FOLLOWING));
+  assert.equal(soundSceneFirst,true,'Original Sound Lab scene must be before real audio controls');
+  await photo(page,'34-real-option-b-sound-desktop.png');
   assert.equal(await page.locator('#content').innerHTML(),'','React must own Sound Lab without legacy duplication');
   assert.equal(await sound.locator('.sound-wave span').count(),31);
   assert.equal(await sound.locator('.audio-picture svg').count(),1,'Original local bus-stop illustration preserved');
@@ -2215,6 +2222,12 @@ async function verify() {
     await mobileMake.locator('.lab-tabs [data-lab="sound"]').click();
     const mobileSound=phone.locator('.react-sound-lab');
     await mobileSound.waitFor();
+    assert.equal(await mobileSound.getAttribute('data-v2-sound-screen'),'true');
+    const mobileSoundArt=await mobileSound.locator('[data-v2-sound-stage] .scene-stage').boundingBox();
+    const mobileSoundShell=await mobileSound.boundingBox();
+    assert.ok(mobileSoundArt&&mobileSoundShell&&mobileSoundArt.width>mobileSoundShell.width*.62,
+      'Original bus-stop sound picture must stay prominent at '+width+'px');
+    await photo(phone,'35-real-option-b-sound-'+width+'px.png');
     await mobileSound.locator('[data-sound="tension"]').click();
     assert.equal(await mobileSound.locator('.monitor-hud:visible,.frame-corner:visible,.scene-label:visible').count(),0,'Sound stage cannot show old Frame HUD on narrow phones');
     assert.equal(await mobileSound.locator('[data-sound="tension"]').getAttribute('aria-pressed'),'true');
