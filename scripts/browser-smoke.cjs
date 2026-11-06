@@ -44,6 +44,29 @@ async function openHomeWorkshops(page) {
 async function photo(page, name) {
   await page.screenshot({ path: path.join(shots, name), fullPage: true, animations: 'disabled' });
 }
+async function verifyRealChapterIsolated(width,label){
+  // Real course completions must NOT mutate the blank-slate profile used by
+  // the original 33-lesson smoke test. Run in a fresh browser storage profile.
+  const isolated=await browser.newContext({
+    viewport:{width,height:Math.max(844,width>900?900:844)},
+    reducedMotion:'reduce',acceptDownloads:true
+  });
+  try{
+    const fresh=await isolated.newPage();
+    fresh.on('pageerror',error=>record('Isolated real Chapter 1 error '+label+': '+error.message));
+    await fresh.goto(base,{waitUntil:'domcontentloaded'});
+    await fresh.waitForFunction(()=>Boolean(window.frameOneLegacy),null,{timeout:20000});
+    const intro=fresh.locator('[data-launch-sequence]');
+    if(await intro.count())await intro.waitFor({state:'detached',timeout:10000});
+    await fresh.evaluate(()=>window.frameOneLegacy.navigate('learn'));
+    await fresh.locator('[data-option-b-open]').click();
+    const source=fresh.frameLocator('[data-option-b-frame]');
+    await source.locator('.home-hero').waitFor();
+    const result=await verifyRealChapterOne(fresh,source,shots,label);
+    await fresh.locator('[data-option-b-exit]').click();
+    return result;
+  }finally{await isolated.close();}
+}
 async function verify() {
   await ready();
   browser = await chromium.launch({ headless: true, args: ['--no-sandbox'], ...(process.env.FRAMEONE_BROWSER_CHANNEL==='chrome'?{channel:'chrome'}:{}) });
@@ -756,11 +779,10 @@ async function verify() {
   assert.ok(studioResult.resetVerified);
   assert.equal(await page.locator('#progressLabel').textContent(),classicProgressBefore,
     'Prototype missions and Lab demos never change real lesson progress');
-  const realChapterTest=await verifyRealChapterOne(page,pilot,shots,'desktop');
+  const realChapterTest=await verifyRealChapterIsolated(1440,'desktop');
   assert.equal(realChapterTest.validatedLessons,5);
-  const guidedProgressCount=await page.evaluate(()=>JSON.parse(localStorage.getItem('frameone-progress-v01')||'[]').length);
-  assert.equal(await page.locator('#progressLabel').textContent(),guidedProgressCount+'/33 lessons',
-    'Correctly completed real guided lessons DO update the original 33-lesson header');
+  assert.equal(await page.locator('#progressLabel').textContent(),classicProgressBefore,
+    'Independent real Chapter 1 acceptance must not mutate first-install classic session');
   const pilotRect=await newJourney.evaluate(el=>{
     const rect=el.getBoundingClientRect();
     return {x:rect.x,y:rect.y,width:rect.width,height:rect.height,screenWidth:window.innerWidth,screenHeight:window.innerHeight};
@@ -772,8 +794,8 @@ async function verify() {
   await page.screenshot({path:path.join(shots,'28-option-b-pilot-desktop.png'),animations:'disabled',fullPage:false});
   await newJourney.locator('[data-option-b-exit]').click();
   await newJourney.waitFor({state:'detached'});
-  assert.equal(await page.locator('#progressLabel').textContent(),guidedProgressCount+'/33 lessons',
-    'Leaving guided Chapter 1 preserves actual verified real course completions');
+  assert.equal(await page.locator('#progressLabel').textContent(),classicProgressBefore,
+    'New curriculum acceptance in its own profile preserves classic zero-progress baseline');
   assert.equal(await page.locator('.app > .main').getAttribute('aria-hidden'),null,
     'Existing course accessibility is restored on Exit');
   assert.equal(await page.locator('[data-chapter-library] [data-chapter-index]').count(),6);
@@ -1967,7 +1989,7 @@ async function verify() {
     assert.equal(mobileMissionResult.checkedScreens,8);
     const mobileStudio=await verifyStudioParity(phone,mobilePilot,shots,width+'px');
     assert.equal(mobileStudio.comparedScreens,9);
-    const realChapterMobile=await verifyRealChapterOne(phone,mobilePilot,shots,width+'px');
+    const realChapterMobile=await verifyRealChapterIsolated(width,width+'px');
     assert.equal(realChapterMobile.validatedLessons,2);
     const pilotOverflow=await phone.evaluate(()=>({
       scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth
