@@ -13,6 +13,8 @@ export interface LegacyBridge {
   openLab: (lab: LabName) => void;
   openCollection: (collectionId: string) => void;
   completeLesson: (id: string, continuation?: {nextLessonId?:string;returnCollectionId?:string}) => void;
+  /** Chapter 1 guided lesson: uses original progress key and backup, no route changes. */
+  completeGuidedFoundation: (id:string) => boolean;
   savePractice: (id: string, note: string) => boolean;
   setTelugu: (enabled: boolean) => void;
   exportBackup: () => void;
@@ -41,3 +43,10 @@ export function navigate(page: LegacyPage, lesson?: string): void {
 export function openLab(lab: LabName): void { window.frameOneLegacy?.openLab(lab); }
 export function openCollection(collectionId: string): void { window.frameOneLegacy?.openCollection(collectionId); }
 export function completeLesson(id: string, continuation?: {nextLessonId?:string;returnCollectionId?:string}): void { window.frameOneLegacy?.completeLesson(id,continuation); }
+/** Writes through the backup owner's in-memory notes, not only localStorage. */
+export function saveGuidedPracticeNote(id:string,note:string):boolean{
+  return window.frameOneLegacy?.savePractice(id,note)??false;
+}
+export function completeGuidedFoundation(id:string):boolean{
+  return window.frameOneLegacy?.completeGuidedFoundation(id)??false;
+}

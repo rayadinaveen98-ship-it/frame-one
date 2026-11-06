@@ -45,3 +45,48 @@
 /* Classic Frame One sets negative tracking on descendants. Inside this shadow
  * scene the approved prototype uses normal inherited letter spacing. */
 .site{letter-spacing:normal}
+
+
+/* Chapter 1 curriculum integration: extend Option B tokens, never override
+ * or redraw any pre-existing prototype screen. All new UI is inside
+ * these separately namespaced guided components. */
+.foundation-launch{margin:22px 0 24px;padding:21px 19px;background:linear-gradient(145deg,#e0f7f1,#f9fff2);
+  border:1px solid #b8ddd1;border-radius:22px;box-shadow:0 5px 0 #d6e9dc;color:#1c3442}
+.foundation-launch .eyebrow{color:#248873}
+.foundation-launch h2{font-size:21px;line-height:1.18;letter-spacing:-.05em;margin:7px 0}
+.foundation-launch p{font-size:12px;line-height:1.6;color:#5a7b7f;margin:0 0 15px}
+.foundation-return{display:flex;align-items:center;gap:6px;margin:0 0 16px;
+  padding:10px 12px;border:1px solid #c4e2d4;border-radius:12px;background:#fff;
+  color:#248071;font-size:11px;line-height:1.2;font-weight:850;cursor:pointer;min-height:42px}
+.foundation-return:focus-visible,.foundation-concept-tab:focus-visible,.foundation-deep-dive summary:focus-visible,
+.foundation-note-label+textarea:focus-visible{outline:3px solid #23947d;outline-offset:3px}
+.foundation-deep-dive{margin:16px 0 0;background:white;border:1px solid #dcece4;border-radius:18px;overflow:hidden}
+.foundation-deep-dive>summary{padding:15px 17px;min-height:50px;display:flex;align-items:center;
+ justify-content:space-between;gap:10px;color:#267b69;font-size:12px;font-weight:900;cursor:pointer}
+.foundation-deep-dive>summary::marker{color:#2b896f}
+.foundation-deep-dive>div{border-top:1px solid #e5efeb;padding:0 17px 15px}
+.foundation-deep-dive section{padding:12px 0 1px}
+.foundation-deep-dive h3{font-size:12px;margin:0 0 5px;color:#234d51}
+.foundation-deep-dive p{font-size:12px;line-height:1.65;color:#647e83;margin:0}
+.foundation-concept-switch{display:flex;gap:7px;margin:15px 0 0}
+.foundation-concept-tab{flex:1;min-width:0;min-height:49px;padding:9px 6px;border:1.5px solid #d6e6dd;
+ border-radius:13px;background:#fff;font-size:11px;font-weight:850;color:#5e7b7e;cursor:pointer}
+.foundation-concept-tab.selected{background:#e5f9e9;color:#17845d;border-color:#56bd87;box-shadow:0 3px 0 #b3dec5}
+.foundation-knowledge-check{background:#fff;border:1px solid #dcece4;border-radius:19px;padding:17px;margin-top:20px}
+.foundation-knowledge-check .eyebrow{color:#277c69}
+.foundation-knowledge-check h3{font-size:16px;line-height:1.35;margin:8px 0 14px;color:#23434e}
+.foundation-knowledge-check .choice-grid{margin-top:0}
+.foundation-knowledge-check .choice-option{min-height:58px}
+.foundation-note-label{display:block;font-weight:850;color:#446b6d;margin:14px 0 8px;font-size:12px}
+.foundation-note-label+textarea{display:block;box-sizing:border-box;width:100%;min-height:94px;resize:vertical;
+ background:#f7fcf8;border:1.5px solid #cfe3d9;color:#234a52;font:500 12px/1.5 ui-rounded,system-ui,sans-serif;
+ border-radius:12px;padding:12px;letter-spacing:normal}
+.foundation-save-status{font-size:11px;color:#287f62;margin-top:10px}
+.foundation-knowledge-check .feedback{margin-top:15px}
+.foundation-launch button,.foundation-knowledge-check button,.foundation-deep-dive button{touch-action:manipulation}
+@media(max-width:360px){
+ .foundation-launch{padding:17px 15px}
+ .foundation-knowledge-check{padding:14px}
+ .foundation-concept-tab{font-size:10px;padding:7px 5px}
+}
+@media(prefers-reduced-motion:reduce){.foundation-launch,.foundation-knowledge-check,.foundation-concept-switch *{animation:none!important;transition:none!important}}
