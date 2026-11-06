@@ -1795,10 +1795,10 @@
         const next=nextLesson(id);navigate(next?'lesson':'learn',next?.id||null);
       },
       completeGuidedFoundation:(id)=>{
-        // Only the original eleven lessons in Chapters 1 and 2 can be
+        // Only the original eighteen lessons in Chapters 1–3 can be
         // completed from this verified guided UI. Keep the original 33-lesson key/backup model;
         // never write a separate V2 completion list or force a route change.
-        if(!['why','history','units','genres','india','story','script','acting','character','dialogue','showdonttell'].includes(id))return false;
+        if(!['why','history','units','genres','india','story','script','acting','character','dialogue','showdonttell','shot','camera','lighting','composition','movement','lenses','colour'].includes(id))return false;
         if(!lessons.some(l=>l.id===id))return false;
         if(!finished.has(id)){finished.add(id);persist()}
         updateProgress();
