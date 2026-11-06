@@ -37,7 +37,7 @@ assert(mission.includes('disabled={(step===1&&chosen===null)||(step===2&&!correc
 assert(mission.includes('completeGuidedFoundation(lessonId)')&&mission.includes('saveGuidedPracticeNote(lessonId,note)'),
  'Real lesson completion and practice notes use legacy bridge, never new keys');
 assert(legacy.includes("completeGuidedFoundation:(id)=>")&&
- legacy.includes("if(!['why','history','units','genres','india','story','script','acting','character','dialogue','showdonttell'].includes(id))return false;")&&
+ legacy.includes("if(!['why','history','units','genres','india','story','script','acting','character','dialogue','showdonttell','shot','camera','lighting','composition','movement','lenses','colour'].includes(id))return false;")&&
  legacy.includes("finished.add(id);persist()")&&legacy.includes('updateProgress()'),
  'Legacy completion method only accepts real five IDs, persists to existing 33-lesson key and updates visible progress');
 assert(bridge.includes('completeGuidedFoundation: (id:string) => boolean'),
