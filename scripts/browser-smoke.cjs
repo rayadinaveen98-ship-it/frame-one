@@ -18,7 +18,11 @@ const {verifyRealChapterFour}=require('./v2-real-sound-qa.cjs');
 const {verifyRealChapterFive}=require('./v2-real-people-qa.cjs');
 const {verifyRealChapterSix}=require('./v2-real-first-film-qa.cjs');
 const {verifyRealLabsBridge}=require('./v2-real-labs-qa.cjs');
-const base = 'http://127.0.0.1:4173';
+const {verifyProductionDefault}=require('./v2-production-default-qa.cjs');
+// Original full v0.9 migration smoke explicitly enters the retained Classic
+// experience. A separate real-browser suite tests the new production default.
+const base = 'http://127.0.0.1:4173/?classic=1';
+const productionBase = 'http://127.0.0.1:4173/';
 const shots = path.resolve(__dirname, '../qa/screenshots');
 fs.mkdirSync(shots, { recursive: true });
 const server = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--host', '127.0.0.1', '--port', '4173', '--strictPort'], {
@@ -82,6 +86,9 @@ async function verifyRealChapterIsolated(width,label){
 async function verify() {
   await ready();
   browser = await chromium.launch({ headless: true, args: ['--no-sandbox'], ...(process.env.FRAMEONE_BROWSER_CHANNEL==='chrome'?{channel:'chrome'}:{}) });
+  // Default must be tested in the same real browser as the old migration
+  // paths, but NOT in their storage profile or behind a fake reference tab.
+  await verifyProductionDefault(browser,productionBase,shots);
   // Premium 4-second boot is measured on a real compiled, non-reduced viewport.
   // Existing learning-flow contexts intentionally prefer reduced motion.
   const launchContext=await browser.newContext({
