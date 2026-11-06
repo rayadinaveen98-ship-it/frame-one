@@ -7,6 +7,8 @@ import {VISUAL_IDS,visualLanguageById} from '../data/visual-language-guided';
 import {OptionBVisualExperiment} from './OptionBVisualExperiment';
 import {SOUND_EDIT_IDS,soundEditingById} from '../data/sound-edit-guided';
 import {OptionBSoundEditExperiment} from './OptionBSoundEditExperiment';
+import {PEOPLE_IDS,peopleById} from '../data/people-guided';
+import {OptionBPeopleExperiment} from './OptionBPeopleExperiment';
 import {OptionBReactScene} from './OptionBReactMission';
 
 type ViewMode='wide'|'medium'|'close';
@@ -21,7 +23,7 @@ function NextIcon(){
 export function OptionBFoundationMission({lessonId,onBack,onComplete,onStepChange}:{
  lessonId:string;onBack:()=>void;onComplete:(id:string)=>void;onStepChange:()=>void;
 }){
- const data=foundationById(lessonId)??storytellingById(lessonId)??visualLanguageById(lessonId)??soundEditingById(lessonId);
+ const data=foundationById(lessonId)??storytellingById(lessonId)??visualLanguageById(lessonId)??soundEditingById(lessonId)??peopleById(lessonId);
  const [step,setStep]=useState(0);
  const [chosen,setChosen]=useState<number|null>(null);
  const [explore,setExplore]=useState(0);
@@ -39,7 +41,7 @@ export function OptionBFoundationMission({lessonId,onBack,onComplete,onStepChang
    if(step===1&&chosen===null)return;
    if(step===2&&!correct)return;
    if(step===3){
-      // The bridge only accepts the twenty-four original lessons currently enabled.
+      // The bridge only accepts the twenty-eight original lessons currently enabled.
       // A marked completion uses exactly frameone-progress-v01, the old backup.
       if(!correct){setError('Finish the knowledge check before completing this lesson.');return;}
       const ok=completeGuidedFoundation(lessonId);
@@ -64,10 +66,10 @@ export function OptionBFoundationMission({lessonId,onBack,onComplete,onStepChang
    <div className="mission-top">
      <button type="button" className="back" onClick={onBack} aria-label="Back to the real chapter">‹</button>
      <div className="mission-meta">
-       <span className="eyebrow">REAL CHAPTER {data.chapterId===0?'01 · FOUNDATIONS':data.chapterId===1?'02 · STORYTELLING':data.chapterId===2?'03 · VISUAL LANGUAGE':'04 · SOUND & EDITING'}</span>
+       <span className="eyebrow">REAL CHAPTER {data.chapterId===0?'01 · FOUNDATIONS':data.chapterId===1?'02 · STORYTELLING':data.chapterId===2?'03 · VISUAL LANGUAGE':data.chapterId===3?'04 · SOUND & EDITING':'05 · FILM PEOPLE'}</span>
        <h2>{lesson.title}</h2>
      </div>
-     <span className="head-pill">{data.chapterId===0?lesson.num:String((data.chapterId===1?STORYTELLING_IDS:data.chapterId===2?VISUAL_IDS:SOUND_EDIT_IDS).indexOf(lessonId)+1).padStart(2,'0')} / {data.chapterId===0?'05':data.chapterId===2?'07':'06'}</span>
+     <span className="head-pill">{data.chapterId===0?lesson.num:String((data.chapterId===1?STORYTELLING_IDS:data.chapterId===2?VISUAL_IDS:data.chapterId===3?SOUND_EDIT_IDS:PEOPLE_IDS).indexOf(lessonId)+1).padStart(2,'0')} / {data.chapterId===0?'05':data.chapterId===2?'07':data.chapterId===4?'04':'06'}</span>
    </div>
    <div className="lesson-step-track" aria-label={'Learning stage '+(step+1)+' of 4'}>
      {[0,1,2,3].map(i=><span key={i} className={i<=step?'filled':''}/>)}
@@ -123,9 +125,11 @@ export function OptionBFoundationMission({lessonId,onBack,onComplete,onStepChang
            <p className="note-honest">Creative choices have trade-offs; there is no automatic right camera choice.</p>
          </>}
          {step===2&&<>
-           {data.chapterId===3
-             ? <OptionBSoundEditExperiment lessonId={lessonId} selected={explore}/>
-             : data.chapterId===2
+           {data.chapterId===4
+             ? <OptionBPeopleExperiment lessonId={lessonId} selected={explore}/>
+             : data.chapterId===3
+               ? <OptionBSoundEditExperiment lessonId={lessonId} selected={explore}/>
+               : data.chapterId===2
                ? <OptionBVisualExperiment lessonId={lessonId} selected={explore}/>
                : <OptionBReactScene mode="concept" value={[1,1.35,1.85][explore]}/>}
            <div className="foundation-concept-switch" role="group" aria-label={data.explorerLabel}>
