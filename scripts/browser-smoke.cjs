@@ -1371,7 +1371,7 @@ async function verify() {
     'Changing second shot prop position updates the live studio title');
   assert.equal(await continuity.locator('.continuity-cup.moved').count(), 1);
   assert.match(await continuity.locator('.result-box p').textContent(), /continuity mismatch/i);
-  await continuity.locator('[data-lab="frame"]').click();
+  await continuity.locator('.continuity-v2-quick-jump [data-lab="frame"]').click();
   await continuity.waitFor({ state: 'detached' });
   await page.locator('.react-frame-lab #frameZoom').waitFor();
   await page.locator('.lab-tabs:visible [data-lab="continuity"]').click();
@@ -2178,7 +2178,7 @@ async function verify() {
     const continuityOverflow = await phone.evaluate(() => ({ scroll: document.documentElement.scrollWidth, viewport: document.documentElement.clientWidth }));
     if (continuityOverflow.scroll > continuityOverflow.viewport + 3) record('Continuity Lab overflow at ' + width + 'px: ' + continuityOverflow.scroll + ' vs ' + continuityOverflow.viewport);
     await photo(phone, '08-continuity-' + width + 'px.png');
-    await mobileContinuity.locator('[data-lab="colour"]').click();
+    await mobileContinuity.locator('.continuity-v2-quick-jump [data-lab="colour"]').click();
     const mobileColour = phone.locator('.react-colour-lab');
     await mobileColour.waitFor();
     assert.equal(await mobileColour.getAttribute('data-v2-colour-screen'),'true');
