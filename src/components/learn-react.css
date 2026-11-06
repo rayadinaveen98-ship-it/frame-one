@@ -241,3 +241,41 @@
   .react-learn-view .chapter-panel .chapter-identity h2{font-size:16px;}
   .react-learn-view .chapter-panel .chapter-count{font-size:10px;}
 }
+
+
+/* Explicit entry to the opt-in Option B design pilot. Old syllabus stays available. */
+.react-learn-view .option-b-entry {
+ margin:18px 0 23px;padding:0;display:grid;grid-template-columns:minmax(120px,33%) minmax(0,1fr);
+ min-width:0;overflow:hidden;border-radius:20px;border:1px solid #a5d9d1;
+ background:linear-gradient(135deg,#e0f7f1,#f6fffa 80%);box-shadow:0 6px 0 #d0e8db;
+ color:#1c3442;
+}
+.react-learn-view .option-b-entry-art {
+ display:flex;align-items:center;justify-content:center;position:relative;min-height:182px;
+ background:radial-gradient(circle at 65% 35%,#fcf2b2 0 8%,transparent 30%),
+ linear-gradient(154deg,#8ad3dd 0%,#b3e7d9 52%,#4da68f 53%,#39897f 100%);
+}
+.react-learn-view .option-b-entry-orbit {position:absolute;top:16%;left:22%;font-size:46px;color:#f9e0aa;}
+.react-learn-view .option-b-entry-camera {
+ display:grid;place-items:center;width:84px;height:80px;position:relative;z-index:1;
+ background:#224c55;border:6px solid #d2ebd2;border-radius:25px;
+ transform:rotate(-9deg);color:#f6dd94;font-size:59px;
+ box-shadow:0 8px 0 #447567,0 13px 30px #174e4b5b;
+}
+.react-learn-view .option-b-entry-copy{padding:20px 22px 22px;min-width:0;}
+.react-learn-view .option-b-entry-copy .eyebrow-secondary{font-size:10px;letter-spacing:.08em;color:#268276;}
+.react-learn-view .option-b-entry-copy h2{margin:7px 0 9px;font-size:clamp(22px,3vw,29px);letter-spacing:-.05em;line-height:1.1;color:#1c3442;}
+.react-learn-view .option-b-entry-copy p{font-size:13px;line-height:1.55;color:#526f78;max-width:470px;margin:0 0 15px;}
+.react-learn-view .option-b-entry-action{
+ background:#36b775;min-height:46px;border:0;border-radius:12px;cursor:pointer;
+ padding:11px 17px;font-size:13px;font-weight:900;color:#fff;
+ box-shadow:0 5px 0 #188858;text-align:center;
+}
+.react-learn-view .option-b-entry-action:focus-visible{outline:3px solid #114e45;outline-offset:4px;}
+@media(max-width:600px){
+ .react-learn-view .option-b-entry{grid-template-columns:minmax(0,1fr);}
+ .react-learn-view .option-b-entry-art{min-height:95px;}
+ .react-learn-view .option-b-entry-camera{width:57px;height:55px;font-size:39px;border-width:4px;border-radius:18px;}
+ .react-learn-view .option-b-entry-copy{padding:16px 17px 20px;}
+ .react-learn-view .option-b-entry-action{width:100%;}
+}
