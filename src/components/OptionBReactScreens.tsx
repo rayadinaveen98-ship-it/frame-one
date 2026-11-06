@@ -2,6 +2,7 @@ import {createPortal} from 'react-dom';
 import {useEffect,useRef,useState} from 'react';
 import approvedStyles from './option-b-react-design.css?raw';
 import {OptionBReactMission} from './OptionBReactMission';
+import {OptionBReactLab} from './OptionBReactLab';
 
 /** The same six story prompts and node identities in the approved Option B prototype. */
 type MissionIcon='eye'|'frame'|'clapper'|'sun'|'sound'|'film';
@@ -16,7 +17,7 @@ const MISSIONS:readonly PilotMission[]=[
   {id:'project',title:'Make your scene',short:'Your first scene',type:'film',desc:'Plan and compare a small moment.'}
 ];
 const PROTOTYPE_KEY='frameone-option-b-prototype-v1';
-type SavedDemo={finished:string[];points:number};
+type SavedDemo={finished:string[];points:number;shots:number};
 function saveCompletedMission(id:string):SavedDemo{
   const prior=readDemo();
   if(prior.finished.includes(id))return prior;
@@ -27,14 +28,29 @@ function saveCompletedMission(id:string):SavedDemo{
   }catch{/* Demo still completes within this session if private storage is denied. */}
   return next;
 }
+function saveLabIdea():SavedDemo{
+  const prior=readDemo();
+  const next={...prior,points:prior.points+5,shots:prior.shots+1};
+  try{
+    const raw=JSON.parse(localStorage.getItem(PROTOTYPE_KEY)||'{}') as Record<string,unknown>;
+    localStorage.setItem(PROTOTYPE_KEY,JSON.stringify({...raw,...next}));
+  }catch{/* A restricted browser still shows this session's demo count. */}
+  return next;
+}
+function resetDemo():SavedDemo{
+  const next:SavedDemo={finished:[],points:0,shots:0};
+  try{localStorage.setItem(PROTOTYPE_KEY,JSON.stringify(next))}
+  catch{/* Local storage unavailable, but no real user data is touched. */}
+  return next;
+}
 function readDemo():SavedDemo{
   try{
     const raw=JSON.parse(localStorage.getItem(PROTOTYPE_KEY)||'{}') as Record<string,unknown>;
     const finished=Array.isArray(raw.finished)
       ? raw.finished.filter((id:unknown):id is string=>typeof id==='string'&&MISSIONS.some(m=>m.id===id))
       : [];
-    return {finished,points:Math.max(0,Number(raw.points)||0)};
-  }catch{return {finished:[],points:0};}
+    return {finished,points:Math.max(0,Number(raw.points)||0),shots:Math.max(0,Number(raw.shots)||0)};
+  }catch{return {finished:[],points:0,shots:0};}
 }
 
 function Icon({name,className='glyph'}:{name:IconName;className?:string}){
@@ -152,12 +168,53 @@ function JourneyScreen({finished,onMission}:{finished:string[];onMission:(id:str
     </div>
   </div>;
 }
+function ProgressScreen({saved,onMission,onReset}:{
+  saved:SavedDemo;onMission:(id:string)=>void;onReset:()=>void;
+}){
+  const done=saved.finished.length,percent=Math.round(done/6*100);
+  return <div className="screen" data-v2-native-screen="progress">
+    <div className="progress-top">
+      <span className="eyebrow">YOUR GROWING FILMMAKER SKILLS</span>
+      <h1>Look how far you've come.</h1>
+      <p>Each experiment helps you recognise a decision you can make on a real shoot.</p>
+    </div>
+    <section className="progress-card">
+      <div className="meter-circle" style={{'--done-angle':(percent*3.6)+'deg'} as React.CSSProperties}
+        aria-label={percent+' percent of Chapter One completed'}>
+        <div className="inside"><strong>{percent}%</strong><span>CHAPTER ONE</span></div>
+      </div>
+      <div className="stats">
+        <div className="stat"><strong>{done}</strong><span>Missions</span></div>
+        <div className="stat"><strong>{saved.points}</strong><span>Points</span></div>
+        <div className="stat"><strong>{saved.shots}</strong><span>Lab ideas</span></div>
+      </div>
+    </section>
+    <div className="progress-list">
+      <h2>What you've explored</h2>
+      {MISSIONS.map(m=><button key={m.id} type="button" className="skill-item"
+        data-v2-native-progress-mission={m.id} onClick={()=>onMission(m.id)}>
+        <span className="skill-icon"><Icon name={m.type} className="node-icon"/></span>
+        <div><strong>{m.title}</strong>
+          <small>{saved.finished.includes(m.id)?'Explored · revisit anytime':'Ready to explore'}</small>
+        </div>
+        <span className="check">{saved.finished.includes(m.id)?'✓':'›'}</span>
+      </button>)}
+    </div>
+    <div className="reset-area">
+      <p className="micro">This design prototype stores only demo progress on your device. It does not access Frame One’s existing learning records.</p>
+      <button type="button" data-v2-native-reset onClick={onReset}>Reset prototype progress</button>
+    </div>
+  </div>;
+}
+
 const NAV_ITEMS=[['home','Home','home'],['journey','Journey','map'],['lab','Create','lab'],['progress','Progress','progress']] as const;
 function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
   onOpenReference:(screen:string,missionId?:string)=>void;
   onActive:boolean;onNativeComplete:()=>void;
 }){
-  const [screen,setScreen]=useState<'home'|'journey'|'mission'>('home');
+  const [screen,setScreen]=useState<'home'|'journey'|'mission'|'lab'|'progress'>('home');
+  const [zoom,setZoom]=useState(1.3);
+  const [notice,setNotice]=useState('');
   const [missionId,setMissionId]=useState('see');
   const [missionAttempt,setMissionAttempt]=useState(0);
   const startMission=(id:string)=>{
@@ -175,15 +232,28 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
     onNativeComplete();
   };
   const [saved,setSaved]=useState<SavedDemo>(()=>readDemo());
+  const saveIdea=()=>{
+    setSaved(saveLabIdea());
+    onNativeComplete();
+    setNotice('Saved to your prototype practice log · +5 pts');
+  };
+  const clearProgress=()=>{
+    if(!window.confirm('Reset only the Option B prototype progress? Your existing Frame One app data will not be touched.'))return;
+    setSaved(resetDemo());
+    onNativeComplete();
+    setScreen('home');
+    setNotice('Prototype progress cleared');
+    if(viewport.current)viewport.current.scrollTop=0;
+  };
   const viewport=useRef<HTMLElement>(null);
   useEffect(()=>{if(onActive)setSaved(readDemo());},[onActive]);
   const openScreen=(target:'journey'|'lab')=>{
-    if(target==='lab'){onOpenReference('lab');return;}
-    setScreen('journey');
+    setSaved(readDemo());
+    setScreen(target);
     if(viewport.current)viewport.current.scrollTop=0;
   };
   const changeScreen=(target:string)=>{
-    if(target==='home'||target==='journey'){
+    if(target==='home'||target==='journey'||target==='lab'||target==='progress'){
       setSaved(readDemo());setScreen(target);
       if(viewport.current)viewport.current.scrollTop=0;
     }else onOpenReference(target);
@@ -223,10 +293,15 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
           ? <HomeScreen finished={saved.finished} onMission={startMission} onScreen={openScreen}/>
           : screen==='journey'
             ? <JourneyScreen finished={saved.finished} onMission={startMission}/>
-            : <OptionBReactMission key={missionId+'-'+missionAttempt}
-                missionId={missionId} onBack={backToJourney}
-                onRestart={()=>startMission(missionId)} onComplete={completeMission}
-                onStepChange={()=>{if(viewport.current)viewport.current.scrollTop=0;}}/>}
+            : screen==='mission'
+              ? <OptionBReactMission key={missionId+'-'+missionAttempt}
+                  missionId={missionId} onBack={backToJourney}
+                  onRestart={()=>startMission(missionId)} onComplete={completeMission}
+                  onStepChange={()=>{if(viewport.current)viewport.current.scrollTop=0;}}
+                  zoom={zoom} onZoomChange={setZoom}/>
+              : screen==='lab'
+                ? <OptionBReactLab zoom={zoom} onZoomChange={setZoom} onSave={saveIdea}/>
+                : <ProgressScreen saved={saved} onMission={startMission} onReset={clearProgress}/>}
       </main>
       <nav className="navbar" aria-label="Primary navigation">
         {NAV_ITEMS.map(([id,label,icon])=><button type="button" key={id}
@@ -237,7 +312,7 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
           <Icon name={icon}/><span>{label}</span>
         </button>)}
       </nav>
-      <div className="toast" role="status" aria-live="polite"/>
+      <div className={'toast'+(notice?' visible':'')} role="status" aria-live="polite">{notice}</div>
     </div>
   </div>;
 }
@@ -256,7 +331,7 @@ export function OptionBReactScreens({onOpenReference,active,onNativeComplete}:{
     setShadow(root);
   },[]);
   return <div className="frameone-option-b-native-slot" data-v2-react-slot
-    ref={slot} aria-label="React port of the approved Frame One Option B Home and Journey">
+    ref={slot} aria-label="Native React port of all five approved Frame One Option B screens">
     {shadow?createPortal(<><style>{approvedStyles}</style><ReactScreenShell onOpenReference={onOpenReference} onActive={active} onNativeComplete={onNativeComplete}/></>,shadow):null}
   </div>;
 }
