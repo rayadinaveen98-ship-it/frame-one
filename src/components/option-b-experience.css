@@ -1,0 +1,27 @@
+/* In-app Option B acceptance pilot. No global changes to classic Frame One. */
+.frameone-option-b-overlay{
+ position:fixed;inset:0;z-index:9000;display:flex;flex-direction:column;
+ width:100%;height:100dvh;min-height:0;background:#e6f4f2;color:#1c3442;
+ isolation:isolate;font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+.frameone-option-b-header{
+ flex:0 0 auto;min-height:53px;padding:8px max(14px,env(safe-area-inset-right)) 8px max(14px,env(safe-area-inset-left));
+ padding-top:max(8px,env(safe-area-inset-top));
+ box-sizing:border-box;background:#fafffd;display:flex;align-items:center;
+ justify-content:space-between;gap:12px;border-bottom:1px solid #d4e5e0;
+}
+.frameone-option-b-exit{
+ font:750 13px/1.3 system-ui,sans-serif;white-space:normal;min-height:42px;min-width:0;
+ background:#e6f6ed;border:1px solid #a8d7bd;border-radius:12px;
+ color:#186b58;padding:10px 12px;cursor:pointer;
+}
+.frameone-option-b-exit:focus-visible,
+.frameone-option-b-error button:focus-visible {outline:3px solid #15846e;outline-offset:2px;}
+.frameone-option-b-version{font:800 10px/1.2 system-ui,sans-serif;color:#537f7b;letter-spacing:.08em;text-align:right;}
+.frameone-option-b-frame{flex:1 1 auto;min-height:0;width:100%;border:0;display:block;background:#e8f6f4;}
+.frameone-option-b-loading,.frameone-option-b-error{margin:auto;padding:20px;max-width:440px;text-align:center;font:600 14px/1.55 system-ui,sans-serif;}
+.frameone-option-b-error button{border:0;padding:12px 14px;background:#3baf78;color:white;border-radius:11px;min-height:44px;}
+.frameone-option-b-disclaimer{flex:0 0 auto;padding:5px 14px max(5px,env(safe-area-inset-bottom));margin:0;background:#fafffd;font:650 10px/1.3 system-ui,sans-serif;text-align:center;color:#5b7a7b;border-top:1px solid #d9e9e6;}
+body.frameone-option-b-open{overflow:hidden!important;}
+@media(max-width:390px){.frameone-option-b-version{font-size:8px}.frameone-option-b-exit{font-size:12px}.frameone-option-b-disclaimer{font-size:9px;}}
+@media(prefers-reduced-motion:reduce){.frameone-option-b-overlay *{animation:none!important;transition:none!important;}}
