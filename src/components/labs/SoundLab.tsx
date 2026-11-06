@@ -2,6 +2,7 @@ import {useEffect,useRef,useState,type ChangeEvent,type CSSProperties,type Dispa
 import type {LabName} from '../../legacy/bridge';
 import {CinemaScene} from './CinemaScene';
 import {SoundBrief} from './SoundBrief';
+import './option-b-sound-lab.css';
 import {createSoundSession,soundOptions,SOUND_SECONDS,type SoundMode,type SoundSession} from './sound-audio';
 
 /** Seventh React Creative Lab. Synthesized audio starts from an explicit
@@ -53,18 +54,32 @@ export function SoundLab({mode,setMode,ambience,setAmbience}:Props){
     setStatus('Press Play to compare');
   }
   const selected=soundOptions[mode];
-  return <div className="page react-sound-lab">
-    <div className="page-intro cinematic-heading">
-      <div className="eyebrow">DIRECTOR'S STUDIO / EXPERIMENT 02</div>
-      <h1>Hear the invisible.</h1>
-      <p>The image is unchanged. Play different original sounds and notice how you interpret the same moment.</p>
+  return <div className="page react-sound-lab sound-v2" data-v2-sound-screen="true">
+    <div className="page-intro cinematic-heading sound-v2-intro">
+      <div className="sound-v2-kicker"><span className="eyebrow">YOUR CINEMATIC SOUND STUDIO</span>
+        <span className="sound-v2-course-tag">✦ REAL AUDIO LAB</span></div>
+      <div className="sound-v2-hero"><div><h1>Hear the invisible.</h1>
+        <p>One original frame. Three synthesized sound choices. Listen to how the scene might feel different.</p></div>
+        <svg className="sound-v2-art" aria-hidden="true" viewBox="0 0 95 95">
+          <rect x="12" y="32" width="22" height="33" rx="7" fill="#2d6170"/>
+          <path d="M34 39l21-19v58L34 59Z" fill="#3c967f"/>
+          <path d="M63 33q20 15 0 30M69 23q32 24 0 48" stroke="#2a8f75" strokeWidth="5" fill="none" strokeLinecap="round"/>
+          <circle cx="27" cy="17" r="6" fill="#ffcc81"/><circle cx="72" cy="78" r="5" fill="#ffcc81"/>
+        </svg>
+      </div>
+      <div className="sound-v2-live-status" aria-label="Current real sound preview state">
+        <span className="sound-v2-status-dot" aria-hidden="true"></span>
+        <strong>{selected.label}</strong>
+        <span>{ambience?'Ambience on':'Ambience off'}</span>
+        <small>{playing?'Playing synthesized audio':'Ready to listen'}</small>
+      </div>
     </div>
-    <div className="lab-tabs" role="group" aria-label="Choose a creative experiment">
-      {tabs.map(tab=><button type="button" className="lab-tab" data-lab={tab.id} key={tab.id}
-        aria-pressed={tab.id==='sound'}>{tab.label}</button>)}
-    </div>
-    <div className="lab-shell cinematic-lab-shell">
-      <div className="lab-preview cinematic-preview">
+    <div className="sound-v2-note"><span aria-hidden="true">♫</span>
+      <p><strong>LISTEN FIRST</strong> — Audio starts only when you press Play. Keep your volume comfortable.</p></div>
+    <div className="lab-shell cinematic-lab-shell" data-v2-sound-workshop>
+      <div className="lab-preview cinematic-preview" data-v2-sound-stage>
+        <div className="sound-v2-stage-head"><div><span className="eyebrow">YOUR LIVE SOUNDSCAPE</span>
+          <strong>One scene, changing sound</strong></div><span>ORIGINAL VECTOR · USER-STARTED AUDIO</span></div>
         <div className={`sound-cinema ${playing?'is-playing':''}`} data-sound-stage>
           <div className="audio-picture">
             <CinemaScene variant="sound" guides={false}/>
@@ -80,10 +95,11 @@ export function SoundLab({mode,setMode,ambience,setAmbience}:Props){
         </div>
         <div className="lab-hint">Original illustrated scene · Generated audio plays only when you press Play</div>
       </div>
-      <div className="lab-panel film-controls">
-        <div className="eyebrow">SOUND DESK · 02</div>
+      <div className="lab-panel film-controls" data-v2-sound-controls>
+        <div className="eyebrow">STEP 01 · DESIGN YOUR SOUND</div>
         <h3>How does it sound?</h3>
-        <p>Listen at a comfortable volume. Sound can suggest emotion, but viewers may respond differently.</p>
+        <p>Choose a generated sound, switch on quiet ambience when useful, and press Play to hear the actual difference.</p>
+        <div className="sound-v2-control-label"><span className="eyebrow">THE SOUND CHOICE</span><span>3 ORIGINAL OPTIONS</span></div>
         <div className="lab-choices" role="group" aria-label="Select synthesized sound">
           {(Object.entries(soundOptions) as [SoundMode,typeof selected][]).map(([id,choice])=>
             <button type="button" key={id} className="lab-choice" data-sound={id}
@@ -91,6 +107,7 @@ export function SoundLab({mode,setMode,ambience,setAmbience}:Props){
               <strong>{choice.label}</strong><span>{choice.sub}</span>
             </button>)}
         </div>
+        <div className="sound-v2-control-label"><span className="eyebrow">BACKGROUND AMBIENCE</span><span>OPTIONAL</span></div>
         <div className="sound-toggle">
           <label htmlFor="ambience">
             <input id="ambience" type="checkbox" checked={ambience}
@@ -99,6 +116,7 @@ export function SoundLab({mode,setMode,ambience,setAmbience}:Props){
               <small>Generated soft background noise, not a recorded location</small></span>
           </label>
         </div>
+        <div className="sound-v2-control-label"><span className="eyebrow">HEAR THE SCENE</span><span>~5 SEC · DEVICE AUDIO</span></div>
         <div className="sound-action-row">
           <button type="button" className="cta" data-audio={playing?'stop':'play'}
             onClick={play}>{playing?'■ Stop playback':'▶ Play the same moment'}</button>
@@ -119,5 +137,12 @@ export function SoundLab({mode,setMode,ambience,setAmbience}:Props){
       <button className="btn-secondary" type="button" data-lesson="sound">Read the connected lesson →</button>
     </div>
     <p className="demo-disclaimer">This sound sketch lasts {SOUND_SECONDS} seconds. It is not a recording, full score or calibrated listening test.</p>
+    <div className="sound-v2-other-tools"><span className="eyebrow">CONTINUE LEARNING FILMCRAFT</span>
+      <p>These are the original working Frame One production labs—not substitute demos.</p>
+      <div className="lab-tabs" role="group" aria-label="Choose a creative experiment">
+        {tabs.map(tab=><button type="button" className="lab-tab" data-lab={tab.id} key={tab.id}
+          aria-pressed={tab.id==='sound'}>{tab.label}</button>)}
+      </div>
+    </div>
   </div>;
 }
