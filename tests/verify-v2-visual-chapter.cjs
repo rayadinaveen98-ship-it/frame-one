@@ -24,7 +24,7 @@ assert(guided.includes('VISUAL_IDS=chapter.ids')&&guided.includes('return {id,le
 assert(guided.includes('const lessons=new Map'),'No duplicated canonical educational facts');
 assert(screens.includes('data-v2-visual-node')&&screens.includes('data-v2-visual-open')&&screens.includes('data-v2-visual-back'),
  'Chapter 3 must have its own seven-node journey with visible navigation');
-assert(screens.includes('safeProgress([...FOUNDATION_IDS,...STORYTELLING_IDS,...VISUAL_IDS])'),
+assert(screens.includes('safeProgress([...FOUNDATION_IDS,...STORYTELLING_IDS,...VISUAL_IDS,...SOUND_EDIT_IDS])'),
  'Read real completions for all 18 lessons from original key');
 assert(mission.includes('visualLanguageById(lessonId)')&&mission.includes('<OptionBVisualExperiment lessonId={lessonId} selected={explore}/>'),
  'Seven lessons share approved four-stage real mission and dedicated visual studio');
@@ -32,7 +32,7 @@ assert(mission.includes('if(step===2&&!correct)return')&&mission.includes('if(!c
  'User may not complete wrong or unanswered canonical quiz');
 assert(legacy.includes('savePractice:(id,note)=>')&&legacy.includes('finished.add(id);persist()'),
  'Original notes and completed progress remain within legacy backup owner');
-const required="if(!['why','history','units','genres','india','story','script','acting','character','dialogue','showdonttell','shot','camera','lighting','composition','movement','lenses','colour'].includes(id))return false;";
+const required="if(!['why','history','units','genres','india','story','script','acting','character','dialogue','showdonttell','shot','camera','lighting','composition','movement','lenses','colour','sound','editing','ambience','music','continuity','rhythm'].includes(id))return false;";
 assert(legacy.includes(required),'Guided completion permits only existing Chapters 1–3');
 for(const id of ids)assert(graphics.includes("'"+id+"'"),'Real experiment has a defined visual study for '+id);
 assert(graphics.includes('OptionBReactScene')&&graphics.includes('<FilmSetDiagram'),
