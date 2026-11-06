@@ -1784,6 +1784,7 @@
       completeLesson:(id,continuation)=>{
         if(state.page!=='lesson'||state.lesson!==id)return;
         finished.add(id);persist();
+        // Existing reader's route-dependent completion path is unchanged.
         // The guided series controls its next part without changing progress schema.
         if(state.journey&&continuation?.nextLessonId&&lessons.some(l=>l.id===continuation.nextLessonId)){
           navigate('lesson',continuation.nextLessonId);return;
@@ -1792,6 +1793,17 @@
           navigate('collection',state.journey);return;
         }
         const next=nextLesson(id);navigate(next?'lesson':'learn',next?.id||null);
+      },
+      completeGuidedFoundation:(id)=>{
+        // Only Chapter 1's five canonical lesson IDs can be completed from
+        // the new guided UI. Keep the original 33-lesson key/backup model;
+        // never write a separate V2 completion list or force a route change.
+        if(!['why','history','units','genres','india'].includes(id))return false;
+        if(!lessons.some(l=>l.id===id))return false;
+        if(!finished.has(id)){finished.add(id);persist()}
+        updateProgress();
+        window.dispatchEvent(new Event('frameone:learning-progress'));
+        return true;
       },
       savePractice:(id,note)=>{if(!lessons.some(l=>l.id===id)||typeof note!=='string')return false;state.notes[id]=note.slice(0,240);return saveNotes()},
       setTelugu:(enabled)=>{state.telugu=Boolean(enabled);saveTelugu()},
