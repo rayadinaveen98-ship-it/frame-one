@@ -733,7 +733,9 @@ async function verify() {
   await pilot.locator('[data-choice="1"]').click();
   assert.equal(await pilot.locator('[data-choice="1"]').getAttribute('aria-pressed'),'true');
   await pilot.locator('[data-next-step]').click();
-  await pilot.locator('#missionZoom').fill('1.8');
+  await pilot.locator('#missionZoom').focus();
+  await pilot.locator('#missionZoom').press('End');
+  assert.equal(await pilot.locator('#missionZoom').inputValue(),'2.2');
   await pilot.locator('[data-next-step]').click();
   await pilot.locator('[data-next-step]').click();
   await pilot.locator('.celebrate h1').waitFor();
