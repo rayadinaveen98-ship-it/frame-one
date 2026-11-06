@@ -980,11 +980,25 @@ async function verify() {
   await page.locator('.lab-tabs:visible [data-lab="colour"]').click();
   const colour = page.locator('.react-colour-lab');
   await colour.waitFor();
+  assert.equal(await colour.getAttribute('data-v2-colour-screen'),'true',
+    'Real working Colour Lab must use locked Option B studio design');
+  const colourSceneFirst=await colour.evaluate(root=>Boolean(
+    root.querySelector('[data-v2-colour-stage]')?.compareDocumentPosition(
+      root.querySelector('[data-v2-colour-controls]'))&Node.DOCUMENT_POSITION_FOLLOWING));
+  assert.equal(colourSceneFirst,true,'Original before/after SVGs must appear before the colour controls');
+  assert.equal(await colour.locator('[data-v2-colour-stage] svg').count(),2,
+    'Both original and treated views must use the original live SVG');
+  assert.match(await colour.locator('.colour-v2-live-status strong').textContent(),/Neutral illustration/);
+  assert.equal(await colour.locator('.colour-v2-quick-jump [data-lab="story"]').count(),1,
+    'Production Colour Lab needs a reachable real Make shortcut');
+  await photo(page,'36-real-option-b-colour-desktop.png');
   assert.equal(await page.locator('#content').innerHTML(), '', 'React must own Colour Lab without hidden legacy tabs');
   assert.equal(await colour.locator('.colour-compare svg').count(), 2, 'Keep both original SVG illustrations');
   assert.equal(await colour.locator('.colour-grade').evaluate(el => Number(getComputedStyle(el).opacity)), 0, 'Neutral mode must not apply an overlay');
   await colour.locator('[data-colour="warm"]').click();
   assert.equal(await colour.locator('[data-colour="warm"]').getAttribute('aria-pressed'), 'true');
+  assert.match(await colour.locator('.colour-v2-live-status strong').textContent(),/Warm overlay/,
+    'Production status must update with actual selected overlay');
   assert.match(await colour.locator('.result-box p').textContent(), /warm orange overlay/i);
   const range = colour.locator('#colourStrength');
   await range.focus();
@@ -2149,6 +2163,12 @@ async function verify() {
     await mobileContinuity.locator('[data-lab="colour"]').click();
     const mobileColour = phone.locator('.react-colour-lab');
     await mobileColour.waitFor();
+    assert.equal(await mobileColour.getAttribute('data-v2-colour-screen'),'true');
+    const sceneWidth=await mobileColour.locator('[data-v2-colour-stage] .scene-stage').first().boundingBox();
+    const labWidth=await mobileColour.boundingBox();
+    assert.ok(sceneWidth&&labWidth&&sceneWidth.width>labWidth.width*.64,
+      'Original SVG comparison must be large and clear at '+width+'px');
+    await photo(phone,'37-real-option-b-colour-'+width+'px.png');
     await mobileColour.locator('[data-colour="cool"]').click();
     const mobileColourBrief = mobileColour.locator('.colour-story-briefs');
     await mobileColourBrief.locator('summary').click();
