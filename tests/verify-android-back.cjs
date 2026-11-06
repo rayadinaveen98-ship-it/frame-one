@@ -15,12 +15,19 @@ assert.equal(compiled.diagnostics?.filter(d=>d.category===ts.DiagnosticCategory.
 
 function mock(platform,hash){
   let cb=null;
-  let minimized=0, navigated=0, subscribed=0;
+  let minimized=0, navigated=0, subscribed=0, pilotCloses=0, pilotOpen=false;
   const m={exports:{}};
   let blurred=0;
-  const document={activeElement:null};
+  const document={activeElement:null,
+    querySelector(selector){
+      if(selector!=='[data-frameone-option-b]' || !pilotOpen)return null;
+      return {querySelector(){return {contentDocument:{activeElement:null}};}};
+    }
+  };
   const focus=(tagName='TEXTAREA')=>{document.activeElement={tagName,isContentEditable:false,blur(){blurred++;document.activeElement=null;}};};
-  const win={location:{hash},frameOneLegacy:{goBack(){navigated++}}};
+  const win={location:{hash},frameOneLegacy:{goBack(){navigated++}},
+    dispatchEvent(event){if(event.type==='frameone:option-b-close')pilotCloses++;}
+  };
   const app={
     addListener:async (name,callback)=>{
       assert.equal(name,'backButton');subscribed++;cb=callback;
@@ -34,9 +41,10 @@ function mock(platform,hash){
   };
   vm.runInNewContext(compiled.outputText,{module:m,exports:m.exports,require:name=>{
     assert(Object.hasOwn(modules,name),'No unexpected dependency '+name);return modules[name];
-  },window:win,document,console},{filename:file,timeout:5000});
+  },window:win,document,console,Event:class {constructor(type){this.type=type;}}},{filename:file,timeout:5000});
   return {register:m.exports.registerAndroidBack,back:()=>{assert(cb,'listener was not installed');cb();},focus,
-    stats:()=>({minimized,navigated,subscribed,blurred}),window:win};
+    setPilot:(open)=>{pilotOpen=Boolean(open);},
+    stats:()=>({minimized,navigated,subscribed,blurred,pilotCloses}),window:win};
 }
 (async()=>{
   for(const platform of ['web','ios']){
@@ -47,6 +55,11 @@ function mock(platform,hash){
   const d=mock('android','#lesson/why');
   await d.register();
   assert.equal(d.stats().subscribed,1,'register official Capacitor plugin on Android');
+  d.setPilot(true);
+  d.back();
+  assert.equal(d.stats().pilotCloses,1,'Android Back closes Option B preview before legacy route');
+  assert.equal(d.stats().navigated,0,'Pilot Back never navigates original lessons');
+  d.setPilot(false);
   d.focus('TEXTAREA');
   d.back();
   assert.equal(d.stats().blurred,1,'Back blurs Android focused textarea to close IME');
