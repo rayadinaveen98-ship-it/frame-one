@@ -87,8 +87,8 @@ function ArrowIcon(){
     <path d="M5 12h14m-6-6 6 6-6 6"/>
   </svg>;
 }
-function Scene({mode='medium',value=1.3,kind='neutral',guides=false}:{
-  mode?:string;value?:number;kind?:string;guides?:boolean;
+export function OptionBReactScene({mode='medium',value=1.3,kind='neutral',guides=false,lab=false}:{
+  mode?:string;value?:number;kind?:string;guides?:boolean;lab?:boolean;
 }){
   const filter=kind==='warm'?'sepia(.05) saturate(1.05)'
     :kind==='cool'?'hue-rotate(20deg) saturate(.84) brightness(.99)'
@@ -98,13 +98,15 @@ function Scene({mode='medium',value=1.3,kind='neutral',guides=false}:{
     '--scene-filter':filter,
     '--guides':guides?'1':'0'
   } as CSSProperties;
-  return <div className="scene-card" style={vars}>
+  return <div className={'scene-card'+(lab?' lab-scene':'')} style={vars}>
     <img src={ART_SCENE} alt="A filmmaker checking a phone on a village street"/>
-    <span className="scene-hud">{mode.toUpperCase()+' · ORIGINAL ILLUSTRATION'}</span>
+    <span className="scene-hud">{lab?'LIVE STORYBOARD':mode.toUpperCase()+' · ORIGINAL ILLUSTRATION'}</span>
     <span className="frame-grid" aria-hidden="true"/>
     <span className="corners" aria-hidden="true"/>
   </div>;
 }
+
+const Scene=OptionBReactScene;
 
 function MissionTop({mission,index,step,onBack}:{
   mission:MissionCopy;index:number;step:number;onBack:()=>void;
@@ -128,14 +130,14 @@ function MissionTop({mission,index,step,onBack}:{
  * Native React version of the approved Observe → Decide → Experiment → Make
  * lesson. This is still a six-mission design pilot, not the 33-lesson course.
  */
-export function OptionBReactMission({missionId,onBack,onRestart,onComplete,onStepChange}:{
+export function OptionBReactMission({missionId,onBack,onRestart,onComplete,onStepChange,zoom,onZoomChange}:{
   missionId:string;onBack:()=>void;onRestart:()=>void;onComplete:(id:string)=>void;onStepChange:()=>void;
+  zoom:number;onZoomChange:(value:number)=>void;
 }){
   const missionIndex=Math.max(0,APPROVED_MISSIONS.findIndex(m=>m.id===missionId));
   const m=APPROVED_MISSIONS[missionIndex];
   const [step,setStep]=useState(0);
   const [selected,setSelected]=useState<number|null>(null);
-  const [zoom,setZoom]=useState(1.3);
   const [guides]=useState(false);
   const [practice,setPractice]=useState([false,false,false]);
   const [complete,setComplete]=useState(false);
@@ -203,7 +205,7 @@ export function OptionBReactMission({missionId,onBack,onRestart,onComplete,onSte
             <label htmlFor="nativeMissionZoom"><span>Adjust the crop</span><b id="nativeMissionZoomLabel">{zoom.toFixed(1)}×</b></label>
             <input type="range" min="1" max="2.2" step="0.1" value={zoom}
               id="nativeMissionZoom" data-v2-native-zoom aria-label="Adjust framing crop"
-              onChange={e=>setZoom(Math.min(2.2,Math.max(1,Number(e.target.value)||1)))}/>
+              onChange={e=>onZoomChange(Math.min(2.2,Math.max(1,Number(e.target.value)||1)))}/>
             <div className="range-labels"><span>More environment</span><span>More detail</span></div>
           </div>
           <div className="feedback is-warm"><h3>🧭 Filmmaker's eye</h3><p id="nativeCropInsight">{cropFeedback(zoom)}</p></div>
