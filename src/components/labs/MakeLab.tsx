@@ -150,7 +150,7 @@ export function MakeLab(){
     heading?.scrollIntoView({behavior:'smooth',block:'start'});
     heading?.focus({preventScroll:true});
   };
-  return <div className="page react-make-lab make-v2" data-v2-make-screen>
+  return <div className="page react-make-lab make-v2" data-v2-make-screen="true">
     <div className="page-intro cinematic-heading make-v2-intro">
       <div className="make-v2-kicker"><span className="eyebrow">YOUR FILMMAKING STUDIO</span><span className="make-v2-stamp">✦ OPTION B · WORKING EDITOR</span></div>
       <div className="make-v2-hero-line"><div>
