@@ -215,6 +215,11 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
   const [screen,setScreen]=useState<'home'|'journey'|'mission'|'lab'|'progress'>('home');
   const [zoom,setZoom]=useState(1.3);
   const [notice,setNotice]=useState('');
+  useEffect(()=>{
+    if(!notice)return;
+    const timer=window.setTimeout(()=>setNotice(''),2300);
+    return ()=>window.clearTimeout(timer);
+  },[notice]);
   const [missionId,setMissionId]=useState('see');
   const [missionAttempt,setMissionAttempt]=useState(0);
   const startMission=(id:string)=>{
