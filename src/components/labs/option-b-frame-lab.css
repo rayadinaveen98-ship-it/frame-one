@@ -225,3 +225,16 @@
  .react-frame-lab.frame-v2 .react-cinema-scene *,
  .react-frame-lab.frame-v2 :is(button,.framing-intention-chevron){animation:none!important;transition:none!important}
 }
+
+.react-frame-lab.frame-v2 .frame-v2-quick-jump{display:flex;gap:10px;align-items:center;justify-content:space-between;
+ border:1px solid #d3e7da;border-radius:12px;background:#fff;padding:8px 11px;margin:12px 0 2px}
+.react-frame-lab.frame-v2 .frame-v2-quick-jump>span{font-size:9px;white-space:nowrap}
+.react-frame-lab.frame-v2 .frame-v2-quick-jump>div{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.react-frame-lab.frame-v2 .frame-v2-quick-jump button{border:1px solid #b9ddcb;border-radius:10px;
+ background:#eaf7ee;color:#2b7868;min-height:44px;padding:9px 12px;font-size:11px;font-weight:850;white-space:nowrap}
+.react-frame-lab.frame-v2 .frame-v2-quick-jump button:focus-visible{outline:3px solid #2773a5;outline-offset:2px}
+@media(max-width:360px){
+ .react-frame-lab.frame-v2 .frame-v2-quick-jump{flex-wrap:wrap;gap:6px}
+ .react-frame-lab.frame-v2 .frame-v2-quick-jump>div{width:100%;justify-content:space-between;gap:4px}
+ .react-frame-lab.frame-v2 .frame-v2-quick-jump button{flex:1;min-width:0;padding:9px 5px;font-size:10px}
+}
