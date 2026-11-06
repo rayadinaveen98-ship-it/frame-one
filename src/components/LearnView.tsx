@@ -237,6 +237,10 @@ export function LearnView() {
       <span className="eyebrow-secondary">YOUR LEARNING JOURNEY</span>
       <h1>Learn cinema, one choice at a time.</h1>
       <p>Six chapters. Thirty-three short lessons. Start anywhere.</p>
+      <button type="button" className="classic-mobile-next" data-classic-mobile-next
+        onClick={()=>navigate('lesson',next.id)}>
+        Continue learning <span aria-hidden="true">→</span>
+      </button>
     </header>
     <LearningJourney chapters={chapters} completed={completed} totalLessons={lessons.length}
       nextLesson={next} onNext={()=>navigate('lesson',next.id)}
