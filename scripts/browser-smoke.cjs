@@ -909,6 +909,17 @@ async function verify() {
     'The working Frame Lab, not the preview prototype, owns the new Option B design');
   assert.equal(await framing.locator('[data-v2-frame-stage]').count(),1,
     'The real SVG must be in the first large visual stage');
+  const frameAlignment=await framing.evaluate(root=>{
+    const stage=root.querySelector('[data-v2-frame-stage]');
+    const controls=root.querySelector('[data-v2-frame-controls]');
+    if(!stage||!controls)return null;
+    return {position:getComputedStyle(stage).position,
+      difference:Math.abs(stage.getBoundingClientRect().top-controls.getBoundingClientRect().top)};
+  });
+  assert.equal(frameAlignment?.position,'relative',
+    'Frame Lab picture must not remain sticky and drift down the desktop screenshot');
+  assert.ok(frameAlignment&&frameAlignment.difference<=6,
+    'Frame picture must align vertically with the real controls on desktop');
   assert.equal(await framing.locator('[data-v2-frame-controls]').count(),1,
     'The original functional inspector must remain in the real editor');
   const frameSceneFirst=await framing.evaluate(root=>Boolean(
