@@ -1,6 +1,7 @@
 import {createPortal} from 'react-dom';
 import {useEffect,useRef,useState} from 'react';
 import approvedStyles from './option-b-react-design.css?raw';
+import {OptionBReactMission} from './OptionBReactMission';
 
 /** The same six story prompts and node identities in the approved Option B prototype. */
 type MissionIcon='eye'|'frame'|'clapper'|'sun'|'sound'|'film';
@@ -16,6 +17,16 @@ const MISSIONS:readonly PilotMission[]=[
 ];
 const PROTOTYPE_KEY='frameone-option-b-prototype-v1';
 type SavedDemo={finished:string[];points:number};
+function saveCompletedMission(id:string):SavedDemo{
+  const prior=readDemo();
+  if(prior.finished.includes(id))return prior;
+  const next={...prior,finished:[...prior.finished,id],points:prior.points+20};
+  try{
+    const raw=JSON.parse(localStorage.getItem(PROTOTYPE_KEY)||'{}') as Record<string,unknown>;
+    localStorage.setItem(PROTOTYPE_KEY,JSON.stringify({...raw,...next}));
+  }catch{/* Demo still completes within this session if private storage is denied. */}
+  return next;
+}
 function readDemo():SavedDemo{
   try{
     const raw=JSON.parse(localStorage.getItem(PROTOTYPE_KEY)||'{}') as Record<string,unknown>;
@@ -142,8 +153,27 @@ function JourneyScreen({finished,onMission}:{finished:string[];onMission:(id:str
   </div>;
 }
 const NAV_ITEMS=[['home','Home','home'],['journey','Journey','map'],['lab','Create','lab'],['progress','Progress','progress']] as const;
-function ReactScreenShell({onOpenReference,onActive}:{onOpenReference:(screen:string,missionId?:string)=>void;onActive:boolean}){
-  const [screen,setScreen]=useState<'home'|'journey'>('home');
+function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
+  onOpenReference:(screen:string,missionId?:string)=>void;
+  onActive:boolean;onNativeComplete:()=>void;
+}){
+  const [screen,setScreen]=useState<'home'|'journey'|'mission'>('home');
+  const [missionId,setMissionId]=useState('see');
+  const [missionAttempt,setMissionAttempt]=useState(0);
+  const startMission=(id:string)=>{
+    setMissionId(id);
+    setMissionAttempt(n=>n+1);
+    setScreen('mission');
+    if(viewport.current)viewport.current.scrollTop=0;
+  };
+  const backToJourney=()=>{
+    setScreen('journey');
+    if(viewport.current)viewport.current.scrollTop=0;
+  };
+  const completeMission=(id:string)=>{
+    setSaved(saveCompletedMission(id));
+    onNativeComplete();
+  };
   const [saved,setSaved]=useState<SavedDemo>(()=>readDemo());
   const viewport=useRef<HTMLElement>(null);
   useEffect(()=>{if(onActive)setSaved(readDemo());},[onActive]);
@@ -190,13 +220,17 @@ function ReactScreenShell({onOpenReference,onActive}:{onOpenReference:(screen:st
       </header>
       <main id="viewport" ref={viewport} tabIndex={-1} aria-live="off">
         {screen==='home'
-          ? <HomeScreen finished={saved.finished} onMission={id=>onOpenReference('mission',id)} onScreen={openScreen}/>
-          : <JourneyScreen finished={saved.finished} onMission={id=>onOpenReference('mission',id)}/>}
+          ? <HomeScreen finished={saved.finished} onMission={startMission} onScreen={openScreen}/>
+          : screen==='journey'
+            ? <JourneyScreen finished={saved.finished} onMission={startMission}/>
+            : <OptionBReactMission key={missionId+'-'+missionAttempt}
+                missionId={missionId} onBack={backToJourney}
+                onRestart={()=>startMission(missionId)} onComplete={completeMission}/>}
       </main>
       <nav className="navbar" aria-label="Primary navigation">
         {NAV_ITEMS.map(([id,label,icon])=><button type="button" key={id}
-          className={'nav-item'+(screen===id?' is-active':'')}
-          aria-current={screen===id?'page':undefined}
+          className={'nav-item'+((screen==='mission'?'journey':screen)===id?' is-active':'')}
+          aria-current={(screen==='mission'?'journey':screen)===id?'page':undefined}
           data-v2-native-nav={id}
           onClick={()=>changeScreen(id)}>
           <Icon name={icon}/><span>{label}</span>
@@ -208,8 +242,9 @@ function ReactScreenShell({onOpenReference,onActive}:{onOpenReference:(screen:st
 }
 
 /** Shadow DOM contains exact approved CSS without leaking styles into the old app. */
-export function OptionBReactScreens({onOpenReference,active}:{
-  onOpenReference:(screen:string,missionId?:string)=>void;active:boolean;
+export function OptionBReactScreens({onOpenReference,active,onNativeComplete}:{
+  onOpenReference:(screen:string,missionId?:string)=>void;
+  active:boolean;onNativeComplete:()=>void;
 }){
   const slot=useRef<HTMLDivElement>(null);
   const [shadow,setShadow]=useState<ShadowRoot|null>(null);
@@ -221,6 +256,6 @@ export function OptionBReactScreens({onOpenReference,active}:{
   },[]);
   return <div className="frameone-option-b-native-slot" data-v2-react-slot
     ref={slot} aria-label="React port of the approved Frame One Option B Home and Journey">
-    {shadow?createPortal(<><style>{approvedStyles}</style><ReactScreenShell onOpenReference={onOpenReference} onActive={active}/></>,shadow):null}
+    {shadow?createPortal(<><style>{approvedStyles}</style><ReactScreenShell onOpenReference={onOpenReference} onActive={active} onNativeComplete={onNativeComplete}/></>,shadow):null}
   </div>;
 }
