@@ -12,6 +12,10 @@ const bridge=read('src/legacy/bridge.ts');
 assert(editor.includes('react-frame-lab frame-v2')&&
  editor.includes('data-v2-frame-screen="true"'),
  'Production React editor, not the approved pilot, must receive the scoped Option B redesign');
+assert(editor.includes('frame-v2-quick-jump')&&
+ editor.includes('data-lab="story">✎ Make</button>')&&editor.includes('data-lab="cut">✂ Cut</button>')&&
+ style.includes('.frame-v2-quick-jump button'),
+ 'Default Frame Lab must provide 44px real Make/Cut shortcuts without forcing a long scroll');
 assert(editor.includes('data-v2-frame-stage')&&editor.includes('data-v2-frame-controls')&&
  editor.indexOf('data-v2-frame-stage')<editor.indexOf('data-v2-frame-controls'),
  'The original dynamic picture must precede the controls');
