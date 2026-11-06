@@ -30,7 +30,7 @@ assert(guided.includes('const byId=new Map')&&
  'Avoid inventing official 24-craft association names');
 assert(art.includes('TeamWeb')&&art.includes('SceneTeams')&&art.includes('ProcessFlow'),
  'Four real missions need distinct, original and responsive art');
-assert(art.includes('not a verified union roster')&&
+assert(art.includes('never a verified union roster')&&
  art.includes('NOT AN OFFICIAL CREW ROSTER'),
  'Original example work areas must not be shown as a legal union list');
 assert(mission.includes('peopleById(lessonId)')&&
