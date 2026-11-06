@@ -49,6 +49,8 @@ assert(editor.includes('<FramingIntention mode={mode} zoom={bounded} guides={gui
 assert(editor.includes('data-lesson="shot"')&&
  editor.includes('data-lab="sound"')&&
  bridge.includes("'frame'"),'Existing cross-craft and curriculum links retained');
+assert(style.includes('top:auto;position:relative;min-width:0;min-height:0'),
+ 'Frame Lab stage must scroll naturally: sticky positioning creates desktop artwork gap');
 assert(style.includes('.react-frame-lab.frame-v2')&&
  style.includes('max-width:360px')&&
  style.includes('prefers-reduced-motion:reduce'),
