@@ -1129,6 +1129,15 @@ async function verify() {
   await photo(page,'32-real-option-b-cut-desktop.png');
   assert.equal(await page.locator('#content').innerHTML(), '', 'React must own Cut Lab without hidden legacy markup');
   assert.equal(await cut.locator('.timeline-clip').count(), 3);
+  const clipContainment=await cut.locator('.timeline-clip').first().evaluate(clip=>{
+    const head=clip.querySelector('.clip-playhead');
+    if(!head)return false;
+    const a=clip.getBoundingClientRect(),b=head.getBoundingClientRect();
+    return b.width>0&&b.height>0&&b.left>=a.left-2&&b.right<=a.right+2&&
+      b.top>=a.top-2&&b.bottom<=a.bottom+2;
+  });
+  assert.equal(clipContainment,true,
+    'Animated clip progress must stay INSIDE its card instead of spanning the whole screen');
   assert.equal(await cut.locator('.cut-illustration.place').count(), 1, 'Original drawn establishing shot retained');
   // Give the first shot its own duration, then move it. The 4-second hold
   // belongs to that shot, not to an arbitrary timeline position.
