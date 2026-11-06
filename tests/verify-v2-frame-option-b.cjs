@@ -30,8 +30,9 @@ assert(editor.includes('id="frameZoom"')&&
  editor.includes('data-guides')&&editor.includes('data-compare'),
  'Keep live crop slider, optional guides and real two-image comparison');
 assert(editor.includes('CinemaScene variant="frame" zoom={bounded} guides={guides}')&&
- editor.includes('CinemaScene variant="reference" zoom={3} guides={guides}'),
- 'Comparison must use actual two distinct original SVG crops');
+ editor.includes('CinemaScene variant="reference" zoom={referenceZoom} guides={guides}')&&
+ editor.includes('const referenceZoom=bounded>=2.5?1:3;'),
+ 'Comparison must use two meaningfully different original SVG crops at either extreme');
 assert(scene.includes('viewBox')&&scene.includes('640/safeZoom')&&
  scene.includes('originalMarkup')&&
  scene.includes('never a lens or perspective simulation'),
