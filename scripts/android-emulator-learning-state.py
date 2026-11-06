@@ -192,7 +192,7 @@ def make_storyboard():
     ui.tap_label("Lab")
     find_text("One moment. Many frames.")
     control("✎ Make")
-    find_text("Plan a tiny scene.")
+    find_text("Make a little film.")
     # On the lightweight ATD, switching labs can retain the prior scroll
     # position. Android's virtual accessibility nodes are [0,0][0,0]
     # for the Decision control until the user scrolls back to the TOP.
