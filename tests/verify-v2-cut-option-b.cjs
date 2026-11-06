@@ -30,7 +30,7 @@ assert(cut.includes('setDurations(old=>{const next=[...old] as CutDurations;[nex
  cut.includes('setOrder(old=>{const next=[...old] as CutOrder;[next[index],next[other]]=[next[other],next[index]]'),
  'Shot duration must follow the same shot when reordered');
 assert(cut.includes('setPlaying(false);setStep(Math.min(2,Math.max(0,next)))')&&
- cut.includes('setPlaying(false);\n    setOrder(preset.order);'),
+ /setPlaying\(false\);\s*setOrder\(preset\.order\);/.test(cut),
  'Manual selection and story presets must cancel preview before modifying editor');
 assert(cut.includes('<CutBrief order={order} durations={durations}')&&
  brief.includes('data-cut-preset')&&brief.includes('data-cut-feedback'),
