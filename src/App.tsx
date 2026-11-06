@@ -22,6 +22,7 @@ import './legacy/legacy.css';
 import './components/labs/react-labs.css';
 import './native-safe-area.css';
 import './pwa-update.css';
+import './components/real-labs-return.css';
 import './cinematic-v10.css';
 import './minimal-cinema-v10.css';
 
