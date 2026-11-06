@@ -10,6 +10,7 @@ on:
       - 'src/data/cinema-series.ts'
       - 'scripts/android-emulator-backup.py'
       - 'tests/test_android_backup_navigation.py'
+      - 'tests/test_android_visible_control.py'
       - 'scripts/android-emulator-learning-state.py'
       - 'scripts/android-emulator-persistence.py'
       - 'src/native-backup.ts'
@@ -70,8 +71,9 @@ jobs:
           test -s android/app/build/outputs/apk/debug/app-debug.apk
       - name: Verify native QA uses current Learn backup flow
         run: |
-          python3 -m py_compile scripts/android-emulator-backup.py
+          python3 -m py_compile scripts/android-emulator-backup.py scripts/android-emulator-learning-state.py
           python3 tests/test_android_backup_navigation.py
+          python3 tests/test_android_visible_control.py
       - name: Enable KVM for full AOSP emulator
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
