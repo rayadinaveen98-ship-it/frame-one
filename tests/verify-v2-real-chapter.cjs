@@ -34,7 +34,7 @@ assert(mission.includes("const {lesson}=data")&&mission.includes('lesson.q')&&
 assert(mission.includes('disabled={(step===1&&chosen===null)||(step===2&&!correct)}') &&
  mission.includes('if(step===2&&!correct)return')&&mission.includes('if(!correct)'),
  'Knowledge mastery required before saving real lesson completion');
-assert(mission.includes('completeGuidedFoundation(lessonId)')&&mission.includes('savePractice(lessonId,note)'),
+assert(mission.includes('completeGuidedFoundation(lessonId)')&&mission.includes('saveGuidedPracticeNote(lessonId,note)'),
  'Real lesson completion and practice notes use legacy bridge, never new keys');
 assert(legacy.includes("completeGuidedFoundation:(id)=>")&&
  legacy.includes("if(!['why','history','units','genres','india'].includes(id))return false;")&&
