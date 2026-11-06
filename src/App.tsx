@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { LessonView } from './components/LessonView';
 import { LearnView } from './components/LearnView';
+import { OptionBExperience } from './components/OptionBExperience';
 import { PersonalFrames } from './components/PersonalFrames';
 import { CinemaLibraryHome } from './components/CinemaLibraryHome';
 import { CrewDecisionStudio } from './components/CrewDecisionStudio';
@@ -104,6 +105,16 @@ export default function App() {
   const [bootError, setBootError] = useState<string | null>(null);
   const [updateReady, setUpdateReady] = useState(false);
   const [route, setRoute] = useState<AppRoute>({page:'home',lesson:null});
+  const [optionBOpen,setOptionBOpen] = useState(false);
+  const closeOptionB=useCallback(()=>{
+    setOptionBOpen(false);
+    window.requestAnimationFrame(()=>document.querySelector<HTMLButtonElement>('[data-option-b-open]')?.focus({preventScroll:true}));
+  },[]);
+  useEffect(()=>{
+    const open=()=>setOptionBOpen(true);
+    window.addEventListener('frameone:option-b-open',open);
+    return ()=>window.removeEventListener('frameone:option-b-open',open);
+  },[]);
   const [continuityMode, setContinuityMode] = useState<ContinuityMode>('match');
   const [colourMode,setColourMode] = useState<ColourMode>('neutral');
   const [colourStrength,setColourStrength] = useState(65);
@@ -160,6 +171,7 @@ export default function App() {
       // Legacy engine explicitly provides the selected lab in its route event.
       // It leaves #content empty when either React-owned lab owns the screen.
       const lab = custom.detail.page === 'lab' ? custom.detail.lab : undefined;
+      setOptionBOpen(false);
       setRoute({ ...custom.detail, lab });
     };
     window.addEventListener('frameone:route',onRoute);
@@ -206,5 +218,6 @@ export default function App() {
       <footer className="footer"><span>FRAME ONE · React lessons + chapters + 7 Creative Labs v0.9D</span><span>Made for curious minds <span className="heart">♥</span></span></footer>
     </main>
     <Navigation mobile />
+    {optionBOpen ? <OptionBExperience onExit={closeOptionB} /> : null}
   </div>;
 }

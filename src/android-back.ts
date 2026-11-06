@@ -12,6 +12,23 @@ import { App } from '@capacitor/app';
 export async function registerAndroidBack(): Promise<void> {
   if (!Capacitor.isNativePlatform() || Capacitor.getPlatform() !== 'android') return;
   await App.addListener('backButton', () => {
+    // The Opt B HTML pilot is deliberately layered over the mounted app.
+    // Android Back closes that layer instead of navigating stale legacy
+    // history or minimizing Home. Do not steal Back while an iframe input
+    // needs to dismiss its soft keyboard.
+    const pilot=typeof document.querySelector==='function' ? document.querySelector<HTMLElement>('[data-frameone-option-b]') : null;
+    if(pilot){
+      const frame=pilot.querySelector<HTMLIFrameElement>('[data-option-b-frame]');
+      let childInput:HTMLElement|null=null;
+      try{childInput=frame?.contentDocument?.activeElement as HTMLElement|null;}
+      catch{/* No cross-document inspection under restricted WebView settings. */}
+      if(childInput&&(['INPUT','TEXTAREA','SELECT'].includes(childInput.tagName)||childInput.isContentEditable)){
+        childInput.blur();
+        return;
+      }
+      window.dispatchEvent(new Event('frameone:option-b-close'));
+      return;
+    }
     // Some Android WebViews deliver a system Back event while the soft
     // keyboard is open. Never discard a lesson or storyboard editor just
     // because the learner pressed Back to close the keyboard.

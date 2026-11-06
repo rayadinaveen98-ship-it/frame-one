@@ -238,6 +238,21 @@ export function LearnView() {
       <h1>Learn cinema, one choice at a time.</h1>
       <p>Six chapters. Thirty-three short lessons. Start anywhere.</p>
     </header>
+    <section className="option-b-entry" aria-label="Try the new Frame One 2.0 design">
+      <div className="option-b-entry-art" aria-hidden="true">
+        <span className="option-b-entry-orbit">✦</span>
+        <span className="option-b-entry-camera">▣</span>
+      </div>
+      <div className="option-b-entry-copy">
+        <span className="eyebrow-secondary">NEW · FRAME ONE 2.0 DESIGN PILOT</span>
+        <h2>Learn by making it.</h2>
+        <p>Explore the approved interactive journey: illustrated chapters, creative choices and hands-on experiments. Your existing course and notes stay untouched.</p>
+        <button type="button" className="option-b-entry-action" data-option-b-open
+          onClick={()=>window.dispatchEvent(new Event('frameone:option-b-open'))}>
+          Explore the new journey <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </section>
     <LearningJourney chapters={chapters} completed={completed} totalLessons={lessons.length}
       nextLesson={next} onNext={()=>navigate('lesson',next.id)}
       activeChapter={[...expandedChapters][0]??0} onChapterSelect={jumpToChapter}/>
