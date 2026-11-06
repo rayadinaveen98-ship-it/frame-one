@@ -41,6 +41,8 @@ assert(cut.includes('not a fully featured video editor')&&
 assert(cut.includes('data-lesson="editing"')&&cut.includes('data-lab={tab.id}'),
  'Existing lesson and seven lab routes remain intact');
 assert(!cut.includes('localStorage.setItem('),'Cut Lab cannot fork original progress, project or backup owner');
+assert(css.includes('.timeline-clip{position:relative;'),
+ 'Clip progress must be positioned within its own timeline card, never across the page');
 assert(css.includes('.react-cut-lab.cut-v2')&&
  css.includes('max-width:360px')&&css.includes('prefers-reduced-motion:reduce'),
  'Mobile and reduced motion must use scoped Option B style');
