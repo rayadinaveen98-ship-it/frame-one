@@ -47,7 +47,7 @@ for(const key of ['frameone-progress-v01','frameone-practice-v07','frameone-scen
  'Guided mission never writes an independent learning key: '+key);
 }
 assert(screen.includes('data-v2-open-foundations')&&screen.includes('data-v2-foundation-node')&&
- screen.includes('<OptionBFoundationMission')&&screen.includes('safeProgress(FOUNDATION_IDS)'),
+ screen.includes('<OptionBFoundationMission')&&screen.includes('safeProgress([...FOUNDATION_IDS,...STORYTELLING_IDS])'),
  'Chapter 1 real journey uses original SVG art and real progress rather than invented badges');
 assert(screen.includes('data-v2-native-screen="home"')&&screen.includes('data-v2-native-screen="journey"'),
  'Previously approved prototype routes remain untouched');
