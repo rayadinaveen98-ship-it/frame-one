@@ -1154,6 +1154,21 @@ async function verify() {
   await make.waitFor();
   assert.equal(await page.locator('#content').innerHTML(),'', 'React must own Make Lab without hidden legacy markup');
   assert.equal(await make.locator('.story-film-frame svg').count(),1,'Original vector storyboard preserved');
+  assert.equal(await make.getAttribute('data-v2-make-screen'),'true',
+    'Production Make Lab is redesigned in place, not replaced by the design demo');
+  const sceneBeforeProjects=await make.evaluate(root=>Boolean(
+    root.querySelector('[data-v2-make-scene-first]')?.compareDocumentPosition(
+      root.querySelector('[data-story-project-library]'))&Node.DOCUMENT_POSITION_FOLLOWING));
+  assert.equal(sceneBeforeProjects,true,'The real illustrated scene must precede the multi-project library in screen reader and visual order');
+  const currentProjectName=await make.locator('.make-v2-active-project strong').textContent();
+  assert.ok(currentProjectName&&currentProjectName.trim(),'Active project must show the real stored title');
+  await make.locator('[data-v2-make-manage]').click();
+  const managerHeading=make.locator('#make-project-library-title');
+  await managerHeading.waitFor();
+  assert.equal(await managerHeading.getAttribute('tabindex'),'-1',
+    'Manage projects should focus the correct accessible heading');
+  assert.equal(await make.locator('[data-story-project-library]').count(),1,
+    'The real project library remains reachable without losing saved work');
   const opening = await make.locator('[data-story-question="reunion"]').click();
   assert.equal(await make.locator('[data-story-question="reunion"]').getAttribute('aria-pressed'),'true');
   await make.locator('[data-story-shot="close"]').click();
@@ -2116,6 +2131,14 @@ async function verify() {
     await mobileCut.locator('[data-lab="story"]').click();
     const mobileMake=phone.locator('.react-make-lab');
     await mobileMake.waitFor();
+    assert.equal(await mobileMake.locator('[data-v2-make-scene-first]').count(),1,
+      'Production Make Lab must be scene-first on '+width+'px phones');
+    const makeStageRect=await mobileMake.locator('.story-film-frame').boundingBox();
+    const makeShellRect=await mobileMake.boundingBox();
+    assert.ok(makeStageRect&&makeShellRect&&makeStageRect.width>makeShellRect.width*.61,
+      'Real storyboard art must be wide and legible on '+width+'px phones');
+    await mobileMake.locator('[data-v2-make-manage]').click();
+    assert.equal(await mobileMake.locator('[data-story-project-library]').count(),1);
     await mobileMake.locator('[data-story-question="decision"]').click();
     await mobileMake.locator('[data-story-step="1"]').click();
     await mobileMake.locator('#storyNote').fill('A clue in the rain.');

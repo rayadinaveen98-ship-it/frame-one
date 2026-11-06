@@ -1,6 +1,7 @@
 import { useEffect, useState, type MouseEvent } from 'react';
 import type { LabName,StoryProjectsSnapshot } from '../../legacy/bridge';
 import { StoryboardArt } from './StoryboardArt';
+import './option-b-make-lab.css';
 import {peekDirectorHandoff,clearDirectorHandoff,previewDirectorStoryboard} from '../../state/director-handoff';
 import type {DirectorPlan} from '../../data/direct-the-moment';
 import { safeStory, INITIAL_STORY, storyQuestions, storyPhases,
@@ -143,16 +144,118 @@ export function MakeLab(){
       setStatus('Shot-list export prepared.');
     }catch{setStatus('Export is unavailable here. Your text remains in the editor.');}
   }
-  return <div className="page react-make-lab">
-    <div className="page-intro cinematic-heading">
-      <div className="eyebrow">DIRECTOR'S STUDIO / YOUR FIRST CREATION</div>
-      <h1>Plan a tiny scene.</h1>
-      <p>Pick a story question, plan three shots and describe the action. Make something you could try filming on a phone.</p>
+  const activeProject=library.projects.find(project=>project.id===library.activeId);
+  const openProjects=()=>{
+    const heading=document.getElementById('make-project-library-title');
+    heading?.scrollIntoView({behavior:'smooth',block:'start'});
+    heading?.focus({preventScroll:true});
+  };
+  return <div className="page react-make-lab make-v2" data-v2-make-screen="true">
+    <div className="page-intro cinematic-heading make-v2-intro">
+      <div className="make-v2-kicker"><span className="eyebrow">YOUR FILMMAKING STUDIO</span><span className="make-v2-stamp">✦ OPTION B · WORKING EDITOR</span></div>
+      <div className="make-v2-hero-line"><div>
+        <h1>Make a little film.</h1>
+        <p>A scene begins with a choice. Shape three shots, write what happens, then save your real storyboard.</p>
+      </div>
+      <svg className="make-v2-clapper" viewBox="0 0 92 84" aria-hidden="true"><rect x="10" y="31" width="72" height="47" rx="10" fill="#22465c"/><rect x="12" y="12" width="72" height="19" rx="5" fill="#315e6e" transform="rotate(-9 12 12)"/><path d="M23 14l11 15M47 9l12 16M70 5l10 14" stroke="#fbd79f" strokeWidth="7"/><path d="M41 43l21 12-21 12Z" fill="#8ee0c2"/><circle cx="24" cy="45" r="3" fill="#ffcb82"/></svg></div>
+      <div className="make-v2-active-project" aria-label="Current storyboard and project library">
+        <div><span>NOW DIRECTING</span><strong>{activeProject?.name||'Your first storyboard'}</strong>
+          <small>{library.projects.length} of 20 local projects · export a JSON backup to protect your work</small></div>
+        <button type="button" data-v2-make-manage onClick={openProjects}>Manage projects <span aria-hidden="true">↗</span></button>
+      </div>
+    </div>
+    {directorPreview?<section className="make-director-handoff" data-director-handoff
+      aria-labelledby="make-handoff-title">
+      <span className="eyebrow">UNSAVED DIRECTOR'S SKETCH · REVIEW BEFORE SAVING</span>
+      <h2 id="make-handoff-title">Bring this scene into your storyboard?</h2>
+      <p>This is a preview only. Your existing storyboard has <strong>not</strong> been changed. Save this as a separate project to keep both ideas, or explicitly replace the active project.</p>
+      <p className="make-handoff-detail">The original six-second scene has {directorOffer?.edit==='hold'?'one planned shot':'two planned shots'}. Remaining storyboard slots are clearly marked for ideas <em>after</em> those six seconds. Make Lab's bus-stop artwork illustrates framing only; the night-room setting, sound and light directions stay in the written shot notes.</p>
+      <div className="make-handoff-preview" aria-label="Proposed storyboard shots">
+        {directorPreview.notes.map((note,index)=><div key={index} data-director-proposed-shot={index}>
+          <strong>{index===0?'FIRST SHOT':index===1?'SECOND BEAT':'FUTURE BEAT'} · {directorPreview.shots[index].toUpperCase()}</strong>
+          <p>{note}</p>
+        </div>)}
+      </div>
+      {hasExistingWork?<p className="make-handoff-warning" role="status">Your current storyboard is customised. You can save this director sketch as a separate project instead of replacing it.</p>:null}
+      <div className="make-handoff-actions">
+        <button type="button" data-director-keep className="btn-secondary"
+          onClick={event=>{keep(event);dismissDirectorOffer();}}>Keep my existing storyboard</button>
+        {hasExistingWork?<button type="button" className="btn-secondary" data-director-export-existing
+          onClick={exportExistingBeforeReplace}>Export existing shot list</button>:null}
+        <button type="button" data-director-save-new className="cta"
+          onClick={event=>{keep(event);saveDirectorAsNewProject();}}>Save as new project</button>
+        <button type="button" data-director-confirm className="cta"
+          onClick={event=>{keep(event);applyDirectorOffer();}}>
+          {hasExistingWork?'Replace existing storyboard — I understand':'Save this as my storyboard'}
+        </button>
+      </div>
+    </section>:null}
+    <div className="story-lead" data-v2-make-scene-first>
+      <section className="story-workspace">
+        <span className="eyebrow">YOUR SCENE · ORIGINAL STORYBOARD ART</span>
+        <h2>Direct the moment.</h2>
+        <p className="make-v2-scene-caption">An original bus-stop illustration helps you compare framing. Your own story lives in the shot notes.</p>
+        <div className="story-film-frame">
+          <StoryboardArt shot={framing}/>
+          <span className="story-frame-hud">STORYBOARD · SHOT 0{step+1} · {framing.toUpperCase()}</span>
+        </div>
+        <div className="story-caption"><span>Sketch for framing only, not footage</span><span>0{step+1} / 03</span></div>
+        <section className="make-v2-story-questions" aria-label="Choose a story question">
+          <div className="make-v2-story-head"><span className="eyebrow">YOUR STORY QUESTION</span><strong>What's the scene about?</strong></div>
+        <div className="scene-prompt-grid" role="group" aria-label="Select a story question">
+          {(Object.entries(storyQuestions) as [StoryQuestion,typeof current][]).map(([id,choice])=>
+            <button type="button" key={id} data-story-question={id}
+              aria-pressed={plan.question===id} onClick={event=>chooseQuestion(event,id)}>
+              {choice.label}
+            </button>)}
+        </div>
+          <p className="make-v2-current-question">{current.question}</p>
+        </section>
+        <div className="make-v2-beat-heading"><div><span className="eyebrow">THREE VISUAL BEATS</span><strong>Build your sequence</strong></div><span>01 / 03 · TAP A SHOT</span></div>
+        <div className="story-panel-steps" aria-label="Choose a story beat">
+          {storyPhases.map((phase,index)=><button type="button" key={phase.name}
+            data-story-step={index} aria-current={step===index?'step':undefined}
+            onClick={event=>chooseStep(event,index)}>
+            <span>SHOT 0{index+1}</span><strong>{phase.name}</strong>
+            <small>{plan.notes[index]||'Add your action idea'}</small>
+          </button>)}
+        </div>
+      </section>
+      <section className="story-inspector">
+        <span className="eyebrow">PLAN SHOT 0{step+1}</span>
+        <h3>{storyPhases[step].name}</h3>
+        <p>{storyPhases[step].prompt}</p>
+        <div className="story-framing-choice">
+          <p className="story-control-label">Choose the framing</p>
+          <div className="story-shot-buttons" role="group" aria-label="Choose the current shot framing">
+            {([['wide','Wide'],['medium','Medium'],['close','Close-up']] as const).map(([id,label])=>
+              <button type="button" key={id} data-story-shot={id}
+                aria-pressed={framing===id} onClick={event=>chooseShot(event,id)}>{label}</button>)}
+          </div>
+        </div>
+        <label htmlFor="storyNote">What happens in this shot?</label>
+        <textarea id="storyNote" maxLength={240} placeholder="Write a simple action you could film..."
+          value={plan.notes[step]}
+          onChange={event=>{event.stopPropagation();changeNote(event.currentTarget.value);}}
+          onInput={event=>event.stopPropagation()}/>
+        <p className="story-help">{current.hints[step]} Your drawing shows only framing; the written action is a plan for what you might film.</p>
+        <div className="story-actions">
+          <button className="cta" type="button" data-story-save onClick={event=>{keep(event);commit(plan,true);}}>Save scene</button>
+          <button className="btn-secondary" type="button" data-story-export onClick={exportPlan}>Export shot list</button>
+        </div>
+        <span className="story-confirm" id="storyStatus" role="status" aria-live="polite">{status}</span>
+        <div className="story-actions">
+          <button className="btn-secondary" type="button" data-story-prev disabled={step===0}
+            onClick={event=>chooseStep(event,step-1)}>← Previous</button>
+          <button className="btn-secondary" type="button" data-story-next disabled={step===2}
+            onClick={event=>chooseStep(event,step+1)}>Next shot →</button>
+        </div>
+      </section>
     </div>
     <section className="make-project-library" data-story-project-library aria-labelledby="make-project-library-title">
       <div className="make-project-head">
-        <div><span className="eyebrow">YOUR CREATIVE WORKSPACE</span>
-          <h2 id="make-project-library-title">Your film projects.</h2>
+        <div><span className="eyebrow">YOUR PROJECT LIBRARY</span>
+          <h2 id="make-project-library-title" tabIndex={-1}>Your film projects.</h2>
           <p>Create up to 20 local three-shot storyboards. All are included in Frame One JSON backups.</p>
         </div>
         <span className="make-project-count">{library.projects.length} / 20</span>
@@ -201,94 +304,14 @@ export function MakeLab(){
       </div>
       <p className="make-project-storage-note">These projects stay on this device until you export a verified JSON backup. Older backups contain only one storyboard and restore as a single project.</p>
     </section>
-    {directorPreview?<section className="make-director-handoff" data-director-handoff
-      aria-labelledby="make-handoff-title">
-      <span className="eyebrow">UNSAVED DIRECTOR'S SKETCH · REVIEW BEFORE SAVING</span>
-      <h2 id="make-handoff-title">Bring this scene into your storyboard?</h2>
-      <p>This is a preview only. Your existing storyboard has <strong>not</strong> been changed. Save this as a separate project to keep both ideas, or explicitly replace the active project.</p>
-      <p className="make-handoff-detail">The original six-second scene has {directorOffer?.edit==='hold'?'one planned shot':'two planned shots'}. Remaining storyboard slots are clearly marked for ideas <em>after</em> those six seconds. Make Lab's bus-stop artwork illustrates framing only; the night-room setting, sound and light directions stay in the written shot notes.</p>
-      <div className="make-handoff-preview" aria-label="Proposed storyboard shots">
-        {directorPreview.notes.map((note,index)=><div key={index} data-director-proposed-shot={index}>
-          <strong>{index===0?'FIRST SHOT':index===1?'SECOND BEAT':'FUTURE BEAT'} · {directorPreview.shots[index].toUpperCase()}</strong>
-          <p>{note}</p>
-        </div>)}
-      </div>
-      {hasExistingWork?<p className="make-handoff-warning" role="status">Your current storyboard is customised. You can save this director sketch as a separate project instead of replacing it.</p>:null}
-      <div className="make-handoff-actions">
-        <button type="button" data-director-keep className="btn-secondary"
-          onClick={event=>{keep(event);dismissDirectorOffer();}}>Keep my existing storyboard</button>
-        {hasExistingWork?<button type="button" className="btn-secondary" data-director-export-existing
-          onClick={exportExistingBeforeReplace}>Export existing shot list</button>:null}
-        <button type="button" data-director-save-new className="cta"
-          onClick={event=>{keep(event);saveDirectorAsNewProject();}}>Save as new project</button>
-        <button type="button" data-director-confirm className="cta"
-          onClick={event=>{keep(event);applyDirectorOffer();}}>
-          {hasExistingWork?'Replace existing storyboard — I understand':'Save this as my storyboard'}
-        </button>
-      </div>
-    </section>:null}
+    <div className="story-footnote"><strong>Beginner filmmaking tip:</strong> A storyboard is a visual plan, not a rulebook. You can later change the number of shots, the camera position or the order. These drawings reuse the same original scene to compare framing; they do not simulate lens physics or moving footage.</div>
+    <div className="make-v2-other-tools"><span className="eyebrow">EXPLORE ANOTHER CRAFT</span>
+      <p>Keep your saved storyboard here. Switch to another working tool when you're ready.</p>
     <div className="lab-tabs" role="group" aria-label="Choose a creative experiment">
       {tabs.map(tab=><button className="lab-tab" type="button" key={tab.id}
         data-lab={tab.id} aria-pressed={tab.id==='story'}>{tab.label}</button>)}
     </div>
-    <div className="story-lead">
-      <section className="story-workspace">
-        <span className="eyebrow">FIRST FILM PROJECT · BUS STOP</span>
-        <h2>What is the story about?</h2>
-        <div className="scene-prompt-grid" role="group" aria-label="Select a story question">
-          {(Object.entries(storyQuestions) as [StoryQuestion,typeof current][]).map(([id,choice])=>
-            <button type="button" key={id} data-story-question={id}
-              aria-pressed={plan.question===id} onClick={event=>chooseQuestion(event,id)}>
-              {choice.label}
-            </button>)}
-        </div>
-        <p>{current.question}</p>
-        <div className="story-film-frame">
-          <StoryboardArt shot={framing}/>
-          <span className="story-frame-hud">STORYBOARD · SHOT 0{step+1} · {framing.toUpperCase()}</span>
-        </div>
-        <div className="story-caption"><span>Sketch for framing only, not footage</span><span>0{step+1} / 03</span></div>
-        <div className="story-panel-steps" aria-label="Choose a story beat">
-          {storyPhases.map((phase,index)=><button type="button" key={phase.name}
-            data-story-step={index} aria-current={step===index?'step':undefined}
-            onClick={event=>chooseStep(event,index)}>
-            <span>SHOT 0{index+1}</span><strong>{phase.name}</strong>
-            <small>{plan.notes[index]||'Add your action idea'}</small>
-          </button>)}
-        </div>
-      </section>
-      <section className="story-inspector">
-        <span className="eyebrow">PLAN SHOT 0{step+1}</span>
-        <h3>{storyPhases[step].name}</h3>
-        <p>{storyPhases[step].prompt}</p>
-        <div className="story-framing-choice">
-          <p className="story-control-label">Choose the framing</p>
-          <div className="story-shot-buttons" role="group" aria-label="Choose the current shot framing">
-            {([['wide','Wide'],['medium','Medium'],['close','Close-up']] as const).map(([id,label])=>
-              <button type="button" key={id} data-story-shot={id}
-                aria-pressed={framing===id} onClick={event=>chooseShot(event,id)}>{label}</button>)}
-          </div>
-        </div>
-        <label htmlFor="storyNote">What happens in this shot?</label>
-        <textarea id="storyNote" maxLength={240} placeholder="Write a simple action you could film..."
-          value={plan.notes[step]}
-          onChange={event=>{event.stopPropagation();changeNote(event.currentTarget.value);}}
-          onInput={event=>event.stopPropagation()}/>
-        <p className="story-help">{current.hints[step]} Your drawing shows only framing; the written action is a plan for what you might film.</p>
-        <div className="story-actions">
-          <button className="cta" type="button" data-story-save onClick={event=>{keep(event);commit(plan,true);}}>Save scene</button>
-          <button className="btn-secondary" type="button" data-story-export onClick={exportPlan}>Export shot list</button>
-        </div>
-        <span className="story-confirm" id="storyStatus" role="status" aria-live="polite">{status}</span>
-        <div className="story-actions">
-          <button className="btn-secondary" type="button" data-story-prev disabled={step===0}
-            onClick={event=>chooseStep(event,step-1)}>← Previous</button>
-          <button className="btn-secondary" type="button" data-story-next disabled={step===2}
-            onClick={event=>chooseStep(event,step+1)}>Next shot →</button>
-        </div>
-      </section>
     </div>
-    <div className="story-footnote"><strong>Beginner filmmaking tip:</strong> A storyboard is a visual plan, not a rulebook. You can later change the number of shots, the camera position or the order. These drawings reuse the same original scene to compare framing; they do not simulate lens physics or moving footage.</div>
     <div className="studio-next"><span>CONNECT THIS TO LEARNING</span>
       <button className="btn-secondary" type="button" data-lesson="making">Read: your first film →</button>
       <button className="btn-secondary" type="button" data-lab="cut">Try arranging filmed moments →</button>
