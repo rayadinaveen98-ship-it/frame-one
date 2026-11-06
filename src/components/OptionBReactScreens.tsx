@@ -7,6 +7,7 @@ import {FOUNDATIONS,FOUNDATION_IDS} from '../data/foundations-guided';
 import {STORYTELLING,STORYTELLING_IDS} from '../data/storytelling-guided';
 import {VISUAL_LANGUAGE,VISUAL_IDS} from '../data/visual-language-guided';
 import {SOUND_EDITING,SOUND_EDIT_IDS} from '../data/sound-edit-guided';
+import {PEOPLE_BEHIND_FILM,PEOPLE_IDS} from '../data/people-guided';
 import {safeProgress} from '../state/learning';
 import {OptionBFoundationMission} from './OptionBFoundationMission';
 
@@ -330,8 +331,8 @@ function VisualJourney({completed,onMission,onExit,onNext}:{
     </section>
   </div>;
 }
-function SoundEditingJourney({completed,onMission,onExit}:{
-  completed:Set<string>;onMission:(id:string)=>void;onExit:()=>void;
+function SoundEditingJourney({completed,onMission,onExit,onNext}:{
+  completed:Set<string>;onMission:(id:string)=>void;onExit:()=>void;onNext:()=>void;
 }){
   const next=SOUND_EDITING.find(m=>!completed.has(m.id))?.id??SOUND_EDITING[0].id;
   const icons:MissionIcon[]=['sound','clapper','sound','film','frame','clapper'];
@@ -367,6 +368,58 @@ function SoundEditingJourney({completed,onMission,onExit}:{
       })}
       <div className="map-footer"><span className="map-icon" aria-hidden="true">🎞️</span>
         <span>Real lessons, original diagrams and practical challenges. No copyrighted audio playback.</span>
+      </div>
+    </div>
+    <section className="foundation-launch" aria-label="Continue to real Chapter 5">
+      <span className="eyebrow">NEXT · CHAPTER 05</span>
+      <h2>People behind a film.</h2>
+      <p>Four guided lessons about film crews, Telugu industry crafts, how departments collaborate, and production stages.</p>
+      <button type="button" className="btn btn-primary btn-wide" data-v2-people-open onClick={onNext}>
+        Explore real Chapter 5 <Icon name="arrow" className="node-icon"/>
+      </button>
+    </section>
+  </div>;
+}
+const PEOPLE_NODE_POSITIONS:[number,number][]=[
+  [35,14],[70,38],[30,61],[69,84]
+];
+function PeopleJourney({completed,onMission,onExit}:{
+  completed:Set<string>;onMission:(id:string)=>void;onExit:()=>void;
+}){
+  const next=PEOPLE_BEHIND_FILM.find(m=>!completed.has(m.id))?.id??PEOPLE_BEHIND_FILM[0].id;
+  const icons:MissionIcon[]=['film','clapper','frame','eye'];
+  const nodeLabels=['Meet the crew','Telugu 24 crafts','Departments in action','Film workflow'];
+  return <div className="screen" data-v2-people-screen="journey">
+    <div className="journey-intro">
+      <button type="button" className="foundation-return" data-v2-people-back onClick={onExit}>← Back to Chapter 4</button>
+      <span className="eyebrow">THE REAL FRAME ONE CURRICULUM</span>
+      <h1>People behind a film.</h1>
+      <p>Every scene involves choices made by people. Meet the collaborators, understand the Telugu industry term “24 crafts”, and follow a film from idea to audience.</p>
+      <div className="journey-summary">
+        <span className="chapter-badge">✦ CHAPTER 05 · FILM PEOPLE</span>
+        <span className="journey-progress-inline">{PEOPLE_BEHIND_FILM.filter(m=>completed.has(m.id)).length}/4 real lessons</span>
+      </div>
+    </div>
+    <div className="land-map" data-v2-people-map>
+      <img src={ART_WORLD} alt="Illustrated winding path through the Frame One creative journey"/>
+      <div className="chapter-pillar">REAL CHAPTER 05 · FILM PEOPLE</div>
+      {PEOPLE_BEHIND_FILM.map((mission,i)=>{
+        const done=completed.has(mission.id),active=mission.id===next;
+        return <button type="button" key={mission.id}
+          data-v2-people-node={mission.id}
+          className={'journey-node '+(done?'complete':active?'active':'future')}
+          style={{left:PEOPLE_NODE_POSITIONS[i][0]+'%',top:PEOPLE_NODE_POSITIONS[i][1]+'%'}}
+          aria-label={mission.lesson.title+', '+(done?'completed':'ready to explore')}
+          onClick={()=>onMission(mission.id)}>
+          <span className="node-button">
+            <Icon name={done?'check':icons[i]} className="node-icon"/>
+            <span className="node-number">{i+1}</span>
+          </span>
+          <span className="node-label">{nodeLabels[i]}</span>
+        </button>;
+      })}
+      <div className="map-footer"><span className="map-icon" aria-hidden="true">🎞️</span>
+        <span>Four original exercises; one reminder that filmmaking is collaborative.</span>
       </div>
     </div>
   </div>;
@@ -417,11 +470,11 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
 }){
   const [screen,setScreen]=useState<'home'|'journey'|'mission'|'lab'|'progress'>('home');
   const [realChapter,setRealChapter]=useState(false);
-  const [realChapterIndex,setRealChapterIndex]=useState<0|1|2|3>(0);
+  const [realChapterIndex,setRealChapterIndex]=useState<0|1|2|3|4>(0);
   const [realLessonId,setRealLessonId]=useState(FOUNDATION_IDS[0]);
   const [realAttempt,setRealAttempt]=useState(0);
-  const [realFinished,setRealFinished]=useState<Set<string>>(()=>safeProgress([...FOUNDATION_IDS,...STORYTELLING_IDS,...VISUAL_IDS,...SOUND_EDIT_IDS]));
-  const refreshReal=()=>setRealFinished(safeProgress([...FOUNDATION_IDS,...STORYTELLING_IDS,...VISUAL_IDS,...SOUND_EDIT_IDS]));
+  const [realFinished,setRealFinished]=useState<Set<string>>(()=>safeProgress([...FOUNDATION_IDS,...STORYTELLING_IDS,...VISUAL_IDS,...SOUND_EDIT_IDS,...PEOPLE_IDS]));
+  const refreshReal=()=>setRealFinished(safeProgress([...FOUNDATION_IDS,...STORYTELLING_IDS,...VISUAL_IDS,...SOUND_EDIT_IDS,...PEOPLE_IDS]));
   const startReal=()=>{
     refreshReal();
     setRealChapter(true);
@@ -517,7 +570,7 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
         </div>
         <div className="head-actions">
           <span className="head-pill" aria-label={realChapter?'Real Chapter '+(realChapterIndex+1)+' progress':'Creative demo credits'}>
-            <span className="coin">✦</span><span>{realChapter?(realChapterIndex===0?FOUNDATION_IDS:realChapterIndex===1?STORYTELLING_IDS:realChapterIndex===2?VISUAL_IDS:SOUND_EDIT_IDS).filter(id=>realFinished.has(id)).length+'/'+(realChapterIndex===0?'5':realChapterIndex===2?'7':'6'):saved.points}</span> {realChapter?'lessons':'pts'}
+            <span className="coin">✦</span><span>{realChapter?(realChapterIndex===0?FOUNDATION_IDS:realChapterIndex===1?STORYTELLING_IDS:realChapterIndex===2?VISUAL_IDS:realChapterIndex===3?SOUND_EDIT_IDS:PEOPLE_IDS).filter(id=>realFinished.has(id)).length+'/'+(realChapterIndex===0?'5':realChapterIndex===2?'7':realChapterIndex===4?'4':'6'):saved.points}</span> {realChapter?'lessons':'pts'}
           </span>
           <button type="button" className="avatar" aria-label="View my progress" onClick={()=>changeScreen('progress')}>🎬</button>
         </div>
@@ -541,8 +594,12 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
                   ? <VisualJourney completed={realFinished} onMission={startRealMission}
                       onExit={()=>{setRealChapterIndex(1);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}
                       onNext={()=>{setRealChapterIndex(3);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}/>
-                  : <SoundEditingJourney completed={realFinished} onMission={startRealMission}
-                      onExit={()=>{setRealChapterIndex(2);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}/>
+                  : realChapterIndex===3
+                    ? <SoundEditingJourney completed={realFinished} onMission={startRealMission}
+                        onExit={()=>{setRealChapterIndex(2);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}
+                        onNext={()=>{setRealChapterIndex(4);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}/>
+                    : <PeopleJourney completed={realFinished} onMission={startRealMission}
+                        onExit={()=>{setRealChapterIndex(3);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}/>
           : screen==='home'
             ? <HomeScreen finished={saved.finished} onMission={startMission} onScreen={openScreen} onStartReal={startReal}/>
             : screen==='journey'
