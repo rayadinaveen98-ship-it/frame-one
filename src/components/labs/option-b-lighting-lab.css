@@ -1,0 +1,147 @@
+/* Frame One 2.0 · REAL Lighting Lab. Scoped Option B paper/mint design.
+   The original SVG, direction choices, light sliders and 3 scene briefs remain. */
+.react-lighting-lab.lighting-v2{
+  --l-ink:#1c3442;--l-mint:#55b97b;--l-teal:#1e8b82;
+  background:#f7fbf9;color:var(--l-ink);max-width:1150px;
+  padding:clamp(10px,2.6vw,26px);margin-inline:auto;border-radius:25px;
+  box-shadow:0 8px 32px #14344420;
+  font-family:ui-rounded,"Avenir Next","Segoe UI",system-ui,sans-serif;
+}
+.react-lighting-lab.lighting-v2 :is(h1,h2,h3){font-family:ui-rounded,"Avenir Next","Segoe UI",system-ui,sans-serif;
+  letter-spacing:-.045em;font-weight:900;color:#254b58}
+.react-lighting-lab.lighting-v2 .eyebrow{color:#348a78;font-size:10px;letter-spacing:.12em;font-weight:900}
+.react-lighting-lab.lighting-v2 .lighting-v2-intro{max-width:none;margin:0 0 13px;
+  border:1px solid #c5e8d9;border-radius:22px;padding:22px 25px 17px;
+  background:radial-gradient(ellipse at 90% 13%,#bceedd,transparent 54%),linear-gradient(130deg,#e8f9ec,#d9f2e9);
+  box-shadow:0 5px 0 #d7e9df;overflow:hidden}
+.react-lighting-lab.lighting-v2 .lighting-v2-intro:after{display:none}
+.react-lighting-lab.lighting-v2 .lighting-v2-kicker{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.react-lighting-lab.lighting-v2 .lighting-v2-course-tag{font-size:9px;font-weight:900;color:#2c816e;
+  padding:7px 10px;border:1px solid #b9dacc;border-radius:30px;background:#ffffffbb;letter-spacing:.04em}
+.react-lighting-lab.lighting-v2 .lighting-v2-hero{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.react-lighting-lab.lighting-v2 .lighting-v2-hero h1{font-size:clamp(29px,3.5vw,44px);line-height:1.12;margin:12px 0 8px;color:#214c57}
+.react-lighting-lab.lighting-v2 .lighting-v2-hero p{max-width:590px;color:#547a73;font-size:13px;line-height:1.6;margin:0 0 5px}
+.react-lighting-lab.lighting-v2 .lighting-v2-lamp-art{width:90px;flex:0 0 90px;height:auto;filter:drop-shadow(0 8px 11px #337c6b2c)}
+.react-lighting-lab.lighting-v2 .lighting-v2-live-status{display:flex;align-items:center;gap:9px;
+  border:1px solid #bde0ce;background:#ffffffcc;padding:10px 12px;margin-top:14px;border-radius:13px;flex-wrap:wrap}
+.react-lighting-lab.lighting-v2 .lighting-v2-status-dot{height:10px;width:10px;border-radius:50%;background:#55ba83;box-shadow:0 0 0 4px #d7f5e4}
+.react-lighting-lab.lighting-v2 .lighting-v2-live-status strong{font-size:13px;color:#2a766e}
+.react-lighting-lab.lighting-v2 .lighting-v2-live-facts{margin-left:auto;font-size:10px;color:#678a7f}
+.react-lighting-lab.lighting-v2 .lighting-v2-direction-note{display:flex;align-items:center;gap:9px;
+  margin:14px 0 11px;border:1px solid #dbeae1;border-radius:12px;padding:9px 13px;background:#fff}
+.react-lighting-lab.lighting-v2 .lighting-v2-direction-icon{height:27px;width:27px;display:grid;place-items:center;
+  flex:0 0 27px;color:#398a75;background:#ddf4e6;border-radius:9px;font-size:18px}
+.react-lighting-lab.lighting-v2 .lighting-v2-direction-note p{color:#5c7f76;line-height:1.45;font-size:11px;margin:0}
+.react-lighting-lab.lighting-v2 .lighting-v2-direction-note strong{color:#347b70;letter-spacing:.04em}
+.react-lighting-lab.lighting-v2 .lab-shell.cinematic-lab-shell{display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(285px,.85fr);gap:13px;align-items:start;
+  overflow:visible;background:transparent;border:0;box-shadow:none}
+.react-lighting-lab.lighting-v2 .lab-preview{min-width:0;align-self:start;position:relative;top:auto;
+  border:1px solid #d3e8dd;background:#fff;box-shadow:0 4px 0 #dcece4;
+  border-radius:20px;padding:12px;min-height:0}
+.react-lighting-lab.lighting-v2 .lighting-v2-stage-head{display:flex;justify-content:space-between;align-items:center;
+  gap:8px;padding:3px 4px 11px}
+.react-lighting-lab.lighting-v2 .lighting-v2-stage-head>div{display:grid;gap:3px}
+.react-lighting-lab.lighting-v2 .lighting-v2-stage-head strong{color:#2b5762;font-size:14px;line-height:1.2}
+.react-lighting-lab.lighting-v2 .lighting-v2-stage-head>span{font-size:9px;color:#98aca1;font-weight:850;text-align:right}
+.react-lighting-lab.lighting-v2 #lightVisual{width:100%;min-width:0}
+.react-lighting-lab.lighting-v2 .lighting-stage{width:100%;height:auto;min-height:0;aspect-ratio:16/9;
+  border-radius:14px;overflow:hidden;border:3px solid #edf5ed;box-shadow:0 2px 0 #d5e8df}
+.react-lighting-lab.lighting-v2 .lighting-stage svg{width:100%;height:100%}
+.react-lighting-lab.lighting-v2 .lab-hint{font-size:10px;color:#64857b;margin:11px 3px 2px;line-height:1.5}
+.react-lighting-lab.lighting-v2 .lighting-badge{color:#fff8df;background:#203b4cce;
+  border-radius:8px;padding:5px 8px;line-height:1.4;font-size:9px;letter-spacing:.01em}
+.react-lighting-lab.lighting-v2 .lab-panel.film-controls{min-width:0;background:#fff;color:#2d5561;
+  border:1px solid #d5e9df;border-radius:20px;padding:17px;box-shadow:0 4px 0 #e0efe6}
+.react-lighting-lab.lighting-v2 .film-controls h3{font-size:clamp(23px,2.5vw,29px);line-height:1.16;margin:8px 0;color:#294c59}
+.react-lighting-lab.lighting-v2 .film-controls>p{color:#65847a;font-size:12px;line-height:1.63}
+.react-lighting-lab.lighting-v2 .lighting-v2-section-label{display:flex;align-items:center;
+  justify-content:space-between;gap:8px;margin-top:13px}
+.react-lighting-lab.lighting-v2 .lighting-v2-section-label>span:last-child{color:#91aea2;font-size:9px;font-weight:850;text-align:right}
+.react-lighting-lab.lighting-v2 .lab-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:6px;margin:9px 0 13px}
+.react-lighting-lab.lighting-v2 .lab-choice{min-width:0;min-height:85px;background:#f5faf6;color:#397166;
+  border:1px solid #d5e8db;border-radius:12px;padding:10px 8px;box-shadow:0 2px 0 #e8f0e8;
+  text-align:left;display:flex;flex-direction:column;justify-content:center;gap:6px}
+.react-lighting-lab.lighting-v2 .lab-choice strong{font-size:12px;color:#305f65;line-height:1.2}
+.react-lighting-lab.lighting-v2 .lab-choice span{font-size:9px;color:#7c9286;line-height:1.35;overflow-wrap:anywhere}
+.react-lighting-lab.lighting-v2 .lab-choice[aria-pressed=true]{border-color:#5dbf8d;background:#dcf5e4;
+  color:#1f7859;box-shadow:inset 0 0 0 1px #89d2a5,0 2px 0 #cbe9d4}
+.react-lighting-lab.lighting-v2 .lab-choice[aria-pressed=true] span{color:#367765}
+.react-lighting-lab.lighting-v2 .studio-slider{background:#f5fbf7;border:1px solid #d8e8db;
+  border-radius:13px;padding:12px;margin:9px 0 12px}
+.react-lighting-lab.lighting-v2 .studio-slider label{color:#346967;font-weight:850;font-size:12px}
+.react-lighting-lab.lighting-v2 .studio-slider output{color:#206d54;background:#d7f4e4;border:1px solid #b2ddc5;
+ font-size:14px;font-weight:950;padding:4px 8px;border-radius:9px}
+.react-lighting-lab.lighting-v2 .studio-slider input[type=range]{width:100%;min-height:32px;accent-color:#319b7c}
+.react-lighting-lab.lighting-v2 .slider-ends{display:flex;justify-content:space-between;gap:6px}
+.react-lighting-lab.lighting-v2 .slider-ends span{font-size:9px;color:#7a998b}
+.react-lighting-lab.lighting-v2 .result-box{border:1px solid #cce8d6;background:linear-gradient(140deg,#f0faf2,#e9f8ee);
+  border-radius:14px;padding:13px}
+.react-lighting-lab.lighting-v2 .result-box strong{color:#26836c;font-size:10px}
+.react-lighting-lab.lighting-v2 .result-box p{color:#587c76;font-size:12px;line-height:1.6;margin:7px 0 0}
+.react-lighting-lab.lighting-v2 .light-question{border:1px solid #e2e8d8;background:#fffaf0;
+  color:#6b6750;border-radius:12px;padding:13px;margin:12px 0 0}
+.react-lighting-lab.lighting-v2 .light-question strong{color:#89723a;font-size:10px}
+.react-lighting-lab.lighting-v2 .light-question p{color:#706d59;font-size:12px;line-height:1.6;margin:7px 0 0}
+.react-lighting-lab.lighting-v2 .lighting-brief{background:#fff;border:1px solid #d5e7dc;
+  color:#305e64;border-radius:18px;box-shadow:0 4px 0 #e0eee5;margin:16px 0 19px}
+.react-lighting-lab.lighting-v2 .lighting-brief summary{color:#2c5864}
+.react-lighting-lab.lighting-v2 .lighting-brief :is(h2,h3,strong){color:#2d6870}
+.react-lighting-lab.lighting-v2 .lighting-brief :is(p,small){color:#60817b}
+.react-lighting-lab.lighting-v2 .lighting-brief [aria-pressed=true]{background:#d7f2e4;color:#206a54;border-color:#5dbb8d}
+.react-lighting-lab.lighting-v2 .lighting-brief button{background:#f7fbf8;color:#2b7868;
+  border:1px solid #bddfcd;border-radius:10px;min-height:44px}
+.react-lighting-lab.lighting-v2 .lighting-brief [data-light-feedback]{background:#eaf7ef;color:#2d6f5b;
+  border-left:3px solid #55b97b;border-radius:11px;padding:12px}
+.react-lighting-lab.lighting-v2 .lighting-brief [data-light-feedback] p{color:#547a6c}
+.react-lighting-lab.lighting-v2 .light-practice{background:#edf8f1;color:#4d716a;border:1px solid #d5e9db;
+  border-radius:15px;padding:16px;margin:16px 0}
+.react-lighting-lab.lighting-v2 .light-practice strong{color:#2e7c68}
+.react-lighting-lab.lighting-v2 .light-practice p{color:#5b7e75;font-size:12px;line-height:1.65}
+.react-lighting-lab.lighting-v2 .light-practice .btn-secondary{background:#fff;color:#2d7867;
+  border:1px solid #bce0d0;border-radius:11px;min-height:44px}
+.react-lighting-lab.lighting-v2 .lighting-v2-other-tools{background:#fff;color:#648479;
+  border:1px solid #d5e8de;border-radius:16px;padding:14px 17px}
+.react-lighting-lab.lighting-v2 .lighting-v2-other-tools>p{color:#6c897b;line-height:1.55;font-size:11px;margin:5px 0 12px}
+.react-lighting-lab.lighting-v2 .lab-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0}
+.react-lighting-lab.lighting-v2 .lab-tab{background:#f4faf7;color:#3c786c;border:1px solid #d0e5d9;
+  border-radius:10px;min-height:44px;padding:10px 6px;font-size:11px;font-weight:850}
+.react-lighting-lab.lighting-v2 .lab-tab[aria-pressed=true]{background:#d7f4e3;border-color:#63b98d;color:#237657}
+.react-lighting-lab.lighting-v2 :is(button,input,summary):focus-visible{outline:3px solid #246e9a;outline-offset:3px}
+@media(max-width:900px){
+ .react-lighting-lab.lighting-v2 .lab-shell.cinematic-lab-shell{grid-template-columns:minmax(0,1fr)}
+ .react-lighting-lab.lighting-v2 .lab-preview{position:relative;top:auto}
+}
+@media(max-width:600px){
+ .react-lighting-lab.lighting-v2{padding:12px;border-radius:18px}
+ .react-lighting-lab.lighting-v2 .lighting-v2-intro{padding:16px}
+ .react-lighting-lab.lighting-v2 .lighting-v2-lamp-art{width:59px;flex-basis:59px}
+ .react-lighting-lab.lighting-v2 .lighting-v2-hero h1{font-size:clamp(27px,7.5vw,34px)}
+ .react-lighting-lab.lighting-v2 .lighting-v2-live-facts{margin-left:20px}
+ .react-lighting-lab.lighting-v2 .lab-choices{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .react-lighting-lab.lighting-v2 .lab-choice{padding:8px 6px;min-height:94px}
+ .react-lighting-lab.lighting-v2 .lab-choice strong{font-size:11px}
+ .react-lighting-lab.lighting-v2 .lab-choice span{font-size:9px}
+ .react-lighting-lab.lighting-v2 .lab-panel.film-controls{padding:13px}
+ .react-lighting-lab.lighting-v2 .lab-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:360px){
+ .react-lighting-lab.lighting-v2{padding:9px}
+ .react-lighting-lab.lighting-v2 .lighting-v2-intro{padding:12px}
+ .react-lighting-lab.lighting-v2 .lighting-v2-lamp-art{width:47px;flex-basis:47px}
+ .react-lighting-lab.lighting-v2 .lighting-v2-hero h1{font-size:26px}
+ .react-lighting-lab.lighting-v2 .lighting-v2-course-tag{font-size:8px;padding:6px}
+ .react-lighting-lab.lighting-v2 .lab-preview{padding:9px}
+ .react-lighting-lab.lighting-v2 .lighting-v2-stage-head strong{font-size:12px}
+ .react-lighting-lab.lighting-v2 .lighting-v2-stage-head>span{font-size:8px}
+ .react-lighting-lab.lighting-v2 .lab-choice{padding:8px 5px}
+ .react-lighting-lab.lighting-v2 .lab-choice strong{font-size:10px}
+ .react-lighting-lab.lighting-v2 .lab-choice span{font-size:8px}
+ .react-lighting-lab.lighting-v2 .lab-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){
+ .react-lighting-lab.lighting-v2 *,
+ .react-lighting-lab.lighting-v2 *::before,
+ .react-lighting-lab.lighting-v2 *::after{animation:none!important;transition:none!important}
+}

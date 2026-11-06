@@ -1045,11 +1045,22 @@ async function verify() {
   await colour.waitFor({ state: 'detached' });
   const lighting = page.locator('.react-lighting-lab');
   await lighting.waitFor();
+  assert.equal(await lighting.getAttribute('data-v2-lighting-screen'),'true',
+    'The real working Lighting Lab, not a mockup, owns Option B production styling');
+  const stageAndControls=await lighting.evaluate(root=>Boolean(
+    root.querySelector('[data-v2-lighting-stage]')?.compareDocumentPosition(
+      root.querySelector('[data-v2-lighting-controls]')) & Node.DOCUMENT_POSITION_FOLLOWING));
+  assert.equal(stageAndControls,true,'Original lighting scene must appear before real controls');
+  assert.match(await lighting.locator('.lighting-v2-live-status strong').textContent(),/Front light/,
+    'Studio hero must display original live mode');
+  await photo(page,'30-real-option-b-lighting-desktop.png');
   assert.equal(await page.locator('#content').innerHTML(), '', 'React must own Lighting Lab without hidden legacy markup');
   assert.equal(await lighting.locator('#lightVisual svg').count(), 1, 'Keep original author-drawn lighting illustration');
   assert.match(await lighting.locator('#lightVisual [role="img"]').getAttribute('aria-label'), /front light/i);
   await lighting.locator('[data-light="side"]').click();
   assert.equal(await lighting.locator('[data-light="side"]').getAttribute('aria-pressed'), 'true');
+  assert.match(await lighting.locator('.lighting-v2-live-status strong').textContent(),/Side light/,
+    'Illustration and studio hero must reflect the same real setting');
   assert.equal(await lighting.locator('svg [filter*="shadeBlur"]').count(), 1, 'Side mode draws a controllable shadow');
   const brightnessSlider = lighting.locator('#lightPower');
   await brightnessSlider.focus();
@@ -2128,6 +2139,12 @@ async function verify() {
     await mobileColour.locator('[data-lab="light"]').click();
     const mobileLighting = phone.locator('.react-lighting-lab');
     await mobileLighting.waitFor();
+    assert.equal(await mobileLighting.getAttribute('data-v2-lighting-screen'),'true');
+    const mobileLightingArt=await mobileLighting.locator('[data-v2-lighting-stage] .lighting-stage').boundingBox();
+    const mobileLightingShell=await mobileLighting.boundingBox();
+    assert.ok(mobileLightingArt&&mobileLightingShell&&mobileLightingArt.width>mobileLightingShell.width*.62,
+      'Real lighting portrait must be the prominent first scene at '+width+'px');
+    await photo(phone,'31-real-option-b-lighting-'+width+'px.png');
     await mobileLighting.locator('[data-light="side"]').click();
     const mobileSoft=mobileLighting.locator('#lightSoft');
     await mobileSoft.focus();await mobileSoft.press('End');
