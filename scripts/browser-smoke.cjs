@@ -903,6 +903,8 @@ async function verify() {
   await page.locator('.react-continuity-lab').waitFor({ state: 'detached' });
   const framing = page.locator('.react-frame-lab');
   await framing.waitFor();
+  assert.equal(await framing.locator('.frame-v2-quick-jump [data-lab="story"]').count(),1,
+    'Default real Frame Lab must offer a visible Make shortcut before the long edit exercise');
   assert.equal(await framing.getAttribute('data-v2-frame-screen'),'true',
     'The working Frame Lab, not the preview prototype, owns the new Option B design');
   assert.equal(await framing.locator('[data-v2-frame-stage]').count(),1,
