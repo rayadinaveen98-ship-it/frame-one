@@ -47,3 +47,24 @@ body.frameone-option-b-open{overflow:hidden!important;}
  .option-b-view-switch button{padding:8px 6px;font-size:10px;}
  .frameone-option-b-exit{font-size:10px;}
 }
+
+/* Learner-facing default. The separate reference/pilot is still available
+ * only from Classic's explicitly labelled design-QA entry. */
+.frameone-v2-production-header{background:#fffef9;border-bottom:1px solid #d4eadc}
+.frameone-v2-production .frameone-option-b-exit{min-height:44px;background:#fff;
+ color:#2b7768;border-color:#c4e1d1;border-radius:11px;box-shadow:0 2px 0 #e2eee6}
+.frameone-v2-production-status{font:900 10px/1.35 system-ui,sans-serif;letter-spacing:.05em;
+ color:#418676;white-space:normal;text-align:right}
+.frameone-v2-production-wrap{background:#f7fbf9}
+.frameone-v2-production [data-v2-production-loading] button{display:block;margin:15px auto 0;
+ padding:11px;border:1px solid #b8ddc6;background:#fff;color:#226e5d;min-height:44px;border-radius:11px}
+.v2-enter-default{display:block;margin:10px clamp(10px,2.5vw,24px);
+ width:calc(100% - clamp(20px,5vw,48px));min-height:46px;padding:11px 15px;
+ border:1px solid #bddfce;background:#ebf8ef;color:#237260;
+ border-radius:13px;box-shadow:0 3px 0 #d8eee1;font:900 12px/1.4 system-ui,sans-serif;
+ cursor:pointer;text-align:center}
+.v2-enter-default:focus-visible{outline:3px solid #277ca6;outline-offset:3px}
+/* Preserve the original 4-second cinematic cold launch OVER the new course,
+ * instead of having it accidentally hidden behind the immersive shell. */
+body.frameone-option-b-open .launch-experience{z-index:10001}
+@media(max-width:360px){.frameone-v2-production-status{font-size:8px}}
