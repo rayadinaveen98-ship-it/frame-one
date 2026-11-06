@@ -9,6 +9,7 @@ const { spawn } = require('node:child_process');
 const { chromium } = require('playwright');
 const curriculum = require('../src/data/curriculum.v08b.json');
 const {screenshotPhone,comparePixels}=require('./option-b-pixel-parity.cjs');
+const {verifyMissionParity}=require('./option-b-mission-parity.cjs');
 const base = 'http://127.0.0.1:4173';
 const shots = path.resolve(__dirname, '../qa/screenshots');
 fs.mkdirSync(shots, { recursive: true });
@@ -744,24 +745,10 @@ async function verify() {
   const approvedJourney=await screenshotPhone(pilot.locator('.phone'),'native-vs-approved-journey-desktop-reference.png',shots);
   const journeyParity=await comparePixels(page,approvedJourney,reactJourney,'native-vs-approved-journey-desktop');
   console.log('VISUAL PARITY: React Journey desktop',journeyParity);
-  // Working bridge: selecting a native node opens the REAL reference mission
-  // until the native lesson earns the same design/interaction quality.
-  await page.locator('[data-option-b-compare="react"]').click();
-  await page.locator('[data-v2-native-mission="frame"]').click();
-  await pilot.locator('.mission-top').waitFor();
-  assert.match(await pilot.locator('.mission-top').textContent(),/choose the frame/i);
-  await pilot.locator('.navbar [data-screen="journey"]').click();
-  await pilot.locator('.journey-node').first().click();
-  await pilot.locator('[data-next-step]').click();
-  await pilot.locator('[data-choice="1"]').click();
-  assert.equal(await pilot.locator('[data-choice="1"]').getAttribute('aria-pressed'),'true');
-  await pilot.locator('[data-next-step]').click();
-  await pilot.locator('#missionZoom').focus();
-  await pilot.locator('#missionZoom').press('End');
-  assert.equal(await pilot.locator('#missionZoom').inputValue(),'2.2');
-  await pilot.locator('[data-next-step]').click();
-  await pilot.locator('[data-next-step]').click();
-  await pilot.locator('.celebrate h1').waitFor();
+  // Native React now owns the whole four-stage mission. Confirm every stage
+  // in real browser pixels, instead of accepting an approximate mockup.
+  const nativeMissionResult=await verifyMissionParity(page,pilot,shots,'desktop');
+  assert.equal(nativeMissionResult.checkedScreens,8);
   await pilot.locator('.navbar [data-screen="progress"]').click();
   assert.match(await pilot.locator('.progress-card').textContent(),/1/);
   await pilot.locator('.navbar [data-screen="lab"]').click();
@@ -1969,6 +1956,8 @@ async function verify() {
     const mobileJourneyParity=await comparePixels(phone,approvedMobileJourney,reactMobileJourney,
       'native-vs-approved-journey-'+width+'px');
     console.log('VISUAL PARITY: React Journey '+width+'px',mobileJourneyParity);
+    const mobileMissionResult=await verifyMissionParity(phone,mobilePilot,shots,width+'px');
+    assert.equal(mobileMissionResult.checkedScreens,8);
     const pilotOverflow=await phone.evaluate(()=>({
       scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth
     }));

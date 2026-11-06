@@ -19,8 +19,8 @@ export function OptionBExperience({onExit}:{onExit:()=>void}){
   const [presentation,setPresentation]=useState<'approved'|'react'>('approved');
   const openApproved=useCallback((screen:string,missionId?:string)=>{
     // Same-origin frame owns the already-reviewed interactive mission engine.
-    // The first React port only owns Home and Journey; all other surfaces
-    // deliberately use the ORIGINAL rather than a cheap substitute.
+    // The React port now owns Home, Journey and the four-step mission.
+    // Creative Lab and Progress continue in the approved reference.
     type ReviewedWindow=Window&{go?:(id:string)=>void;startMission?:(id:string)=>void};
     const target=frameRef.current?.contentWindow as ReviewedWindow|undefined;
     try{
@@ -29,6 +29,13 @@ export function OptionBExperience({onExit}:{onExit:()=>void}){
     }catch{/* A restricted origin simply returns to the approved Home. */}
     setPresentation('approved');
   },[loaded]);
+  const syncReferenceProgress=useCallback(()=>{
+    // The original reference loads its saved demo state once at startup.
+    // Reinitialize only after a real React mission completion so the
+    // Reference tab shows the updated mission count and points.
+    try{frameRef.current?.contentWindow?.location.reload();}
+    catch{/* The native React demo remains usable if WebView navigation is restricted. */}
+  },[]);
 
   useEffect(()=>{
     const hidden=[...document.querySelectorAll<HTMLElement>('.app > .sidebar,.app > .main,.app > .mobile-nav')];
@@ -92,7 +99,7 @@ export function OptionBExperience({onExit}:{onExit:()=>void}){
       referrerPolicy="no-referrer"/>
     <div className="frameone-option-b-native-wrap" data-option-b-native-wrap
       style={{display:presentation==='react'?'block':'none'}} aria-hidden={presentation!=='react'}>
-      <OptionBReactScreens active={presentation==='react'} onOpenReference={openApproved}/>
+      <OptionBReactScreens active={presentation==='react'} onOpenReference={openApproved} onNativeComplete={syncReferenceProgress}/>
     </div>
     <p className="frameone-option-b-disclaimer">Design pilot only. Demo missions use separate local progress; existing 33 lessons, seven Labs and backups are unchanged.</p>
   </section>;

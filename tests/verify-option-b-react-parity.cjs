@@ -28,11 +28,16 @@ for(const s of ['data-v2-native-react','data-v2-native-screen="home"','data-v2-n
   assert(react.includes(s),'Native rendering uses isolated React art rather than an HTML iframe clone: '+s);
 assert(react.includes('readDemo()')&&react.includes(PROTOTYPE_KEY_CHECK()),'React reflects genuine prototype progress on toggle');
 function PROTOTYPE_KEY_CHECK(){return 'frameone-option-b-prototype-v1';}
-assert(!react.includes('localStorage.setItem('),'React Home/Journey NEVER overwrite the existing or demo progress');
+assert(react.includes("localStorage.setItem(PROTOTYPE_KEY,JSON.stringify({...raw,...next}))"),
+  'Native completion may update only the separate prototype progress key');
+for(const productionKey of ['frameone-progress-v01','frameone-practice-v07','frameone-scene-v07'])
+  assert(!react.includes(productionKey),'Native port must never directly access original user storage: '+productionKey);
 assert(wrapper.includes('data-option-b-compare="approved"')&&wrapper.includes('data-option-b-compare="react"'),
   'Reviewed and native screens are switchable for direct comparison');
-assert(wrapper.includes('startMission?.(missionId)')&&wrapper.includes("setPresentation('approved')"),
-  'Native journey opens the proven original lesson engine until the lesson is ported at equal quality');
+assert(react.includes('<OptionBReactMission')&&react.includes('saveCompletedMission(id)'),
+  'Native journey owns React mission steps, with separate prototype completion');
+assert(wrapper.includes('syncReferenceProgress')&&wrapper.includes("setPresentation('approved')"),
+  'Approved prototype remains comparable and synchronizes only after native completion');
 assert(smoke.includes('comparePixels')&&smoke.includes('native-vs-approved-'),
   'Real browser runs pixel parity checks and leaves reference screenshots');
-console.log('PASS: Option B native React Home/Journey exact world and scene art, CSS parity, 6 mission IDs, state safety and explicit comparison.');
+console.log('PASS: Option B native React Home/Journey/Mission original art, CSS parity, six mission IDs, demo-only state and reversible reference.');
