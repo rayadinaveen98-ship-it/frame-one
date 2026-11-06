@@ -34,7 +34,7 @@ assert(editor.includes('CinemaScene variant="frame" zoom={bounded} guides={guide
  'Comparison must use actual two distinct original SVG crops');
 assert(scene.includes('viewBox')&&scene.includes('640/safeZoom')&&
  scene.includes('originalMarkup')&&
- scene.includes('not a lens or perspective simulation'),
+ scene.includes('never a lens or perspective simulation'),
  'Real original vector and mathematically true static picture crop must remain');
 assert(editor.includes('<FramingIntention mode={mode} zoom={bounded} guides={guides}')&&
  editor.includes('setCompare(false);')&&
