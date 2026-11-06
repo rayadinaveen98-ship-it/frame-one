@@ -1,6 +1,6 @@
 import {useState} from 'react';
-import {completeGuidedFoundation} from '../legacy/bridge';
-import {readPractice,savePractice} from '../state/learning';
+import {completeGuidedFoundation,saveGuidedPracticeNote} from '../legacy/bridge';
+import {readPractice} from '../state/learning';
 import {foundationById} from '../data/foundations-guided';
 import {OptionBReactScene} from './OptionBReactMission';
 
@@ -51,7 +51,7 @@ export function OptionBFoundationMission({lessonId,onBack,onComplete,onStepChang
  const caption=step===0?data.observe
    :step===1?data.prompt:step===2?data.explorerLabel:lesson.try;
  const practiceSave=()=>{
-   if(savePractice(lessonId,note))setSaveMessage('Saved in your existing Frame One practice notes and backup.');
+   if(saveGuidedPracticeNote(lessonId,note))setSaveMessage('Saved in your existing Frame One practice notes and backup.');
    else setSaveMessage('This device could not save the note. Copy your answer before leaving.');
  };
  return <div className="screen" data-v2-foundation-screen="mission"
