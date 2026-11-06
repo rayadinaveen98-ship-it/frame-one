@@ -53,8 +53,17 @@ jobs:
         run: node scripts/verify-pages-dist.cjs
       - name: Validate Cloudflare Workers static asset deploy (dry run only)
         run: npx --yes wrangler@4 deploy --dry-run
-      - name: Install test browser
-        run: npx playwright install --with-deps chromium
+      - name: Select preinstalled Google Chrome (fallback to Playwright Chromium)
+        run: |
+          if command -v google-chrome >/dev/null 2>&1; then
+            google-chrome --version
+            echo "FRAMEONE_BROWSER_CHANNEL=chrome" >> "$GITHUB_ENV"
+          elif command -v google-chrome-stable >/dev/null 2>&1; then
+            google-chrome-stable --version
+            echo "FRAMEONE_BROWSER_CHANNEL=chrome" >> "$GITHUB_ENV"
+          else
+            npx playwright install --with-deps chromium
+          fi
       - name: Run desktop and mobile smoke checks
         run: node scripts/browser-smoke.cjs
       - name: Upload QA screenshots for review (including failures)
