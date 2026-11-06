@@ -2,6 +2,7 @@ import type { Dispatch, MouseEvent, SetStateAction } from 'react';
 import type { LabName } from '../../legacy/bridge';
 import { CinemaScene } from './CinemaScene';
 import { FramingIntention } from './FramingIntention';
+import './option-b-frame-lab.css';
 
 /** Native React framing exercise. Cropping a fixed SVG is not a physical
  * camera move, a lens change or a claim about perspective. */
@@ -32,6 +33,10 @@ const frameForZoom = (value:number):FrameMode => value<1.5?'wide':value<2.5?'med
 export function FrameLab({mode,setMode,zoom,setZoom,guides,setGuides,compare,setCompare}:Props) {
   const bounded = Math.max(1,Math.min(3,zoom));
   const selected = frameOptions[mode];
+  // Comparing a 3× crop with another 3× crop teaches nothing. Show the
+  // opposite extreme instead so the two *real* SVG viewBoxes differ.
+  const referenceZoom=bounded>=2.5?1:3;
+  const referenceLabel=referenceZoom===1?'Wide shot':'Close-up';
   function choose(event:MouseEvent<HTMLButtonElement>,next:FrameMode) {
     event.stopPropagation(); // the legacy click handler must never re-render React-owned content
     setMode(next);
@@ -43,30 +48,51 @@ export function FrameLab({mode,setMode,zoom,setZoom,guides,setGuides,compare,set
     setZoom(next);
     setMode(frameForZoom(next));
   }
-  return <div className="page react-frame-lab">
-    <div className="page-intro cinematic-heading">
-      <div className="eyebrow">DIRECTOR'S STUDIO / EXPERIMENT 01</div>
-      <h1>One moment. Many frames.</h1>
-      <p>Explore one original drawing with different crops. Watch what becomes prominent and what disappears.</p>
+  return <div className="page react-frame-lab frame-v2" data-v2-frame-screen="true">
+    <div className="page-intro cinematic-heading frame-v2-intro">
+      <div className="frame-v2-kicker"><span className="eyebrow">YOUR VISUAL LANGUAGE STUDIO</span><span className="frame-v2-course-tag">✦ REAL FRAME LAB</span></div>
+      <div className="frame-v2-hero">
+        <div>
+          <h1>One moment. Many frames.</h1>
+          <p>One original scene. Three ways to look. Choose what the viewer notices first.</p>
+        </div>
+        <svg aria-hidden="true" className="frame-v2-art" viewBox="0 0 100 96">
+          <rect x="9" y="17" width="83" height="63" rx="12" fill="#e8f9ef" stroke="#2e9780" strokeWidth="4"/>
+          <path d="M36 17v63m28-63v63M9 38h83M9 59h83" stroke="#83ccb0" strokeWidth="2"/>
+          <path d="M26 66l17-18 13 11 21-23 5 7v27H20Z" fill="#b1e8cf"/>
+          <circle cx="65" cy="36" r="8" fill="#f6ca83"/>
+          <path d="M77 10h13M90 10v13M15 85H3M3 85V73" stroke="#329580" strokeWidth="4" strokeLinecap="round"/>
+        </svg>
+      </div>
+      <div className="frame-v2-live-status" aria-label="Live framing controls status">
+        <span className="frame-v2-status-dot" aria-hidden="true"></span>
+        <span className="frame-v2-status-text"><strong>{selected.label}</strong><small>{bounded.toFixed(1)}× illustration crop</small></span>
+        <span className="frame-v2-status-pills"><span>{guides?'Guides on':'Guides off'}</span><span>{compare?'Two frames':'Single frame'}</span></span>
+      </div>
     </div>
-    <div className="lab-tabs" role="group" aria-label="Choose a creative experiment">
-      {tabs.map(tab=><button className="lab-tab" type="button" key={tab.id}
-        data-lab={tab.id} aria-pressed={tab.id==='frame'}>{tab.label}</button>)}
+    <div className="frame-v2-quick-jump" role="group" aria-label="Quick switch to another working studio">
+      <span className="eyebrow">QUICK STUDIO SWITCH</span>
+      <div><button type="button" data-lab="story">✎ Make</button>
+        <button type="button" data-lab="cut">✂ Cut</button>
+        <button type="button" data-lab="sound">♫ Sound</button></div>
     </div>
-    <div className="lab-shell cinematic-lab-shell">
-      <div className="lab-preview cinematic-preview">
+    <div className="frame-v2-focus-note"><span className="frame-v2-focus-icon" aria-hidden="true">◉</span><p><strong>LOOK FIRST</strong> — Change the frame size below and notice which visual details disappear.</p></div>
+    <div className="lab-shell cinematic-lab-shell" data-v2-frame-workshop>
+      <div className="lab-preview cinematic-preview" data-v2-frame-stage>
+        <div className="frame-v2-stage-head"><div><span className="eyebrow">YOUR LIVE FRAME</span><strong>{compare?'Compare your crop':'See the scene change'}</strong></div><span>16:9 · ORIGINAL ART</span></div>
         {compare?<div className="frame-comparison">
           <div><span className="compare-tag">YOUR CROP · {Number(bounded.toFixed(2))}×</span>
             <CinemaScene variant="frame" zoom={bounded} guides={guides} shotLabel={selected.label}/></div>
-          <div><span className="compare-tag">REFERENCE · TIGHT CROP</span>
-            <CinemaScene variant="reference" zoom={3} guides={guides} shotLabel="Close-up"/></div>
+          <div><span className="compare-tag">{referenceZoom===1?'REFERENCE · WIDE CROP':'REFERENCE · TIGHT CROP'}</span>
+            <CinemaScene variant="reference" zoom={referenceZoom} guides={guides} shotLabel={referenceLabel}/></div>
         </div>:<CinemaScene variant="frame" zoom={bounded} guides={guides} shotLabel={selected.label}/>}
-        <div className="lab-hint">Animated original storyboard · On-screen cropping, not lens simulation</div>
+        <div className="lab-hint">Original illustrated bus-stop scene · A digital crop, not a physical camera move or lens simulation.</div>
       </div>
-      <div className="lab-panel film-controls">
-        <div className="eyebrow">FRAMING DESK · 01</div>
+      <div className="lab-panel film-controls" data-v2-frame-controls>
+        <div className="eyebrow">STEP 01 · FRAME THE MOMENT</div>
         <h3>How close should we look?</h3>
-        <p>The person waits at a bus stop. Choose a preset or gradually crop tighter. Which part of the scene grabs your attention?</p>
+        <p>The person waits at a bus stop. Choose a framing preset or crop gently tighter. Which details do we gain—and lose?</p>
+        <div className="frame-v2-control-label"><span className="eyebrow">SHOT SIZE</span><span>THREE WAYS TO SEE</span></div>
         <div className="lab-choices" role="group" aria-label="Select framing crop">
           {(Object.entries(frameOptions) as [FrameMode,typeof selected][]).map(([key,option])=>
             <button className="lab-choice" type="button" key={key} data-frame={key}
@@ -74,6 +100,7 @@ export function FrameLab({mode,setMode,zoom,setZoom,guides,setGuides,compare,set
               <strong>{option.label}</strong><span>{option.sub}</span>
             </button>)}
         </div>
+        <div className="frame-v2-control-label"><span className="eyebrow">FINE-TUNE THE CROP</span><span>1.0–3.0×</span></div>
         <div className="studio-slider">
           <label htmlFor="frameZoom">Interactive crop <output id="frameZoomValue">{bounded.toFixed(1)}×</output></label>
           <input id="frameZoom" type="range" min="1" max="3" step="0.05" value={bounded}
@@ -82,6 +109,7 @@ export function FrameLab({mode,setMode,zoom,setZoom,guides,setGuides,compare,set
             onInput={event=>{event.stopPropagation();update(event.currentTarget.value);}}/>
           <div className="slider-ends"><span>See more surroundings</span><span>See less surroundings</span></div>
         </div>
+        <div className="frame-v2-control-label"><span className="eyebrow">OVERLAYS & COMPARISON</span><span>OPTIONAL</span></div>
         <div className="lab-tool-row">
           <button className="btn-secondary" type="button" data-guides aria-pressed={guides}
             onClick={event=>{event.stopPropagation();setGuides(value=>!value);}}>
@@ -109,5 +137,13 @@ export function FrameLab({mode,setMode,zoom,setZoom,guides,setGuides,compare,set
         setGuides(nextGuides);
         setCompare(false);
       }} />
+    <div className="frame-v2-other-tools">
+      <span className="eyebrow">WHEN YOU'RE READY · CONTINUE CREATING</span>
+      <p>Every option opens its original working lab. Your Frame Lab settings stay in the existing React session.</p>
+      <div className="lab-tabs" role="group" aria-label="Choose a creative experiment">
+        {tabs.map(tab=><button className="lab-tab" type="button" key={tab.id}
+          data-lab={tab.id} aria-pressed={tab.id==='frame'}>{tab.label}</button>)}
+      </div>
+    </div>
   </div>;
 }
