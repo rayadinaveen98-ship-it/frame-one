@@ -16,7 +16,7 @@ export async function registerAndroidBack(): Promise<void> {
     // Android Back closes that layer instead of navigating stale legacy
     // history or minimizing Home. Do not steal Back while an iframe input
     // needs to dismiss its soft keyboard.
-    const pilot=document.querySelector<HTMLElement>('[data-frameone-option-b]');
+    const pilot=typeof document.querySelector==='function' ? document.querySelector<HTMLElement>('[data-frameone-option-b]') : null;
     if(pilot){
       const frame=pilot.querySelector<HTMLIFrameElement>('[data-option-b-frame]');
       let childInput:HTMLElement|null=null;
