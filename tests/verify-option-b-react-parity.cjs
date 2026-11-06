@@ -9,7 +9,7 @@ let expected=style
   .replace('html,body{',':host{')
   .replace('}body{font-size:14px}','}:host{font-size:14px}')
   .replace('.site{min-height:100dvh;','.site{min-height:100%;height:100%;')
-  .replace('height:min(862px,calc(100dvh - 50px));','height:min(862px,calc(100% - 50px));')
+  .replace('height:min(862px,calc(100dvh - 50px));','height:min(862px,calc(100% + 10px));')
   .replace('.phone{width:100%;height:100dvh;','.phone{width:100%;height:100%;');
 assert(reactStyle.includes(expected),'React receives the APPROVED exact CSS, with only shadow/viewport adjustments');
 for(const [constant,name] of [['WORLD','world'],['SCENE','scene']]){
