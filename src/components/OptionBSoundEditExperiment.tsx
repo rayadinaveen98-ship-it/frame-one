@@ -84,7 +84,6 @@ function MusicSource({selected}:{selected:number}){
  </div>;
 }
 function ContinuityFrames({selected}:{selected:number}){
- const cupSecond=selected===1?91:233;
  return <div className="sound-continuity" role="img" aria-label={selected===0?
    'Two drawings keep the cup in the same place':selected===1?
    'The cup suddenly changes sides with no shown action':'The cup moves between the views, with an action arrow'}>
