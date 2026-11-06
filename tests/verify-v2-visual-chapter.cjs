@@ -37,7 +37,7 @@ assert(legacy.includes(required),'Guided completion permits only existing Chapte
 for(const id of ids)assert(graphics.includes("'"+id+"'"),'Real experiment has a defined visual study for '+id);
 assert(graphics.includes('OptionBReactScene')&&graphics.includes('<FilmSetDiagram'),
  'Use approved scene illustration and original geometry diagrams');
-assert(graphics.includes('does not')&&guided.includes('not a physical'),'Visual language must not misrepresent crop or filters as optical physics');
+assert(graphics.includes('does not')&&guided.includes('not a focal-length'),'Visual language must not misrepresent crop or filters as optical physics');
 assert(css.includes('.visual-experiment')&&css.includes('.visual-diagram'),
  'New styles are scoped to visual experiments, never old prototype');
 assert(!guided.includes('localStorage.setItem(')&&!graphics.includes('localStorage.setItem('),
