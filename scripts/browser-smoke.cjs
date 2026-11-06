@@ -12,6 +12,7 @@ const {screenshotPhone,comparePixels}=require('./option-b-pixel-parity.cjs');
 const {verifyMissionParity}=require('./option-b-mission-parity.cjs');
 const {verifyStudioParity}=require('./option-b-studio-parity.cjs');
 const {verifyRealChapterOne}=require('./v2-real-chapter-qa.cjs');
+const {verifyRealChapterTwo}=require('./v2-real-story-qa.cjs');
 const base = 'http://127.0.0.1:4173';
 const shots = path.resolve(__dirname, '../qa/screenshots');
 fs.mkdirSync(shots, { recursive: true });
@@ -63,8 +64,9 @@ async function verifyRealChapterIsolated(width,label){
     const source=fresh.frameLocator('[data-option-b-frame]');
     await source.locator('.home-hero').waitFor();
     const result=await verifyRealChapterOne(fresh,source,shots,label);
+    const storyResult=await verifyRealChapterTwo(fresh,source,shots,label);
     await fresh.locator('[data-option-b-exit]').click();
-    return result;
+    return {...result,storyLessonsValidated:storyResult.validatedLessons};
   }finally{await isolated.close();}
 }
 async function verify() {
