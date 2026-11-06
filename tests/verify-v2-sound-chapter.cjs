@@ -52,6 +52,8 @@ assert(studio.includes('NO RECORDED AUDIO')&&
  'Never suggest playing audio while providing only graphics');
 assert(!data.includes('localStorage.setItem(')&&!studio.includes('localStorage.setItem('),
  'Do not add parallel user-progress or notes storage');
+assert(screens.includes('data-v2-real-course')&&css.includes('.site[data-v2-real-course="true"] .wordmark'),
+ 'Only real course gains the narrow-screen brand alignment fix');
 assert(css.includes('.sound-experiment')&&css.includes('.sound-shot-sequence'),
  'Use scoped approved design-system styles');
 assert(browser.includes('verifyRealChapterFour'),
