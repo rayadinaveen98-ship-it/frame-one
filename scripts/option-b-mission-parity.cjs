@@ -50,17 +50,6 @@ async function verifyMissionParity(page,reference,shots,label){
   const native=page.locator('[data-v2-native-react]');
   await page.locator('[data-v2-native-mission="see"]').click();
   await native.locator('[data-v2-native-screen="mission"]').waitFor();
-  // Diagnostic before the hard parity check: identify inherited metrics,
-  // not a made-up offset that hides a bad reconstruction.
-  const computed=async selector=>selector.evaluate(el=>{
-    const style=getComputedStyle(el),r=el.getBoundingClientRect();
-    return {family:style.fontFamily,size:style.fontSize,lineHeight:style.lineHeight,
-      weight:style.fontWeight,letterSpacing:style.letterSpacing,width:r.width,
-      height:r.height,marginTop:style.marginTop,marginBottom:style.marginBottom,
-      text:el.textContent};
-  });
-  console.log('MISSION OBSERVE SOURCE TYPOGRAPHY',await computed(reference.locator('.lesson-prompt p')));
-  console.log('MISSION OBSERVE REACT TYPOGRAPHY',await computed(native.locator('.lesson-prompt p')));
   assert.equal(await native.locator('[data-v2-native-mission-step]').getAttribute('data-v2-native-mission-step'),'0');
   await shotNative('observe');
   await native.locator('[data-v2-native-next-step]').click();
