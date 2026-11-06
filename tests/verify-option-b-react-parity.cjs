@@ -33,6 +33,6 @@ assert(wrapper.includes('data-option-b-compare="approved"')&&wrapper.includes('d
   'Reviewed and native screens are switchable for direct comparison');
 assert(wrapper.includes('startMission?.(missionId)')&&wrapper.includes("setPresentation('approved')"),
   'Native journey opens the proven original lesson engine until the lesson is ported at equal quality');
-assert(smoke.includes('option-b-native-parity')&&smoke.includes('native-vs-approved-'),
+assert(smoke.includes('comparePixels')&&smoke.includes('native-vs-approved-'),
   'Real browser runs pixel parity checks and leaves reference screenshots');
 console.log('PASS: Option B native React Home/Journey exact world and scene art, CSS parity, 6 mission IDs, state safety and explicit comparison.');
