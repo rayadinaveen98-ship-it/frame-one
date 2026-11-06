@@ -1,6 +1,7 @@
 import type { Dispatch, MouseEvent, SetStateAction } from 'react';
 import type { LabName } from '../../legacy/bridge';
 import { CinemaScene } from './CinemaScene';
+import { FramingIntention } from './FramingIntention';
 
 /** Native React framing exercise. Cropping a fixed SVG is not a physical
  * camera move, a lens change or a claim about perspective. */
@@ -101,5 +102,12 @@ export function FrameLab({mode,setMode,zoom,setZoom,guides,setGuides,compare,set
         </div>
       </div>
     </div>
+    <FramingIntention mode={mode} zoom={bounded} guides={guides}
+      onApply={(nextMode,nextZoom,nextGuides)=>{
+        setMode(nextMode);
+        setZoom(nextZoom);
+        setGuides(nextGuides);
+        setCompare(false);
+      }} />
   </div>;
 }
