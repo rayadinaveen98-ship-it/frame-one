@@ -1,5 +1,6 @@
 import type { Dispatch, SetStateAction, MouseEvent } from 'react';
 import type { LabName } from '../../legacy/bridge';
+import './option-b-continuity-lab.css';
 
 /** v0.9D: first Creative Lab to be genuinely React-owned.
  * The six remaining labs still use the original, battle-tested HTML runtime.
@@ -41,23 +42,47 @@ export function ContinuityLab({ mode, setMode }: Props) {
     event.stopPropagation();
     setMode(next);
   };
-  return <div className="page react-continuity-lab">
-    <div className="page-intro">
-      <div className="eyebrow">CREATIVE LAB · 07 · CONTINUITY</div>
-      <h1>Something moved between shots.</h1>
-      <p>Compare two simplified views of the same fictional desk. Imagine no one touches the objects between the two shots.</p>
+  return <div className="page react-continuity-lab continuity-v2" data-v2-continuity-screen="true">
+    <div className="page-intro continuity-v2-intro">
+      <div className="continuity-v2-kicker"><span className="eyebrow">YOUR FILM CONTINUITY STUDIO</span>
+        <span className="continuity-v2-course-tag">✦ REAL MATCH LAB</span></div>
+      <div className="continuity-v2-hero"><div>
+        <h1>Something moved between shots.</h1>
+        <p>Two illustrations. One prop. Compare the positions before and after the cut.</p>
+      </div>
+      <svg className="continuity-v2-art" viewBox="0 0 98 98" aria-hidden="true">
+        <rect x="6" y="13" width="37" height="48" rx="9" fill="#fdfaf0" stroke="#378d7c" strokeWidth="3"/>
+        <rect x="56" y="13" width="37" height="48" rx="9" fill="#fdfaf0" stroke="#378d7c" strokeWidth="3"/>
+        <path d="M22 31h13M72 31h13" stroke="#a8bdad" strokeWidth="4" strokeLinecap="round"/>
+        <circle cx="20" cy="44" r="9" fill="#f5cf8d" stroke="#caa36e" strokeWidth="3"/>
+        <circle cx="79" cy="44" r="9" fill="#f5cf8d" stroke="#caa36e" strokeWidth="3"/>
+        <path d="M40 76h18m-8-8 9 8-9 8" stroke="#289478" strokeWidth="5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg></div>
+      <div className="continuity-v2-live-status" aria-label="Current real continuity comparison">
+        <span className="continuity-v2-status-dot" aria-hidden="true"></span>
+        <strong>{changed?'Prop position changed':'Prop positions match'}</strong>
+        <span>{changed?'Shot B shows the cup on the other side':'Same cup position in both shots'}</span>
+      </div>
     </div>
-    <div className="lab-tabs" role="group" aria-label="Choose a creative experiment">
-      {tabs.map(tab => <button className="lab-tab" type="button" key={tab.id}
-        data-lab={tab.id} aria-pressed={tab.id === 'continuity'}>{tab.text}</button>)}
+    <div className="continuity-v2-quick-jump" role="group" aria-label="Quick switch to working film labs">
+      <span className="eyebrow">QUICK STUDIO SWITCH</span>
+      <div><button type="button" data-lab="story">✎ Make</button>
+        <button type="button" data-lab="colour">◐ Colour</button>
+        <button type="button" data-lab="frame">▣ Frame</button></div>
     </div>
-    <div className="continuity-shell">
-      <div className="continuity-grid">
+    <div className="continuity-v2-observe"><span aria-hidden="true">↔</span>
+      <p><strong>SPOT THE CHANGE</strong> — Compare Shot A and Shot B. The viewpoint is fixed; only the cup moves.</p>
+    </div>
+    <div className="continuity-shell" data-v2-continuity-workshop>
+      <div className="continuity-grid" data-v2-continuity-stage>
         <IllustratedDesk title="SHOT A · BEFORE THE CUT" moved={false}/>
         <IllustratedDesk title="SHOT B · AFTER THE CUT" moved={changed}/>
       </div>
-      <div className="continuity-controls">
+      <div className="continuity-controls" data-v2-continuity-controls>
+        <div className="eyebrow">STEP 01 · MATCH BETWEEN CUTS</div>
         <h3>Test the prop positions</h3>
+        <p className="continuity-v2-control-intro">Imagine one uninterrupted moment: no one touches the letter or cup. Which version is consistent?</p>
+        <div className="continuity-v2-control-label"><span className="eyebrow">YOUR MATCHING CHOICE</span><span>TAP TO COMPARE</span></div>
         <div className="lab-choices">
           <button type="button" className="lab-choice" data-continuity="match"
             aria-pressed={!changed} onClick={event=>choose(event,'match')}>
@@ -76,6 +101,13 @@ export function ContinuityLab({ mode, setMode }: Props) {
         </div>
         <p className="studio-fact">This teaching example holds the viewpoint fixed. Different camera angles can change left/right positions in the image even when a real prop has not moved. A deliberate jump may also be a storytelling choice.</p>
         <button className="btn-secondary" type="button" data-lesson="continuity">Read the continuity lesson →</button>
+      </div>
+    </div>
+    <div className="continuity-v2-other-tools"><span className="eyebrow">EXPLORE ANOTHER REAL CRAFT</span>
+      <p>Return to the seven original working Creative Labs at any time.</p>
+      <div className="lab-tabs" role="group" aria-label="Choose a creative experiment">
+        {tabs.map(tab => <button className="lab-tab" type="button" key={tab.id}
+          data-lab={tab.id} aria-pressed={tab.id === 'continuity'}>{tab.text}</button>)}
       </div>
     </div>
   </div>;
