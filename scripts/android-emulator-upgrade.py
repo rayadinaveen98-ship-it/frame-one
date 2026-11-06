@@ -67,6 +67,47 @@ def verify_learning_progress_with_multiple_projects():
     print("PASS: original lesson completion and chapter progress retained with two film projects",flush=True)
 
 
+def open_real_project_row(name,tries=22):
+    """Tap the actual enabled OPEN PROJECT button, not a duplicate heading.
+
+    Option B's active-project hero also displays a project name, but is not
+    the library switch action. Using the smallest text-matching View could
+    falsely report a switch. Require the real accessibility Button with
+    the OPEN PROJECT label and a tappable nonzero bound.
+    """
+    for _ in range(tries):
+        for n in state.nodes():
+            value=" ".join((n.attrib.get("text",""),n.attrib.get("content-desc",""))).strip()
+            if (n.attrib.get("class","").endswith("Button")
+                    and name.lower() in value.lower()
+                    and "OPEN PROJECT" in value.upper()
+                    and n.attrib.get("enabled","true")!="false"):
+                b=state.visible_control_bounds(state.bounds_of(n),1850)
+                if b and b[2]-b[0]>=60:
+                    print(f"TAP REAL PROJECT {value!r} at {(b[0]+b[2])//2},{(b[1]+b[3])//2}",flush=True)
+                    ui.adb("shell","input","tap",str((b[0]+b[2])//2),str((b[1]+b[3])//2))
+                    time.sleep(.8)
+                    return
+        state.scroll_up()
+    ui.capture("upgrade-project-switch-not-visible")
+    raise AssertionError(f"Real OPEN PROJECT button not reachable for {name!r}")
+
+
+def assert_current_project(name,tries=12):
+    """Check real selected project, not text merely present in the library."""
+    for _ in range(tries):
+        for n in state.nodes():
+            value=" ".join((n.attrib.get("text",""),n.attrib.get("content-desc",""))).strip()
+            if (n.attrib.get("class","").endswith("Button")
+                    and name.lower() in value.lower()
+                    and "CURRENT PROJECT" in value.upper()):
+                print(f"PASS: real current project {name!r}",flush=True)
+                return
+        time.sleep(.6)
+    ui.capture("upgrade-project-active-not-matching")
+    raise AssertionError(f"Actual CURRENT PROJECT selection did not change to {name!r}")
+
+
 def verify_projects_after_upgrade(project_qa):
     """Prove both project choices remain functional after package replacement."""
     # The prior assertion may already be inside Make Lab. Tapping the
@@ -88,18 +129,21 @@ def verify_projects_after_upgrade(project_qa):
     state.scroll_top()
     state.find_text(project_qa.SECOND_PROJECT, tries=12, scroll=True)
     project_qa.state.scroll_top()
-    project_qa.tap_text("My first scene", tries=16, scroll=True)
+    open_real_project_row("My first scene")
+    assert_current_project("My first scene")
     state.find_text("Will the person stay or leave?", scroll=True)
     state.assert_close_framing()
     state.find_text(state.SHOT_NOTE, scroll=True)
     state.scroll_top()
     state.find_text(project_qa.SECOND_PROJECT, tries=12, scroll=True)
-    project_qa.tap_text(project_qa.SECOND_PROJECT, tries=16, scroll=True)
+    open_real_project_row(project_qa.SECOND_PROJECT)
+    assert_current_project(project_qa.SECOND_PROJECT)
     state.find_text("My first scene", tries=12, scroll=True)
     # Leave first storyboard selected for the established full offline
     # persistence assertion, without modifying either project.
     project_qa.state.scroll_top()
-    project_qa.tap_text("My first scene", tries=16, scroll=True)
+    open_real_project_row("My first scene")
+    assert_current_project("My first scene")
     state.find_text("Will the person stay or leave?", scroll=True)
     print("PASS: two separate Make Lab projects remain switchable, original note and framing retained after Android APK update", flush=True)
 
