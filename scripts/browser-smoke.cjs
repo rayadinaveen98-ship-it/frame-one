@@ -10,6 +10,7 @@ const { chromium } = require('playwright');
 const curriculum = require('../src/data/curriculum.v08b.json');
 const {screenshotPhone,comparePixels}=require('./option-b-pixel-parity.cjs');
 const {verifyMissionParity}=require('./option-b-mission-parity.cjs');
+const {verifyStudioParity}=require('./option-b-studio-parity.cjs');
 const base = 'http://127.0.0.1:4173';
 const shots = path.resolve(__dirname, '../qa/screenshots');
 fs.mkdirSync(shots, { recursive: true });
@@ -749,11 +750,9 @@ async function verify() {
   // in real browser pixels, instead of accepting an approximate mockup.
   const nativeMissionResult=await verifyMissionParity(page,pilot,shots,'desktop');
   assert.equal(nativeMissionResult.checkedScreens,8);
-  await pilot.locator('.navbar [data-screen="progress"]').click();
-  assert.match(await pilot.locator('.progress-card').textContent(),/1/);
-  await pilot.locator('.navbar [data-screen="lab"]').click();
-  await pilot.locator('[data-lab="light"]').click();
-  assert.equal(await pilot.locator('[data-lab="light"]').getAttribute('aria-selected'),'true');
+  const studioResult=await verifyStudioParity(page,pilot,shots,'desktop');
+  assert.equal(studioResult.comparedScreens,9);
+  assert.ok(studioResult.resetVerified);
   const pilotRect=await newJourney.evaluate(el=>{
     const rect=el.getBoundingClientRect();
     return {x:rect.x,y:rect.y,width:rect.width,height:rect.height,screenWidth:window.innerWidth,screenHeight:window.innerHeight};
@@ -1958,6 +1957,8 @@ async function verify() {
     console.log('VISUAL PARITY: React Journey '+width+'px',mobileJourneyParity);
     const mobileMissionResult=await verifyMissionParity(phone,mobilePilot,shots,width+'px');
     assert.equal(mobileMissionResult.checkedScreens,8);
+    const mobileStudio=await verifyStudioParity(phone,mobilePilot,shots,width+'px');
+    assert.equal(mobileStudio.comparedScreens,9);
     const pilotOverflow=await phone.evaluate(()=>({
       scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth
     }));
