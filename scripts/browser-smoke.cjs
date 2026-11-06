@@ -752,7 +752,6 @@ async function verify() {
   assert.match(await pilot.locator('.mission-top').textContent(),/choose the frame/i);
   await pilot.locator('.navbar [data-screen="journey"]').click();
   await pilot.locator('.journey-node').first().click();
-  await pilot.locator('.journey-node').first().click();
   await pilot.locator('[data-next-step]').click();
   await pilot.locator('[data-choice="1"]').click();
   assert.equal(await pilot.locator('[data-choice="1"]').getAttribute('aria-pressed'),'true');
