@@ -42,9 +42,9 @@ assert(mission.includes('lesson.q')&&mission.includes('lesson.answer')&&
 assert(screens.includes('data-v2-people-open')&&screens.includes('data-v2-people-node')&&
  screens.includes('data-v2-people-back')&&screens.includes('<PeopleJourney completed={realFinished}'),
  'Four chapter nodes must be reachable and offer backward navigation');
-assert(screens.includes('safeProgress([...FOUNDATION_IDS,...STORYTELLING_IDS,...VISUAL_IDS,...SOUND_EDIT_IDS,...PEOPLE_IDS])'),
+assert(screens.includes('safeProgress([...FOUNDATION_IDS,...STORYTELLING_IDS,...VISUAL_IDS,...SOUND_EDIT_IDS,...PEOPLE_IDS,...FIRST_FILM_IDS])'),
  'Progress across 28 original guided lessons must share the old key');
-const allowlist="if(!['why','history','units','genres','india','story','script','acting','character','dialogue','showdonttell','shot','camera','lighting','composition','movement','lenses','colour','sound','editing','ambience','music','continuity','rhythm','crew','craft24','teams','pipeline'].includes(id))return false;";
+const allowlist="if(!['why','history','units','genres','india','story','script','acting','character','dialogue','showdonttell','shot','camera','lighting','composition','movement','lenses','colour','sound','editing','ambience','music','continuity','rhythm','crew','craft24','teams','pipeline','making','shotlist','shootscene','editminute','review'].includes(id))return false;";
 assert(runtime.includes(allowlist),'Guided completion allowlist is the 28 canonical IDs, no more');
 assert(runtime.includes('finished.add(id);persist()')&&
  runtime.includes('savePractice:(id,note)=>'),

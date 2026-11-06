@@ -38,9 +38,9 @@ assert(mission.includes('lesson.q')&&mission.includes('lesson.answer')&&
 assert(screens.includes('data-v2-sound-open')&&screens.includes('data-v2-sound-node')&&
  screens.includes('<SoundEditingJourney completed={realFinished}'),
  'Chapter 4 accessible by visual journey and has own 6 real mission nodes');
-assert(screens.includes('safeProgress([...FOUNDATION_IDS,...STORYTELLING_IDS,...VISUAL_IDS,...SOUND_EDIT_IDS,...PEOPLE_IDS])'),
+assert(screens.includes('safeProgress([...FOUNDATION_IDS,...STORYTELLING_IDS,...VISUAL_IDS,...SOUND_EDIT_IDS,...PEOPLE_IDS,...FIRST_FILM_IDS])'),
  'Chapters 1–4 must read original completed IDs together');
-const allowed="if(!['why','history','units','genres','india','story','script','acting','character','dialogue','showdonttell','shot','camera','lighting','composition','movement','lenses','colour','sound','editing','ambience','music','continuity','rhythm','crew','craft24','teams','pipeline'].includes(id))return false;";
+const allowed="if(!['why','history','units','genres','india','story','script','acting','character','dialogue','showdonttell','shot','camera','lighting','composition','movement','lenses','colour','sound','editing','ambience','music','continuity','rhythm','crew','craft24','teams','pipeline','making','shotlist','shootscene','editminute','review'].includes(id))return false;";
 assert(runtime.includes(allowed),'Only canonical guided lesson IDs can be completed');
 assert(runtime.includes('finished.add(id);persist()')&&runtime.includes('savePractice:(id,note)=>'),
  'Completion and notes must update the original backup-aware legacy engine');
