@@ -30,7 +30,7 @@ assert(mission.includes('visualLanguageById(lessonId)')&&mission.includes('<Opti
  'Seven lessons share approved four-stage real mission and dedicated visual studio');
 assert(mission.includes('if(step===2&&!correct)return')&&mission.includes('if(!correct)'),
  'User may not complete wrong or unanswered canonical quiz');
-assert(bridge.includes('savePractice:(id,note)=>')&&bridge.includes('finished.add(id);persist()'),
+assert(legacy.includes('savePractice:(id,note)=>')&&legacy.includes('finished.add(id);persist()'),
  'Original notes and completed progress remain within legacy backup owner');
 const required="if(!['why','history','units','genres','india','story','script','acting','character','dialogue','showdonttell','shot','camera','lighting','composition','movement','lenses','colour'].includes(id))return false;";
 assert(legacy.includes(required),'Guided completion permits only existing Chapters 1–3');
