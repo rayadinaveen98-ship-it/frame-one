@@ -80,6 +80,15 @@ async function verifyProductionDefault(browser,url,shots){
    await page.locator('[data-v2-open-classic]').click();
    await page.locator('[data-v2-default-experience]').waitFor({state:'detached'});
    await page.locator('.cinema-library-active').waitFor();
+   // Reproduce the actual Android failure: Classic was left at the bottom,
+   // hiding the first lesson after switching from the immersive course.
+   await page.evaluate(()=>window.scrollTo(0,document.documentElement.scrollHeight));
+   const classicNav=width<=760?'.mobile-nav [data-page="learn"]':'.nav-menu [data-page="learn"]';
+   await page.locator(classicNav).click();
+   await page.locator('.react-learn-view').waitFor();
+   await page.waitForFunction(()=>window.scrollY<5,null,{timeout:3000});
+   assert.equal(await page.locator('.react-learn-view [data-option-b-open]').count(),1,
+     'Classic learning/backup tools must remain mounted after production cutover');
    await page.locator('[data-v2-open-default-experience]').click();
    await real.waitFor();
    assert.deepEqual(errors,[],'No production React runtime errors at '+width+'px');
