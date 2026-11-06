@@ -41,4 +41,4 @@
 @media(max-width:360px){.home-hero h1{font-size:28px}.home-hero-copy{left:18px}.home-body{padding-left:14px;padding-right:14px}.nav-item{min-width:59px}.journey-node{width:86px}.node-label{font-size:10px}.lesson-prompt h1{font-size:24px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
-:host{display:block;width:100%;height:100%;isolation:isolate;overflow:hidden}
+:host{display:block;width:100%;height:100%;isolation:isolate;overflow:hidden;line-height:normal}
