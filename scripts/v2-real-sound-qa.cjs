@@ -21,7 +21,7 @@ async function verifyRealChapterFour(page,reference,shots,label){
  const journey=native.locator('[data-v2-sound-screen="journey"]');
  await journey.waitFor();
  if(label==='320px'){
-   const nowrap=await native.locator('.site .wordmark').evaluate(node=>getComputedStyle(node).whiteSpace);
+   const nowrap=await native.locator('.wordmark').evaluate(node=>getComputedStyle(node).whiteSpace);
    assert.equal(nowrap,'nowrap','Real course wordmark must stay on one line on a narrow phone');
  }
  assert.equal(await journey.locator('[data-v2-sound-node]').count(),6,
