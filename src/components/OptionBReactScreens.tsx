@@ -235,6 +235,7 @@ function StorytellingJourney({completed,onMission,onExit}:{
 }){
   const next=STORYTELLING.find(m=>!completed.has(m.id))?.id??STORYTELLING[0].id;
   const icons:MissionIcon[]=['eye','clapper','film','frame','sound','eye'];
+  const nodeLabels=['Story emotion','Screenplay','Performance','Character choices','Dialogue & subtext','Show the feeling'];
   return <div className="screen" data-v2-story-screen="journey">
     <div className="journey-intro">
       <button type="button" className="foundation-return" data-v2-story-back onClick={onExit}>← Back to Chapter 1</button>
@@ -258,7 +259,7 @@ function StorytellingJourney({completed,onMission,onExit}:{
           onClick={()=>onMission(mission.id)}>
           <span className="node-button"><Icon name={done?'check':icons[i]} className="node-icon"/>
             <span className="node-number">{i+1}</span></span>
-          <span className="node-label">{mission.lesson.title}</span>
+          <span className="node-label">{nodeLabels[i]}</span>
         </button>;
       })}
       <div className="map-footer"><span className="map-icon" aria-hidden="true">🎞️</span>
