@@ -1081,8 +1081,12 @@ async function verify() {
   assert.equal(await cut.locator('.cut-illustration.place').count(), 1, 'Original drawn establishing shot retained');
   // Give the first shot its own duration, then move it. The 4-second hold
   // belongs to that shot, not to an arbitrary timeline position.
-  await cut.locator('#shotDuration').focus();
-  await cut.locator('#shotDuration').press('End');
+  const cutDurationSlider=cut.locator('#shotDuration');
+  await cutDurationSlider.focus();
+  await cutDurationSlider.press('Home');
+  assert.equal(await cutDurationSlider.inputValue(),'1','Cut Lab range responds to keyboard Home');
+  for(let k=0;k<4;k++)await cutDurationSlider.press('ArrowRight');
+  assert.equal(await cutDurationSlider.inputValue(),'5','Four arrow steps move the actual slider to five seconds');
   assert.match(await cut.locator('.duration-control label').textContent(), /5 seconds/);
   await cut.locator('[data-move="0:right"]').click();
   assert.match(await cut.locator('.timeline-clip').nth(1).textContent(), /5s/);
