@@ -4,6 +4,7 @@ import approvedStyles from './option-b-react-design.css?raw';
 import {OptionBReactMission} from './OptionBReactMission';
 import {OptionBReactLab} from './OptionBReactLab';
 import {FOUNDATIONS,FOUNDATION_IDS} from '../data/foundations-guided';
+import {STORYTELLING,STORYTELLING_IDS} from '../data/storytelling-guided';
 import {safeProgress} from '../state/learning';
 import {OptionBFoundationMission} from './OptionBFoundationMission';
 
@@ -183,8 +184,8 @@ function JourneyScreen({finished,onMission}:{finished:string[];onMission:(id:str
 }
 const FOUNDATION_NODE_POSITIONS:[[number,number],[number,number],[number,number],[number,number],[number,number]]=
  [[39,13],[70,30],[31,48],[72,66],[34,83]];
-function FoundationJourney({completed,onMission,onExit}:{
-  completed:Set<string>;onMission:(id:string)=>void;onExit:()=>void;
+function FoundationJourney({completed,onMission,onExit,onNext}:{
+  completed:Set<string>;onMission:(id:string)=>void;onExit:()=>void;onNext:()=>void;
 }){
   const next=FOUNDATIONS.find(m=>!completed.has(m.id))?.id??FOUNDATIONS[0].id;
   return <div className="screen" data-v2-foundation-screen="journey">
@@ -218,6 +219,51 @@ function FoundationJourney({completed,onMission,onExit}:{
         </button>;
       })}
       <div className="map-footer"><span className="map-icon" aria-hidden="true">🎞️</span><span>All lessons remain accessible. Existing completions are recognised.</span></div>
+    </div>
+    <section className="foundation-launch" aria-label="Continue to real Chapter 2">
+      <span className="eyebrow">NEXT · CHAPTER 02</span>
+      <h2>Tell a human story.</h2>
+      <p>Six more real lessons: story, script, acting, character, dialogue and visual storytelling. Your Chapter 1 progress stays intact.</p>
+      <button type="button" className="btn btn-primary btn-wide" data-v2-story-open onClick={onNext}>
+        Explore real Chapter 2 <Icon name="arrow" className="node-icon"/>
+      </button>
+    </section>
+  </div>;
+}
+function StorytellingJourney({completed,onMission,onExit}:{
+  completed:Set<string>;onMission:(id:string)=>void;onExit:()=>void;
+}){
+  const next=STORYTELLING.find(m=>!completed.has(m.id))?.id??STORYTELLING[0].id;
+  const icons:MissionIcon[]=['eye','clapper','film','frame','sound','eye'];
+  return <div className="screen" data-v2-story-screen="journey">
+    <div className="journey-intro">
+      <button type="button" className="foundation-return" data-v2-story-back onClick={onExit}>← Back to Chapter 1</button>
+      <span className="eyebrow">THE REAL FRAME ONE CURRICULUM</span>
+      <h1>Tell a human story.</h1>
+      <p>Six connected missions around one tiny café story. Observe a moment, choose a creative direction, learn the principle and try it yourself.</p>
+      <div className="journey-summary"><span className="chapter-badge">✦ CHAPTER 02 · STORYTELLING</span>
+        <span className="journey-progress-inline">{STORYTELLING.filter(m=>completed.has(m.id)).length}/6 real lessons</span>
+      </div>
+    </div>
+    <div className="land-map">
+      <img src={ART_WORLD} alt="Illustrated winding path through the Frame One learning world"/>
+      <div className="chapter-pillar">REAL CHAPTER 02 · TELL A HUMAN STORY</div>
+      {STORYTELLING.map((mission,i)=>{
+        const done=completed.has(mission.id),active=mission.id===next;
+        return <button type="button" key={mission.id}
+          className={'journey-node '+(done?'complete':active?'active':'future')}
+          data-v2-story-node={mission.id}
+          style={{left:NODE_COORDS[i][0]+'%',top:NODE_COORDS[i][1]+'%'}}
+          aria-label={mission.lesson.title+', '+(done?'completed':'ready to explore')}
+          onClick={()=>onMission(mission.id)}>
+          <span className="node-button"><Icon name={done?'check':icons[i]} className="node-icon"/>
+            <span className="node-number">{i+1}</span></span>
+          <span className="node-label">{mission.lesson.title}</span>
+        </button>;
+      })}
+      <div className="map-footer"><span className="map-icon" aria-hidden="true">🎞️</span>
+        <span>Six story decisions, one original scene. Your course records and notes are preserved.</span>
+      </div>
     </div>
   </div>;
 }
@@ -267,13 +313,15 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
 }){
   const [screen,setScreen]=useState<'home'|'journey'|'mission'|'lab'|'progress'>('home');
   const [realChapter,setRealChapter]=useState(false);
+  const [realChapterIndex,setRealChapterIndex]=useState<0|1>(0);
   const [realLessonId,setRealLessonId]=useState(FOUNDATION_IDS[0]);
   const [realAttempt,setRealAttempt]=useState(0);
-  const [realFinished,setRealFinished]=useState<Set<string>>(()=>safeProgress(FOUNDATION_IDS));
-  const refreshReal=()=>setRealFinished(safeProgress(FOUNDATION_IDS));
+  const [realFinished,setRealFinished]=useState<Set<string>>(()=>safeProgress([...FOUNDATION_IDS,...STORYTELLING_IDS]));
+  const refreshReal=()=>setRealFinished(safeProgress([...FOUNDATION_IDS,...STORYTELLING_IDS]));
   const startReal=()=>{
     refreshReal();
     setRealChapter(true);
+    setRealChapterIndex(0);
     setScreen('journey');
     if(viewport.current)viewport.current.scrollTop=0;
   };
@@ -364,8 +412,8 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
           </span>Frame One
         </div>
         <div className="head-actions">
-          <span className="head-pill" aria-label={realChapter?'Real Chapter 1 progress':'Creative demo credits'}>
-            <span className="coin">✦</span><span>{realChapter?realFinished.size+'/5':saved.points}</span> {realChapter?'lessons':'pts'}
+          <span className="head-pill" aria-label={realChapter?'Real Chapter '+(realChapterIndex+1)+' progress':'Creative demo credits'}>
+            <span className="coin">✦</span><span>{realChapter?(realChapterIndex===0?FOUNDATION_IDS:STORYTELLING_IDS).filter(id=>realFinished.has(id)).length+'/'+(realChapterIndex===0?'5':'6'):saved.points}</span> {realChapter?'lessons':'pts'}
           </span>
           <button type="button" className="avatar" aria-label="View my progress" onClick={()=>changeScreen('progress')}>🎬</button>
         </div>
@@ -378,7 +426,11 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
                 onBack={()=>{refreshReal();setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}
                 onComplete={()=>{refreshReal();}}
                 onStepChange={()=>{if(viewport.current)viewport.current.scrollTop=0;}}/>
-            : <FoundationJourney completed={realFinished} onMission={startRealMission} onExit={exitReal}/>
+            : realChapterIndex===0
+              ? <FoundationJourney completed={realFinished} onMission={startRealMission} onExit={exitReal}
+                  onNext={()=>{setRealChapterIndex(1);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}/>
+              : <StorytellingJourney completed={realFinished} onMission={startRealMission}
+                  onExit={()=>{setRealChapterIndex(0);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}/>
           : screen==='home'
             ? <HomeScreen finished={saved.finished} onMission={startMission} onScreen={openScreen} onStartReal={startReal}/>
             : screen==='journey'
