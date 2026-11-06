@@ -490,7 +490,7 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
       if(viewport.current)viewport.current.scrollTop=0;
     }else onOpenReference(target);
   };
-  return <div className="site" data-v2-native-react>
+  return <div className="site" data-v2-native-react data-v2-real-course={realChapter?'true':undefined}>
     <aside className="pitch" aria-label="Prototype design brief">
       <div className="tiny">FRAME ONE · DESIGN LAB / 01</div>
       <h1>Learn cinema.<br/><span>By making it.</span></h1>
