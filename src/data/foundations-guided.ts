@@ -4,7 +4,7 @@ import type {Lesson} from './schema';
 type CreativeOption={label:string;view:'wide'|'medium'|'close';filter:'neutral'|'warm'|'cool'|'contrast';note:string};
 export type FieldGuide={label:string;heading:string;detail:string};
 export interface GuidedFoundation{
-  id:string;legacyId:string;chapterId:0;lesson:Lesson;
+  id:string;legacyId:string;chapterId:0|1;lesson:Lesson;
   prompt:string;observe:string;notice:string;
   choices:[CreativeOption,CreativeOption,CreativeOption];
   explorerLabel:string;explorer:[FieldGuide,FieldGuide,FieldGuide];
