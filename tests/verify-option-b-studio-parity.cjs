@@ -15,7 +15,7 @@ for(const token of [
   'data-v2-native-screen="lab"','data-v2-native-lab','data-v2-native-mode',
   'data-v2-native-lab-zoom','data-v2-native-guides','data-v2-native-save-shot',
   'aria-selected={tool===id}','aria-pressed={chosen===i}',
-  "tool==='frame'","tool==='light'","tool==='sound'",
+  "tool==='frame'","tool==='light'","choice.sound",
   'Colour treatment is a visual cue, not real relighting.',
   'Illustrated lab prototype. Saved experiments are local demo counts',
   'OptionBReactScene']){
