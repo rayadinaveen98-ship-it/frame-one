@@ -192,3 +192,21 @@
   .react-learn-view .journey-count span{font-size:11px;word-spacing:.05em;}
   .react-learn-view .journey-chapter-segments{overflow-x:auto;}
 }
+
+/* The first actual Classic lesson must stay tappable on Android phones after
+   leaving the new immersive default. This is real curriculum navigation,
+   not a pilot/demo shortcut. */
+.react-learn-view .classic-mobile-next{display:none}
+@media(max-width:760px){
+ .react-learn-view .learn-clear-intro{margin-bottom:0}
+ .react-learn-view .classic-mobile-next{
+   display:flex;align-items:center;justify-content:space-between;gap:8px;
+   width:100%;min-height:48px;padding:11px 15px;margin:13px 0 2px;
+   border-radius:12px;border:1px solid #c19265;background:#e9b680;
+   color:#28221e;font-size:13px;font-weight:900;line-height:1.3;
+   box-shadow:0 3px 0 #a7794b;
+ }
+ .react-learn-view .classic-mobile-next:focus-visible{
+   outline:3px solid #ffddaa;outline-offset:3px;
+ }
+}
