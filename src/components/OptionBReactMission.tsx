@@ -128,8 +128,8 @@ function MissionTop({mission,index,step,onBack}:{
  * Native React version of the approved Observe → Decide → Experiment → Make
  * lesson. This is still a six-mission design pilot, not the 33-lesson course.
  */
-export function OptionBReactMission({missionId,onBack,onRestart,onComplete}:{
-  missionId:string;onBack:()=>void;onRestart:()=>void;onComplete:(id:string)=>void;
+export function OptionBReactMission({missionId,onBack,onRestart,onComplete,onStepChange}:{
+  missionId:string;onBack:()=>void;onRestart:()=>void;onComplete:(id:string)=>void;onStepChange:()=>void;
 }){
   const missionIndex=Math.max(0,APPROVED_MISSIONS.findIndex(m=>m.id===missionId));
   const m=APPROVED_MISSIONS[missionIndex];
@@ -146,6 +146,7 @@ export function OptionBReactMission({missionId,onBack,onRestart,onComplete}:{
       onComplete(m.id);
       setComplete(true);
     }else setStep(i=>Math.min(3,i+1));
+    onStepChange();
   };
   return <div className="screen" data-v2-native-screen="mission" data-v2-native-mission-id={m.id}
     data-v2-native-mission-step={complete?'complete':String(step)}>
@@ -228,7 +229,7 @@ export function OptionBReactMission({missionId,onBack,onRestart,onComplete}:{
             {BUTTONS[step]} <ArrowIcon/>
           </button>
           <div style={{height:12}}/>
-          {step>0&&<button type="button" className="btn btn-secondary btn-wide" data-v2-native-previous-step onClick={()=>setStep(v=>Math.max(0,v-1))}>← Previous step</button>}
+          {step>0&&<button type="button" className="btn btn-secondary btn-wide" data-v2-native-previous-step onClick={()=>{setStep(v=>Math.max(0,v-1));onStepChange();}}>← Previous step</button>}
         </div>
       </div>}
   </div>;
