@@ -1,6 +1,7 @@
 import {createPortal} from 'react-dom';
 import {useEffect,useRef,useState} from 'react';
 import approvedStyles from './option-b-react-design.css?raw';
+import productionStyles from './option-b-production.css?raw';
 import {OptionBReactMission} from './OptionBReactMission';
 import {OptionBReactLab} from './OptionBReactLab';
 import {FOUNDATIONS,FOUNDATION_IDS} from '../data/foundations-guided';
@@ -527,17 +528,117 @@ function ProgressScreen({saved,onMission,onReset}:{
   </div>;
 }
 
+const REAL_CHAPTERS=[
+  {title:'Discover cinema',short:'Foundations',ids:FOUNDATION_IDS,icon:'eye' as const},
+  {title:'Tell a human story',short:'Storytelling',ids:STORYTELLING_IDS,icon:'clapper' as const},
+  {title:'Learn visual language',short:'Visual language',ids:VISUAL_IDS,icon:'frame' as const},
+  {title:'Sound and editing',short:'Sound & editing',ids:SOUND_EDIT_IDS,icon:'sound' as const},
+  {title:'People behind a film',short:'Film people',ids:PEOPLE_IDS,icon:'film' as const},
+  {title:'Make your first film',short:'First film',ids:FIRST_FILM_IDS,icon:'clapper' as const}
+] as const;
+const ALL_REAL_LESSON_IDS=REAL_CHAPTERS.flatMap(chapter=>[...chapter.ids]);
+
+function RealCourseHome({completed,onChapter,onLab,onProgress}:{
+  completed:Set<string>;onChapter:(index:number)=>void;onLab:()=>void;onProgress:()=>void;
+}){
+  const count=ALL_REAL_LESSON_IDS.filter(id=>completed.has(id)).length;
+  const nextChapter=REAL_CHAPTERS.findIndex(chapter=>chapter.ids.some(id=>!completed.has(id)));
+  const resume=Math.max(0,nextChapter);
+  return <div className="screen production-home" data-v2-production-screen="home">
+    <div className="home-hero">
+      <img className="hero-world" src={ART_WORLD} alt=""/>
+      <div className="home-hero-copy"><span className="chip">✦ YOUR REAL FILMMAKING JOURNEY</span>
+        <h1>Learn cinema.<br/>By making it.</h1>
+        <p>33 original lessons. Six chapters. Your first film starts with one choice.</p>
+      </div>
+      <FloatingCamera/>
+    </div>
+    <div className="home-body">
+      <section className="continue-card" aria-label="Continue your real cinema course">
+        <div className="continue-header"><span className="eyebrow">YOUR NEXT CHAPTER</span>
+          <span className="mission-badge">CHAPTER {String(resume+1).padStart(2,'0')} / 06</span></div>
+        <h2>{count===33?'Every chapter explored.':REAL_CHAPTERS[resume].title}</h2>
+        <p>{count===33?'You can revisit lessons or start a new project in the real Make Lab.':
+          'Pick up your learning path. Every finished lesson and practice note stays in your existing Frame One records.'}</p>
+        <div className="track" role="progressbar" aria-label="Completed real Frame One lessons"
+          aria-valuenow={count} aria-valuemin={0} aria-valuemax={33}>
+          <span style={{width:(count/33*100)+'%'}}/></div>
+        <div className="progress-caption"><span>{count} of 33 real lessons complete</span>
+          <b>{Math.round(count/33*100)}%</b></div>
+        <button className="btn btn-primary btn-wide" type="button" data-v2-production-resume
+          onClick={()=>onChapter(resume)}>{count===33?'Revisit your chapters':'Continue learning'} <Icon name="arrow" className="node-icon"/></button>
+      </section>
+      <div className="section-heading"><div><span className="eyebrow">SIX CHAPTERS · YOUR PACE</span>
+        <h2>Choose your next chapter</h2></div>
+        <button className="link-button" type="button" onClick={onProgress}>My progress →</button></div>
+      <div className="production-chapters">
+        {REAL_CHAPTERS.map((chapter,index)=>{
+          const done=chapter.ids.filter(id=>completed.has(id)).length;
+          return <button type="button" className="production-chapter" key={chapter.title}
+            data-v2-production-chapter={index} onClick={()=>onChapter(index)}
+            aria-label={`Chapter ${index+1}: ${chapter.title}, ${done} of ${chapter.ids.length} lessons complete`}>
+            <span className="production-chapter-icon"><Icon name={chapter.icon}/></span>
+            <span className="production-chapter-copy"><small>CHAPTER {String(index+1).padStart(2,'0')} · {done}/{chapter.ids.length} LESSONS</small>
+              <strong>{chapter.title}</strong>
+              <span className="production-chapter-track"><span style={{width:(done/chapter.ids.length*100)+'%'}}/></span>
+            </span>
+            <span aria-hidden="true" className="production-chapter-arrow">›</span>
+          </button>;
+        })}
+      </div>
+      <div className="section-heading"><div><span className="eyebrow">CREATIVE PRACTICE</span><h2>Try the working tools</h2></div></div>
+      <button className="production-labs-link" data-v2-production-open-labs type="button" onClick={onLab}>
+        <span className="production-labs-art"><img src={ART_SCENE} alt=""/></span>
+        <span><strong>Seven Creative Labs</strong><small>Make, frame, light, cut, sound, colour and match</small></span>
+        <Icon name="arrow"/>
+      </button>
+    </div>
+  </div>;
+}
+function RealCourseProgress({completed,onChapter,onLab}:{
+ completed:Set<string>;onChapter:(index:number)=>void;onLab:()=>void;
+}){
+ const count=ALL_REAL_LESSON_IDS.filter(id=>completed.has(id)).length;
+ return <div className="screen production-progress" data-v2-production-screen="progress">
+   <div className="progress-top"><span className="eyebrow">REAL LEARNING PROGRESS</span>
+     <h1>Every small step counts.</h1>
+     <p>These counts come directly from your existing Frame One lesson records, not prototype points.</p></div>
+   <section className="progress-card" aria-label="Real course completion">
+     <div className="meter-circle" style={{'--done-angle':(Math.round(count/33*100)*3.6)+'deg'} as React.CSSProperties}
+       aria-label={count+' of 33 real lessons complete'}>
+       <div className="inside"><strong>{Math.round(count/33*100)}%</strong><span>YOUR LESSONS</span></div></div>
+     <div className="stats"><div className="stat"><strong>{count}</strong><span>Real lessons</span></div>
+       <div className="stat"><strong>33</strong><span>Available</span></div>
+       <div className="stat"><strong>{REAL_CHAPTERS.filter(c=>c.ids.every(id=>completed.has(id))).length}</strong>
+         <span>Chapters complete</span></div></div>
+   </section>
+   <div className="progress-list"><h2>Your six chapters</h2>
+     {REAL_CHAPTERS.map((chapter,index)=>{
+       const done=chapter.ids.filter(id=>completed.has(id)).length;
+       return <button className="skill-item" type="button" key={chapter.title}
+         data-v2-production-progress-chapter={index} onClick={()=>onChapter(index)}>
+         <span className="skill-icon"><Icon name={chapter.icon}/></span>
+         <div><strong>{chapter.title}</strong><small>{done} of {chapter.ids.length} lessons complete</small></div>
+         <span className="check">{done===chapter.ids.length?'✓':'›'}</span>
+       </button>;
+     })}</div>
+   <div className="production-progress-footer"><p>Your storyboard projects and practice notes remain in the original backup system.</p>
+     <button type="button" className="btn btn-primary btn-wide" onClick={onLab}>Open your working Creative Labs</button>
+   </div>
+ </div>;
+}
 const NAV_ITEMS=[['home','Home','home'],['journey','Journey','map'],['lab','Create','lab'],['progress','Progress','progress']] as const;
-function ReactScreenShell({onOpenReference,onActive,onNativeComplete,onOpenProductionLab,resumeChapter}:{
+function ReactScreenShell({onOpenReference,onActive,onNativeComplete,onOpenProductionLab,resumeChapter,production=false}:{
   onOpenReference:(screen:string,missionId?:string)=>void;
   onActive:boolean;onNativeComplete:()=>void;
   onOpenProductionLab:(lab:LabName,chapterIndex:number)=>void;
   resumeChapter:number|null;
+  production?:boolean;
 }){
-  // Return from a real production lab to the chapter the learner left.
-  // A normal prototype launch still starts on its original Home screen.
+  // The shipped app begins with the 33 real lessons. The original six-mission
+  // prototype and its separate demo points remain isolated in design QA.
   const [screen,setScreen]=useState<'home'|'journey'|'mission'|'lab'|'progress'>(resumeChapter===null?'home':'journey');
-  const [realChapter,setRealChapter]=useState(resumeChapter!==null);
+  const [realChapter,setRealChapter]=useState(production||resumeChapter!==null);
   const [realChapterIndex,setRealChapterIndex]=useState<0|1|2|3|4|5>(
     resumeChapter===null?0:Math.max(0,Math.min(5,Math.trunc(resumeChapter))) as 0|1|2|3|4|5);
   const [realLessonId,setRealLessonId]=useState(FOUNDATION_IDS[0]);
@@ -552,7 +653,7 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete,onOpenProdu
     if(viewport.current)viewport.current.scrollTop=0;
   };
   const exitReal=()=>{
-    setRealChapter(false);
+    if(!production)setRealChapter(false);
     setScreen('home');
     if(viewport.current)viewport.current.scrollTop=0;
   };
@@ -612,8 +713,23 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete,onOpenProdu
       if(viewport.current)viewport.current.scrollTop=0;
     }else onOpenReference(target);
   };
-  return <div className="site" data-v2-native-react data-v2-real-course={realChapter?'true':undefined}>
-    <aside className="pitch" aria-label="Prototype design brief">
+  const openRealChapter=(index:number)=>{
+    refreshReal();
+    setRealChapter(true);
+    setRealChapterIndex(Math.max(0,Math.min(5,Math.trunc(index))) as 0|1|2|3|4|5);
+    setScreen('journey');
+    viewport.current?.scrollTo(0,0);
+  };
+  const productionNavigate=(target:string)=>{
+    refreshReal();
+    if(target==='home'||target==='progress'||target==='lab'||target==='journey'){
+      setScreen(target);
+      viewport.current?.scrollTo(0,0);
+    }
+  };
+  return <div className="site" data-v2-native-react data-v2-real-course={realChapter?'true':undefined}
+    data-v2-production={production?'true':undefined}>
+    {!production?<aside className="pitch" aria-label="Prototype design brief">
       <div className="tiny">FRAME ONE · DESIGN LAB / 01</div>
       <h1>Learn cinema.<br/><span>By making it.</span></h1>
       <p>Option B, built as an actual interactive product prototype. Real screens, original vector art, real state and no borrowed UI assets.</p>
@@ -626,8 +742,8 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete,onOpenProdu
         <div><b>05</b> Working progress, lab and shot saving</div>
       </div>
       <div className="build-tag">DESIGN SYSTEM CANDIDATE · OPTION B / V1</div>
-    </aside>
-    <div className="phone" aria-label="Frame One native React visual parity preview">
+    </aside>:null}
+    <div className="phone" aria-label={production?'Frame One real learning experience':'Frame One native React visual parity preview'}>
       <header className="topbar">
         <div className="wordmark">
           <span className="brand-symbol" aria-hidden="true">
@@ -646,7 +762,13 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete,onOpenProdu
       </header>
       <main id="viewport" ref={viewport} tabIndex={-1} aria-live="off">
         {realChapter
-          ? screen==='lab'
+          ? production&&screen==='home'
+            ? <RealCourseHome completed={realFinished} onChapter={openRealChapter}
+                onLab={()=>productionNavigate('lab')} onProgress={()=>productionNavigate('progress')}/>
+            : production&&screen==='progress'
+            ? <RealCourseProgress completed={realFinished} onChapter={openRealChapter}
+                onLab={()=>productionNavigate('lab')}/>
+            : screen==='lab'
             ? <OptionBRealLabs onOpen={lab=>onOpenProductionLab(lab,realChapterIndex)}
                 onBack={()=>{setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}/>
             : screen==='mission'
@@ -693,10 +815,13 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete,onOpenProdu
       </main>
       <nav className="navbar" aria-label="Primary navigation">
         {NAV_ITEMS.map(([id,label,icon])=><button type="button" key={id}
-          className={'nav-item'+(realChapter? ((screen==='lab'?'lab':'journey')===id?' is-active':'') : ((screen==='mission'?'journey':screen)===id?' is-active':''))}
-          aria-current={(realChapter?(screen==='lab'?'lab':'journey')===id:(screen==='mission'?'journey':screen)===id)?'page':undefined}
+          className={'nav-item'+(production?((screen==='mission'?'journey':screen)===id?' is-active':''):
+             realChapter? ((screen==='lab'?'lab':'journey')===id?' is-active':'') : ((screen==='mission'?'journey':screen)===id?' is-active':''))}
+          aria-current={(production?(screen==='mission'?'journey':screen)===id:
+             realChapter?(screen==='lab'?'lab':'journey')===id:(screen==='mission'?'journey':screen)===id)?'page':undefined}
           data-v2-native-nav={id}
-          onClick={()=>realChapter? (id==='journey'||id==='lab' ? (setScreen(id),viewport.current?.scrollTo(0,0)):exitReal()) : changeScreen(id)}>
+          onClick={()=>production?productionNavigate(id):
+             realChapter? (id==='journey'||id==='lab' ? (setScreen(id),viewport.current?.scrollTo(0,0)):exitReal()) : changeScreen(id)}>
           <Icon name={icon}/><span>{label}</span>
         </button>)}
       </nav>
@@ -706,11 +831,12 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete,onOpenProdu
 }
 
 /** Shadow DOM contains exact approved CSS without leaking styles into the old app. */
-export function OptionBReactScreens({onOpenReference,active,onNativeComplete,onOpenProductionLab,resumeChapter}:{
+export function OptionBReactScreens({onOpenReference,active,onNativeComplete,onOpenProductionLab,resumeChapter,production=false}:{
   onOpenReference:(screen:string,missionId?:string)=>void;
   active:boolean;onNativeComplete:()=>void;
   onOpenProductionLab:(lab:LabName,chapterIndex:number)=>void;
   resumeChapter:number|null;
+  production?:boolean;
 }){
   const slot=useRef<HTMLDivElement>(null);
   const [shadow,setShadow]=useState<ShadowRoot|null>(null);
@@ -721,7 +847,9 @@ export function OptionBReactScreens({onOpenReference,active,onNativeComplete,onO
     setShadow(root);
   },[]);
   return <div className="frameone-option-b-native-slot" data-v2-react-slot
-    ref={slot} aria-label="Native React port of all five approved Frame One Option B screens">
-    {shadow?createPortal(<><style>{approvedStyles}</style><ReactScreenShell onOpenReference={onOpenReference} onActive={active} onNativeComplete={onNativeComplete} onOpenProductionLab={onOpenProductionLab} resumeChapter={resumeChapter}/></>,shadow):null}
+    ref={slot} aria-label={production?'Frame One real six-chapter learning journey':'Native React Option B design preview'}>
+    {shadow?createPortal(<><style>{approvedStyles}</style>{production?<style>{productionStyles}</style>:null}
+      <ReactScreenShell onOpenReference={onOpenReference} onActive={active} onNativeComplete={onNativeComplete}
+        onOpenProductionLab={onOpenProductionLab} resumeChapter={resumeChapter} production={production}/></>,shadow):null}
   </div>;
 }
