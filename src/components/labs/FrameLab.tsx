@@ -70,6 +70,12 @@ export function FrameLab({mode,setMode,zoom,setZoom,guides,setGuides,compare,set
         <span className="frame-v2-status-pills"><span>{guides?'Guides on':'Guides off'}</span><span>{compare?'Two frames':'Single frame'}</span></span>
       </div>
     </div>
+    <div className="frame-v2-quick-jump" role="group" aria-label="Quick switch to another working studio">
+      <span className="eyebrow">QUICK STUDIO SWITCH</span>
+      <div><button type="button" data-lab="story">✎ Make</button>
+        <button type="button" data-lab="cut">✂ Cut</button>
+        <button type="button" data-lab="sound">♫ Sound</button></div>
+    </div>
     <div className="frame-v2-focus-note"><span className="frame-v2-focus-icon" aria-hidden="true">◉</span><p><strong>LOOK FIRST</strong> — Change the frame size below and notice which visual details disappear.</p></div>
     <div className="lab-shell cinematic-lab-shell" data-v2-frame-workshop>
       <div className="lab-preview cinematic-preview" data-v2-frame-stage>
