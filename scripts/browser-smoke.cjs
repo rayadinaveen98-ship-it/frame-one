@@ -754,8 +754,13 @@ async function verify() {
   const studioResult=await verifyStudioParity(page,pilot,shots,'desktop');
   assert.equal(studioResult.comparedScreens,9);
   assert.ok(studioResult.resetVerified);
+  assert.equal(await page.locator('#progressLabel').textContent(),classicProgressBefore,
+    'Prototype missions and Lab demos never change real lesson progress');
   const realChapterTest=await verifyRealChapterOne(page,pilot,shots,'desktop');
   assert.equal(realChapterTest.validatedLessons,5);
+  const guidedProgressCount=await page.evaluate(()=>JSON.parse(localStorage.getItem('frameone-progress-v01')||'[]').length);
+  assert.equal(await page.locator('#progressLabel').textContent(),guidedProgressCount+'/33 lessons',
+    'Correctly completed real guided lessons DO update the original 33-lesson header');
   const pilotRect=await newJourney.evaluate(el=>{
     const rect=el.getBoundingClientRect();
     return {x:rect.x,y:rect.y,width:rect.width,height:rect.height,screenWidth:window.innerWidth,screenHeight:window.innerHeight};
@@ -767,8 +772,8 @@ async function verify() {
   await page.screenshot({path:path.join(shots,'28-option-b-pilot-desktop.png'),animations:'disabled',fullPage:false});
   await newJourney.locator('[data-option-b-exit]').click();
   await newJourney.waitFor({state:'detached'});
-  assert.equal(await page.locator('#progressLabel').textContent(),classicProgressBefore,
-    'Prototype completion never changes real lesson progress');
+  assert.equal(await page.locator('#progressLabel').textContent(),guidedProgressCount+'/33 lessons',
+    'Leaving guided Chapter 1 preserves actual verified real course completions');
   assert.equal(await page.locator('.app > .main').getAttribute('aria-hidden'),null,
     'Existing course accessibility is restored on Exit');
   assert.equal(await page.locator('[data-chapter-library] [data-chapter-index]').count(),6);
