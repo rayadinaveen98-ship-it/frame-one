@@ -1,0 +1,140 @@
+/* Frame One 2.0 · authentic React Colour Lab · approved Option B visual system.
+ * Scoped: original SVG, live 42%-cap overlay, neutral zero, keyboard slider,
+ * story briefs, seven lab routes and original backing data all remain. */
+.react-colour-lab.colour-v2{
+ --col-ink:#1c3442;--col-green:#55b97b;--col-paper:#fff;--col-mute:#678a81;
+ max-width:1150px;margin:0 auto;padding:clamp(10px,2.6vw,26px);border-radius:24px;
+ background:#f7fbf9;color:var(--col-ink);box-shadow:0 8px 32px #1434391c;
+ font-family:ui-rounded,"Avenir Next","Segoe UI",system-ui,sans-serif}
+.react-colour-lab.colour-v2 :is(h1,h2,h3){font-family:ui-rounded,"Avenir Next","Segoe UI",system-ui,sans-serif;
+ font-weight:900;letter-spacing:-.045em;color:#274e5d}
+.react-colour-lab.colour-v2 .eyebrow{font-size:10px;color:#338774;font-weight:900;letter-spacing:.12em}
+.react-colour-lab.colour-v2 .colour-v2-intro{margin:0 0 12px;border:1px solid #c3e7d7;
+ background:radial-gradient(ellipse at 90% 16%,#b7eedf,transparent 55%),
+ linear-gradient(125deg,#e9f9ec,#d9f2e9);border-radius:22px;padding:22px 25px 17px;
+ box-shadow:0 5px 0 #d8e9df;overflow:hidden}
+.react-colour-lab.colour-v2 .colour-v2-kicker{display:flex;align-items:center;justify-content:space-between;
+ flex-wrap:wrap;gap:8px}
+.react-colour-lab.colour-v2 .colour-v2-course-tag{color:#267762;background:#ffffffbb;border:1px solid #b4ddc8;
+ padding:7px 10px;border-radius:22px;font-size:9px;font-weight:900;letter-spacing:.04em}
+.react-colour-lab.colour-v2 .colour-v2-hero{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.react-colour-lab.colour-v2 .colour-v2-hero h1{font-size:clamp(27px,3.6vw,43px);line-height:1.13;margin:12px 0 8px}
+.react-colour-lab.colour-v2 .colour-v2-hero p{font-size:13px;line-height:1.6;color:#52796f;max-width:590px;margin:0}
+.react-colour-lab.colour-v2 .colour-v2-palette-art{width:90px;flex:0 0 90px;height:auto;
+ filter:drop-shadow(0 7px 11px #396b6323)}
+.react-colour-lab.colour-v2 .colour-v2-live-status{display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+ padding:11px 12px;border-radius:13px;border:1px solid #badfc9;background:#ffffffd9;margin-top:15px}
+.react-colour-lab.colour-v2 .colour-v2-status-dot{width:10px;height:10px;flex:0 0 10px;
+ border-radius:50%;background:#55b97b;box-shadow:0 0 0 4px #d9f6e4}
+.react-colour-lab.colour-v2 .colour-v2-live-status strong{font-size:13px;color:#2b7862}
+.react-colour-lab.colour-v2 .colour-v2-live-status>span:last-child{font-size:10px;color:#5a8175;margin-left:auto}
+.react-colour-lab.colour-v2 .colour-v2-quick-jump{display:flex;justify-content:space-between;align-items:center;
+ gap:9px;background:#fff;border:1px solid #d7e9dd;border-radius:12px;padding:8px 11px;margin:13px 0 8px}
+.react-colour-lab.colour-v2 .colour-v2-quick-jump>span{font-size:9px;white-space:nowrap}
+.react-colour-lab.colour-v2 .colour-v2-quick-jump>div{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.react-colour-lab.colour-v2 .colour-v2-quick-jump button{background:#eaf7ed;border:1px solid #b9dec7;
+ color:#2a7566;border-radius:10px;padding:10px 12px;font-weight:850;font-size:11px;min-height:44px;white-space:nowrap}
+.react-colour-lab.colour-v2 .colour-v2-observe{display:flex;align-items:center;gap:9px;border:1px solid #dceae1;
+ border-radius:12px;background:#fff;padding:9px 13px;margin-bottom:11px}
+.react-colour-lab.colour-v2 .colour-v2-observe>span{background:#e5f5ea;color:#34836f;border-radius:9px;
+ width:28px;height:28px;flex:0 0 28px;display:grid;place-items:center}
+.react-colour-lab.colour-v2 .colour-v2-observe p{margin:0;font-size:11px;line-height:1.5;color:#60847b}
+.react-colour-lab.colour-v2 .colour-v2-observe strong{color:#347b6d}
+.react-colour-lab.colour-v2 .colour-shell{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(280px,.82fr);
+ gap:13px;align-items:start;border:0;background:none;box-shadow:none;overflow:visible;margin:0;padding:0}
+.react-colour-lab.colour-v2 .colour-compare{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;
+ background:#fff;border:1px solid #d6e9de;box-shadow:0 5px 0 #e0eee6;
+ border-radius:20px;padding:15px;min-width:0}
+.react-colour-lab.colour-v2 .colour-compare>div{min-width:0}
+.react-colour-lab.colour-v2 .colour-compare>div>.eyebrow{display:block;line-height:1.45;margin:0 3px 8px}
+.react-colour-lab.colour-v2 .colour-compare .scene-stage{width:100%;height:auto;min-height:0;
+ aspect-ratio:16/9;overflow:hidden;border-radius:13px;border:3px solid #edf6ef;
+ box-shadow:0 2px 0 #d4e7dc;background:#284c59}
+.react-colour-lab.colour-v2 .colour-picture{position:relative;overflow:hidden;border-radius:13px;
+ isolation:isolate;background:#264958}
+.react-colour-lab.colour-v2 .colour-compare .colour-grade{position:absolute;inset:0;
+ pointer-events:none;border-radius:13px;mix-blend-mode:color;transition:opacity .22s ease}
+.react-colour-lab.colour-v2 .colour-panel{min-width:0;border:1px solid #d7e9de;background:#fff;
+ border-radius:20px;padding:17px;box-shadow:0 5px 0 #e0eee6;margin:0;color:#2c5660}
+.react-colour-lab.colour-v2 .colour-panel h3{font-size:clamp(21px,2.5vw,28px);line-height:1.18;margin:7px 0 9px}
+.react-colour-lab.colour-v2 .colour-v2-control-intro{font-size:12px;color:#65847a;line-height:1.62;margin:0 0 10px}
+.react-colour-lab.colour-v2 .colour-v2-control-label{display:flex;justify-content:space-between;align-items:center;
+ gap:9px;margin:14px 0 9px}
+.react-colour-lab.colour-v2 .colour-v2-control-label>span:last-child{color:#96aa9f;
+ font-size:9px;font-weight:850}
+.react-colour-lab.colour-v2 .colour-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:6px;margin:0 0 15px}
+.react-colour-lab.colour-v2 .colour-choices .lab-choice{display:flex;align-items:center;
+ justify-content:center;flex-direction:column;min-width:0;min-height:98px;gap:8px;
+ border:1px solid #d4e7d9;background:#f6fbf8;color:#336b64;
+ padding:10px 6px;text-align:center;border-radius:12px;box-shadow:0 2px 0 #e8f0e9}
+.react-colour-lab.colour-v2 .colour-choices .lab-choice[aria-pressed=true]{border-color:#5cba8a;
+ background:#dff6e8;box-shadow:inset 0 0 0 1px #93d4aa,0 2px 0 #cde7d6}
+.react-colour-lab.colour-v2 .colour-dot{display:block;flex:0 0 22px;width:22px;height:22px;
+ border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #b6d7c5}
+.react-colour-lab.colour-v2 .colour-choices strong{font-size:10.5px;line-height:1.25;
+ color:#38656b;overflow-wrap:anywhere}
+.react-colour-lab.colour-v2 .colour-panel label{color:#336a65;display:flex;
+ justify-content:space-between;align-items:center;gap:10px;font-size:12px;font-weight:850}
+.react-colour-lab.colour-v2 #colourStrengthValue{background:#dcf5e5;color:#237058;
+ border:1px solid #b7dfc9;border-radius:8px;padding:5px 9px;font-size:13px;font-weight:900}
+.react-colour-lab.colour-v2 #colourStrength{width:100%;accent-color:#319e78;min-height:36px;margin:10px 0 6px}
+.react-colour-lab.colour-v2 .result-box{border:1px solid #cbe7d7;background:linear-gradient(130deg,#f0fbf4,#e9f8ee);
+ border-radius:13px;padding:13px;margin:13px 0}
+.react-colour-lab.colour-v2 .result-box strong{font-size:10px;color:#2b7f66}
+.react-colour-lab.colour-v2 .result-box p{color:#5b7b74;font-size:12px;line-height:1.6;margin:8px 0 0}
+.react-colour-lab.colour-v2 .studio-fact{background:#f7faf8;border-left:3px solid #87c9a7;
+ border-radius:9px;color:#66867d;font-size:11px;line-height:1.55;padding:11px;margin:12px 0}
+.react-colour-lab.colour-v2 .colour-panel .btn-secondary{min-height:44px;border:1px solid #bfe1cf;
+ background:#f5faf7;color:#2c7968;border-radius:11px;font-weight:850;font-size:11px}
+.react-colour-lab.colour-v2 .colour-story-briefs{background:#fff;color:#2c5d62;
+ border:1px solid #d3e7dc;box-shadow:0 4px 0 #dfeee6;border-radius:18px;
+ margin:17px 0}
+.react-colour-lab.colour-v2 .colour-story-briefs summary{color:#2e6066}
+.react-colour-lab.colour-v2 .colour-story-briefs :is(h2,h3,strong){color:#2b6667}
+.react-colour-lab.colour-v2 .colour-story-briefs :is(p,small){color:#628079}
+.react-colour-lab.colour-v2 .colour-story-briefs button{background:#f5faf7;border:1px solid #c9e3d5;
+ color:#2c7968;border-radius:10px;min-height:44px}
+.react-colour-lab.colour-v2 .colour-story-briefs [aria-pressed=true]{background:#dcf4e7;border-color:#64bc90;color:#207355}
+.react-colour-lab.colour-v2 .colour-brief-feedback{background:#ebf7ee;border:1px solid #c9e6d4;
+ border-left:3px solid #55b97b;color:#2d785f;border-radius:13px;padding:13px}
+.react-colour-lab.colour-v2 .colour-v2-other-tools{border:1px solid #d6e9dc;background:#fff;
+ border-radius:16px;padding:14px 17px;margin-top:15px}
+.react-colour-lab.colour-v2 .colour-v2-other-tools p{font-size:11px;color:#64877b;
+ line-height:1.5;margin:6px 0 13px}
+.react-colour-lab.colour-v2 .lab-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0}
+.react-colour-lab.colour-v2 .lab-tab{border:1px solid #cee7d9;background:#f5fbf7;color:#397769;
+ border-radius:11px;min-height:44px;padding:10px 6px;font-size:11px;font-weight:850}
+.react-colour-lab.colour-v2 .lab-tab[aria-pressed=true]{background:#d8f4e4;border-color:#61bd8c;color:#237456}
+.react-colour-lab.colour-v2 :is(button,input,summary):focus-visible{outline:3px solid #29739e;outline-offset:3px}
+@media(max-width:900px){
+ .react-colour-lab.colour-v2 .colour-shell{grid-template-columns:minmax(0,1fr)}
+ .react-colour-lab.colour-v2 .colour-compare{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:600px){
+ .react-colour-lab.colour-v2{padding:12px;border-radius:17px}
+ .react-colour-lab.colour-v2 .colour-v2-intro{padding:16px}
+ .react-colour-lab.colour-v2 .colour-v2-hero h1{font-size:clamp(27px,7.5vw,35px)}
+ .react-colour-lab.colour-v2 .colour-v2-palette-art{width:62px;flex-basis:62px}
+ .react-colour-lab.colour-v2 .colour-v2-live-status>span:last-child{margin-left:20px}
+ .react-colour-lab.colour-v2 .colour-compare{grid-template-columns:minmax(0,1fr);padding:11px;gap:12px}
+ .react-colour-lab.colour-v2 .colour-panel{padding:13px}
+ .react-colour-lab.colour-v2 .lab-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:360px){
+ .react-colour-lab.colour-v2{padding:9px}
+ .react-colour-lab.colour-v2 .colour-v2-intro{padding:12px}
+ .react-colour-lab.colour-v2 .colour-v2-hero h1{font-size:26px}
+ .react-colour-lab.colour-v2 .colour-v2-palette-art{width:47px;flex-basis:47px}
+ .react-colour-lab.colour-v2 .colour-v2-course-tag{font-size:8px;padding:6px}
+ .react-colour-lab.colour-v2 .colour-v2-quick-jump{flex-wrap:wrap;gap:6px}
+ .react-colour-lab.colour-v2 .colour-v2-quick-jump>div{width:100%;gap:4px;justify-content:space-between}
+ .react-colour-lab.colour-v2 .colour-v2-quick-jump button{flex:1;min-width:0;font-size:10px;padding:10px 5px}
+ .react-colour-lab.colour-v2 .colour-choices .lab-choice{padding:8px 4px;min-height:89px}
+ .react-colour-lab.colour-v2 .colour-choices strong{font-size:9.5px}
+ .react-colour-lab.colour-v2 .lab-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){
+ .react-colour-lab.colour-v2 *,.react-colour-lab.colour-v2 *::before,
+ .react-colour-lab.colour-v2 *::after{animation:none!important;transition:none!important}
+}

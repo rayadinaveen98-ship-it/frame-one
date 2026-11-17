@@ -1,0 +1,240 @@
+/* Frame One 2.0 — LIVE Frame Lab Option B. The original bus-stop SVG,
+ * crop math, slider, guides, comparison, lesson and scene briefs are retained.
+ * New styles are scoped and never change the locked six-mission prototype. */
+.react-frame-lab.frame-v2{
+ --f-ink:#1c3442;--f-teal:#1e8b82;--f-mint:#55b97b;--f-line:#dbe9e7;
+ --f-paper:#fff;--f-muted:#587b79;
+ max-width:1150px;margin:0 auto;padding:clamp(10px,2.6vw,26px);
+ background:#f7fbf9;border-radius:25px;color:var(--f-ink);
+ box-shadow:0 8px 32px #14344420;font-family:ui-rounded,"Avenir Next","Segoe UI",system-ui,sans-serif;
+}
+.react-frame-lab.frame-v2 :is(h1,h2,h3){color:#224856;
+ font-family:ui-rounded,"Avenir Next","Segoe UI",system-ui,sans-serif;
+ font-weight:900;letter-spacing:-.045em}
+.react-frame-lab.frame-v2 .eyebrow{color:#358b7c;font-size:10px;font-weight:900;letter-spacing:.12em}
+.react-frame-lab.frame-v2 .frame-v2-intro{
+ margin:0 0 13px;max-width:none;border:1px solid #c4e8d9;
+ background:radial-gradient(ellipse at 91% 12%,#b9eddc,transparent 53%),
+ linear-gradient(130deg,#e9f9ee,#d8f2e9);
+ box-shadow:0 5px 0 #d4e9e0;border-radius:21px;padding:22px 25px 17px;
+ overflow:hidden;color:#224856
+}
+.react-frame-lab.frame-v2 .frame-v2-intro:after{display:none}
+.react-frame-lab.frame-v2 .frame-v2-kicker{display:flex;gap:8px;justify-content:space-between;
+ align-items:center;flex-wrap:wrap}
+.react-frame-lab.frame-v2 .frame-v2-course-tag{font-size:9px;line-height:1.2;
+ padding:7px 10px;color:#287c69;border:1px solid #b4dbce;
+ border-radius:30px;background:#ffffffc2;font-weight:900;letter-spacing:.045em}
+.react-frame-lab.frame-v2 .frame-v2-hero{display:flex;align-items:center;
+ justify-content:space-between;gap:8px}
+.react-frame-lab.frame-v2 .frame-v2-intro h1{color:#234b5d;
+ font-size:clamp(28px,3.6vw,43px);line-height:1.13;letter-spacing:-.05em;
+ margin:12px 0 9px}
+.react-frame-lab.frame-v2 .frame-v2-intro p{font-size:13px;color:#537c75;
+ max-width:570px;line-height:1.62;margin:0 0 4px}
+.react-frame-lab.frame-v2 .frame-v2-art{width:92px;height:auto;flex:0 0 92px;
+ filter:drop-shadow(0 9px 11px #3d786b2b)}
+.react-frame-lab.frame-v2 .frame-v2-live-status{display:flex;align-items:center;
+ gap:10px;padding:9px 11px;margin-top:15px;background:#ffffffd9;
+ border:1px solid #bce0d1;border-radius:14px;min-width:0}
+.react-frame-lab.frame-v2 .frame-v2-status-dot{width:10px;height:10px;flex:0 0 10px;
+ border-radius:50%;background:#51b981;box-shadow:0 0 0 4px #d8f5e3}
+.react-frame-lab.frame-v2 .frame-v2-status-text{display:flex;align-items:baseline;
+ gap:8px;flex-wrap:wrap;min-width:0}
+.react-frame-lab.frame-v2 .frame-v2-status-text strong{color:#2b6b67;
+ font-size:13px;font-weight:900}
+.react-frame-lab.frame-v2 .frame-v2-status-text small{color:#6b8e86;font-size:10px}
+.react-frame-lab.frame-v2 .frame-v2-status-pills{display:flex;gap:5px;
+ flex-wrap:wrap;margin-left:auto;justify-content:flex-end}
+.react-frame-lab.frame-v2 .frame-v2-status-pills span{padding:5px 7px;font-size:9px;
+ font-weight:800;color:#3e8472;background:#e3f5ea;border-radius:7px;white-space:nowrap}
+.react-frame-lab.frame-v2 .frame-v2-focus-note{display:flex;align-items:center;gap:9px;
+ padding:9px 14px;margin:15px 0 10px;border-radius:12px;border:1px solid #dae9df;
+ background:#fff;color:#4d7770}
+.react-frame-lab.frame-v2 .frame-v2-focus-icon{display:grid;place-items:center;width:26px;height:26px;
+ flex:0 0 26px;border-radius:9px;background:#ddf2e3;color:#388e72;font-size:16px}
+.react-frame-lab.frame-v2 .frame-v2-focus-note p{color:#557d75;font-size:11px;line-height:1.5;margin:0}
+.react-frame-lab.frame-v2 .frame-v2-focus-note strong{color:#337e70;letter-spacing:.04em}
+.react-frame-lab.frame-v2 .lab-shell.cinematic-lab-shell{display:grid;
+ grid-template-columns:minmax(0,1.13fr) minmax(290px,.87fr);
+ gap:13px;align-items:start;overflow:visible;background:none;
+ border:0;box-shadow:none;min-width:0}
+.react-frame-lab.frame-v2 .lab-preview.cinematic-preview{
+ padding:12px;background:#fff;border:1px solid #d4e7dd;
+ border-radius:20px;box-shadow:0 4px 0 #dcece4;
+ top:auto;position:relative;min-width:0;min-height:0
+}
+.react-frame-lab.frame-v2 .frame-v2-stage-head{display:flex;
+ align-items:center;justify-content:space-between;gap:8px;
+ padding:4px 5px 11px}
+.react-frame-lab.frame-v2 .frame-v2-stage-head>div{display:flex;
+ flex-direction:column;gap:3px}
+.react-frame-lab.frame-v2 .frame-v2-stage-head strong{
+ font-size:14px;line-height:1.2;color:#2c5764}
+.react-frame-lab.frame-v2 .frame-v2-stage-head>span{font-size:9px;
+ font-weight:900;letter-spacing:.05em;color:#90a89e;text-align:right}
+.react-frame-lab.frame-v2 .react-cinema-scene{min-width:0;width:100%}
+.react-frame-lab.frame-v2 .scene-stage{border-radius:14px;border:3px solid #ebf5ed;
+ box-shadow:0 2px 0 #d5e8df;width:100%;aspect-ratio:16/9;height:auto;
+ min-height:0;overflow:hidden}
+.react-frame-lab.frame-v2 .lab-hint{font-size:10px;line-height:1.65;
+ margin:11px 4px 3px;color:#65837d}
+.react-frame-lab.frame-v2 .frame-comparison{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:8px;min-width:0;background:#f3faf5;border:1px solid #dceae1;border-radius:13px;
+ padding:8px}
+.react-frame-lab.frame-v2 .frame-comparison>div{min-width:0}
+.react-frame-lab.frame-v2 .frame-comparison .compare-tag{color:#3a8074;font-weight:900;
+ font-size:10px;display:block;min-height:25px;letter-spacing:.025em;line-height:1.4}
+.react-frame-lab.frame-v2 .lab-panel.film-controls{
+ padding:17px;border:1px solid #d5e9de;background:#fff;color:#2d5865;
+ border-radius:20px;box-shadow:0 4px 0 #deeee6;min-width:0
+}
+.react-frame-lab.frame-v2 .film-controls h3{color:#244c59;line-height:1.17;
+ font-size:clamp(23px,2.5vw,29px);margin:8px 0}
+.react-frame-lab.frame-v2 .film-controls>p{font-size:12px;line-height:1.65;color:#65817b}
+.react-frame-lab.frame-v2 .frame-v2-control-label{display:flex;
+ align-items:center;justify-content:space-between;gap:8px;margin-top:15px}
+.react-frame-lab.frame-v2 .frame-v2-control-label>span:last-child{font-size:9px;
+ color:#9ab0a7;font-weight:900;text-align:right}
+.react-frame-lab.frame-v2 .lab-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+ gap:6px;margin:9px 0 12px}
+.react-frame-lab.frame-v2 .lab-choice{
+ padding:11px 8px;min-height:88px;min-width:0;text-align:left;
+ display:flex;flex-direction:column;gap:7px;justify-content:center;
+ background:#f4faf6;color:#386f69;border:1px solid #d4e9dd;
+ border-radius:12px;box-shadow:0 2px 0 #e8f0ea
+}
+.react-frame-lab.frame-v2 .lab-choice[aria-pressed=true]{
+ background:#dbf5e5;border:1px solid #59bd88;color:#1f785d;
+ box-shadow:0 2px 0 #c9e9d6,inset 0 0 0 1px #80d3a3
+}
+.react-frame-lab.frame-v2 .lab-choice strong{color:#2e6067;font-size:12px;line-height:1.2}
+.react-frame-lab.frame-v2 .lab-choice span{font-size:9px;
+ color:#708a82;line-height:1.4;overflow-wrap:anywhere}
+.react-frame-lab.frame-v2 .lab-choice[aria-pressed=true] span{color:#357a63}
+.react-frame-lab.frame-v2 .studio-slider{margin:9px 0 12px;
+ border:1px solid #d8e9de;background:#f4faf7;border-radius:13px;
+ padding:12px;box-shadow:none}
+.react-frame-lab.frame-v2 .studio-slider label{color:#346568;font-size:12px}
+.react-frame-lab.frame-v2 .studio-slider output{font-size:14px;font-weight:950;
+ color:#29876c}
+.react-frame-lab.frame-v2 .studio-slider input[type=range]{accent-color:#359c7c;
+ min-height:32px;width:100%}
+.react-frame-lab.frame-v2 .slider-ends{display:flex;justify-content:space-between;gap:6px}
+.react-frame-lab.frame-v2 .slider-ends span{font-size:9px;line-height:1.35;color:#79988d}
+.react-frame-lab.frame-v2 .lab-tool-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:7px;margin:8px 0 14px}
+.react-frame-lab.frame-v2 .lab-tool-row button{font-size:11px;
+ border:1px solid #badccc;background:#f7fbf8;color:#397a70;
+ border-radius:11px;padding:10px 8px;min-height:46px;min-width:0;
+ white-space:normal;line-height:1.4;font-weight:850}
+.react-frame-lab.frame-v2 .lab-tool-row button[aria-pressed=true]{
+ background:#dbf5e5;border-color:#6aba96;color:#24765d}
+.react-frame-lab.frame-v2 .result-box{border-radius:14px;padding:13px;
+ border:1px solid #c9e7d4;background:linear-gradient(140deg,#f0fbf4,#e7f7ee);
+ box-shadow:none}
+.react-frame-lab.frame-v2 .result-box strong{color:#287e64;font-size:10px}
+.react-frame-lab.frame-v2 .result-box p{font-size:12px;
+ color:#527e77;line-height:1.65;margin:7px 0 0}
+.react-frame-lab.frame-v2 .studio-fact{
+ border-left:3px solid #83caa1;padding:9px 11px;background:#f7faf8;
+ border-radius:9px;color:#6c8780!important;font-size:11px!important;
+ line-height:1.6!important;margin-top:14px}
+.react-frame-lab.frame-v2 .studio-next{display:flex;gap:8px;flex-wrap:wrap;
+ border:1px solid #dfede5;border-radius:13px;background:#f5fbf7;
+ margin-top:15px;padding:12px}
+.react-frame-lab.frame-v2 .studio-next>span{color:#528a78;font-size:9px;font-weight:900}
+.react-frame-lab.frame-v2 .studio-next .btn-secondary{background:#fff;color:#347d6f;
+ border:1px solid #c0dfcf;border-radius:10px;font-size:10px;min-height:44px;
+ box-shadow:none}
+.react-frame-lab.frame-v2 .framing-intention{
+ background:#fff;border:1px solid #d4e8dc;border-radius:18px;
+ margin:17px 0 19px;box-shadow:0 4px 0 #dfede5
+}
+.react-frame-lab.frame-v2 .framing-intention-summary strong{color:#29535f}
+.react-frame-lab.frame-v2 .framing-intention-summary small{color:#66877d}
+.react-frame-lab.frame-v2 .framing-intention-chevron{color:#29967b}
+.react-frame-lab.frame-v2 .framing-intention-body{border-top-color:#deede4}
+.react-frame-lab.frame-v2 .framing-intention-options button{
+ color:#3e756d;background:#f4faf6;border:1px solid #d5e6dc}
+.react-frame-lab.frame-v2 .framing-intention-options button[aria-pressed=true]{
+ color:#267258;background:#d8f4e3;border-color:#65b893}
+.react-frame-lab.frame-v2 .framing-intention-scene{color:#3e696a}
+.react-frame-lab.frame-v2 .framing-intention-scene strong{color:#2a8973}
+.react-frame-lab.frame-v2 .framing-intention-question{color:#2d5763}
+.react-frame-lab.frame-v2 .framing-intention-actions button{
+ color:#2b796a;background:#f3faf5;border:1px solid #c5e2d3;border-radius:10px}
+.react-frame-lab.frame-v2 .framing-intention-feedback{
+ background:#eaf7ef;border:1px solid #c6e6d2;border-left:3px solid #59b887}
+.react-frame-lab.frame-v2 .framing-intention-feedback strong{color:#297967}
+.react-frame-lab.frame-v2 .framing-intention-feedback p{color:#4f716d}
+.react-frame-lab.frame-v2 .framing-intention-feedback small{color:#708c82}
+.react-frame-lab.frame-v2 .framing-intention-practice{color:#5c8177;border-top-color:#e0eae2}
+.react-frame-lab.frame-v2 .framing-intention-practice strong{color:#2b8070}
+.react-frame-lab.frame-v2 .frame-v2-other-tools{
+ background:#fff;border:1px solid #d4e8df;border-radius:16px;
+ padding:14px 17px;box-shadow:0 3px 0 #e1eee7
+}
+.react-frame-lab.frame-v2 .frame-v2-other-tools>p{
+ color:#64867c;font-size:11px;line-height:1.5;margin:6px 0 13px}
+.react-frame-lab.frame-v2 .lab-tabs{margin:0;display:grid;
+ grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.react-frame-lab.frame-v2 .lab-tab{color:#3e746d;border:1px solid #cee4d9;
+ background:#f5faf7;border-radius:11px;min-height:45px;padding:10px 6px;
+ font-size:11px;font-weight:800}
+.react-frame-lab.frame-v2 .lab-tab[aria-pressed=true]{
+ background:#d7f4e3;border-color:#5eb68f;color:#1f775b}
+.react-frame-lab.frame-v2 :is(button,input,summary):focus-visible{
+ outline:3px solid #246d9c;outline-offset:3px}
+@media(max-width:900px){
+ .react-frame-lab.frame-v2 .lab-shell.cinematic-lab-shell{
+ grid-template-columns:minmax(0,1fr)}
+ .react-frame-lab.frame-v2 .lab-preview.cinematic-preview{position:relative;top:auto}
+}
+@media(max-width:600px){
+ .react-frame-lab.frame-v2{padding:12px;border-radius:18px}
+ .react-frame-lab.frame-v2 .frame-v2-intro{padding:16px}
+ .react-frame-lab.frame-v2 .frame-v2-intro h1{font-size:clamp(26px,7.4vw,35px)}
+ .react-frame-lab.frame-v2 .frame-v2-art{width:63px;flex-basis:63px}
+ .react-frame-lab.frame-v2 .frame-v2-live-status{flex-wrap:wrap}
+ .react-frame-lab.frame-v2 .frame-v2-status-pills{width:100%;margin-left:21px;justify-content:start}
+ .react-frame-lab.frame-v2 .frame-comparison{grid-template-columns:minmax(0,1fr)}
+ .react-frame-lab.frame-v2 .frame-comparison .scene-stage{aspect-ratio:16/9}
+ .react-frame-lab.frame-v2 .lab-panel.film-controls{padding:13px}
+ .react-frame-lab.frame-v2 .lab-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .react-frame-lab.frame-v2 .lab-choice{padding:9px 6px;min-height:95px}
+ .react-frame-lab.frame-v2 .lab-choice strong{font-size:10.5px}
+ .react-frame-lab.frame-v2 .lab-choice span{font-size:9px}
+}
+@media(max-width:360px){
+ .react-frame-lab.frame-v2{padding:9px}
+ .react-frame-lab.frame-v2 .frame-v2-intro{padding:12px}
+ .react-frame-lab.frame-v2 .frame-v2-art{width:49px;flex-basis:49px}
+ .react-frame-lab.frame-v2 .frame-v2-course-tag{font-size:8px;padding:6px}
+ .react-frame-lab.frame-v2 .frame-v2-intro h1{font-size:26px}
+ .react-frame-lab.frame-v2 .lab-preview.cinematic-preview{padding:8px}
+ .react-frame-lab.frame-v2 .frame-v2-stage-head strong{font-size:12px}
+ .react-frame-lab.frame-v2 .frame-v2-stage-head>span{font-size:8px}
+ .react-frame-lab.frame-v2 .lab-tool-row{gap:5px}
+ .react-frame-lab.frame-v2 .lab-tool-row button{font-size:10px}
+ .react-frame-lab.frame-v2 .lab-choice{padding:7px 5px;min-height:95px}
+ .react-frame-lab.frame-v2 .lab-choice span{font-size:8px}
+ .react-frame-lab.frame-v2 .lab-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){
+ .react-frame-lab.frame-v2 .react-cinema-scene *,
+ .react-frame-lab.frame-v2 :is(button,.framing-intention-chevron){animation:none!important;transition:none!important}
+}
+
+.react-frame-lab.frame-v2 .frame-v2-quick-jump{display:flex;gap:10px;align-items:center;justify-content:space-between;
+ border:1px solid #d3e7da;border-radius:12px;background:#fff;padding:8px 11px;margin:12px 0 2px}
+.react-frame-lab.frame-v2 .frame-v2-quick-jump>span{font-size:9px;white-space:nowrap}
+.react-frame-lab.frame-v2 .frame-v2-quick-jump>div{display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap}
+.react-frame-lab.frame-v2 .frame-v2-quick-jump button{border:1px solid #b9ddcb;border-radius:10px;
+ background:#eaf7ee;color:#2b7868;min-height:44px;padding:9px 12px;font-size:11px;font-weight:850;white-space:nowrap}
+.react-frame-lab.frame-v2 .frame-v2-quick-jump button:focus-visible{outline:3px solid #2773a5;outline-offset:2px}
+@media(max-width:360px){
+ .react-frame-lab.frame-v2 .frame-v2-quick-jump{flex-wrap:wrap;gap:6px}
+ .react-frame-lab.frame-v2 .frame-v2-quick-jump>div{width:100%;justify-content:space-between;gap:4px}
+ .react-frame-lab.frame-v2 .frame-v2-quick-jump button{flex:1;min-width:0;padding:9px 5px;font-size:10px}
+}

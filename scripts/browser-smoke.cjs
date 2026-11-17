@@ -12,7 +12,17 @@ const {screenshotPhone,comparePixels}=require('./option-b-pixel-parity.cjs');
 const {verifyMissionParity}=require('./option-b-mission-parity.cjs');
 const {verifyStudioParity}=require('./option-b-studio-parity.cjs');
 const {verifyRealChapterOne}=require('./v2-real-chapter-qa.cjs');
-const base = 'http://127.0.0.1:4173';
+const {verifyRealChapterTwo}=require('./v2-real-story-qa.cjs');
+const {verifyRealChapterThree}=require('./v2-real-visual-qa.cjs');
+const {verifyRealChapterFour}=require('./v2-real-sound-qa.cjs');
+const {verifyRealChapterFive}=require('./v2-real-people-qa.cjs');
+const {verifyRealChapterSix}=require('./v2-real-first-film-qa.cjs');
+const {verifyRealLabsBridge}=require('./v2-real-labs-qa.cjs');
+const {verifyProductionDefault}=require('./v2-production-default-qa.cjs');
+// Original full v0.9 migration smoke explicitly enters the retained Classic
+// experience. A separate real-browser suite tests the new production default.
+const base = 'http://127.0.0.1:4173/?classic=1';
+const productionBase = 'http://127.0.0.1:4173/';
 const shots = path.resolve(__dirname, '../qa/screenshots');
 fs.mkdirSync(shots, { recursive: true });
 const server = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--host', '127.0.0.1', '--port', '4173', '--strictPort'], {
@@ -63,13 +73,22 @@ async function verifyRealChapterIsolated(width,label){
     const source=fresh.frameLocator('[data-option-b-frame]');
     await source.locator('.home-hero').waitFor();
     const result=await verifyRealChapterOne(fresh,source,shots,label);
+    const storyResult=await verifyRealChapterTwo(fresh,source,shots,label);
+    const visualResult=await verifyRealChapterThree(fresh,source,shots,label);
+    const soundResult=await verifyRealChapterFour(fresh,source,shots,label);
+    const peopleResult=await verifyRealChapterFive(fresh,source,shots,label);
+    const firstFilmResult=await verifyRealChapterSix(fresh,source,shots,label);
+    const labsResult=await verifyRealLabsBridge(fresh,source,shots,label);
     await fresh.locator('[data-option-b-exit]').click();
-    return result;
+    return {...result,storyLessonsValidated:storyResult.validatedLessons,visualLessonsValidated:visualResult.validated,soundLessonsValidated:soundResult.validated,peopleLessonsValidated:peopleResult.validated,firstFilmLessonsValidated:firstFilmResult.validated,realLabsChecked:labsResult.labsChecked};
   }finally{await isolated.close();}
 }
 async function verify() {
   await ready();
   browser = await chromium.launch({ headless: true, args: ['--no-sandbox'], ...(process.env.FRAMEONE_BROWSER_CHANNEL==='chrome'?{channel:'chrome'}:{}) });
+  // Default must be tested in the same real browser as the old migration
+  // paths, but NOT in their storage profile or behind a fake reference tab.
+  await verifyProductionDefault(browser,productionBase,shots);
   // Premium 4-second boot is measured on a real compiled, non-reduced viewport.
   // Existing learning-flow contexts intentionally prefer reduced motion.
   const launchContext=await browser.newContext({
@@ -891,10 +910,37 @@ async function verify() {
   await page.locator('.react-continuity-lab').waitFor({ state: 'detached' });
   const framing = page.locator('.react-frame-lab');
   await framing.waitFor();
+  assert.equal(await framing.locator('.frame-v2-quick-jump [data-lab="story"]').count(),1,
+    'Default real Frame Lab must offer a visible Make shortcut before the long edit exercise');
+  assert.equal(await framing.getAttribute('data-v2-frame-screen'),'true',
+    'The working Frame Lab, not the preview prototype, owns the new Option B design');
+  assert.equal(await framing.locator('[data-v2-frame-stage]').count(),1,
+    'The real SVG must be in the first large visual stage');
+  const frameAlignment=await framing.evaluate(root=>{
+    const stage=root.querySelector('[data-v2-frame-stage]');
+    const controls=root.querySelector('[data-v2-frame-controls]');
+    if(!stage||!controls)return null;
+    return {position:getComputedStyle(stage).position,
+      difference:Math.abs(stage.getBoundingClientRect().top-controls.getBoundingClientRect().top)};
+  });
+  assert.equal(frameAlignment?.position,'relative',
+    'Frame Lab picture must not remain sticky and drift down the desktop screenshot');
+  assert.ok(frameAlignment&&frameAlignment.difference<=6,
+    'Frame picture must align vertically with the real controls on desktop');
+  assert.equal(await framing.locator('[data-v2-frame-controls]').count(),1,
+    'The original functional inspector must remain in the real editor');
+  const frameSceneFirst=await framing.evaluate(root=>Boolean(
+    root.querySelector('[data-v2-frame-stage]')?.compareDocumentPosition(
+      root.querySelector('[data-v2-frame-controls]')) & Node.DOCUMENT_POSITION_FOLLOWING));
+  assert.equal(frameSceneFirst,true,'Original live picture must precede controls');
+  assert.match(await framing.locator('.frame-v2-status-text strong').textContent(),/Wide shot/);
+  await photo(page,'28-real-option-b-frame-desktop.png');
   assert.equal(await page.locator('#content').innerHTML(), '', 'React must own Frame Lab without hidden legacy markup');
   assert.equal(await framing.locator('.react-cinema-scene svg').count(), 1, 'Original illustration is retained');
   await framing.locator('[data-frame="medium"]').click();
   assert.equal(await framing.locator('[data-frame="medium"]').getAttribute('aria-pressed'), 'true');
+  assert.match(await framing.locator('.frame-v2-status-text strong').textContent(),/Medium shot/,
+    'Frame Lab hero reflects original working crop mode');
   assert.match(await framing.locator('.react-cinema-scene svg').getAttribute('viewBox'), /160\.00 90\.00 320\.00 180\.00/);
   const framingSlider = framing.locator('#frameZoom');
   await framingSlider.focus();
@@ -908,10 +954,19 @@ async function verify() {
   assert.equal(await framing.locator('.scene-stage.without-guides').count(), 1);
   await framing.locator('[data-compare]').click();
   assert.equal(await framing.locator('.frame-comparison svg').count(), 2);
+  assert.match(await framing.locator('.frame-comparison .compare-tag').last().textContent(),/TIGHT CROP/,
+    'Wide crop must compare to an actual tight original picture');
   assert.equal(await framing.locator('.frame-comparison .scene-stage.without-guides').count(), 2);
   await photo(page, '11-react-frame-desktop.png');
   await framing.locator('[data-frame="close"]').click();
   assert.equal(await framing.locator('#frameZoomValue').textContent(), '3.0×');
+  assert.match(await framing.locator('.frame-comparison .compare-tag').last().textContent(),/WIDE CROP/,
+    'Close-up must compare to wide shot rather than an identical 3× crop');
+  const comparedViewBoxes=await framing.locator('.frame-comparison svg').evaluateAll(
+    elements=>elements.map(svg=>svg.getAttribute('viewBox')));
+  assert.equal(comparedViewBoxes.length,2);
+  assert.notEqual(comparedViewBoxes[0],comparedViewBoxes[1],
+    'Actual SVG viewBoxes must differ even at maximum crop');
   await framing.locator('[data-compare]').click();
   assert.equal(await framing.locator('.frame-comparison').count(), 0);
   const framingBrief = framing.locator('.framing-intention');
@@ -943,11 +998,25 @@ async function verify() {
   await page.locator('.lab-tabs:visible [data-lab="colour"]').click();
   const colour = page.locator('.react-colour-lab');
   await colour.waitFor();
+  assert.equal(await colour.getAttribute('data-v2-colour-screen'),'true',
+    'Real working Colour Lab must use locked Option B studio design');
+  const colourSceneFirst=await colour.evaluate(root=>Boolean(
+    root.querySelector('[data-v2-colour-stage]')?.compareDocumentPosition(
+      root.querySelector('[data-v2-colour-controls]'))&Node.DOCUMENT_POSITION_FOLLOWING));
+  assert.equal(colourSceneFirst,true,'Original before/after SVGs must appear before the colour controls');
+  assert.equal(await colour.locator('[data-v2-colour-stage] svg').count(),2,
+    'Both original and treated views must use the original live SVG');
+  assert.match(await colour.locator('.colour-v2-live-status strong').textContent(),/Neutral illustration/);
+  assert.equal(await colour.locator('.colour-v2-quick-jump [data-lab="story"]').count(),1,
+    'Production Colour Lab needs a reachable real Make shortcut');
+  await photo(page,'36-real-option-b-colour-desktop.png');
   assert.equal(await page.locator('#content').innerHTML(), '', 'React must own Colour Lab without hidden legacy tabs');
   assert.equal(await colour.locator('.colour-compare svg').count(), 2, 'Keep both original SVG illustrations');
   assert.equal(await colour.locator('.colour-grade').evaluate(el => Number(getComputedStyle(el).opacity)), 0, 'Neutral mode must not apply an overlay');
   await colour.locator('[data-colour="warm"]').click();
   assert.equal(await colour.locator('[data-colour="warm"]').getAttribute('aria-pressed'), 'true');
+  assert.match(await colour.locator('.colour-v2-live-status strong').textContent(),/Warm overlay/,
+    'Production status must update with actual selected overlay');
   assert.match(await colour.locator('.result-box p').textContent(), /warm orange overlay/i);
   const range = colour.locator('#colourStrength');
   await range.focus();
@@ -1008,11 +1077,22 @@ async function verify() {
   await colour.waitFor({ state: 'detached' });
   const lighting = page.locator('.react-lighting-lab');
   await lighting.waitFor();
+  assert.equal(await lighting.getAttribute('data-v2-lighting-screen'),'true',
+    'The real working Lighting Lab, not a mockup, owns Option B production styling');
+  const stageAndControls=await lighting.evaluate(root=>Boolean(
+    root.querySelector('[data-v2-lighting-stage]')?.compareDocumentPosition(
+      root.querySelector('[data-v2-lighting-controls]')) & Node.DOCUMENT_POSITION_FOLLOWING));
+  assert.equal(stageAndControls,true,'Original lighting scene must appear before real controls');
+  assert.match(await lighting.locator('.lighting-v2-live-status strong').textContent(),/Front light/,
+    'Studio hero must display original live mode');
+  await photo(page,'30-real-option-b-lighting-desktop.png');
   assert.equal(await page.locator('#content').innerHTML(), '', 'React must own Lighting Lab without hidden legacy markup');
   assert.equal(await lighting.locator('#lightVisual svg').count(), 1, 'Keep original author-drawn lighting illustration');
   assert.match(await lighting.locator('#lightVisual [role="img"]').getAttribute('aria-label'), /front light/i);
   await lighting.locator('[data-light="side"]').click();
   assert.equal(await lighting.locator('[data-light="side"]').getAttribute('aria-pressed'), 'true');
+  assert.match(await lighting.locator('.lighting-v2-live-status strong').textContent(),/Side light/,
+    'Illustration and studio hero must reflect the same real setting');
   assert.equal(await lighting.locator('svg [filter*="shadeBlur"]').count(), 1, 'Side mode draws a controllable shadow');
   const brightnessSlider = lighting.locator('#lightPower');
   await brightnessSlider.focus();
@@ -1070,13 +1150,35 @@ async function verify() {
   await lighting.waitFor({ state:'detached' });
   const cut = page.locator('.react-cut-lab');
   await cut.waitFor();
+  assert.equal(await cut.getAttribute('data-v2-cut-screen'),'true',
+    'The real Cut Lab must display the redesigned production editor');
+  const cutStageFirst=await cut.evaluate(root=>Boolean(
+    root.querySelector('[data-v2-cut-stage]')?.compareDocumentPosition(
+      root.querySelector('[data-v2-cut-controls]'))&Node.DOCUMENT_POSITION_FOLLOWING));
+  assert.equal(cutStageFirst,true,'Original timed storyboard must precede working controls');
+  assert.equal(await cut.locator('[data-v2-cut-stage] .cut-illustration').count(),1);
+  assert.match(await cut.locator('.cut-v2-live-status strong').textContent(),/place/i);
+  await photo(page,'32-real-option-b-cut-desktop.png');
   assert.equal(await page.locator('#content').innerHTML(), '', 'React must own Cut Lab without hidden legacy markup');
   assert.equal(await cut.locator('.timeline-clip').count(), 3);
+  const clipContainment=await cut.locator('.timeline-clip').first().evaluate(clip=>{
+    const head=clip.querySelector('.clip-playhead');
+    if(!head)return false;
+    const a=clip.getBoundingClientRect(),b=head.getBoundingClientRect();
+    return b.width>0&&b.height>0&&b.left>=a.left-2&&b.right<=a.right+2&&
+      b.top>=a.top-2&&b.bottom<=a.bottom+2;
+  });
+  assert.equal(clipContainment,true,
+    'Animated clip progress must stay INSIDE its card instead of spanning the whole screen');
   assert.equal(await cut.locator('.cut-illustration.place').count(), 1, 'Original drawn establishing shot retained');
   // Give the first shot its own duration, then move it. The 4-second hold
   // belongs to that shot, not to an arbitrary timeline position.
-  await cut.locator('#shotDuration').focus();
-  await cut.locator('#shotDuration').press('End');
+  const cutDurationSlider=cut.locator('#shotDuration');
+  await cutDurationSlider.focus();
+  await cutDurationSlider.press('Home');
+  assert.equal(await cutDurationSlider.inputValue(),'1','Cut Lab range responds to keyboard Home');
+  for(let k=0;k<4;k++)await cutDurationSlider.press('ArrowRight');
+  assert.equal(await cutDurationSlider.inputValue(),'5','Four arrow steps move the actual slider to five seconds');
   assert.match(await cut.locator('.duration-control label').textContent(), /5 seconds/);
   await cut.locator('[data-move="0:right"]').click();
   assert.match(await cut.locator('.timeline-clip').nth(1).textContent(), /5s/);
@@ -1138,6 +1240,21 @@ async function verify() {
   await make.waitFor();
   assert.equal(await page.locator('#content').innerHTML(),'', 'React must own Make Lab without hidden legacy markup');
   assert.equal(await make.locator('.story-film-frame svg').count(),1,'Original vector storyboard preserved');
+  assert.equal(await make.getAttribute('data-v2-make-screen'),'true',
+    'Production Make Lab is redesigned in place, not replaced by the design demo');
+  const sceneBeforeProjects=await make.evaluate(root=>Boolean(
+    root.querySelector('[data-v2-make-scene-first]')?.compareDocumentPosition(
+      root.querySelector('[data-story-project-library]'))&Node.DOCUMENT_POSITION_FOLLOWING));
+  assert.equal(sceneBeforeProjects,true,'The real illustrated scene must precede the multi-project library in screen reader and visual order');
+  const currentProjectName=await make.locator('.make-v2-active-project strong').textContent();
+  assert.ok(currentProjectName&&currentProjectName.trim(),'Active project must show the real stored title');
+  await make.locator('[data-v2-make-manage]').click();
+  const managerHeading=make.locator('#make-project-library-title');
+  await managerHeading.waitFor();
+  assert.equal(await managerHeading.getAttribute('tabindex'),'-1',
+    'Manage projects should focus the correct accessible heading');
+  assert.equal(await make.locator('[data-story-project-library]').count(),1,
+    'The real project library remains reachable without losing saved work');
   const opening = await make.locator('[data-story-question="reunion"]').click();
   assert.equal(await make.locator('[data-story-question="reunion"]').getAttribute('aria-pressed'),'true');
   await make.locator('[data-story-shot="close"]').click();
@@ -1255,12 +1372,24 @@ async function verify() {
   await page.locator('.lab-tabs:visible [data-lab="continuity"]').click();
   const continuity = page.locator('.react-continuity-lab');
   await continuity.waitFor();
+  assert.equal(await continuity.getAttribute('data-v2-continuity-screen'),'true',
+    'Real working Match Lab must be styled in approved Option B visual language');
+  const sceneBeforeControls=await continuity.evaluate(root=>Boolean(
+    root.querySelector('[data-v2-continuity-stage]')?.compareDocumentPosition(
+      root.querySelector('[data-v2-continuity-controls]'))&Node.DOCUMENT_POSITION_FOLLOWING));
+  assert.equal(sceneBeforeControls,true,'Original two desk frames must precede matching choices');
+  assert.equal(await continuity.locator('[data-v2-continuity-stage] .continuity-desk').count(),2);
+  assert.match(await continuity.locator('.continuity-v2-live-status strong').textContent(),/positions match/i);
+  assert.equal(await continuity.locator('.continuity-v2-quick-jump [data-lab="story"]').count(),1);
+  await photo(page,'38-real-option-b-continuity-desktop.png');
   assert.equal(await page.locator('#content').innerHTML(), '', 'React must own continuity markup, without duplicated legacy content');
   await continuity.locator('[data-continuity="changed"]').click();
   assert.equal(await continuity.locator('[data-continuity="changed"]').getAttribute('aria-pressed'), 'true');
+  assert.match(await continuity.locator('.continuity-v2-live-status strong').textContent(),/position changed/i,
+    'Changing second shot prop position updates the live studio title');
   assert.equal(await continuity.locator('.continuity-cup.moved').count(), 1);
   assert.match(await continuity.locator('.result-box p').textContent(), /continuity mismatch/i);
-  await continuity.locator('[data-lab="frame"]').click();
+  await continuity.locator('.continuity-v2-quick-jump [data-lab="frame"]').click();
   await continuity.waitFor({ state: 'detached' });
   await page.locator('.react-frame-lab #frameZoom').waitFor();
   await page.locator('.lab-tabs:visible [data-lab="continuity"]').click();
@@ -1273,6 +1402,13 @@ async function verify() {
   await page.locator('.lab-tabs:visible [data-lab="sound"]').click();
   const sound=page.locator('.react-sound-lab');
   await sound.waitFor();
+  assert.equal(await sound.getAttribute('data-v2-sound-screen'),'true',
+    'The real Web Audio Sound Lab must use the Option B redesign');
+  const soundSceneFirst=await sound.evaluate(root=>Boolean(
+    root.querySelector('[data-v2-sound-stage]')?.compareDocumentPosition(
+      root.querySelector('[data-v2-sound-controls]'))&Node.DOCUMENT_POSITION_FOLLOWING));
+  assert.equal(soundSceneFirst,true,'Original Sound Lab scene must be before real audio controls');
+  await photo(page,'34-real-option-b-sound-desktop.png');
   assert.equal(await page.locator('#content').innerHTML(),'','React must own Sound Lab without legacy duplication');
   assert.equal(await sound.locator('.sound-wave span').count(),31);
   assert.equal(await sound.locator('.audio-picture svg').count(),1,'Original local bus-stop illustration preserved');
@@ -2022,6 +2158,12 @@ async function verify() {
     assert.equal(comparisonPlacement.length, 2);
     assert.ok(comparisonPlacement[1].y > comparisonPlacement[0].y + 20, 'Frame comparisons must stack vertically on narrow phones');
     assert.equal(await mobileFrame.locator('.frame-comparison .monitor-hud:visible').count(), 0, 'Compact comparison hides crowded illustration HUD');
+    assert.equal(await mobileFrame.getAttribute('data-v2-frame-screen'),'true');
+    const frameArt=await mobileFrame.locator('[data-v2-frame-stage] .scene-stage').first().boundingBox();
+    const frameOuter=await mobileFrame.boundingBox();
+    assert.ok(frameArt&&frameOuter&&frameArt.width>frameOuter.width*.62,
+      'Real illustrated crop must remain prominent on '+width+'px phones');
+    await photo(phone,'29-real-option-b-frame-'+width+'px.png');
     const mobileFramingBrief = mobileFrame.locator('.framing-intention');
     await mobileFramingBrief.locator('summary').click();
     await mobileFramingBrief.locator('[data-framing-intention="conversation"]').click();
@@ -2043,14 +2185,26 @@ async function verify() {
     await phone.locator('.lab-tabs:visible [data-lab="continuity"]').click();
     const mobileContinuity = phone.locator('.react-continuity-lab');
     await mobileContinuity.waitFor();
+    assert.equal(await mobileContinuity.getAttribute('data-v2-continuity-screen'),'true');
+    const continuityArt=await mobileContinuity.locator('[data-v2-continuity-stage] .continuity-desk').first().boundingBox();
+    const continuityShell=await mobileContinuity.boundingBox();
+    assert.ok(continuityArt&&continuityShell&&continuityArt.width>continuityShell.width*.64,
+      'Original desk comparison should be large at '+width+'px phone widths');
+    await photo(phone,'39-real-option-b-continuity-'+width+'px.png');
     await mobileContinuity.locator('[data-continuity="changed"]').click();
     assert.equal(await mobileContinuity.locator('.continuity-cup.moved').count(), 1);
     const continuityOverflow = await phone.evaluate(() => ({ scroll: document.documentElement.scrollWidth, viewport: document.documentElement.clientWidth }));
     if (continuityOverflow.scroll > continuityOverflow.viewport + 3) record('Continuity Lab overflow at ' + width + 'px: ' + continuityOverflow.scroll + ' vs ' + continuityOverflow.viewport);
     await photo(phone, '08-continuity-' + width + 'px.png');
-    await mobileContinuity.locator('[data-lab="colour"]').click();
+    await mobileContinuity.locator('.continuity-v2-quick-jump [data-lab="colour"]').click();
     const mobileColour = phone.locator('.react-colour-lab');
     await mobileColour.waitFor();
+    assert.equal(await mobileColour.getAttribute('data-v2-colour-screen'),'true');
+    const sceneWidth=await mobileColour.locator('[data-v2-colour-stage] .scene-stage').first().boundingBox();
+    const labWidth=await mobileColour.boundingBox();
+    assert.ok(sceneWidth&&labWidth&&sceneWidth.width>labWidth.width*.64,
+      'Original SVG comparison must be large and clear at '+width+'px');
+    await photo(phone,'37-real-option-b-colour-'+width+'px.png');
     await mobileColour.locator('[data-colour="cool"]').click();
     const mobileColourBrief = mobileColour.locator('.colour-story-briefs');
     await mobileColourBrief.locator('summary').click();
@@ -2066,6 +2220,12 @@ async function verify() {
     await mobileColour.locator('[data-lab="light"]').click();
     const mobileLighting = phone.locator('.react-lighting-lab');
     await mobileLighting.waitFor();
+    assert.equal(await mobileLighting.getAttribute('data-v2-lighting-screen'),'true');
+    const mobileLightingArt=await mobileLighting.locator('[data-v2-lighting-stage] .lighting-stage').boundingBox();
+    const mobileLightingShell=await mobileLighting.boundingBox();
+    assert.ok(mobileLightingArt&&mobileLightingShell&&mobileLightingArt.width>mobileLightingShell.width*.62,
+      'Real lighting portrait must be the prominent first scene at '+width+'px');
+    await photo(phone,'31-real-option-b-lighting-'+width+'px.png');
     await mobileLighting.locator('[data-light="side"]').click();
     const mobileSoft=mobileLighting.locator('#lightSoft');
     await mobileSoft.focus();await mobileSoft.press('End');
@@ -2083,6 +2243,12 @@ async function verify() {
     await mobileLighting.locator('[data-lab="cut"]').click();
     const mobileCut=phone.locator('.react-cut-lab');
     await mobileCut.waitFor();
+    assert.equal(await mobileCut.getAttribute('data-v2-cut-screen'),'true');
+    const realCutArt=await mobileCut.locator('[data-v2-cut-stage] .cut-illustration').boundingBox();
+    const realCutShell=await mobileCut.boundingBox();
+    assert.ok(realCutArt&&realCutShell&&realCutArt.width>realCutShell.width*.62,
+      'Original scene must be prominent at '+width+'px in the real Cut Lab');
+    await photo(phone,'33-real-option-b-cut-'+width+'px.png');
     await mobileCut.locator('[data-move="0:right"]').click();
     assert.equal(await mobileCut.locator('.timeline-clip').count(),3);
     const cutOverflow=await phone.evaluate(()=>({scroll:document.documentElement.scrollWidth,viewport:document.documentElement.clientWidth}));
@@ -2100,6 +2266,14 @@ async function verify() {
     await mobileCut.locator('[data-lab="story"]').click();
     const mobileMake=phone.locator('.react-make-lab');
     await mobileMake.waitFor();
+    assert.equal(await mobileMake.locator('[data-v2-make-scene-first]').count(),1,
+      'Production Make Lab must be scene-first on '+width+'px phones');
+    const makeStageRect=await mobileMake.locator('.story-film-frame').boundingBox();
+    const makeShellRect=await mobileMake.boundingBox();
+    assert.ok(makeStageRect&&makeShellRect&&makeStageRect.width>makeShellRect.width*.61,
+      'Real storyboard art must be wide and legible on '+width+'px phones');
+    await mobileMake.locator('[data-v2-make-manage]').click();
+    assert.equal(await mobileMake.locator('[data-story-project-library]').count(),1);
     await mobileMake.locator('[data-story-question="decision"]').click();
     await mobileMake.locator('[data-story-step="1"]').click();
     await mobileMake.locator('#storyNote').fill('A clue in the rain.');
@@ -2115,6 +2289,12 @@ async function verify() {
     await mobileMake.locator('.lab-tabs [data-lab="sound"]').click();
     const mobileSound=phone.locator('.react-sound-lab');
     await mobileSound.waitFor();
+    assert.equal(await mobileSound.getAttribute('data-v2-sound-screen'),'true');
+    const mobileSoundArt=await mobileSound.locator('[data-v2-sound-stage] .scene-stage').boundingBox();
+    const mobileSoundShell=await mobileSound.boundingBox();
+    assert.ok(mobileSoundArt&&mobileSoundShell&&mobileSoundArt.width>mobileSoundShell.width*.62,
+      'Original bus-stop sound picture must stay prominent at '+width+'px');
+    await photo(phone,'35-real-option-b-sound-'+width+'px.png');
     await mobileSound.locator('[data-sound="tension"]').click();
     assert.equal(await mobileSound.locator('.monitor-hud:visible,.frame-corner:visible,.scene-label:visible').count(),0,'Sound stage cannot show old Frame HUD on narrow phones');
     assert.equal(await mobileSound.locator('[data-sound="tension"]').getAttribute('aria-pressed'),'true');

@@ -75,6 +75,22 @@ def find(text: str, exact: bool = False, tries: int = 16) -> list[dict[str, obje
                     adb("shell", "input", "tap", str(close["x"]), str(close["y"]))
                     time.sleep(2)
                     continue
+            # The real Option B course is the new Android launch screen.
+            # Legacy progress, storyboard, upgrade and SAF backup acceptance
+            # intentionally enters the retained Classic library through its
+            # VISIBLE user-facing control. First verify that production Home
+            # exists; never inject localStorage or bypass the WebView UI.
+            if text == "WELCOME TO THE WORLD OF CINEMA":
+                classic=[n for n in nodes if "Classic library" in str(n["label"])
+                         and int(n["x"])>0 and int(n["y"])>0]
+                if classic:
+                    if not any("33 REAL LESSONS" in str(n["label"]) for n in nodes):
+                        raise AssertionError("Default Android screen is not the real 33-lesson Frame One course")
+                    tap=max(classic,key=lambda n:int(n["bottom"]))
+                    print("PASS: Android launched the real Option B course; opening Classic through its visible button for data-migration acceptance",flush=True)
+                    adb("shell","input","tap",str(tap["x"]),str(tap["y"]))
+                    time.sleep(1.5)
+                    continue
             matches = [n for n in nodes if n["label"] == text] if exact else [
                 n for n in nodes if text.lower() in str(n["label"]).lower()]
             if matches:

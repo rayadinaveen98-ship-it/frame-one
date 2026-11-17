@@ -1,11 +1,19 @@
 import {createPortal} from 'react-dom';
 import {useEffect,useRef,useState} from 'react';
 import approvedStyles from './option-b-react-design.css?raw';
+import productionStyles from './option-b-production.css?raw';
 import {OptionBReactMission} from './OptionBReactMission';
 import {OptionBReactLab} from './OptionBReactLab';
 import {FOUNDATIONS,FOUNDATION_IDS} from '../data/foundations-guided';
+import {STORYTELLING,STORYTELLING_IDS} from '../data/storytelling-guided';
+import {VISUAL_LANGUAGE,VISUAL_IDS} from '../data/visual-language-guided';
+import {SOUND_EDITING,SOUND_EDIT_IDS} from '../data/sound-edit-guided';
+import {PEOPLE_BEHIND_FILM,PEOPLE_IDS} from '../data/people-guided';
+import {FIRST_FILM,FIRST_FILM_IDS} from '../data/first-film-guided';
 import {safeProgress} from '../state/learning';
 import {OptionBFoundationMission} from './OptionBFoundationMission';
+import {OptionBRealLabs} from './OptionBRealLabs';
+import type {LabName} from '../legacy/bridge';
 
 /** The same six story prompts and node identities in the approved Option B prototype. */
 type MissionIcon='eye'|'frame'|'clapper'|'sun'|'sound'|'film';
@@ -183,8 +191,8 @@ function JourneyScreen({finished,onMission}:{finished:string[];onMission:(id:str
 }
 const FOUNDATION_NODE_POSITIONS:[[number,number],[number,number],[number,number],[number,number],[number,number]]=
  [[39,13],[70,30],[31,48],[72,66],[34,83]];
-function FoundationJourney({completed,onMission,onExit}:{
-  completed:Set<string>;onMission:(id:string)=>void;onExit:()=>void;
+function FoundationJourney({completed,onMission,onExit,onNext}:{
+  completed:Set<string>;onMission:(id:string)=>void;onExit:()=>void;onNext:()=>void;
 }){
   const next=FOUNDATIONS.find(m=>!completed.has(m.id))?.id??FOUNDATIONS[0].id;
   return <div className="screen" data-v2-foundation-screen="journey">
@@ -219,6 +227,266 @@ function FoundationJourney({completed,onMission,onExit}:{
       })}
       <div className="map-footer"><span className="map-icon" aria-hidden="true">🎞️</span><span>All lessons remain accessible. Existing completions are recognised.</span></div>
     </div>
+    <section className="foundation-launch" aria-label="Continue to real Chapter 2">
+      <span className="eyebrow">NEXT · CHAPTER 02</span>
+      <h2>Tell a human story.</h2>
+      <p>Six more real lessons: story, script, acting, character, dialogue and visual storytelling. Your Chapter 1 progress stays intact.</p>
+      <button type="button" className="btn btn-primary btn-wide" data-v2-story-open onClick={onNext}>
+        Explore real Chapter 2 <Icon name="arrow" className="node-icon"/>
+      </button>
+    </section>
+  </div>;
+}
+function StorytellingJourney({completed,onMission,onExit,onNext}:{
+  completed:Set<string>;onMission:(id:string)=>void;onExit:()=>void;onNext:()=>void;
+}){
+  const next=STORYTELLING.find(m=>!completed.has(m.id))?.id??STORYTELLING[0].id;
+  const icons:MissionIcon[]=['eye','clapper','film','frame','sound','eye'];
+  const nodeLabels=['Story emotion','Screenplay','Performance','Character choices','Dialogue & subtext','Show the feeling'];
+  return <div className="screen" data-v2-story-screen="journey">
+    <div className="journey-intro">
+      <button type="button" className="foundation-return" data-v2-story-back onClick={onExit}>← Back to Chapter 1</button>
+      <span className="eyebrow">THE REAL FRAME ONE CURRICULUM</span>
+      <h1>Tell a human story.</h1>
+      <p>Six connected missions around one tiny café story. Observe a moment, choose a creative direction, learn the principle and try it yourself.</p>
+      <div className="journey-summary"><span className="chapter-badge">✦ CHAPTER 02 · STORYTELLING</span>
+        <span className="journey-progress-inline">{STORYTELLING.filter(m=>completed.has(m.id)).length}/6 real lessons</span>
+      </div>
+    </div>
+    <div className="land-map">
+      <img src={ART_WORLD} alt="Illustrated winding path through the Frame One learning world"/>
+      <div className="chapter-pillar">REAL CHAPTER 02 · TELL A HUMAN STORY</div>
+      {STORYTELLING.map((mission,i)=>{
+        const done=completed.has(mission.id),active=mission.id===next;
+        return <button type="button" key={mission.id}
+          className={'journey-node '+(done?'complete':active?'active':'future')}
+          data-v2-story-node={mission.id}
+          style={{left:NODE_COORDS[i][0]+'%',top:NODE_COORDS[i][1]+'%'}}
+          aria-label={mission.lesson.title+', '+(done?'completed':'ready to explore')}
+          onClick={()=>onMission(mission.id)}>
+          <span className="node-button"><Icon name={done?'check':icons[i]} className="node-icon"/>
+            <span className="node-number">{i+1}</span></span>
+          <span className="node-label">{nodeLabels[i]}</span>
+        </button>;
+      })}
+      <div className="map-footer"><span className="map-icon" aria-hidden="true">🎞️</span>
+        <span>Six story decisions, one original scene. Your course records and notes are preserved.</span>
+      </div>
+    </div>
+    <section className="foundation-launch" aria-label="Continue to real Chapter 3">
+      <span className="eyebrow">NEXT · CHAPTER 03</span>
+      <h2>Learn visual language.</h2>
+      <p>Seven real visual experiments covering shots, camera, light, composition, movement, lenses and colour.</p>
+      <button type="button" className="btn btn-primary btn-wide" data-v2-visual-open onClick={onNext}>
+        Explore real Chapter 3 <Icon name="arrow" className="node-icon"/>
+      </button>
+    </section>
+  </div>;
+}
+const VISUAL_NODE_POSITIONS:[number,number][]=[
+  [39,10],[70,23],[31,36],[71,49],[34,62],[69,75],[36,88]
+];
+function VisualJourney({completed,onMission,onExit,onNext}:{
+  completed:Set<string>;onMission:(id:string)=>void;onExit:()=>void;onNext:()=>void;
+}){
+  const next=VISUAL_LANGUAGE.find(m=>!completed.has(m.id))?.id??VISUAL_LANGUAGE[0].id;
+  const icons:MissionIcon[]=['frame','eye','sun','frame','film','eye','sun'];
+  const nodeLabels=['Choose a shot','Camera position','Shape the light','Composition','Camera movement','Lenses & space','Colour & meaning'];
+  return <div className="screen" data-v2-visual-screen="journey">
+    <div className="journey-intro">
+      <button type="button" className="foundation-return" data-v2-visual-back onClick={onExit}>← Back to Chapter 2</button>
+      <span className="eyebrow">THE REAL FRAME ONE CURRICULUM</span>
+      <h1>Learn visual language.</h1>
+      <p>Seven short filmmaking missions. Make meaningful choices about framing, camera, light, composition, movement, lenses and colour.</p>
+      <div className="journey-summary">
+        <span className="chapter-badge">✦ CHAPTER 03 · VISUAL LANGUAGE</span>
+        <span className="journey-progress-inline">{VISUAL_LANGUAGE.filter(m=>completed.has(m.id)).length}/7 real lessons</span>
+      </div>
+    </div>
+    <div className="land-map" data-v2-visual-map>
+      <img src={ART_WORLD} alt="Illustrated winding journey through the Frame One filmmaking world"/>
+      <div className="chapter-pillar">REAL CHAPTER 03 · VISUAL LANGUAGE</div>
+      {VISUAL_LANGUAGE.map((mission,i)=>{
+        const done=completed.has(mission.id),active=mission.id===next;
+        return <button key={mission.id} type="button"
+          className={'journey-node '+(done?'complete':active?'active':'future')}
+          data-v2-visual-node={mission.id}
+          style={{left:VISUAL_NODE_POSITIONS[i][0]+'%',top:VISUAL_NODE_POSITIONS[i][1]+'%'}}
+          aria-label={mission.lesson.title+', '+(done?'completed':'ready to explore')}
+          onClick={()=>onMission(mission.id)}>
+          <span className="node-button">
+            <Icon name={done?'check':icons[i]} className="node-icon"/>
+            <span className="node-number">{i+1}</span>
+          </span>
+          <span className="node-label">{nodeLabels[i]}</span>
+        </button>;
+      })}
+      <div className="map-footer"><span className="map-icon" aria-hidden="true">🎞️</span>
+        <span>Practice with original illustrations, then try filming with your phone.</span>
+      </div>
+    </div>
+    <section className="foundation-launch" aria-label="Continue to real Chapter 4">
+      <span className="eyebrow">NEXT · CHAPTER 04</span>
+      <h2>Sound and editing.</h2>
+      <p>Six interactive sound and editing lessons: soundtrack, shot order, ambience, music, continuity and rhythm.</p>
+      <button type="button" className="btn btn-primary btn-wide" data-v2-sound-open onClick={onNext}>
+        Explore real Chapter 4 <Icon name="arrow" className="node-icon"/>
+      </button>
+    </section>
+  </div>;
+}
+function SoundEditingJourney({completed,onMission,onExit,onNext}:{
+  completed:Set<string>;onMission:(id:string)=>void;onExit:()=>void;onNext:()=>void;
+}){
+  const next=SOUND_EDITING.find(m=>!completed.has(m.id))?.id??SOUND_EDITING[0].id;
+  const icons:MissionIcon[]=['sound','clapper','sound','film','frame','clapper'];
+  const nodeLabels=['Sound changes','The power of a cut','The sound world','Music & meaning','Continuity','Editing rhythm'];
+  return <div className="screen" data-v2-sound-screen="journey">
+    <div className="journey-intro">
+      <button type="button" className="foundation-return" data-v2-sound-back onClick={onExit}>← Back to Chapter 3</button>
+      <span className="eyebrow">THE REAL FRAME ONE CURRICULUM</span>
+      <h1>Sound and editing.</h1>
+      <p>See how sound layers and shot sequences change what an audience notices. Explore original visual studies, then try editing your own work.</p>
+      <div className="journey-summary">
+        <span className="chapter-badge">✦ CHAPTER 04 · SOUND & EDITING</span>
+        <span className="journey-progress-inline">{SOUND_EDITING.filter(m=>completed.has(m.id)).length}/6 real lessons</span>
+      </div>
+    </div>
+    <div className="land-map" data-v2-sound-map>
+      <img src={ART_WORLD} alt="Illustrated winding journey through the Frame One learning world"/>
+      <div className="chapter-pillar">REAL CHAPTER 04 · SOUND & EDITING</div>
+      {SOUND_EDITING.map((mission,i)=>{
+        const done=completed.has(mission.id),active=mission.id===next;
+        return <button key={mission.id} type="button"
+          className={'journey-node '+(done?'complete':active?'active':'future')}
+          data-v2-sound-node={mission.id}
+          style={{left:NODE_COORDS[i][0]+'%',top:NODE_COORDS[i][1]+'%'}}
+          aria-label={mission.lesson.title+', '+(done?'completed':'ready to explore')}
+          onClick={()=>onMission(mission.id)}>
+          <span className="node-button">
+            <Icon name={done?'check':icons[i]} className="node-icon"/>
+            <span className="node-number">{i+1}</span>
+          </span>
+          <span className="node-label">{nodeLabels[i]}</span>
+        </button>;
+      })}
+      <div className="map-footer"><span className="map-icon" aria-hidden="true">🎞️</span>
+        <span>Real lessons, original diagrams and practical challenges. No copyrighted audio playback.</span>
+      </div>
+    </div>
+    <section className="foundation-launch" aria-label="Continue to real Chapter 5">
+      <span className="eyebrow">NEXT · CHAPTER 05</span>
+      <h2>People behind a film.</h2>
+      <p>Four guided lessons about film crews, Telugu industry crafts, how departments collaborate, and production stages.</p>
+      <button type="button" className="btn btn-primary btn-wide" data-v2-people-open onClick={onNext}>
+        Explore real Chapter 5 <Icon name="arrow" className="node-icon"/>
+      </button>
+    </section>
+  </div>;
+}
+const PEOPLE_NODE_POSITIONS:[number,number][]=[
+  [35,14],[70,38],[30,61],[69,84]
+];
+function PeopleJourney({completed,onMission,onExit,onNext}:{
+  completed:Set<string>;onMission:(id:string)=>void;onExit:()=>void;onNext:()=>void;
+}){
+  const next=PEOPLE_BEHIND_FILM.find(m=>!completed.has(m.id))?.id??PEOPLE_BEHIND_FILM[0].id;
+  const icons:MissionIcon[]=['film','clapper','frame','eye'];
+  const nodeLabels=['Meet the crew','Telugu 24 crafts','Departments in action','Film workflow'];
+  return <div className="screen" data-v2-people-screen="journey">
+    <div className="journey-intro">
+      <button type="button" className="foundation-return" data-v2-people-back onClick={onExit}>← Back to Chapter 4</button>
+      <span className="eyebrow">THE REAL FRAME ONE CURRICULUM</span>
+      <h1>People behind a film.</h1>
+      <p>Every scene involves choices made by people. Meet the collaborators, understand the Telugu industry term “24 crafts”, and follow a film from idea to audience.</p>
+      <div className="journey-summary">
+        <span className="chapter-badge">✦ CHAPTER 05 · FILM PEOPLE</span>
+        <span className="journey-progress-inline">{PEOPLE_BEHIND_FILM.filter(m=>completed.has(m.id)).length}/4 real lessons</span>
+      </div>
+    </div>
+    <div className="land-map" data-v2-people-map>
+      <img src={ART_WORLD} alt="Illustrated winding path through the Frame One creative journey"/>
+      <div className="chapter-pillar">REAL CHAPTER 05 · FILM PEOPLE</div>
+      {PEOPLE_BEHIND_FILM.map((mission,i)=>{
+        const done=completed.has(mission.id),active=mission.id===next;
+        return <button type="button" key={mission.id}
+          data-v2-people-node={mission.id}
+          className={'journey-node '+(done?'complete':active?'active':'future')}
+          style={{left:PEOPLE_NODE_POSITIONS[i][0]+'%',top:PEOPLE_NODE_POSITIONS[i][1]+'%'}}
+          aria-label={mission.lesson.title+', '+(done?'completed':'ready to explore')}
+          onClick={()=>onMission(mission.id)}>
+          <span className="node-button">
+            <Icon name={done?'check':icons[i]} className="node-icon"/>
+            <span className="node-number">{i+1}</span>
+          </span>
+          <span className="node-label">{nodeLabels[i]}</span>
+        </button>;
+      })}
+      <div className="map-footer"><span className="map-icon" aria-hidden="true">🎞️</span>
+        <span>Four original exercises; one reminder that filmmaking is collaborative.</span>
+      </div>
+    </div>
+    <section className="foundation-launch" aria-label="Continue to real Chapter 6">
+      <span className="eyebrow">FINAL CHAPTER · 06</span>
+      <h2>Make your first film.</h2>
+      <p>Five practical missions: keep a film small, plan useful shots, record safely, edit for clarity and learn from feedback.</p>
+      <button type="button" className="btn btn-primary btn-wide" data-v2-firstfilm-open onClick={onNext}>
+        Explore real Chapter 6 <Icon name="arrow" className="node-icon"/>
+      </button>
+    </section>
+  </div>;
+}
+const FIRST_FILM_NODE_POSITIONS:[number,number][]=[
+  [36,12],[70,30],[32,49],[70,68],[37,86]
+];
+function FirstFilmJourney({completed,onMission,onExit,onLabs}:{
+  completed:Set<string>;onMission:(id:string)=>void;onExit:()=>void;onLabs:()=>void;
+}){
+  const next=FIRST_FILM.find(m=>!completed.has(m.id))?.id??FIRST_FILM[0].id;
+  const icons:MissionIcon[]=['clapper','frame','film','clapper','eye'];
+  const nodeLabels=['Choose a film','Plan the shots','Record a scene','Build a first cut','Review & improve'];
+  const finished=FIRST_FILM.filter(m=>completed.has(m.id)).length;
+  const total=completed.size;
+  return <div className="screen" data-v2-firstfilm-screen="journey">
+    <div className="journey-intro">
+      <button type="button" className="foundation-return" data-v2-firstfilm-back onClick={onExit}>← Back to Chapter 5</button>
+      <span className="eyebrow">THE REAL FRAME ONE CURRICULUM</span>
+      <h1>Make your first film.</h1>
+      <p>Turn what you've learned into one small, finishable idea. Plan, film safely, edit and improve—using your own phone and the tools available to you.</p>
+      <div className="journey-summary">
+        <span className="chapter-badge">✦ CHAPTER 06 · FIRST FILM</span>
+        <span className="journey-progress-inline">{finished}/5 real lessons</span>
+      </div>
+    </div>
+    <div className="land-map" data-v2-firstfilm-map>
+      <img src={ART_WORLD} alt="Original illustrated filmmaker journey with winding stepping-stones"/>
+      <div className="chapter-pillar">REAL CHAPTER 06 · MAKE YOUR FIRST FILM</div>
+      {FIRST_FILM.map((mission,i)=>{
+        const done=completed.has(mission.id),active=mission.id===next;
+        return <button type="button" key={mission.id}
+          className={'journey-node '+(done?'complete':active?'active':'future')}
+          data-v2-firstfilm-node={mission.id}
+          style={{left:FIRST_FILM_NODE_POSITIONS[i][0]+'%',top:FIRST_FILM_NODE_POSITIONS[i][1]+'%'}}
+          aria-label={mission.lesson.title+', '+(done?'completed':'ready to explore')}
+          onClick={()=>onMission(mission.id)}>
+          <span className="node-button">
+            <Icon name={done?'check':icons[i]} className="node-icon"/>
+            <span className="node-number">{i+1}</span>
+          </span>
+          <span className="node-label">{nodeLabels[i]}</span>
+        </button>;
+      })}
+      <div className="map-footer"><span className="map-icon" aria-hidden="true">🎬</span>
+        <span>Finish these lessons, then use your own phone to create a real first film.</span>
+      </div>
+    </div>
+    {finished===5&&<section className="foundation-launch" data-v2-firstfilm-course-finished>
+      <span className="eyebrow">CHAPTER 06 COMPLETED</span>
+      <h2>You're ready to put the lessons to work.</h2>
+      <p>You've completed {total} of 33 real Frame One lessons. These exercises prepare you to make a film; they do not claim you've recorded or finished one.</p>
+      <p>Choose a small scene, create a shot plan in Make Lab, record safely on your phone, and review the result.</p>
+      <button type="button" className="btn btn-primary btn-wide" data-v2-firstfilm-open-labs onClick={onLabs}>Open your seven working Creative Labs</button>
+    </section>}
   </div>;
 }
 function ProgressScreen({saved,onMission,onReset}:{
@@ -260,25 +528,132 @@ function ProgressScreen({saved,onMission,onReset}:{
   </div>;
 }
 
+const REAL_CHAPTERS=[
+  {title:'Discover cinema',short:'Foundations',ids:FOUNDATION_IDS,icon:'eye' as const},
+  {title:'Tell a human story',short:'Storytelling',ids:STORYTELLING_IDS,icon:'clapper' as const},
+  {title:'Learn visual language',short:'Visual language',ids:VISUAL_IDS,icon:'frame' as const},
+  {title:'Sound and editing',short:'Sound & editing',ids:SOUND_EDIT_IDS,icon:'sound' as const},
+  {title:'People behind a film',short:'Film people',ids:PEOPLE_IDS,icon:'film' as const},
+  {title:'Make your first film',short:'First film',ids:FIRST_FILM_IDS,icon:'clapper' as const}
+] as const;
+const ALL_REAL_LESSON_IDS=REAL_CHAPTERS.flatMap(chapter=>[...chapter.ids]);
+
+function RealCourseHome({completed,onChapter,onLab,onProgress}:{
+  completed:Set<string>;onChapter:(index:number)=>void;onLab:()=>void;onProgress:()=>void;
+}){
+  const count=ALL_REAL_LESSON_IDS.filter(id=>completed.has(id)).length;
+  const nextChapter=REAL_CHAPTERS.findIndex(chapter=>chapter.ids.some(id=>!completed.has(id)));
+  const resume=Math.max(0,nextChapter);
+  return <div className="screen production-home" data-v2-production-screen="home">
+    <div className="home-hero">
+      <img className="hero-world" src={ART_WORLD} alt=""/>
+      <div className="home-hero-copy"><span className="chip">✦ YOUR REAL FILMMAKING JOURNEY</span>
+        <h1>Learn cinema.<br/>By making it.</h1>
+        <p>33 original lessons. Six chapters. Your first film starts with one choice.</p>
+      </div>
+      <FloatingCamera/>
+    </div>
+    <div className="home-body">
+      <section className="continue-card" aria-label="Continue your real cinema course">
+        <div className="continue-header"><span className="eyebrow">YOUR NEXT CHAPTER</span>
+          <span className="mission-badge">CHAPTER {String(resume+1).padStart(2,'0')} / 06</span></div>
+        <h2>{count===33?'Every chapter explored.':REAL_CHAPTERS[resume].title}</h2>
+        <p>{count===33?'You can revisit lessons or start a new project in the real Make Lab.':
+          'Pick up your learning path. Every finished lesson and practice note stays in your existing Frame One records.'}</p>
+        <div className="track" role="progressbar" aria-label="Completed real Frame One lessons"
+          aria-valuenow={count} aria-valuemin={0} aria-valuemax={33}>
+          <span style={{width:(count/33*100)+'%'}}/></div>
+        <div className="progress-caption"><span>{count} of 33 real lessons complete</span>
+          <b>{Math.round(count/33*100)}%</b></div>
+        <button className="btn btn-primary btn-wide" type="button" data-v2-production-resume
+          onClick={()=>onChapter(resume)}>{count===33?'Revisit your chapters':'Continue learning'} <Icon name="arrow" className="node-icon"/></button>
+      </section>
+      <div className="section-heading"><div><span className="eyebrow">SIX CHAPTERS · YOUR PACE</span>
+        <h2>Choose your next chapter</h2></div>
+        <button className="link-button" type="button" onClick={onProgress}>My progress →</button></div>
+      <div className="production-chapters">
+        {REAL_CHAPTERS.map((chapter,index)=>{
+          const done=chapter.ids.filter(id=>completed.has(id)).length;
+          return <button type="button" className="production-chapter" key={chapter.title}
+            data-v2-production-chapter={index} onClick={()=>onChapter(index)}
+            aria-label={`Chapter ${index+1}: ${chapter.title}, ${done} of ${chapter.ids.length} lessons complete`}>
+            <span className="production-chapter-icon"><Icon name={chapter.icon}/></span>
+            <span className="production-chapter-copy"><small>CHAPTER {String(index+1).padStart(2,'0')} · {done}/{chapter.ids.length} LESSONS</small>
+              <strong>{chapter.title}</strong>
+              <span className="production-chapter-track"><span style={{width:(done/chapter.ids.length*100)+'%'}}/></span>
+            </span>
+            <span aria-hidden="true" className="production-chapter-arrow">›</span>
+          </button>;
+        })}
+      </div>
+      <div className="section-heading"><div><span className="eyebrow">CREATIVE PRACTICE</span><h2>Try the working tools</h2></div></div>
+      <button className="production-labs-link" data-v2-production-open-labs type="button" onClick={onLab}>
+        <span className="production-labs-art"><img src={ART_SCENE} alt=""/></span>
+        <span><strong>Seven Creative Labs</strong><small>Make, frame, light, cut, sound, colour and match</small></span>
+        <Icon name="arrow"/>
+      </button>
+    </div>
+  </div>;
+}
+function RealCourseProgress({completed,onChapter,onLab}:{
+ completed:Set<string>;onChapter:(index:number)=>void;onLab:()=>void;
+}){
+ const count=ALL_REAL_LESSON_IDS.filter(id=>completed.has(id)).length;
+ return <div className="screen production-progress" data-v2-production-screen="progress">
+   <div className="progress-top"><span className="eyebrow">REAL LEARNING PROGRESS</span>
+     <h1>Every small step counts.</h1>
+     <p>These counts come directly from your existing Frame One lesson records, not prototype points.</p></div>
+   <section className="progress-card" aria-label="Real course completion">
+     <div className="meter-circle" style={{'--done-angle':(Math.round(count/33*100)*3.6)+'deg'} as React.CSSProperties}
+       aria-label={count+' of 33 real lessons complete'}>
+       <div className="inside"><strong>{Math.round(count/33*100)}%</strong><span>YOUR LESSONS</span></div></div>
+     <div className="stats"><div className="stat"><strong>{count}</strong><span>Real lessons</span></div>
+       <div className="stat"><strong>33</strong><span>Available</span></div>
+       <div className="stat"><strong>{REAL_CHAPTERS.filter(c=>c.ids.every(id=>completed.has(id))).length}</strong>
+         <span>Chapters complete</span></div></div>
+   </section>
+   <div className="progress-list"><h2>Your six chapters</h2>
+     {REAL_CHAPTERS.map((chapter,index)=>{
+       const done=chapter.ids.filter(id=>completed.has(id)).length;
+       return <button className="skill-item" type="button" key={chapter.title}
+         data-v2-production-progress-chapter={index} onClick={()=>onChapter(index)}>
+         <span className="skill-icon"><Icon name={chapter.icon}/></span>
+         <div><strong>{chapter.title}</strong><small>{done} of {chapter.ids.length} lessons complete</small></div>
+         <span className="check">{done===chapter.ids.length?'✓':'›'}</span>
+       </button>;
+     })}</div>
+   <div className="production-progress-footer"><p>Your storyboard projects and practice notes remain in the original backup system.</p>
+     <button type="button" className="btn btn-primary btn-wide" onClick={onLab}>Open your working Creative Labs</button>
+   </div>
+ </div>;
+}
 const NAV_ITEMS=[['home','Home','home'],['journey','Journey','map'],['lab','Create','lab'],['progress','Progress','progress']] as const;
-function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
+function ReactScreenShell({onOpenReference,onActive,onNativeComplete,onOpenProductionLab,resumeChapter,production=false}:{
   onOpenReference:(screen:string,missionId?:string)=>void;
   onActive:boolean;onNativeComplete:()=>void;
+  onOpenProductionLab:(lab:LabName,chapterIndex:number)=>void;
+  resumeChapter:number|null;
+  production?:boolean;
 }){
-  const [screen,setScreen]=useState<'home'|'journey'|'mission'|'lab'|'progress'>('home');
-  const [realChapter,setRealChapter]=useState(false);
+  // The shipped app begins with the 33 real lessons. The original six-mission
+  // prototype and its separate demo points remain isolated in design QA.
+  const [screen,setScreen]=useState<'home'|'journey'|'mission'|'lab'|'progress'>(resumeChapter===null?'home':'journey');
+  const [realChapter,setRealChapter]=useState(production||resumeChapter!==null);
+  const [realChapterIndex,setRealChapterIndex]=useState<0|1|2|3|4|5>(
+    resumeChapter===null?0:Math.max(0,Math.min(5,Math.trunc(resumeChapter))) as 0|1|2|3|4|5);
   const [realLessonId,setRealLessonId]=useState(FOUNDATION_IDS[0]);
   const [realAttempt,setRealAttempt]=useState(0);
-  const [realFinished,setRealFinished]=useState<Set<string>>(()=>safeProgress(FOUNDATION_IDS));
-  const refreshReal=()=>setRealFinished(safeProgress(FOUNDATION_IDS));
+  const [realFinished,setRealFinished]=useState<Set<string>>(()=>safeProgress([...FOUNDATION_IDS,...STORYTELLING_IDS,...VISUAL_IDS,...SOUND_EDIT_IDS,...PEOPLE_IDS,...FIRST_FILM_IDS]));
+  const refreshReal=()=>setRealFinished(safeProgress([...FOUNDATION_IDS,...STORYTELLING_IDS,...VISUAL_IDS,...SOUND_EDIT_IDS,...PEOPLE_IDS,...FIRST_FILM_IDS]));
   const startReal=()=>{
     refreshReal();
     setRealChapter(true);
+    setRealChapterIndex(0);
     setScreen('journey');
     if(viewport.current)viewport.current.scrollTop=0;
   };
   const exitReal=()=>{
-    setRealChapter(false);
+    if(!production)setRealChapter(false);
     setScreen('home');
     if(viewport.current)viewport.current.scrollTop=0;
   };
@@ -338,8 +713,23 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
       if(viewport.current)viewport.current.scrollTop=0;
     }else onOpenReference(target);
   };
-  return <div className="site" data-v2-native-react>
-    <aside className="pitch" aria-label="Prototype design brief">
+  const openRealChapter=(index:number)=>{
+    refreshReal();
+    setRealChapter(true);
+    setRealChapterIndex(Math.max(0,Math.min(5,Math.trunc(index))) as 0|1|2|3|4|5);
+    setScreen('journey');
+    viewport.current?.scrollTo(0,0);
+  };
+  const productionNavigate=(target:string)=>{
+    refreshReal();
+    if(target==='home'||target==='progress'||target==='lab'||target==='journey'){
+      setScreen(target);
+      viewport.current?.scrollTo(0,0);
+    }
+  };
+  return <div className="site" data-v2-native-react data-v2-real-course={realChapter?'true':undefined}
+    data-v2-production={production?'true':undefined}>
+    {!production?<aside className="pitch" aria-label="Prototype design brief">
       <div className="tiny">FRAME ONE · DESIGN LAB / 01</div>
       <h1>Learn cinema.<br/><span>By making it.</span></h1>
       <p>Option B, built as an actual interactive product prototype. Real screens, original vector art, real state and no borrowed UI assets.</p>
@@ -352,8 +742,8 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
         <div><b>05</b> Working progress, lab and shot saving</div>
       </div>
       <div className="build-tag">DESIGN SYSTEM CANDIDATE · OPTION B / V1</div>
-    </aside>
-    <div className="phone" aria-label="Frame One native React visual parity preview">
+    </aside>:null}
+    <div className="phone" aria-label={production?'Frame One real learning experience':'Frame One native React visual parity preview'}>
       <header className="topbar">
         <div className="wordmark">
           <span className="brand-symbol" aria-hidden="true">
@@ -364,21 +754,51 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
           </span>Frame One
         </div>
         <div className="head-actions">
-          <span className="head-pill" aria-label={realChapter?'Real Chapter 1 progress':'Creative demo credits'}>
-            <span className="coin">✦</span><span>{realChapter?realFinished.size+'/5':saved.points}</span> {realChapter?'lessons':'pts'}
+          <span className="head-pill" aria-label={realChapter?'Real Chapter '+(realChapterIndex+1)+' progress':'Creative demo credits'}>
+            <span className="coin">✦</span><span>{realChapter?(realChapterIndex===0?FOUNDATION_IDS:realChapterIndex===1?STORYTELLING_IDS:realChapterIndex===2?VISUAL_IDS:realChapterIndex===3?SOUND_EDIT_IDS:realChapterIndex===4?PEOPLE_IDS:FIRST_FILM_IDS).filter(id=>realFinished.has(id)).length+'/'+(realChapterIndex===0||realChapterIndex===5?'5':realChapterIndex===2?'7':realChapterIndex===4?'4':'6'):saved.points}</span> {realChapter?'lessons':'pts'}
           </span>
           <button type="button" className="avatar" aria-label="View my progress" onClick={()=>changeScreen('progress')}>🎬</button>
         </div>
       </header>
       <main id="viewport" ref={viewport} tabIndex={-1} aria-live="off">
         {realChapter
-          ? screen==='mission'
+          ? production&&screen==='home'
+            ? <RealCourseHome completed={realFinished} onChapter={openRealChapter}
+                onLab={()=>productionNavigate('lab')} onProgress={()=>productionNavigate('progress')}/>
+            : production&&screen==='progress'
+            ? <RealCourseProgress completed={realFinished} onChapter={openRealChapter}
+                onLab={()=>productionNavigate('lab')}/>
+            : screen==='lab'
+            ? <OptionBRealLabs onOpen={lab=>onOpenProductionLab(lab,realChapterIndex)}
+                onBack={()=>{setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}/>
+            : screen==='mission'
             ? <OptionBFoundationMission key={realLessonId+'-'+realAttempt}
                 lessonId={realLessonId}
                 onBack={()=>{refreshReal();setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}
                 onComplete={()=>{refreshReal();}}
                 onStepChange={()=>{if(viewport.current)viewport.current.scrollTop=0;}}/>
-            : <FoundationJourney completed={realFinished} onMission={startRealMission} onExit={exitReal}/>
+            : realChapterIndex===0
+              ? <FoundationJourney completed={realFinished} onMission={startRealMission} onExit={exitReal}
+                  onNext={()=>{setRealChapterIndex(1);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}/>
+              : realChapterIndex===1
+                ? <StorytellingJourney completed={realFinished} onMission={startRealMission}
+                    onExit={()=>{setRealChapterIndex(0);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}
+                    onNext={()=>{setRealChapterIndex(2);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}/>
+                : realChapterIndex===2
+                  ? <VisualJourney completed={realFinished} onMission={startRealMission}
+                      onExit={()=>{setRealChapterIndex(1);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}
+                      onNext={()=>{setRealChapterIndex(3);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}/>
+                  : realChapterIndex===3
+                    ? <SoundEditingJourney completed={realFinished} onMission={startRealMission}
+                        onExit={()=>{setRealChapterIndex(2);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}
+                        onNext={()=>{setRealChapterIndex(4);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}/>
+                    : realChapterIndex===4
+                      ? <PeopleJourney completed={realFinished} onMission={startRealMission}
+                          onExit={()=>{setRealChapterIndex(3);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}
+                          onNext={()=>{setRealChapterIndex(5);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}/>
+                      : <FirstFilmJourney completed={realFinished} onMission={startRealMission}
+                          onExit={()=>{setRealChapterIndex(4);setScreen('journey');if(viewport.current)viewport.current.scrollTop=0;}}
+                          onLabs={()=>{setScreen('lab');if(viewport.current)viewport.current.scrollTop=0;}}/>
           : screen==='home'
             ? <HomeScreen finished={saved.finished} onMission={startMission} onScreen={openScreen} onStartReal={startReal}/>
             : screen==='journey'
@@ -395,10 +815,13 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
       </main>
       <nav className="navbar" aria-label="Primary navigation">
         {NAV_ITEMS.map(([id,label,icon])=><button type="button" key={id}
-          className={'nav-item'+(realChapter? (id==='journey'?' is-active':'') : ((screen==='mission'?'journey':screen)===id?' is-active':''))}
-          aria-current={(realChapter? id==='journey':(screen==='mission'?'journey':screen)===id)?'page':undefined}
+          className={'nav-item'+(production?((screen==='mission'?'journey':screen)===id?' is-active':''):
+             realChapter? ((screen==='lab'?'lab':'journey')===id?' is-active':'') : ((screen==='mission'?'journey':screen)===id?' is-active':''))}
+          aria-current={(production?(screen==='mission'?'journey':screen)===id:
+             realChapter?(screen==='lab'?'lab':'journey')===id:(screen==='mission'?'journey':screen)===id)?'page':undefined}
           data-v2-native-nav={id}
-          onClick={()=>realChapter? (id==='journey'?setScreen('journey'):exitReal()) : changeScreen(id)}>
+          onClick={()=>production?productionNavigate(id):
+             realChapter? (id==='journey'||id==='lab' ? (setScreen(id),viewport.current?.scrollTo(0,0)):exitReal()) : changeScreen(id)}>
           <Icon name={icon}/><span>{label}</span>
         </button>)}
       </nav>
@@ -408,9 +831,12 @@ function ReactScreenShell({onOpenReference,onActive,onNativeComplete}:{
 }
 
 /** Shadow DOM contains exact approved CSS without leaking styles into the old app. */
-export function OptionBReactScreens({onOpenReference,active,onNativeComplete}:{
+export function OptionBReactScreens({onOpenReference,active,onNativeComplete,onOpenProductionLab,resumeChapter,production=false}:{
   onOpenReference:(screen:string,missionId?:string)=>void;
   active:boolean;onNativeComplete:()=>void;
+  onOpenProductionLab:(lab:LabName,chapterIndex:number)=>void;
+  resumeChapter:number|null;
+  production?:boolean;
 }){
   const slot=useRef<HTMLDivElement>(null);
   const [shadow,setShadow]=useState<ShadowRoot|null>(null);
@@ -421,7 +847,9 @@ export function OptionBReactScreens({onOpenReference,active,onNativeComplete}:{
     setShadow(root);
   },[]);
   return <div className="frameone-option-b-native-slot" data-v2-react-slot
-    ref={slot} aria-label="Native React port of all five approved Frame One Option B screens">
-    {shadow?createPortal(<><style>{approvedStyles}</style><ReactScreenShell onOpenReference={onOpenReference} onActive={active} onNativeComplete={onNativeComplete}/></>,shadow):null}
+    ref={slot} aria-label={production?'Frame One real six-chapter learning journey':'Native React Option B design preview'}>
+    {shadow?createPortal(<><style>{approvedStyles}</style>{production?<style>{productionStyles}</style>:null}
+      <ReactScreenShell onOpenReference={onOpenReference} onActive={active} onNativeComplete={onNativeComplete}
+        onOpenProductionLab={onOpenProductionLab} resumeChapter={resumeChapter} production={production}/></>,shadow):null}
   </div>;
 }

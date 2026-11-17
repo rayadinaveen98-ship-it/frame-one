@@ -170,6 +170,25 @@ def find_text(label,tries=10,scroll=False):
     ui.capture("state-text-missing-"+re.sub(r"[^a-z0-9]+","-",label.lower())[:35])
     raise AssertionError(f"Expected actual Android WebView text not found: {label!r}")
 
+def find_one_of_text(labels,tries=10):
+    """Verify the real WebView displays one of the known Make Lab titles.
+
+    Same-signer migration begins in the historical build, which correctly
+    shows the old heading, before installing the new Option B Make Lab.
+    Accepting both titles is not skipping screen verification: a matching
+    accessibility text node must be present on the actual rendered device.
+    """
+    for _ in range(tries):
+        tree=nodes()
+        for label in labels:
+            if any(label.lower() in " ".join((n.attrib.get("text",""),n.attrib.get("content-desc",""))).lower()
+                   for n in tree):
+                print(f"PASS: actual Make Lab heading {label!r} visible",flush=True)
+                return label
+        time.sleep(.8)
+    ui.capture("state-text-missing-make-lab-heading")
+    raise AssertionError(f"Expected actual Make Lab heading not found: {labels!r}")
+
 def launch():
     ui.adb("shell","monkey","-p",ui.PACKAGE,"-c","android.intent.category.LAUNCHER","1",timeout=40)
     ui.find("WELCOME TO THE WORLD OF CINEMA",tries=20)
@@ -192,7 +211,7 @@ def make_storyboard():
     ui.tap_label("Lab")
     find_text("One moment. Many frames.")
     control("✎ Make")
-    find_text("Plan a tiny scene.")
+    find_one_of_text(("Plan a tiny scene.","Make a little film."))
     # On the lightweight ATD, switching labs can retain the prior scroll
     # position. Android's virtual accessibility nodes are [0,0][0,0]
     # for the Decision control until the user scrolls back to the TOP.

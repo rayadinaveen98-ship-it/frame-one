@@ -1,0 +1,156 @@
+/* Frame One 2.0 · Working Cut Lab Option B.
+ * Use original CSS storyboard and actual timed React controls; no fake playback. */
+.react-cut-lab.cut-v2{--c-ink:#1c3442;--c-green:#55b97b;--c-line:#dbe9e7;
+ max-width:1150px;margin-inline:auto;padding:clamp(10px,2.6vw,26px);
+ border-radius:24px;background:#f7fbf9;color:#1c3442;
+ box-shadow:0 8px 32px #163a3920;font-family:ui-rounded,"Avenir Next","Segoe UI",system-ui,sans-serif}
+.react-cut-lab.cut-v2 :is(h1,h2,h3){font-family:ui-rounded,"Avenir Next","Segoe UI",system-ui,sans-serif;
+ font-weight:900;letter-spacing:-.045em;color:#264d5d}
+.react-cut-lab.cut-v2 .eyebrow{font-size:10px;color:#368c7b;letter-spacing:.12em;font-weight:900}
+.react-cut-lab.cut-v2 .cut-v2-intro{margin:0 0 13px;max-width:none;
+ padding:23px 25px 16px;overflow:hidden;border:1px solid #c4e7d6;border-radius:22px;
+ background:radial-gradient(ellipse at 90% 12%,#bcefdc,transparent 54%),linear-gradient(125deg,#e8f8ec,#daf3e9);
+ box-shadow:0 5px 0 #d9e9de}
+.react-cut-lab.cut-v2 .cut-v2-kicker{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.react-cut-lab.cut-v2 .cut-v2-course-tag{border:1px solid #b3ddc9;
+ background:#ffffffb8;border-radius:22px;padding:7px 10px;font-size:9px;font-weight:900;
+ color:#297e6f;letter-spacing:.035em}
+.react-cut-lab.cut-v2 .cut-v2-hero{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.react-cut-lab.cut-v2 .cut-v2-hero h1{font-size:clamp(28px,3.7vw,43px);line-height:1.13;
+ color:#254b5a;margin:12px 0 8px}
+.react-cut-lab.cut-v2 .cut-v2-hero p{color:#557c72;font-size:13px;line-height:1.62;max-width:575px;margin:0}
+.react-cut-lab.cut-v2 .cut-v2-clapper{flex:0 0 92px;width:92px;height:auto;filter:drop-shadow(0 8px 11px #29705a23)}
+.react-cut-lab.cut-v2 .cut-v2-live-status{display:flex;align-items:center;gap:10px;margin-top:14px;
+ border:1px solid #badfce;border-radius:13px;padding:10px 12px;
+ background:#ffffffe0;min-width:0;flex-wrap:wrap}
+.react-cut-lab.cut-v2 .cut-v2-status-dot{height:10px;width:10px;flex:0 0 10px;border-radius:50%;
+ background:#56ba82;box-shadow:0 0 0 4px #daf5e5}
+.react-cut-lab.cut-v2 .cut-v2-live-status strong{color:#2a6d68;font-size:12px;overflow-wrap:anywhere}
+.react-cut-lab.cut-v2 .cut-v2-live-status>span:last-child{margin-left:auto;color:#678d81;font-size:10px}
+.react-cut-lab.cut-v2 .cut-v2-intro-note{display:flex;align-items:center;gap:10px;
+ padding:9px 13px;margin:13px 0 11px;border:1px solid #d9e9df;border-radius:12px;background:#fff}
+.react-cut-lab.cut-v2 .cut-v2-intro-note>span{width:26px;height:26px;border-radius:8px;background:#e1f3e6;
+ display:grid;place-items:center;color:#2e896e;flex:0 0 26px;font-size:16px}
+.react-cut-lab.cut-v2 .cut-v2-intro-note p{color:#617e74;font-size:11px;line-height:1.5;margin:0}
+.react-cut-lab.cut-v2 .cut-v2-intro-note strong{color:#327f6c}
+.react-cut-lab.cut-v2 .cut-shell{display:grid;grid-template-columns:minmax(0,1.17fr) minmax(275px,.83fr);
+ gap:13px;align-items:start;background:none;border:0;padding:0;min-width:0}
+.react-cut-lab.cut-v2 .cut-preview,.react-cut-lab.cut-v2 .cut-explain{
+ min-width:0;background:#fff;border:1px solid #d7e9dd;border-radius:20px;
+ box-shadow:0 5px 0 #e1eee5;color:#2c5660;padding:16px}
+.react-cut-lab.cut-v2 .cut-v2-stage-head,.react-cut-lab.cut-v2 .cut-v2-timeline-head{display:flex;
+ align-items:center;justify-content:space-between;gap:9px;padding:2px 3px 11px}
+.react-cut-lab.cut-v2 :is(.cut-v2-stage-head,.cut-v2-timeline-head)>div{display:grid;gap:3px}
+.react-cut-lab.cut-v2 :is(.cut-v2-stage-head,.cut-v2-timeline-head) strong{color:#2c5a63;font-size:14px}
+.react-cut-lab.cut-v2 :is(.cut-v2-stage-head,.cut-v2-timeline-head)>span{color:#8fa99f;font-size:9px;font-weight:850;text-align:right}
+.react-cut-lab.cut-v2 .cinema-window{border-radius:15px;background:#254a5d;padding:8px;
+ border:1px solid #b7d8ca;box-shadow:0 3px 0 #dcebe4}
+.react-cut-lab.cut-v2 .cinema-window-head{font-size:10px;color:#f7e4c8;line-height:1.6}
+.react-cut-lab.cut-v2 .cinema-window-head span:last-child{color:#b6e5d0}
+.react-cut-lab.cut-v2 .cut-illustration{border-radius:11px;min-height:220px}
+.react-cut-lab.cut-v2 .cut-controls{display:flex;align-items:center;justify-content:space-between;
+ gap:7px;margin:12px 0;flex-wrap:wrap}
+.react-cut-lab.cut-v2 .cut-controls .btn-secondary{border:1px solid #bedfd0;background:#f6faf7;
+ color:#2c796e;border-radius:10px;font-size:11px;min-height:44px;padding:9px 11px}
+.react-cut-lab.cut-v2 .cut-controls>span{font-size:11px;font-weight:850;color:#376e6c}
+.react-cut-lab.cut-v2 .cut-v2-timeline-head{padding:4px 2px 10px;margin-top:14px}
+.react-cut-lab.cut-v2 .editor-timeline{width:100%;gap:6px;margin:0;min-width:0;
+ border-radius:13px;background:#eff8f2;border:1px solid #d3e9dc;padding:8px}
+.react-cut-lab.cut-v2 .timeline-clip{position:relative;min-width:0;border:1px solid #b9d7c7;
+ background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 0 #dcebe0}
+.react-cut-lab.cut-v2 .timeline-clip[aria-current=true]{background:#e8f8ee;
+ border-color:#59b98e;box-shadow:0 2px 0 #c8e6d5,inset 0 0 0 1px #77cda4}
+.react-cut-lab.cut-v2 .clip-select{min-width:0;min-height:69px;padding:8px 5px;
+ background:transparent;color:#396965}
+.react-cut-lab.cut-v2 .clip-select span{color:#5d9a86;font-size:9px}
+.react-cut-lab.cut-v2 .clip-select strong{color:#31535a;font-size:11px;overflow-wrap:anywhere}
+.react-cut-lab.cut-v2 .clip-actions{background:#f5fbf7;gap:4px;padding:4px}
+.react-cut-lab.cut-v2 .clip-actions button{color:#347b70;border:1px solid #c2dfd1;
+ background:#fff;border-radius:8px;min-height:38px;min-width:31px}
+.react-cut-lab.cut-v2 .clip-playhead{background:#51b98c}
+.react-cut-lab.cut-v2 .editor-control-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;
+ padding:12px 0 1px}
+.react-cut-lab.cut-v2 .editor-control-bar .cta{background:#45b97d;border:1px solid #34a66f;
+ border-radius:11px;color:#fff;font-weight:850;min-height:46px;box-shadow:0 3px 0 #24915d}
+.react-cut-lab.cut-v2 .editor-control-bar .btn-secondary{color:#2b7a6e;background:#f7fbf8;
+ border:1px solid #bbddcd;border-radius:11px;min-height:46px}
+.react-cut-lab.cut-v2 .editor-control-bar>span{color:#76938a;font-size:10px}
+.react-cut-lab.cut-v2 .cut-explain>.eyebrow{display:block;margin-bottom:7px}
+.react-cut-lab.cut-v2 .cut-explain h3{color:#27515f;font-size:clamp(22px,2.5vw,28px);
+ line-height:1.2;margin:6px 0 9px}
+.react-cut-lab.cut-v2 .cut-explain>p{color:#5e817a;line-height:1.6;font-size:12px}
+.react-cut-lab.cut-v2 .cut-explain .result-box{background:linear-gradient(130deg,#effbf3,#e8f8ec);
+ border:1px solid #c9e7d3;border-radius:13px;padding:12px}
+.react-cut-lab.cut-v2 .cut-explain .result-box strong{color:#2d806b;font-size:10px}
+.react-cut-lab.cut-v2 .cut-explain .result-box p{color:#597b73;font-size:12px;line-height:1.6;margin-top:7px}
+.react-cut-lab.cut-v2 .cut-v2-duration-head{display:flex;gap:8px;align-items:center;justify-content:space-between;
+ margin-top:15px}
+.react-cut-lab.cut-v2 .cut-v2-duration-head>span:last-child{color:#90a79c;font-size:9px;font-weight:900}
+.react-cut-lab.cut-v2 .duration-control{border:1px solid #d8e9dc;background:#f6faf7;
+ padding:12px;border-radius:13px;margin:10px 0 12px}
+.react-cut-lab.cut-v2 .duration-control label{color:#386a65;font-size:12px}
+.react-cut-lab.cut-v2 .duration-control strong{color:#278467}
+.react-cut-lab.cut-v2 .duration-control input[type=range]{accent-color:#329f7b;
+ width:100%;min-height:32px}
+.react-cut-lab.cut-v2 .duration-ruler{display:flex;justify-content:space-between;gap:5px}
+.react-cut-lab.cut-v2 .duration-ruler span{color:#789689;font-size:9px}
+.react-cut-lab.cut-v2 .editor-help{border-radius:11px;border:1px solid #e7e1c8;
+ background:#fffaf0;color:#6c725c;font-size:11px;line-height:1.5;padding:12px}
+.react-cut-lab.cut-v2 .editor-help strong{color:#997e48}
+.react-cut-lab.cut-v2 .cut-brief{background:#fff;color:#2b5660;border:1px solid #d5e8dd;
+ border-radius:18px;box-shadow:0 4px 0 #dfece4;margin:16px 0}
+.react-cut-lab.cut-v2 .cut-brief summary,.react-cut-lab.cut-v2 .cut-brief strong{color:#2e6367}
+.react-cut-lab.cut-v2 .cut-brief :is(p,small){color:#607c72}
+.react-cut-lab.cut-v2 .cut-brief button{color:#2b7566;border:1px solid #c6e3d2;
+ background:#f5fbf7;border-radius:11px;min-height:44px}
+.react-cut-lab.cut-v2 .cut-brief button[aria-pressed=true]{background:#dcf6e5;border-color:#65b990;color:#1d7357}
+.react-cut-lab.cut-v2 .cut-brief [data-cut-feedback]{background:#e8f7ee;
+ border:1px solid #c8e8d2;border-left:3px solid #55b97b;border-radius:13px;padding:13px}
+.react-cut-lab.cut-v2 .cut-brief [data-cut-feedback] :is(p,span,small){color:#54786c}
+.react-cut-lab.cut-v2 .cut-learning{background:#f1faf4;color:#567d70;border:1px solid #d8eade;
+ border-radius:14px;padding:16px;margin:16px 0}
+.react-cut-lab.cut-v2 .cut-learning strong{color:#317862}
+.react-cut-lab.cut-v2 .cut-learning p{color:#5c7e73;font-size:12px;line-height:1.6}
+.react-cut-lab.cut-v2 .cut-learning .btn-secondary{color:#2a7866;background:#fff;
+ border:1px solid #c0dfcd;border-radius:10px;min-height:44px}
+.react-cut-lab.cut-v2 .demo-disclaimer{font-size:10px;color:#819a91;line-height:1.5}
+.react-cut-lab.cut-v2 .cut-v2-other-tools{border:1px solid #d8e8dd;border-radius:15px;
+ background:#fff;padding:14px 17px;margin-top:13px}
+.react-cut-lab.cut-v2 .cut-v2-other-tools>p{color:#718e83;font-size:11px;line-height:1.5;margin:5px 0 11px}
+.react-cut-lab.cut-v2 .lab-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0}
+.react-cut-lab.cut-v2 .lab-tab{background:#f6fbf7;border:1px solid #cfe5d8;color:#38766b;
+ border-radius:10px;padding:10px 6px;min-height:44px;font-size:11px;font-weight:850}
+.react-cut-lab.cut-v2 .lab-tab[aria-pressed=true]{background:#d9f5e4;border-color:#63bd91;color:#1f7059}
+.react-cut-lab.cut-v2 :is(button,input,summary):focus-visible{outline:3px solid #286e9b;outline-offset:3px}
+@media(max-width:900px){
+ .react-cut-lab.cut-v2 .cut-shell{grid-template-columns:minmax(0,1fr)}
+ .react-cut-lab.cut-v2 .cut-illustration{min-height:220px}
+}
+@media(max-width:600px){
+ .react-cut-lab.cut-v2{padding:12px;border-radius:18px}
+ .react-cut-lab.cut-v2 .cut-v2-intro{padding:16px}
+ .react-cut-lab.cut-v2 .cut-v2-hero h1{font-size:clamp(25px,7.5vw,35px)}
+ .react-cut-lab.cut-v2 .cut-v2-clapper{width:58px;flex-basis:58px}
+ .react-cut-lab.cut-v2 .cut-v2-live-status>span:last-child{margin-left:18px}
+ .react-cut-lab.cut-v2 .cut-preview,.react-cut-lab.cut-v2 .cut-explain{padding:12px}
+ .react-cut-lab.cut-v2 .cut-illustration{min-height:204px}
+ .react-cut-lab.cut-v2 .lab-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:360px){
+ .react-cut-lab.cut-v2{padding:9px}
+ .react-cut-lab.cut-v2 .cut-v2-intro{padding:12px}
+ .react-cut-lab.cut-v2 .cut-v2-hero h1{font-size:25px}
+ .react-cut-lab.cut-v2 .cut-v2-clapper{width:46px;flex-basis:46px}
+ .react-cut-lab.cut-v2 .cut-v2-course-tag{font-size:8px;padding:6px}
+ .react-cut-lab.cut-v2 .cut-preview,.react-cut-lab.cut-v2 .cut-explain{padding:9px}
+ .react-cut-lab.cut-v2 .cut-illustration{min-height:196px}
+ .react-cut-lab.cut-v2 .editor-timeline{gap:4px;padding:5px}
+ .react-cut-lab.cut-v2 .clip-select strong{font-size:9px}
+ .react-cut-lab.cut-v2 .clip-select span{font-size:8px}
+ .react-cut-lab.cut-v2 .clip-actions button{min-height:38px}
+ .react-cut-lab.cut-v2 .lab-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){
+ .react-cut-lab.cut-v2 *,.react-cut-lab.cut-v2 *::before,.react-cut-lab.cut-v2 *::after{
+ animation:none!important;transition:none!important}
+}

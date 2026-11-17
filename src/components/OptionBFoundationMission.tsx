@@ -2,6 +2,15 @@ import {useState} from 'react';
 import {completeGuidedFoundation,saveGuidedPracticeNote} from '../legacy/bridge';
 import {readPractice} from '../state/learning';
 import {foundationById} from '../data/foundations-guided';
+import {STORYTELLING_IDS,storytellingById} from '../data/storytelling-guided';
+import {VISUAL_IDS,visualLanguageById} from '../data/visual-language-guided';
+import {OptionBVisualExperiment} from './OptionBVisualExperiment';
+import {SOUND_EDIT_IDS,soundEditingById} from '../data/sound-edit-guided';
+import {OptionBSoundEditExperiment} from './OptionBSoundEditExperiment';
+import {PEOPLE_IDS,peopleById} from '../data/people-guided';
+import {OptionBPeopleExperiment} from './OptionBPeopleExperiment';
+import {FIRST_FILM_IDS,firstFilmById} from '../data/first-film-guided';
+import {OptionBFirstFilmExperiment} from './OptionBFirstFilmExperiment';
 import {OptionBReactScene} from './OptionBReactMission';
 
 type ViewMode='wide'|'medium'|'close';
@@ -16,7 +25,7 @@ function NextIcon(){
 export function OptionBFoundationMission({lessonId,onBack,onComplete,onStepChange}:{
  lessonId:string;onBack:()=>void;onComplete:(id:string)=>void;onStepChange:()=>void;
 }){
- const data=foundationById(lessonId);
+ const data=foundationById(lessonId)??storytellingById(lessonId)??visualLanguageById(lessonId)??soundEditingById(lessonId)??peopleById(lessonId)??firstFilmById(lessonId);
  const [step,setStep]=useState(0);
  const [chosen,setChosen]=useState<number|null>(null);
  const [explore,setExplore]=useState(0);
@@ -26,15 +35,15 @@ export function OptionBFoundationMission({lessonId,onBack,onComplete,onStepChang
  const [recorded,setRecorded]=useState(false);
  const [finished,setFinished]=useState(false);
  const [error,setError]=useState('');
- if(!data)return <div className="screen"><div className="feedback" role="alert">This lesson is not in Chapter 1.</div>
-   <button className="btn btn-secondary" onClick={onBack}>Back to Chapter 1</button></div>;
+ if(!data)return <div className="screen"><div className="feedback" role="alert">This lesson is not in the guided curriculum.</div>
+   <button className="btn btn-secondary" onClick={onBack}>Back to the chapter</button></div>;
  const {lesson}=data;
  const correct=quiz===lesson.answer;
  const next=()=>{
    if(step===1&&chosen===null)return;
    if(step===2&&!correct)return;
    if(step===3){
-      // The bridge itself restricts this method to five real Foundation IDs.
+      // The bridge accepts exactly thirty-three original lessons across all six chapters.
       // A marked completion uses exactly frameone-progress-v01, the old backup.
       if(!correct){setError('Finish the knowledge check before completing this lesson.');return;}
       const ok=completeGuidedFoundation(lessonId);
@@ -57,12 +66,12 @@ export function OptionBFoundationMission({lessonId,onBack,onComplete,onStepChang
  return <div className="screen" data-v2-foundation-screen="mission"
    data-v2-foundation-id={lessonId} data-v2-foundation-step={finished?'complete':String(step)}>
    <div className="mission-top">
-     <button type="button" className="back" onClick={onBack} aria-label="Back to real Chapter 1">‹</button>
+     <button type="button" className="back" onClick={onBack} aria-label="Back to the real chapter">‹</button>
      <div className="mission-meta">
-       <span className="eyebrow">REAL CHAPTER 01 · FOUNDATIONS</span>
+       <span className="eyebrow">REAL CHAPTER {data.chapterId===0?'01 · FOUNDATIONS':data.chapterId===1?'02 · STORYTELLING':data.chapterId===2?'03 · VISUAL LANGUAGE':data.chapterId===3?'04 · SOUND & EDITING':data.chapterId===4?'05 · FILM PEOPLE':'06 · MAKE A FILM'}</span>
        <h2>{lesson.title}</h2>
      </div>
-     <span className="head-pill">{lesson.num} / 05</span>
+     <span className="head-pill">{data.chapterId===0?lesson.num:String((data.chapterId===1?STORYTELLING_IDS:data.chapterId===2?VISUAL_IDS:data.chapterId===3?SOUND_EDIT_IDS:data.chapterId===4?PEOPLE_IDS:FIRST_FILM_IDS).indexOf(lessonId)+1).padStart(2,'0')} / {data.chapterId===0?'05':data.chapterId===2?'07':data.chapterId===4?'04':data.chapterId===5?'05':'06'}</span>
    </div>
    <div className="lesson-step-track" aria-label={'Learning stage '+(step+1)+' of 4'}>
      {[0,1,2,3].map(i=><span key={i} className={i<=step?'filled':''}/>)}
@@ -118,7 +127,15 @@ export function OptionBFoundationMission({lessonId,onBack,onComplete,onStepChang
            <p className="note-honest">Creative choices have trade-offs; there is no automatic right camera choice.</p>
          </>}
          {step===2&&<>
-           <OptionBReactScene mode="concept" value={[1,1.35,1.85][explore]}/>
+           {data.chapterId===5
+             ? <OptionBFirstFilmExperiment lessonId={lessonId} selected={explore}/>
+             : data.chapterId===4
+               ? <OptionBPeopleExperiment lessonId={lessonId} selected={explore}/>
+               : data.chapterId===3
+               ? <OptionBSoundEditExperiment lessonId={lessonId} selected={explore}/>
+               : data.chapterId===2
+               ? <OptionBVisualExperiment lessonId={lessonId} selected={explore}/>
+               : <OptionBReactScene mode="concept" value={[1,1.35,1.85][explore]}/>}
            <div className="foundation-concept-switch" role="group" aria-label={data.explorerLabel}>
              {data.explorer.map((item,i)=><button key={item.label} type="button"
                data-v2-foundation-explore={i} aria-pressed={explore===i}

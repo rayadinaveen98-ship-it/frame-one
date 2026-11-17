@@ -1795,10 +1795,10 @@
         const next=nextLesson(id);navigate(next?'lesson':'learn',next?.id||null);
       },
       completeGuidedFoundation:(id)=>{
-        // Only Chapter 1's five canonical lesson IDs can be completed from
-        // the new guided UI. Keep the original 33-lesson key/backup model;
+        // Only the original thirty-three lessons in Chapters 1–6 can be
+        // completed from this verified guided UI. Keep the original 33-lesson key/backup model;
         // never write a separate V2 completion list or force a route change.
-        if(!['why','history','units','genres','india'].includes(id))return false;
+        if(!['why','history','units','genres','india','story','script','acting','character','dialogue','showdonttell','shot','camera','lighting','composition','movement','lenses','colour','sound','editing','ambience','music','continuity','rhythm','crew','craft24','teams','pipeline','making','shotlist','shootscene','editminute','review'].includes(id))return false;
         if(!lessons.some(l=>l.id===id))return false;
         if(!finished.has(id)){finished.add(id);persist()}
         updateProgress();
